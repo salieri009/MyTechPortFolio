@@ -11,7 +11,6 @@ import com.mytechfolio.portfolio.service.AcademicService;
 import com.mytechfolio.portfolio.service.TechStackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +19,19 @@ import jakarta.validation.Valid;
 @Tag(name = "Admin", description = "관리자 API")
 @RestController
 @RequestMapping("/admin")
-@RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000", "http://localhost:5174"})
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000", "http://localhost:5174", "http://localhost:5177"})
 public class AdminController {
 
     private final ProjectService projectService;
     private final AcademicService academicService;
     private final TechStackService techStackService;
+
+    // Lombok @RequiredArgsConstructor가 작동하지 않는 경우를 대비한 수동 생성자
+    public AdminController(ProjectService projectService, AcademicService academicService, TechStackService techStackService) {
+        this.projectService = projectService;
+        this.academicService = academicService;
+        this.techStackService = techStackService;
+    }
 
     // 프로젝트 관리
     @Operation(summary = "프로젝트 생성", description = "새로운 프로젝트를 생성합니다.")

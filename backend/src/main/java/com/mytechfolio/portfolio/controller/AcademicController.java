@@ -10,18 +10,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/academics")
 @CrossOrigin(origins = "*")
-@RequiredArgsConstructor
 @Tag(name = "Academics", description = "학업 과정 관리 API")
 public class AcademicController {
 
     private final AcademicService academicService;
+
+    // Lombok @RequiredArgsConstructor가 작동하지 않는 경우를 대비한 수동 생성자
+    public AcademicController(AcademicService academicService) {
+        this.academicService = academicService;
+    }
 
     @GetMapping
     @Operation(summary = "학업 과정 목록 조회", description = "페이징과 학기 필터링을 지원하는 학업 과정 목록을 조회합니다.")

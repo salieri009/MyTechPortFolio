@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +21,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/projects")
 @CrossOrigin(origins = "*")
-@RequiredArgsConstructor
 @Tag(name = "Projects", description = "프로젝트 관리 API")
 public class ProjectController {
 
     private final ProjectService projectService;
+
+    // Lombok @RequiredArgsConstructor가 작동하지 않는 경우를 대비한 수동 생성자
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     @GetMapping
     @Operation(summary = "프로젝트 목록 조회", description = "페이징, 정렬, 필터링을 지원하는 프로젝트 목록을 조회합니다.")
