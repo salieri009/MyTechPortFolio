@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { Container, Card, Tag, Button } from '@components/common'
 import { useFilters } from '@store/filters'
@@ -12,6 +13,29 @@ const FilterBar = styled.div`
   margin-bottom: 32px;
   flex-wrap: wrap;
   align-items: center;
+  padding: 20px;
+  background: ${props => props.theme.colors.bgSecondary};
+  border-radius: 12px;
+  border: 1px solid ${props => props.theme.colors.border};
+
+  label {
+    font-weight: 600;
+    color: ${props => props.theme.colors.text};
+    margin-right: 8px;
+  }
+`
+
+const LoadingText = styled.p`
+  text-align: center;
+  font-size: 18px;
+  color: ${props => props.theme.colors.textSecondary};
+`
+
+const PageTitle = styled.h1`
+  font-size: 32px;
+  margin-bottom: 32px;
+  color: ${props => props.theme.colors.text};
+  text-align: center;
 `
 
 const ProjectGrid = styled.div`
@@ -21,21 +45,28 @@ const ProjectGrid = styled.div`
 `
 
 const ProjectCard = styled(Card)`
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+
   &:hover {
-    transform: scale(1.02);
+    transform: translateY(-4px) scale(1.02);
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: ${props => props.theme.shadows.lg};
   }
 `
 
 const ProjectTitle = styled.h3`
   font-size: 20px;
   margin-bottom: 8px;
-  color: #0f172a;
+  color: ${props => props.theme.colors.text};
+  font-weight: 700;
 `
 
 const ProjectSummary = styled.p`
-  color: #334155;
+  color: ${props => props.theme.colors.textSecondary};
   margin-bottom: 16px;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-size: 14px;
 `
 
 const ProjectTags = styled.div`
@@ -47,11 +78,12 @@ const ProjectTags = styled.div`
 
 const ProjectDates = styled.div`
   font-size: 14px;
-  color: #64748b;
+  color: ${props => props.theme.colors.textSecondary};
   margin-bottom: 16px;
 `
 
 export function ProjectsPage() {
+  const { t } = useTranslation()
   const { techStacks, year, sort, setTechStacks, setSort } = useFilters()
   const [projects, setProjects] = useState<ProjectSummary[]>([])
   const [loading, setLoading] = useState(true)
@@ -83,19 +115,19 @@ export function ProjectsPage() {
   if (loading) {
     return (
       <Container>
-        <h1>프로젝트</h1>
-        <p>로딩 중...</p>
+        <PageTitle>{t('projects.title')}</PageTitle>
+        <LoadingText>{t('common.loading')}</LoadingText>
       </Container>
     )
   }
 
   return (
     <Container>
-      <h1>프로젝트</h1>
+      <PageTitle>{t('projects.title')}</PageTitle>
 
       <FilterBar>
         <div>
-          <label>기술 스택: </label>
+          <label>{t('projects.filters.techStack')}: </label>
           {['React', 'TypeScript', 'Spring Boot', 'MySQL', 'Java', 'Python'].map((tech) => (
             <Tag
               key={tech}
@@ -108,20 +140,20 @@ export function ProjectsPage() {
           ))}
         </div>
         <div>
-          <label>정렬: </label>
+          <label>{t('projects.filters.sort')}: </label>
           <Button
             variant={sort === 'endDate,desc' ? 'primary' : 'ghost'}
             size="sm"
             onClick={() => setSort('endDate,desc')}
           >
-            최신순
+            {t('projects.filters.latest')}
           </Button>
           <Button
             variant={sort === 'endDate,asc' ? 'primary' : 'ghost'}
             size="sm"
             onClick={() => setSort('endDate,asc')}
           >
-            오래된순
+            {t('projects.filters.oldest')}
           </Button>
         </div>
       </FilterBar>
@@ -145,7 +177,7 @@ export function ProjectsPage() {
         ))}
       </ProjectGrid>
 
-      {projects.length === 0 && <p>해당 조건의 프로젝트가 없습니다.</p>}
+      {projects.length === 0 && <p>{t('projects.notFound')}</p>}
     </Container>
   )
 }

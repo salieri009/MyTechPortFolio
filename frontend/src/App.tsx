@@ -7,11 +7,16 @@ import { ProjectsPage } from '@pages/ProjectsPage'
 import { ProjectDetailPage } from '@pages/ProjectDetailPage'
 import { AcademicsPage } from '@pages/AcademicsPage'
 import { AboutPage } from '@pages/AboutPage'
-import { theme } from '@styles/theme'
+import { lightTheme, darkTheme } from '@styles/theme'
+import { useThemeStore } from './stores/themeStore'
+import './i18n/config'
 
 function App() {
+  const { isDark } = useThemeStore()
+  const currentTheme = isDark ? darkTheme : lightTheme
+
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={currentTheme}>
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />

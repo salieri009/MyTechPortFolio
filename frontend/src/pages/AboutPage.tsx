@@ -1,23 +1,26 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
 import { Container, Card, Button } from '@components/common'
+import { CONTACT_INFO } from '../constants/contact'
 
 const AboutSection = styled.section`
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
+  padding: 40px 0;
 `
 
 const AboutTitle = styled.h1`
   font-size: 32px;
   margin-bottom: 24px;
-  color: #0f172a;
+  color: ${props => props.theme.colors.text};
 `
 
 const AboutContent = styled.div`
   font-size: 18px;
   line-height: 1.6;
-  color: #334155;
+  color: ${props => props.theme.colors.textSecondary};
   margin-bottom: 40px;
 
   p {
@@ -28,12 +31,59 @@ const AboutContent = styled.div`
 const ContactSection = styled(Card)`
   margin-top: 40px;
   text-align: center;
+  background: ${props => props.theme.colors.bgSecondary};
+  border: 1px solid ${props => props.theme.colors.border};
 `
 
 const ContactTitle = styled.h2`
   font-size: 24px;
   margin-bottom: 16px;
-  color: #0f172a;
+  color: ${props => props.theme.colors.text};
+`
+
+const ContactInfo = styled.div`
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+  text-align: left;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+`
+
+const ContactItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: ${props => props.theme.colors.bg};
+  border-radius: 12px;
+  border: 2px solid ${props => props.theme.colors.border};
+  box-shadow: ${props => props.theme.shadows.sm};
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: ${props => props.theme.shadows.md};
+  }
+`
+
+const ContactLabel = styled.span`
+  font-weight: 600;
+  color: ${props => props.theme.colors.text};
+  font-size: 15px;
+`
+
+const ContactValue = styled.a`
+  color: ${props => props.theme.colors.primary};
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  
+  &:hover {
+    text-decoration: underline;
+    color: ${props => props.theme.colors.primaryDark};
+  }
 `
 
 const ContactButtons = styled.div`
@@ -43,37 +93,78 @@ const ContactButtons = styled.div`
   flex-wrap: wrap;
 `
 
+const ContactButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: ${props => props.theme.colors.primary};
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${props => props.theme.colors.primaryDark};
+    transform: translateY(-1px);
+  }
+`
+
 export function AboutPage() {
+  const { t } = useTranslation()
+
   return (
     <Container>
       <AboutSection>
-        <AboutTitle>안녕하세요!</AboutTitle>
+        <AboutTitle>{t('about.greeting')}</AboutTitle>
         <AboutContent>
-          <p>
-            문제 해결을 즐기고, 기술을 통해 가치 있는 서비스를 만들어 나가는 개발자입니다.
-          </p>
-          <p>
-            사용자 경험을 중시하며, 깔끔하고 효율적인 코드를 작성하는 것을 지향합니다.
-            팀워크를 통해 더 나은 결과를 만들어내는 과정을 좋아합니다.
-          </p>
-          <p>
-            현재는 풀스택 개발에 관심이 많으며, 특히 React와 Spring Boot를 활용한
-            웹 애플리케이션 개발에 집중하고 있습니다.
-          </p>
+          <p>{t('about.description')}</p>
         </AboutContent>
 
         <ContactSection>
-          <ContactTitle>연락하기</ContactTitle>
+          <ContactTitle>{t('about.contact.title')}</ContactTitle>
+          
+          <ContactInfo>
+            <ContactItem>
+              <ContactLabel>{t('about.contact.studentEmail')}:</ContactLabel>
+              <ContactValue 
+                href={`mailto:${CONTACT_INFO.email.student}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {CONTACT_INFO.email.display}
+              </ContactValue>
+            </ContactItem>
+            
+            <ContactItem>
+              <ContactLabel>{t('about.contact.personalLinkedIn')}:</ContactLabel>
+              <ContactValue 
+                href={CONTACT_INFO.linkedin.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {CONTACT_INFO.linkedin.display}
+              </ContactValue>
+            </ContactItem>
+          </ContactInfo>
+
           <ContactButtons>
-            <Button as="a" href="mailto:your-email@example.com">
-              이메일
-            </Button>
-            <Button as="a" href="https://github.com/salieri009" target="_blank" variant="ghost">
-              GitHub
-            </Button>
-            <Button as="a" href="https://linkedin.com/in/yourprofile" target="_blank" variant="ghost">
-              LinkedIn
-            </Button>
+            <ContactButton 
+              href={`mailto:${CONTACT_INFO.email.student}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              📧 {t('about.contact.email')}
+            </ContactButton>
+            
+            <ContactButton 
+              href={CONTACT_INFO.linkedin.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              💼 {t('about.contact.linkedin')}
+            </ContactButton>
           </ContactButtons>
         </ContactSection>
       </AboutSection>

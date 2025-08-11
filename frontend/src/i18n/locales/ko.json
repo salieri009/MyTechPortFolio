@@ -1,0 +1,83 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "notFound": "찾을 수 없습니다",
+    "backToList": "목록으로 돌아가기",
+    "readMore": "자세히 보기",
+    "showMore": "더 보기",
+    "showLess": "접기",
+    "swipeToChange": "스와이프해서 언어 변경"
+  },
+  "navigation": {
+    "home": "홈",
+    "projects": "프로젝트",
+    "academics": "학업",
+    "about": "소개",
+    "contact": "연락하기"
+  },
+  "hero": {
+    "title": "문제 해결을 즐기는 개발자",
+    "subtitle": "효율적이고 창의적인 솔루션을 통해 가치를 창출합니다",
+    "greeting": "안녕하세요, 저는",
+    "name": "정욱 반",
+    "cta": {
+      "email": "이메일 보내기",
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "contact": "연락하기"
+    }
+  },
+  "projects": {
+    "title": "프로젝트",
+    "featuredTitle": "주요 프로젝트",
+    "allProjects": "모든 프로젝트",
+    "filters": {
+      "techStack": "기술 스택",
+      "year": "연도",
+      "sort": "정렬",
+      "latest": "최신순",
+      "oldest": "오래된순"
+    },
+    "notFound": "프로젝트를 찾을 수 없습니다",
+    "backToProjects": "← 프로젝트 목록",
+    "links": {
+      "github": "GitHub",
+      "demo": "라이브 데모"
+    },
+    "sections": {
+      "overview": "개요",
+      "myRole": "나의 역할",
+      "techChoice": "기술 선택 이유",
+      "problemSolution": "문제 해결",
+      "demo": "데모",
+      "relatedAcademics": "관련 학업"
+    }
+  },
+  "academics": {
+    "title": "학업",
+    "course": "과목",
+    "semester": "학기",
+    "grade": "성적",
+    "description": "설명",
+    "notFound": "학업 정보를 찾을 수 없습니다"
+  },
+  "about": {
+    "title": "소개",
+    "greeting": "안녕하세요, 정욱입니다!",
+    "description": "저는 새로운 기술을 배우고 활용하는 것을 좋아하는 개발자입니다. 현재 웹 애플리케이션 개발에 집중하고 있습니다.",
+    "skills": "기술 스택",
+    "contact": {
+      "title": "연락처 정보",
+      "email": "이메일",
+      "linkedin": "링크드인 프로필",
+      "studentEmail": "학생 이메일",
+      "personalLinkedIn": "개인 링크드인"
+    }
+  },
+  "language": {
+    "korean": "한국어",
+    "english": "English",
+    "japanese": "日本語"
+  }
+}

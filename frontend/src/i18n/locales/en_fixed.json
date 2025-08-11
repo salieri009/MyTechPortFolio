@@ -1,0 +1,83 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "notFound": "Not found",
+    "backToList": "Back to list",
+    "readMore": "Read more",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "swipeToChange": "Swipe to change language"
+  },
+  "navigation": {
+    "home": "Home",
+    "projects": "Projects",
+    "academics": "Academics",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Developer who loves solving problems",
+    "subtitle": "Creating value through efficient and creative solutions",
+    "greeting": "Hello, I'm",
+    "name": "Jungwook Van",
+    "cta": {
+      "email": "Send Email",
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "contact": "Contact Me"
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "featuredTitle": "Featured Projects",
+    "allProjects": "All Projects",
+    "filters": {
+      "techStack": "Tech Stack",
+      "year": "Year",
+      "sort": "Sort",
+      "latest": "Latest",
+      "oldest": "Oldest"
+    },
+    "notFound": "Project not found",
+    "backToProjects": "← Back to Projects",
+    "links": {
+      "github": "GitHub",
+      "demo": "Live Demo"
+    },
+    "sections": {
+      "overview": "Overview",
+      "myRole": "My Role",
+      "techChoice": "Technology Choices",
+      "problemSolution": "Problem & Solution",
+      "demo": "Demo",
+      "relatedAcademics": "Related Academics"
+    }
+  },
+  "academics": {
+    "title": "Academics",
+    "course": "Course",
+    "semester": "Semester",
+    "grade": "Grade",
+    "description": "Description",
+    "notFound": "Academic information not found"
+  },
+  "about": {
+    "title": "About",
+    "greeting": "Hello, I'm Jungwook!",
+    "description": "I'm a developer who loves learning and applying new technologies. Currently focusing on web application development.",
+    "skills": "Tech Stack",
+    "contact": {
+      "title": "Contact Information",
+      "email": "Email",
+      "linkedin": "LinkedIn Profile",
+      "studentEmail": "Student Email",
+      "personalLinkedIn": "Personal LinkedIn"
+    }
+  },
+  "language": {
+    "korean": "한국어",
+    "english": "English", 
+    "japanese": "日本語"
+  }
+}

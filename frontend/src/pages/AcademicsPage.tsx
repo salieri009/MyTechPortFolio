@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { Container, Card } from '@components/common'
 import { getAcademics } from '@services/academics'
@@ -16,23 +17,24 @@ const AcademicCard = styled(Card)`
 const AcademicTitle = styled.h3`
   font-size: 20px;
   margin-bottom: 8px;
-  color: #0f172a;
+  color: ${props => props.theme.colors.text};
 `
 
 const AcademicMeta = styled.div`
   display: flex;
   gap: 16px;
   margin-bottom: 12px;
-  color: #64748b;
+  color: ${props => props.theme.colors.textSecondary};
   font-size: 14px;
 `
 
 const AcademicDescription = styled.p`
-  color: #334155;
+  color: ${props => props.theme.colors.textSecondary};
   line-height: 1.5;
 `
 
 export function AcademicsPage() {
+  const { t } = useTranslation()
   const [academics, setAcademics] = useState<Academic[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -56,22 +58,22 @@ export function AcademicsPage() {
   if (loading) {
     return (
       <Container>
-        <h1>학업</h1>
-        <p>로딩 중...</p>
+        <h1>{t('academics.title')}</h1>
+        <p>{t('common.loading')}</p>
       </Container>
     )
   }
 
   return (
     <Container>
-      <h1>학업</h1>
+      <h1>{t('academics.title')}</h1>
       <TimelineContainer>
         {academics.map((academic) => (
           <AcademicCard key={academic.id}>
             <AcademicTitle>{academic.name}</AcademicTitle>
             <AcademicMeta>
               <span>{academic.semester}</span>
-              {academic.grade && <span>성적: {academic.grade}</span>}
+              {academic.grade && <span>{t('academics.grade')}: {academic.grade}</span>}
             </AcademicMeta>
             {academic.description && <AcademicDescription>{academic.description}</AcademicDescription>}
           </AcademicCard>

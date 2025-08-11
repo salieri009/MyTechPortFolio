@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export const Button = styled.button<{ variant?: 'primary' | 'ghost'; size?: 'sm' | 'md' | 'lg' }>`
   border: none;
-  border-radius: ${(props) => props.theme?.radius?.md || 12}px;
+  border-radius: ${(props) => props.theme?.radius?.md || '12px'};
   cursor: pointer;
   font-weight: 500;
   transition: all 120ms ease;
@@ -15,7 +15,7 @@ export const Button = styled.button<{ variant?: 'primary' | 'ghost'; size?: 'sm'
         background: ${props.theme?.colors?.primary || '#4F46E5'};
         color: white;
         &:hover {
-          background: ${props.theme?.colors?.primaryHover || '#4338CA'};
+          background: ${props.theme?.colors?.primaryDark || '#4338CA'};
         }
       `
     }
@@ -43,7 +43,7 @@ export const Button = styled.button<{ variant?: 'primary' | 'ghost'; size?: 'sm'
   }}
 
   &:focus-visible {
-    outline: 2px solid ${(props) => props.theme?.colors?.accent || '#06B6D4'};
+    outline: 2px solid ${(props) => props.theme?.colors?.secondary || '#06B6D4'};
     outline-offset: 2px;
   }
 
@@ -54,19 +54,20 @@ export const Button = styled.button<{ variant?: 'primary' | 'ghost'; size?: 'sm'
 `
 
 export const Card = styled.div<{ isHover?: boolean }>`
-  background: white;
-  border-radius: ${(props) => props.theme?.radius?.md || 12}px;
-  box-shadow: ${(props) => props.theme?.shadow?.[1] || '0 2px 8px rgba(0,0,0,.06)'};
+  background: ${(props) => props.theme?.colors?.bg || 'white'};
+  border-radius: ${(props) => props.theme?.radius?.md || '12px'};
+  box-shadow: ${(props) => props.theme?.shadows?.md || '0 2px 8px rgba(0,0,0,.06)'};
   padding: 24px;
   cursor: ${(props) => (props.isHover ? 'pointer' : 'default')};
   transition: all 120ms ease;
+  border: 1px solid ${(props) => props.theme?.colors?.border || 'transparent'};
 
   ${(props) =>
     props.isHover &&
     `
     &:hover {
       transform: scale(1.02);
-      box-shadow: ${props.theme?.shadow?.[2] || '0 6px 20px rgba(0,0,0,.08)'};
+      box-shadow: ${props.theme?.shadows?.lg || '0 6px 20px rgba(0,0,0,.08)'};
     }
   `}
 `
@@ -74,7 +75,7 @@ export const Card = styled.div<{ isHover?: boolean }>`
 export const Tag = styled.span<{ isSelected?: boolean }>`
   display: inline-block;
   padding: 4px 12px;
-  border-radius: ${(props) => props.theme?.radius?.sm || 8}px;
+  border-radius: ${(props) => props.theme?.radius?.sm || '8px'};
   font-size: 14px;
   font-weight: 500;
   transition: all 120ms ease;
@@ -98,7 +99,7 @@ export const Container = styled.div`
   margin: 0 auto;
   padding: 0 24px;
 
-  @media (max-width: ${(props) => props.theme?.breakpoints?.md || 768}px) {
+  @media (max-width: 768px) {
     padding: 0 16px;
   }
 `
