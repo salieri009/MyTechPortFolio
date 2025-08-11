@@ -1,0 +1,33 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+.gradle/
+build/
+
+# Spring Boot
+*.log
+spring.log
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Environment
+.env
+application-local.yml
+application-local.properties
+
+# H2 Database files
+*.h2.db
+*.mv.db
+*.trace.db
+
+# Temporary files
+*.tmp
+*.temp

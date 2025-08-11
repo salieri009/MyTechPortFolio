@@ -1,0 +1,87 @@
+
+# 아키텍처 기획안 (Architecture Design Plan)
+
+## 1. 개요 (Overview)
+
+본 프로젝트는 확장성, 안정성, 그리고 유지보수성을 고려하여 AWS(Amazon Web Services) 클라우드 환경에 최적화된 아키텍처를 채택합니다. 프론트엔드와 백엔드를 분리하여 배포하고, CI/CD 파이프라인을 통해 배포 프로세스를 자동화하여 개발 생산성을 극대화하는 것을 목표로 합니다.
+
+## 2. 시스템 아키텍처 다이어그램 (System Architecture Diagram)
+
+아래는 본 프로젝트의 전체 시스템 구성도입니다.
+
+```mermaid
+graph TD
+    subgraph "User's Browser"
+        A[User]
+    end
+
+    subgraph "AWS Cloud"
+        B[Route 53] --> C{CloudFront};
+        C -->|React Static Files| D[S3 Bucket];
+        C -->|API Requests (/api/*)| E[Elastic Beanstalk];
+        E --> F[Spring Boot App];
+        F <--> G[RDS - MySQL];
+    end
+
+    subgraph "Development & CI/CD"
+        H[GitHub Repository] -->|Push/Merge| I[GitHub Actions];
+        I -->|Build & Test| J[Build FE/BE];
+        J -->|Deploy FE| D;
+        J -->|Deploy BE| E;
+    end
+
+    A --> B;
+```
+
+### 아키텍처 구성 요소 설명
+
+- **User**: 웹 브라우저를 통해 포트폴리오 웹사이트에 접속하는 최종 사용자입니다.
+- **Route 53**: 사용자의 도메인 이름(예: `mytechfolio.com`) 요청을 받아 CloudFront로 라우팅하는 DNS 서비스입니다.
+- **CloudFront**: AWS의 CDN 서비스입니다.
+    - 정적 콘텐츠(React 빌드 파일)는 S3에서 가져와 사용자에게 빠르게 전송합니다.
+    - API 요청(`/api/*`)은 백엔드 서버인 Elastic Beanstalk으로 전달(프록시)합니다.
+    - SSL/TLS 인증서를 적용하여 HTTPS 통신을 보장합니다.
+- **S3 (Simple Storage Service)**: React 애플리케이션을 빌드한 정적 파일(HTML, CSS, JS)을 저장하고 호스팅하는 스토리지입니다.
+- **Elastic Beanstalk**: Spring Boot 백엔드 애플리케이션을 배포하고 실행하는 PaaS입니다.
+    - 오토 스케일링, 로드 밸런싱, 모니터링 등의 기능을 손쉽게 설정할 수 있습니다.
+    - 내부적으로 EC2 인스턴스 위에서 애플리케이션이 동작합니다.
+- **RDS (Relational Database Service)**: 관리형 MySQL 데이터베이스입니다.
+    - 백업, 패치, 복제 등의 관리를 AWS에서 자동화하여 운영 부담을 줄여줍니다.
+- **GitHub Actions**: CI/CD(지속적 통합/지속적 배포)를 위한 자동화 도구입니다.
+    - GitHub 저장소에 코드가 Push 되면 자동으로 테스트, 빌드, 배포 과정을 수행합니다.
+
+## 3. 배포 전략 (Deployment Strategy)
+
+### 가. 프론트엔드 (Frontend - React)
+
+1.  **빌드**: `npm run build` 스크립트를 실행하여 `build` 디렉터리에 정적 파일(HTML, CSS, JS 등)을 생성합니다.
+2.  **배포**: 생성된 정적 파일들을 AWS S3 버킷에 업로드합니다.
+3.  **서비스**: S3 버킷을 정적 웹사이트 호스팅용으로 설정하고, CloudFront와 연결하여 전 세계 사용자에게 낮은 지연 시간으로 콘텐츠를 제공합니다.
+
+### 나. 백엔드 (Backend - Spring Boot)
+
+1.  **빌드**: `./gradlew build` 명령어를 실행하여 실행 가능한 JAR 파일을 생성합니다.
+2.  **배포**: AWS Elastic Beanstalk 환경에 빌드된 JAR 파일을 업로드하여 배포합니다. Elastic Beanstalk이 자동으로 새 버전을 EC2 인스턴스에 배포하고 애플리케이션을 실행합니다.
+3.  **환경 변수**: 데이터베이스 접속 정보(URL, 사용자명, 비밀번호)와 같은 민감한 정보는 Elastic Beanstalk의 환경 변수 설정을 통해 안전하게 주입합니다.
+
+## 4. CI/CD 파이프라인 (CI/CD Pipeline with GitHub Actions)
+
+`main` 브랜치에 코드가 푸시되거나 병합(Merge)될 때 아래의 과정이 자동으로 실행됩니다.
+
+1.  **Trigger**: `on: push: branches: [ main ]`
+2.  **Jobs**:
+    - **Backend CI/CD**:
+        1.  Java 17 및 Gradle 환경 설정
+        2.  `./gradlew test`: 단위 테스트 실행
+        3.  `./gradlew build`: 프로젝트 빌드 및 JAR 파일 생성
+        4.  AWS 자격 증명 설정
+        5.  생성된 JAR 파일을 압축하여 Elastic Beanstalk에 배포
+    - **Frontend CI/CD**:
+        1.  Node.js 및 npm/yarn 환경 설정
+        2.  `npm install`: 의존성 설치
+        3.  `npm run build`: React 프로젝트 빌드
+        4.  AWS 자격 증명 설정
+        5.  `build` 디렉터리의 내용을 S3 버킷에 동기화(업로드)
+        6.  CloudFront 캐시 무효화(Invalidation) 요청하여 사용자가 즉시 최신 버전을 볼 수 있도록 함
+
+이러한 자동화된 파이프라인은 수동 배포의 실수를 줄이고, 개발자가 코드 작성에만 집중할 수 있는 환경을 제공하여 전체적인 개발 속도와 안정성을 크게 향상시킵니다.

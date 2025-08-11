@@ -1,0 +1,71 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Java/Spring Boot (backend)
+backend/target/
+backend/build/
+backend/.gradle/
+backend/*.log
+backend/*.jar
+backend/*.war
+backend/*.class
+backend/*.h2.db
+backend/*.mv.db
+
+# Frontend specific
+frontend/dist/
+frontend/build/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.iml
+*.ipr
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary folders
+tmp/
+temp/
+.cache/
+
+# AWS deployment files (future)
+.aws/
+*.pem
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Testing
+.coverage
+htmlcov/
