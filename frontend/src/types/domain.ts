@@ -22,6 +22,9 @@ export interface Academic {
   semester: string
   grade?: string
   description?: string
+  creditPoints?: number
+  marks?: number
+  status: 'completed' | 'enrolled' | 'exemption'
 }
 
 export interface TechStack {
