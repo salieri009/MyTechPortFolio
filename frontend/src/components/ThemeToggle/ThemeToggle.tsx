@@ -10,8 +10,8 @@ const ThemeToggleButton = styled.button`
   height: 44px;
   border: none;
   border-radius: 50%;
-  background: ${props => props.theme.colors.bgSecondary};
-  color: ${props => props.theme.colors.text};
+  background: ${props => props.theme.colors.neutral[100]};
+  color: ${props => props.theme.colors.neutral[700]};
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: ${props => props.theme.shadows.sm};
@@ -19,6 +19,7 @@ const ThemeToggleButton = styled.button`
   &:hover {
     transform: scale(1.1);
     box-shadow: ${props => props.theme.shadows.md};
+    background: ${props => props.theme.colors.neutral[200]};
   }
   
   &:active {

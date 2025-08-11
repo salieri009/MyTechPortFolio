@@ -13,11 +13,10 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
-                 'Helvetica Neue', Arial, sans-serif;
-    line-height: 1.6;
+    font-family: ${props => props.theme.typography.fontFamily.primary};
+    line-height: ${props => props.theme.typography.lineHeight.normal};
     color: ${props => props.theme.colors.text};
-    background-color: ${props => props.theme.colors.bg};
+    background-color: ${props => props.theme.colors.background};
     transition: background-color 0.3s ease, color 0.3s ease;
     overflow-x: hidden;
   }
@@ -54,7 +53,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   ::-webkit-scrollbar-track {
-    background: ${props => props.theme.colors.bgSecondary};
+    background: ${props => props.theme.colors.surface};
   }
 
   ::-webkit-scrollbar-thumb {
@@ -68,13 +67,13 @@ export const GlobalStyle = createGlobalStyle`
 
   /* Selection Styles */
   ::selection {
-    background: ${props => props.theme.colors.primary};
+    background: ${props => props.theme.colors.primary[500]};
     color: white;
   }
 
   /* Focus Styles */
   :focus {
-    outline: 2px solid ${props => props.theme.colors.primary};
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
     outline-offset: 2px;
   }
 

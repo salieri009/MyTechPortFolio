@@ -7,12 +7,13 @@ import { LanguageSwiper } from '../LanguageSwiper'
 import { ThemeToggle } from '../ThemeToggle'
 
 const HeaderWrapper = styled.header`
-  background: ${props => props.theme.colors.bg};
+  background: ${props => props.theme.colors.surface};
   border-bottom: 1px solid ${props => props.theme.colors.border};
   position: sticky;
   top: 0;
   z-index: 100;
   transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 `
 
 const Nav = styled.nav`
@@ -25,12 +26,12 @@ const Nav = styled.nav`
 const Logo = styled(Link)`
   font-size: 20px;
   font-weight: 600;
-  color: ${props => props.theme.colors.primary};
+  color: ${props => props.theme.colors.primary[500]};
   text-decoration: none;
   transition: color 0.2s ease;
   
   &:hover {
-    color: ${props => props.theme.colors.primaryDark};
+    color: ${props => props.theme.colors.primary[600]};
   }
 `
 
@@ -51,7 +52,7 @@ const NavLink = styled(Link)`
   transition: color 120ms ease;
 
   &:hover {
-    color: ${props => props.theme.colors.primary};
+    color: ${props => props.theme.colors.primary[500]};
   }
 `
 
@@ -69,13 +70,15 @@ const MobileMenuButton = styled.button`
   }
 `
 
-const MobileMenu = styled.div<{ isOpen: boolean }>`
+const MobileMenu = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isOpen',
+})<{ isOpen: boolean }>`
   display: none;
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  background: ${props => props.theme.colors.bg};
+  background: ${props => props.theme.colors.surface};
   border-bottom: 1px solid ${props => props.theme.colors.border};
   flex-direction: column;
   padding: 16px;
@@ -83,6 +86,7 @@ const MobileMenu = styled.div<{ isOpen: boolean }>`
   transform: translateY(${props => props.isOpen ? '0' : '-100%'});
   opacity: ${props => props.isOpen ? '1' : '0'};
   transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
   
   @media (max-width: 768px) {
     display: flex;

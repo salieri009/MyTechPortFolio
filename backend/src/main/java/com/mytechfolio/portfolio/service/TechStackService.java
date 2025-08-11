@@ -66,5 +66,4 @@ public class TechStackService {
     public void deleteAllTechStacks() {
         techStackRepository.deleteAll();
     }
-    }
 }

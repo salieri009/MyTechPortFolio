@@ -9,7 +9,7 @@ import { CONTACT_INFO } from '../constants/contact'
 const Hero = styled.section`
   text-align: center;
   padding: 60px 0 80px 0;
-  background: linear-gradient(135deg, ${props => props.theme.colors.primary} 0%, ${props => props.theme.colors.secondary} 100%);
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.secondary[500]} 100%);
   color: white;
   transition: background 0.3s ease;
   margin-top: -1px; /* Remove gap with header */

@@ -20,7 +20,7 @@ const SwipeContainer = styled(motion.div)`
 const LanguageIndicator = styled(motion.div)`
   padding: 8px 16px;
   border-radius: 20px;
-  background: ${props => props.theme.colors.primary};
+  background: ${props => props.theme.colors.primary[500]};
   color: white;
   font-weight: 500;
   font-size: 14px;
@@ -35,7 +35,7 @@ const SwipeHint = styled.div`
   left: 50%;
   transform: translateX(-50%);
   font-size: 11px;
-  color: ${props => props.theme.colors.textSecondary};
+  color: ${props => props.theme.colors.neutral[500]};
   opacity: 0.7;
   white-space: nowrap;
 `

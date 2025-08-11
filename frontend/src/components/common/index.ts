@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export const Button = styled.button<{ variant?: 'primary' | 'ghost'; size?: 'sm' | 'md' | 'lg' }>`
   border: none;
-  border-radius: ${(props) => props.theme?.radius?.md || '12px'};
+  border-radius: ${(props) => props.theme.borderRadius.md};
   cursor: pointer;
   font-weight: 500;
   transition: all 120ms ease;
@@ -12,19 +12,19 @@ export const Button = styled.button<{ variant?: 'primary' | 'ghost'; size?: 'sm'
     const variant = props.variant || 'primary'
     if (variant === 'primary') {
       return `
-        background: ${props.theme?.colors?.primary || '#4F46E5'};
+        background: ${props.theme.colors.primary[500]};
         color: white;
         &:hover {
-          background: ${props.theme?.colors?.primaryDark || '#4338CA'};
+          background: ${props.theme.colors.primary[600]};
         }
       `
     }
     return `
       background: transparent;
-      color: ${props.theme?.colors?.text || '#0F172A'};
-      border: 1px solid ${props.theme?.colors?.border || '#E2E8F0'};
+      color: ${props.theme.colors.text};
+      border: 1px solid ${props.theme.colors.border};
       &:hover {
-        background: ${props.theme?.colors?.border || '#E2E8F0'};
+        background: ${props.theme.colors.surface};
       }
     `
   }}
@@ -43,7 +43,7 @@ export const Button = styled.button<{ variant?: 'primary' | 'ghost'; size?: 'sm'
   }}
 
   &:focus-visible {
-    outline: 2px solid ${(props) => props.theme?.colors?.secondary || '#06B6D4'};
+    outline: 2px solid ${(props) => props.theme.colors.secondary[500]};
     outline-offset: 2px;
   }
 
@@ -53,43 +53,57 @@ export const Button = styled.button<{ variant?: 'primary' | 'ghost'; size?: 'sm'
   }
 `
 
-export const Card = styled.div<{ isHover?: boolean }>`
-  background: ${(props) => props.theme?.colors?.bg || 'white'};
-  border-radius: ${(props) => props.theme?.radius?.md || '12px'};
-  box-shadow: ${(props) => props.theme?.shadows?.md || '0 2px 8px rgba(0,0,0,.06)'};
+export const Card = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isHover'
+})<{ isHover?: boolean }>`
+  background: ${(props) => props.theme.colors.surface};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  box-shadow: ${(props) => props.theme.shadows.md};
   padding: 24px;
   cursor: ${(props) => (props.isHover ? 'pointer' : 'default')};
   transition: all 120ms ease;
-  border: 1px solid ${(props) => props.theme?.colors?.border || 'transparent'};
+  border: 1px solid ${(props) => props.theme.colors.border};
 
   ${(props) =>
     props.isHover &&
     `
     &:hover {
       transform: scale(1.02);
-      box-shadow: ${props.theme?.shadows?.lg || '0 6px 20px rgba(0,0,0,.08)'};
+      box-shadow: ${props.theme.shadows.lg};
     }
   `}
 `
 
-export const Tag = styled.span<{ isSelected?: boolean }>`
+export const Tag = styled.span.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isSelected'
+})<{ isSelected?: boolean }>`
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: ${(props) => props.theme?.radius?.sm || '8px'};
+  padding: 6px 12px;
+  border-radius: ${(props) => props.theme.borderRadius.sm};
   font-size: 14px;
   font-weight: 500;
   transition: all 120ms ease;
+  cursor: pointer;
 
   ${(props) => {
     if (props.isSelected) {
       return `
-        background: ${props.theme?.colors?.primary || '#4F46E5'};
+        background: ${props.theme.colors.primary[500]};
         color: white;
+        border: 1px solid ${props.theme.colors.primary[500]};
       `
     }
+    // 다크모드 대응을 위한 더 나은 대비
     return `
-      background: ${props.theme?.colors?.border || '#E2E8F0'};
-      color: ${props.theme?.colors?.textSecondary || '#334155'};
+      background: ${props.theme.colors.surface};
+      color: ${props.theme.colors.text};
+      border: 1px solid ${props.theme.colors.border};
+      &:hover {
+        background: ${props.theme.colors.primary[500]};
+        color: white;
+        border-color: ${props.theme.colors.primary[500]};
+        transform: translateY(-1px);
+      }
     `
   }}
 `

@@ -278,10 +278,6 @@ const baseTheme = {
 export const lightTheme = {
   ...baseTheme,
   mode: 'light' as const,
-  
-  // 반지름 별칭
-  radius: baseTheme.borderRadius,
-  
   colors: {
     ...baseTheme.colors,
     
@@ -292,10 +288,7 @@ export const lightTheme = {
     textSecondary: baseTheme.colors.neutral[600],
     textMuted: baseTheme.colors.neutral[500],
     border: baseTheme.colors.neutral[200],
-    divider: baseTheme.colors.neutral[100],
-    
-    // 배경 별칭
-    bg: baseTheme.colors.neutral[0]
+    divider: baseTheme.colors.neutral[100]
   }
 };
 
@@ -303,24 +296,17 @@ export const lightTheme = {
 export const darkTheme = {
   ...baseTheme,
   mode: 'dark' as const,
-  
-  // 반지름 별칭
-  radius: baseTheme.borderRadius,
-  
   colors: {
     ...baseTheme.colors,
     
-    // 테마별 시맨틱 컬러 - 더 밝고 읽기 쉽게 조정
-    background: baseTheme.colors.neutral[900],  // 950 → 900 (더 밝게)
-    surface: baseTheme.colors.neutral[800],     // 900 → 800 (더 밝게)
-    text: baseTheme.colors.neutral[100],        // 50 → 100 (약간 톤 다운)
-    textSecondary: baseTheme.colors.neutral[400], // 300 → 400 (더 진하게)
-    textMuted: baseTheme.colors.neutral[500],   // 400 → 500 (더 진하게)
-    border: baseTheme.colors.neutral[600],      // 700 → 600 (더 밝게)
-    divider: baseTheme.colors.neutral[700],     // 800 → 700 (더 밝게)
-    
-    // 배경 별칭
-    bg: baseTheme.colors.neutral[900]           // 950 → 900 (더 밝게)
+    // 테마별 시맨틱 컬러
+    background: baseTheme.colors.neutral[950],
+    surface: baseTheme.colors.neutral[900],
+    text: baseTheme.colors.neutral[50],
+    textSecondary: baseTheme.colors.neutral[300],
+    textMuted: baseTheme.colors.neutral[400],
+    border: baseTheme.colors.neutral[700],
+    divider: baseTheme.colors.neutral[800]
   },
 
   // 다크 테마용 그림자

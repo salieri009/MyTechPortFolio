@@ -31,7 +31,7 @@ const AboutContent = styled.div`
 const ContactSection = styled(Card)`
   margin-top: 40px;
   text-align: center;
-  background: ${props => props.theme.colors.bgSecondary};
+  background: ${props => props.theme.colors.surface};
   border: 1px solid ${props => props.theme.colors.border};
 `
 
@@ -56,14 +56,14 @@ const ContactItem = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  background: ${props => props.theme.colors.bg};
+  background: ${props => props.theme.colors.background};
   border-radius: 12px;
   border: 2px solid ${props => props.theme.colors.border};
   box-shadow: ${props => props.theme.shadows.sm};
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: ${props => props.theme.colors.primary};
+    border-color: ${props => props.theme.colors.primary[500]};
     box-shadow: ${props => props.theme.shadows.md};
   }
 `
@@ -75,14 +75,14 @@ const ContactLabel = styled.span`
 `
 
 const ContactValue = styled.a`
-  color: ${props => props.theme.colors.primary};
+  color: ${props => props.theme.colors.primary[500]};
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
   
   &:hover {
     text-decoration: underline;
-    color: ${props => props.theme.colors.primaryDark};
+    color: ${props => props.theme.colors.primary[600]};
   }
 `
 
@@ -98,7 +98,7 @@ const ContactButton = styled.a`
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  background: ${props => props.theme.colors.primary};
+  background: ${props => props.theme.colors.primary[500]};
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -106,7 +106,7 @@ const ContactButton = styled.a`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.theme.colors.primaryDark};
+    background: ${props => props.theme.colors.primary[600]};
     transform: translateY(-1px);
   }
 `
