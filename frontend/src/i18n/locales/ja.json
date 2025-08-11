@@ -75,6 +75,51 @@
       "personalLinkedIn": "個人LinkedIn"
     }
   },
+  "recruiter": {
+    "personalInfo": {
+      "title": "個人情報",
+      "name": "ジョンウック・バン",
+      "jobTitle": "フルスタック開発者",
+      "experience": "2年の経験",
+      "location": "シドニー、オーストラリア",
+      "stats": {
+        "projects": "プロジェクト",
+        "experience": "経験",
+        "achievements": "成果"
+      },
+      "contact": {
+        "email": "メール",
+        "linkedin": "LinkedIn",
+        "github": "GitHub"
+      }
+    },
+    "careerSummary": {
+      "title": "キャリアサマリーダッシュボード",
+      "subtitle": "即座に確認可能な核心的能力と成果指標",
+      "sections": {
+        "coreSkills": "コア技術スタック",
+        "expertise": "専門分野",
+        "achievements": "主要成果・インパクト"
+      },
+      "achievements": {
+        "performance": {
+          "title": "パフォーマンス最適化",
+          "description": "Webアプリケーションの読み込み速度改善",
+          "impact": "読み込み時間40％短縮"
+        },
+        "userExperience": {
+          "title": "ユーザーエクスペリエンス向上",
+          "description": "インターフェースリデザイン・レスポンシブ実装",
+          "impact": "ユーザー満足度95％達成"
+        },
+        "codeQuality": {
+          "title": "コード品質向上",
+          "description": "TypeScript導入・テストカバレッジ拡大",
+          "impact": "バグ発生率60％減少"
+        }
+      }
+    }
+  },
   "language": {
     "korean": "한국어",
     "english": "English",

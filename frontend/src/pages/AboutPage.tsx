@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Container, Card, Button } from '@components/common'
+import { PersonalInfoHeader, CareerSummaryDashboard } from '@components/recruiter'
 import { CONTACT_INFO } from '../constants/contact'
 
 const AboutSection = styled.section`
@@ -116,6 +117,10 @@ export function AboutPage() {
 
   return (
     <Container>
+      {/* 채용담당자 중심 섹션 */}
+      <PersonalInfoHeader />
+      <CareerSummaryDashboard />
+      
       <AboutSection>
         <AboutTitle>{t('about.greeting')}</AboutTitle>
         <AboutContent>

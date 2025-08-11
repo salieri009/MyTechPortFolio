@@ -75,6 +75,51 @@
       "personalLinkedIn": "개인 링크드인"
     }
   },
+  "recruiter": {
+    "personalInfo": {
+      "title": "개인정보",
+      "name": "정욱 반",
+      "jobTitle": "풀스택 개발자",
+      "experience": "2년차 개발자",
+      "location": "시드니, 호주",
+      "stats": {
+        "projects": "프로젝트",
+        "experience": "경력",
+        "achievements": "성과"
+      },
+      "contact": {
+        "email": "이메일",
+        "linkedin": "LinkedIn",
+        "github": "GitHub"
+      }
+    },
+    "careerSummary": {
+      "title": "경력 요약 대시보드",
+      "subtitle": "즉시 확인 가능한 핵심 역량과 성과 지표",
+      "sections": {
+        "coreSkills": "핵심 기술 스택",
+        "expertise": "전문 분야",
+        "achievements": "주요 성과 및 임팩트"
+      },
+      "achievements": {
+        "performance": {
+          "title": "성능 최적화",
+          "description": "웹 애플리케이션 로딩 속도 개선",
+          "impact": "로딩 시간 40% 단축"
+        },
+        "userExperience": {
+          "title": "사용자 경험 개선",
+          "description": "인터페이스 리디자인 및 반응형 구현",
+          "impact": "사용자 만족도 95% 달성"
+        },
+        "codeQuality": {
+          "title": "코드 품질 향상",
+          "description": "TypeScript 도입 및 테스트 커버리지 증대",
+          "impact": "버그 발생률 60% 감소"
+        }
+      }
+    }
+  },
   "language": {
     "korean": "한국어",
     "english": "English",
