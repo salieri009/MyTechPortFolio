@@ -13,8 +13,10 @@
     "home": "ホーム",
     "projects": "プロジェクト",
     "academics": "学業",
+    "blog": "ブログ",
     "about": "自己紹介",
-    "contact": "お問い合わせ"
+    "contact": "お問い合わせ",
+    "login": "ログイン"
   },
   "hero": {
     "title": "問題解決を楽しむ開発者",

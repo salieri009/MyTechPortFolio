@@ -13,8 +13,10 @@
     "home": "홈",
     "projects": "프로젝트",
     "academics": "학업",
+    "blog": "블로그",
     "about": "소개",
-    "contact": "연락하기"
+    "contact": "연락하기",
+    "login": "로그인"
   },
   "hero": {
     "title": "문제 해결을 즐기는 개발자",

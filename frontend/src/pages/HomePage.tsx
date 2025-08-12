@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Container, Button } from '@components/common'
 import { Typewriter } from '@components/Typewriter'
+import { TechStackSection } from '@components/sections/TechStackSection'
 import { CONTACT_INFO } from '../constants/contact'
 import { useThemeStore } from '../stores/themeStore'
 
@@ -119,95 +120,6 @@ const ContactButton = styled.a`
   }
 `
 
-const TechStackSection = styled.section`
-  padding: 60px 0;
-  text-align: center;
-  background: ${props => props.theme.colors.background};
-  transition: background-color 0.3s ease;
-`
-
-const SectionTitle = styled.h2`
-  font-size: 28px;
-  margin-bottom: 40px;
-  color: ${props => props.theme.colors.text};
-`
-
-const TechGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 20px;
-  max-width: 1000px;
-  margin: 0 auto;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 16px;
-  }
-  
-  @media (max-width: 480px) {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 12px;
-  }
-`
-
-const TechItem = styled.div`
-  padding: 20px;
-  background: ${props => props.theme.colors.surface};
-  border-radius: 12px;
-  box-shadow: ${props => props.theme.shadows.md};
-  transition: transform 120ms ease, box-shadow 0.2s ease, background-color 0.3s ease;
-  color: ${props => props.theme.colors.text};
-  border: 1px solid ${props => props.theme.colors.border};
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: ${props => props.theme.shadows.lg};
-    background: ${props => props.theme.colors.primary[50]};
-    border-color: ${props => props.theme.colors.primary[200]};
-  }
-
-  h3 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: ${props => props.theme.colors.text};
-  }
-  
-  @media (max-width: 768px) {
-    padding: 16px;
-    
-    h3 {
-      font-size: 14px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    padding: 12px;
-    
-    h3 {
-      font-size: 13px;
-    }
-  }
-`
-
-const TECH_STACKS = [
-  // Frontend
-  'React', 'TypeScript', 'JavaScript', 'HTML5', 'CSS3',
-  'Vite', 'styled-components', 'Zustand', 'React Router',
-  
-  // Backend
-  'Spring Boot', 'Java', 'Node.js', 'Express.js', 'REST API',
-  
-  // Database
-  'MySQL', 'H2 Database', 'MongoDB', 'PostgreSQL',
-  
-  // Tools & DevOps
-  'Git', 'GitHub', 'Docker', 'AWS', 'VSCode', 'IntelliJ IDEA',
-  
-  // Others
-  'react-i18next', 'Gradle', 'Maven', 'Postman', 'JSON'
-]
-
 export function HomePage() {
   const { t } = useTranslation()
   const { isDark } = useThemeStore()
@@ -252,18 +164,7 @@ export function HomePage() {
         </Container>
       </Hero>
 
-      <TechStackSection>
-        <Container>
-          <SectionTitle>{t('about.skills')}</SectionTitle>
-          <TechGrid>
-            {TECH_STACKS.map((tech) => (
-              <TechItem key={tech}>
-                <h3>{tech}</h3>
-              </TechItem>
-            ))}
-          </TechGrid>
-        </Container>
-      </TechStackSection>
+      <TechStackSection />
     </>
   )
 }

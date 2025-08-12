@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { Container } from '@components/common'
-import { LanguageSwiper } from '../LanguageSwiper'
-import { ThemeToggle } from '../ThemeToggle'
+import { useAuthStore } from '../../store/authStore'
+import { authService } from '../../services/authService'
+import { Container } from '../ui/Container'
+import { ThemeToggle } from '../ThemeToggle/ThemeToggle'
+import { LanguageSwiper } from '../LanguageSwiper/LanguageSwiper'
 import { GoogleLoginButton } from '../GoogleLoginButton'
 
 const HeaderWrapper = styled.header`
@@ -47,6 +49,17 @@ const NavLinks = styled.div`
 `
 
 const NavLink = styled(Link)`
+  color: ${props => props.theme.colors.text};
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 120ms ease;
+
+  &:hover {
+    color: ${props => props.theme.colors.primary[500]};
+  }
+`
+
+const BlogLink = styled.a`
   color: ${props => props.theme.colors.text};
   text-decoration: none;
   font-weight: 500;
@@ -106,18 +119,27 @@ const MobileNavLink = styled(Link)`
   }
 `
 
+const MobileBlogLink = styled.a`
+  color: ${props => props.theme.colors.text};
+  text-decoration: none;
+  font-weight: 500;
+  padding: 12px 0;
+  border-bottom: 1px solid ${props => props.theme.colors.border};
+  
+  &:last-child {
+    border-bottom: none;
+  }
+`
+
 const ControlsContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
 `
 
-const MobileLanguageSwiper = styled(LanguageSwiper)`
-  margin-top: 16px;
-`
-
 export function Header() {
   const { t } = useTranslation()
+  const { user } = useAuthStore()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const toggleMobileMenu = () => {
@@ -138,12 +160,16 @@ export function Header() {
             <NavLink to="/">{t('navigation.home')}</NavLink>
             <NavLink to="/projects">{t('navigation.projects')}</NavLink>
             <NavLink to="/academics">{t('navigation.academics')}</NavLink>
+            <BlogLink href="https://igewaedam630.tistory.com/" target="_blank" rel="noopener noreferrer">
+              {t('navigation.blog')}
+            </BlogLink>
             <NavLink to="/about">{t('navigation.about')}</NavLink>
+            {!user && <NavLink to="/login">{t('navigation.login')}</NavLink>}
             
             <ControlsContainer>
               <LanguageSwiper showHint={false} />
               <ThemeToggle />
-              <GoogleLoginButton />
+              {user && <GoogleLoginButton />}
             </ControlsContainer>
           </NavLinks>
 
@@ -162,14 +188,22 @@ export function Header() {
           <MobileNavLink to="/academics" onClick={closeMobileMenu}>
             {t('navigation.academics')}
           </MobileNavLink>
+          <MobileBlogLink href="https://igewaedam630.tistory.com/" target="_blank" rel="noopener noreferrer" onClick={closeMobileMenu}>
+            {t('navigation.blog')}
+          </MobileBlogLink>
           <MobileNavLink to="/about" onClick={closeMobileMenu}>
             {t('navigation.about')}
           </MobileNavLink>
+          {!user && (
+            <MobileNavLink to="/login" onClick={closeMobileMenu}>
+              {t('navigation.login')}
+            </MobileNavLink>
+          )}
           
           <ControlsContainer>
-            <MobileLanguageSwiper showHint={true} />
+            <LanguageSwiper showHint={true} />
             <ThemeToggle />
-            <GoogleLoginButton />
+            {user && <GoogleLoginButton />}
           </ControlsContainer>
         </MobileMenu>
       </Container>

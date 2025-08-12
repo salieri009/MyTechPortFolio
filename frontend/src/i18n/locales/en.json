@@ -13,8 +13,10 @@
     "home": "Home",
     "projects": "Projects",
     "academics": "Academics",
+    "blog": "Blog",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "login": "Login"
   },
   "hero": {
     "title": "Developer who loves solving problems",

@@ -51,7 +51,7 @@ export interface ApiResponse<T> {
 }
 
 class AuthService {
-  private baseUrl = API_BASE_URL
+  private readonly API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
 
   async initializeGoogleSignIn(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -81,11 +81,13 @@ class AuthService {
       twoFactorCode
     }
 
-    const response = await fetch(`${this.baseUrl}/auth/google`, {
+    const response = await fetch(`${this.API_BASE_URL}/auth/google`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
       },
+      credentials: 'include',
       body: JSON.stringify(loginRequest)
     })
 
@@ -103,107 +105,145 @@ class AuthService {
     return apiResponse.data
   }
 
-  async setupTwoFactor(): Promise<AuthResponse['twoFactorSetup']> {
-    const token = localStorage.getItem('accessToken')
-    if (!token) {
-      throw new Error('No access token found')
+  async verifyTwoFactor(token: string): Promise<{
+    user: any
+    accessToken: string
+    refreshToken: string
+  }> {
+    const response = await fetch(`${this.API_BASE_URL}/auth/2fa/verify`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({ token })
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Verification failed' }))
+      throw new Error(error.message || 'Two-factor verification failed')
     }
 
-    const response = await fetch(`${this.baseUrl}/auth/2fa/setup`, {
+    const result = await response.json()
+    return result.data
+  }
+
+  async setupTwoFactor(): Promise<{ qrCodeUrl: string; secret: string }> {
+    const response = await fetch(`${this.API_BASE_URL}/auth/2fa/setup`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
       }
     })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Network error' }))
-      throw new Error(errorData.error || `HTTP ${response.status}`)
+      const error = await response.json().catch(() => ({ message: 'Setup failed' }))
+      throw new Error(error.message || 'Two-factor setup failed')
     }
 
-    const apiResponse: ApiResponse<AuthResponse['twoFactorSetup']> = await response.json()
-    
-    if (!apiResponse.success) {
-      throw new Error(apiResponse.error || '2FA setup failed')
-    }
-
-    return apiResponse.data
+    const result = await response.json()
+    return result.data
   }
 
-  async enableTwoFactor(code: string, secret: string): Promise<AuthResponse> {
-    const token = localStorage.getItem('accessToken')
-    if (!token) {
-      throw new Error('No access token found')
-    }
-
-    const response = await fetch(`${this.baseUrl}/auth/2fa/enable`, {
+  async confirmTwoFactorSetup(token: string): Promise<void> {
+    const response = await fetch(`${this.API_BASE_URL}/auth/2fa/confirm`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
       },
-      body: JSON.stringify({ code, secret })
+      body: JSON.stringify({ token })
     })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Network error' }))
-      throw new Error(errorData.error || `HTTP ${response.status}`)
+      const error = await response.json().catch(() => ({ message: 'Confirmation failed' }))
+      throw new Error(error.message || 'Two-factor confirmation failed')
     }
-
-    const apiResponse: ApiResponse<AuthResponse> = await response.json()
-    
-    if (!apiResponse.success) {
-      throw new Error(apiResponse.error || '2FA enable failed')
-    }
-
-    return apiResponse.data
   }
 
-  async refreshToken(refreshToken: string): Promise<AuthResponse> {
-    const response = await fetch(`${this.baseUrl}/auth/refresh`, {
+  async refreshToken(): Promise<{ accessToken: string }> {
+    const response = await fetch(`${this.API_BASE_URL}/auth/refresh`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ refreshToken })
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      }
     })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Network error' }))
-      throw new Error(errorData.error || `HTTP ${response.status}`)
+      const error = await response.json().catch(() => ({ message: 'Token refresh failed' }))
+      throw new Error(error.message || 'Failed to refresh token')
     }
 
-    const apiResponse: ApiResponse<AuthResponse> = await response.json()
-    
-    if (!apiResponse.success) {
-      throw new Error(apiResponse.error || 'Token refresh failed')
-    }
+    const result = await response.json()
+    return result.data
+  }
 
-    return apiResponse.data
+  async storeRefreshToken(refreshToken: string): Promise<void> {
+    const response = await fetch(`${this.API_BASE_URL}/auth/set-refresh-token`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({ token: refreshToken })
+    })
+
+    if (!response.ok) {
+      console.warn('Failed to store refresh token securely')
+    }
+  }
+
+  async clearRefreshToken(): Promise<void> {
+    try {
+      await fetch(`${this.API_BASE_URL}/auth/clear-refresh-token`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+    } catch (error) {
+      console.warn('Failed to clear refresh token:', error)
+    }
   }
 
   async logout(): Promise<void> {
-    const token = localStorage.getItem('accessToken')
-    
-    if (token) {
-      try {
-        await fetch(`${this.baseUrl}/auth/logout`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        })
-      } catch (error) {
-        console.warn('Logout request failed:', error)
-        // Continue with local logout even if server request fails
+    try {
+      await fetch(`${this.API_BASE_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+    } catch (error) {
+      console.warn('Logout request failed:', error)
+    }
+  }
+
+  async getCurrentUser(): Promise<any> {
+    const response = await fetch(`${this.API_BASE_URL}/auth/me`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
       }
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to get current user')
     }
 
-    // Clear local storage
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
+    const result = await response.json()
+    return result.data
   }
 }
 
