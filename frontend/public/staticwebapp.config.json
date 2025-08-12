@@ -3,22 +3,29 @@
     {
       "route": "/api/*",
       "allowedRoles": ["anonymous"]
-    },
-    {
-      "route": "/*",
-      "rewrite": "/index.html"
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": [
-      "/images/*.{png,jpg,gif,ico,svg,webp}",
-      "/css/*",
-      "/js/*",
-      "/assets/*",
-      "/favicon.*",
-      "/meta/*",
-      "/*.{css,js,mjs,map,ico,svg,png,jpg,gif,webp,json}"
+  "/images/*",
+  "/css/*",
+  "/js/*",
+  "/assets/*",
+  "/favicon.*",
+  "/meta/*",
+  "/*.css",
+  "/*.js",
+  "/*.mjs",
+  "/*.map",
+  "/*.ico",
+  "/*.svg",
+  "/*.png",
+  "/*.jpg",
+  "/*.gif",
+  "/*.webp",
+  "/*.json",
+  "/assets/*.{css,js,mjs,map}"
     ]
   },
   "responseOverrides": {
