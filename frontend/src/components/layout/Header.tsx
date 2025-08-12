@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Container } from '@components/common'
 import { LanguageSwiper } from '../LanguageSwiper'
 import { ThemeToggle } from '../ThemeToggle'
+import { GoogleLoginButton } from '../GoogleLoginButton'
 
 const HeaderWrapper = styled.header`
   background: ${props => props.theme.colors.surface};
@@ -142,6 +143,7 @@ export function Header() {
             <ControlsContainer>
               <LanguageSwiper showHint={false} />
               <ThemeToggle />
+              <GoogleLoginButton />
             </ControlsContainer>
           </NavLinks>
 
@@ -167,6 +169,7 @@ export function Header() {
           <ControlsContainer>
             <MobileLanguageSwiper showHint={true} />
             <ThemeToggle />
+            <GoogleLoginButton />
           </ControlsContainer>
         </MobileMenu>
       </Container>

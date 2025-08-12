@@ -1,19 +1,11 @@
 package com.mytechfolio.portfolio.dto.response;
 
 import com.mytechfolio.portfolio.domain.Project;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class ProjectSummaryResponse {
     private Long id;
     private String title;
@@ -21,6 +13,50 @@ public class ProjectSummaryResponse {
     private LocalDate startDate;
     private LocalDate endDate;
     private List<String> techStacks;
+
+    public ProjectSummaryResponse() {}
+
+    public ProjectSummaryResponse(Long id, String title, String summary, LocalDate startDate, LocalDate endDate, List<String> techStacks) {
+        this.id = id;
+        this.title = title;
+        this.summary = summary;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.techStacks = techStacks;
+    }
+
+    // Getters
+    public Long getId() { return id; }
+    public String getTitle() { return title; }
+    public String getSummary() { return summary; }
+    public LocalDate getStartDate() { return startDate; }
+    public LocalDate getEndDate() { return endDate; }
+    public List<String> getTechStacks() { return techStacks; }
+
+    // Builder
+    public static ProjectSummaryResponseBuilder builder() {
+        return new ProjectSummaryResponseBuilder();
+    }
+
+    public static class ProjectSummaryResponseBuilder {
+        private Long id;
+        private String title;
+        private String summary;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private List<String> techStacks;
+
+        public ProjectSummaryResponseBuilder id(Long id) { this.id = id; return this; }
+        public ProjectSummaryResponseBuilder title(String title) { this.title = title; return this; }
+        public ProjectSummaryResponseBuilder summary(String summary) { this.summary = summary; return this; }
+        public ProjectSummaryResponseBuilder startDate(LocalDate startDate) { this.startDate = startDate; return this; }
+        public ProjectSummaryResponseBuilder endDate(LocalDate endDate) { this.endDate = endDate; return this; }
+        public ProjectSummaryResponseBuilder techStacks(List<String> techStacks) { this.techStacks = techStacks; return this; }
+
+        public ProjectSummaryResponse build() {
+            return new ProjectSummaryResponse(id, title, summary, startDate, endDate, techStacks);
+        }
+    }
 
     public static ProjectSummaryResponse from(Project project) {
         return ProjectSummaryResponse.builder()

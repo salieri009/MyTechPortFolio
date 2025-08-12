@@ -15,13 +15,16 @@
 
 | 구분 | 기술 | 내용 |
 | --- | --- | --- |
-| **Framework** | React 18+ | 최신 React 기능을 활용하여 성능 및 개발 경험 최적화 |
-| **Language** | TypeScript | 정적 타입 체크로 코드 안정성 및 가독성 확보 |
-| **Styling** | Styled-components | 컴포넌트 단위 스타일링으로 CSS 복잡도 관리 및 재사용성 증대 |
-| **State Management**| Zustand | Redux 대비 간결한 문법과 낮은 Boilerplate로 상태 관리 |
-| **Routing** | React Router | 페이지 간 이동 및 중첩 라우팅 구현 |
-| **Data Fetching** | Axios | 백엔드 API와 비동기 통신을 위한 HTTP 클라이언트 |
-| **Build Tool** | Vite | 빠른 빌드 속도와 Hot Module Replacement(HMR)로 개발 생산성 극대화 |
+| **Framework** | React 18.2.0 | 최신 React 기능을 활용하여 성능 및 개발 경험 최적화 |
+| **Language** | TypeScript 5.5.3 | 정적 타입 체크로 코드 안정성 및 가독성 확보 |
+| **Styling** | Styled-components 6.1.11 | 컴포넌트 단위 스타일링으로 CSS 복잡도 관리 및 재사용성 증대 |
+| **State Management**| Zustand 4.5.7 | Redux 대비 간결한 문법과 낮은 Boilerplate로 상태 관리 |
+| **Routing** | React Router 6.23.1 | 페이지 간 이동 및 중첩 라우팅 구현 |
+| **Data Fetching** | Axios 1.7.2 | 백엔드 API와 비동기 통신을 위한 HTTP 클라이언트 |
+| **Build Tool** | Vite 5.3.3 | 빠른 빌드 속도와 Hot Module Replacement(HMR)로 개발 생산성 극대화 |
+| **Animation** | Framer Motion 12.23.12 | 부드러운 애니메이션과 인터랙션 구현 |
+| **Internationalization** | React i18next 15.6.1 + i18next 25.3.4 | 다국어 지원 시스템 |
+| **UI Interaction** | React Swipeable 7.0.2 | 터치 제스처 및 스와이프 인터랙션 지원 |
 
 ## 3. 화면 설계 (UI/UX Design)
 
@@ -62,28 +65,45 @@
 ```
 src/
 |-- components/       # 재사용 가능한 공통 컴포넌트
-|   |-- common/
+|   |-- common/       # 공통 UI 컴포넌트
 |   |   |-- Button.tsx
 |   |   |-- Card.tsx
 |   |   `-- Tag.tsx
-|   `-- layout/
-|       |-- Header.tsx
-|       |-- Footer.tsx
-|       `-- Layout.tsx
-|-- hooks/            # 커스텀 훅
-|-- pages/            # 각 페이지 컴포넌트
+|   |-- layout/       # 레이아웃 컴포넌트
+|   |   |-- Header.tsx
+|   |   |-- Footer.tsx
+|   |   `-- Layout.tsx
+|   |-- ui/           # 재사용 가능한 UI 컴포넌트
+|   |-- sections/     # 페이지별 섹션 컴포넌트
+|-- constants/        # 상수 정의
+|-- hooks/           # 커스텀 훅
+|-- i18n/            # 다국어 설정
+|   `-- config.ts
+|-- mocks/           # Mock 데이터
+|-- pages/           # 각 페이지 컴포넌트
 |   |-- HomePage.tsx
 |   |-- ProjectsPage.tsx
 |   |-- ProjectDetailPage.tsx
 |   |-- AcademicsPage.tsx
 |   `-- AboutPage.tsx
-|-- services/         # API 연동 서비스
-|   `-- api.ts
-|-- store/            # 상태 관리 (Zustand)
-|-- styles/           # 전역 스타일 및 테마
-|-- types/            # TypeScript 타입 정의
-|-- utils/            # 유틸리티 함수
-`-- App.tsx           # 메인 애플리케이션 컴포넌트
+|-- services/        # API 연동 서비스
+|   |-- apiClient.ts # Axios 클라이언트 설정
+|   |-- projects.ts  # 프로젝트 API
+|   |-- academics.ts # 학업 API
+|   |-- techStacks.ts # 기술스택 API
+|   `-- auth.ts      # 인증 API
+|-- store/           # 전역 상태 관리 (Zustand)
+|-- stores/          # 개별 스토어들
+|   `-- themeStore.ts # 테마 관리 스토어
+|-- styles/          # 전역 스타일 및 테마
+|   `-- theme.ts     # 테마 정의
+|-- types/           # TypeScript 타입 정의
+|   |-- domain.ts    # 도메인 타입
+|   |-- api.ts       # API 타입
+|   `-- recruiter.ts # 채용 관련 타입
+|-- utils/           # 유틸리티 함수
+|-- App.tsx          # 메인 애플리케이션 컴포넌트
+`-- main.tsx         # 엔트리 포인트
 ```
 
 ## 5. 정보 구조 및 내비게이션 (IA & Navigation)

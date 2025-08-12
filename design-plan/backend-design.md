@@ -15,13 +15,15 @@
 
 | 구분 | 기술 | 내용 |
 | --- | --- | --- |
-| **Framework** | Spring Boot 3.x | `Spring Web`, `Spring Data JPA` 등 핵심 모듈 사용 |
-| **Language** | Java 17 | LTS 버전으로 안정성 확보 및 최신 Java 문법 활용 |
+| **Framework** | Spring Boot 3.3.4 | `Spring Web`, `Spring Data JPA`, `Spring Validation` 등 핵심 모듈 사용 |
+| **Language** | Java 21 | LTS 버전으로 안정성 확보 및 최신 Java 문법 활용 |
 | **Database** | H2 / MySQL | 개발 단계에서는 빠른 실행을 위해 H2 사용, 배포 시에는 AWS RDS(MySQL)로 전환 |
 | **ORM** | Spring Data JPA (Hibernate) | 객체-관계 매핑으로 생산성 및 유지보수성 향상 |
-| **Build Tool** | Gradle | 간결한 Groovy/Kotlin DSL 기반의 빌드 자동화 도구 |
-| **API Docs** | Springdoc (Swagger) | API 명세를 자동으로 생성하고 UI를 통해 테스트 환경 제공 |
-| **Utilities** | Lombok | `@Getter`, `@Builder` 등 어노테이션으로 Boilerplate 코드 제거 |
+| **Build Tool** | Gradle 8.10.2 | 간결한 Groovy/Kotlin DSL 기반의 빌드 자동화 도구 |
+| **API Docs** | Springdoc OpenAPI 2.2.0 | API 명세를 자동으로 생성하고 UI를 통해 테스트 환경 제공 |
+| **Utilities** | Lombok 1.18.30 | `@Getter`, `@Builder` 등 어노테이션으로 Boilerplate 코드 제거 |
+| **Testing** | Spring Boot Test | 통합 테스트 및 단위 테스트, Testcontainers 지원 |
+| **Async Processing** | Spring Async | 비동기 처리 및 스케줄링 지원 |
 
 ## 3. 데이터베이스 설계 (Database Schema)
 
@@ -90,22 +92,47 @@
 ```
 com.mytechfolio
 `-- portfolio
-    |-- config/           # 설정 클래스 (Security, Swagger 등)
+    |-- config/           # 설정 클래스 (CORS, Swagger 등)
+    |   |-- CorsConfig.java
+    |   `-- SwaggerConfig.java
     |-- controller/       # API 엔드포인트를 정의하는 컨트롤러
     |   |-- ProjectController.java
-    |   `-- AcademicController.java
+    |   |-- AcademicController.java
+    |   |-- TechStackController.java
+    |   |-- VisitorController.java
+    |   |-- AnalyticsController.java
+    |   `-- AdminController.java
     |-- domain/           # JPA 엔티티(도메인 객체)
     |   |-- Project.java
     |   |-- Academic.java
-    |   `-- TechStack.java
+    |   |-- TechStack.java
+    |   |-- VisitorLog.java
+    |   |-- VisitorStatistics.java
+    |   `-- PageViewStatistics.java
     |-- dto/              # 데이터 전송 객체 (Request/Response)
     |   |-- request/
+    |   |   |-- ProjectCreateRequest.java
+    |   |   `-- ProjectUpdateRequest.java
     |   `-- response/
+    |       |-- ApiResponse.java
+    |       |-- PageResponse.java
+    |       |-- ProjectSummaryResponse.java
+    |       `-- ProjectDetailResponse.java
+    |-- exception/        # 예외 처리 클래스
+    |   |-- GlobalExceptionHandler.java
+    |   `-- BusinessException.java
     |-- repository/       # Spring Data JPA 리포지토리 인터페이스
     |   |-- ProjectRepository.java
-    |   `-- AcademicRepository.java
+    |   |-- AcademicRepository.java
+    |   |-- TechStackRepository.java
+    |   |-- VisitorLogRepository.java
+    |   `-- VisitorStatisticsRepository.java
     |-- service/          # 비즈니스 로직을 처리하는 서비스
     |   |-- ProjectService.java
-    |   `-- AcademicService.java
+    |   |-- AcademicService.java
+    |   |-- TechStackService.java
+    |   |-- VisitorTrackingService.java
+    |   |-- AnalyticsService.java
+    |   `-- StatisticsAggregationService.java
     `-- PortfolioApplication.java # 메인 애플리케이션 클래스
 ```

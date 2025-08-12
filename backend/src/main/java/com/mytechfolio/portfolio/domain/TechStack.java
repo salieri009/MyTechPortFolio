@@ -1,20 +1,12 @@
 package com.mytechfolio.portfolio.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "tech_stack")
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class TechStack {
 
     @Id
@@ -32,13 +24,30 @@ public class TechStack {
     private String logoUrl;
 
     @ManyToMany(mappedBy = "techStacks", fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<Project> projects = new ArrayList<>();
+    private final List<Project> projects = new ArrayList<>();
 
     public enum TechType {
         Backend, Frontend, DB, DevOps, Other
     }
 
+    // Constructors
+    public TechStack() {}
+
+    public TechStack(Long id, String name, TechType type, String logoUrl) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.logoUrl = logoUrl;
+    }
+
+    // Getters
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public TechType getType() { return type; }
+    public String getLogoUrl() { return logoUrl; }
+    public List<Project> getProjects() { return projects; }
+
+    // Setters
     public void setName(String name) {
         this.name = name;
     }
@@ -49,5 +58,26 @@ public class TechStack {
 
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
+    }
+
+    // Builder
+    public static TechStackBuilder builder() {
+        return new TechStackBuilder();
+    }
+
+    public static class TechStackBuilder {
+        private Long id;
+        private String name;
+        private TechType type;
+        private String logoUrl;
+
+        public TechStackBuilder id(Long id) { this.id = id; return this; }
+        public TechStackBuilder name(String name) { this.name = name; return this; }
+        public TechStackBuilder type(TechType type) { this.type = type; return this; }
+        public TechStackBuilder logoUrl(String logoUrl) { this.logoUrl = logoUrl; return this; }
+
+        public TechStack build() {
+            return new TechStack(id, name, type, logoUrl);
+        }
     }
 }
