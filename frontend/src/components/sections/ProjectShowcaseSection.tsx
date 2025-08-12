@@ -34,7 +34,9 @@ const Grid = styled.div`
   }
 `
 
-const TechStackContainer = styled.div<{ isVisible: boolean }>`
+const TechStackContainer = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isVisible',
+})<{ isVisible: boolean }>`
   margin-top: 40px;
   padding: 48px;
   background: ${props => props.theme.colors.surface};
@@ -93,7 +95,9 @@ const TechItem = styled.div`
   }
 `
 
-const TechStackContent = styled.div<{ isVisible: boolean }>`
+const TechStackContent = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isVisible',
+})<{ isVisible: boolean }>`
   opacity: ${props => props.isVisible ? 1 : 0};
   transform: translateY(${props => props.isVisible ? 0 : 20}px);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
