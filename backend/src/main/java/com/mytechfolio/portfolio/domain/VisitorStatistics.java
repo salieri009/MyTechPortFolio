@@ -1,53 +1,54 @@
 package com.mytechfolio.portfolio.domain;
 
-import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "visitor_statistics", indexes = {
-    @Index(name = "idx_visitor_stats_date_type", columnList = "statisticsDate, statisticsType"),
-    @Index(name = "idx_visitor_stats_date", columnList = "statisticsDate"),
-    @Index(name = "idx_visitor_stats_location", columnList = "country, city")
+@Document(collection = "visitor_statistics")
+@CompoundIndexes({
+    @CompoundIndex(name = "idx_visitor_stats_date_type", def = "{'statisticsDate': 1, 'statisticsType': 1}"),
+    @CompoundIndex(name = "idx_visitor_stats_location", def = "{'country': 1, 'city': 1}")
 })
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class VisitorStatistics {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(name = "statistics_date", nullable = false)
+    @Indexed
     private LocalDate statisticsDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "statistics_type", nullable = false)
     private StatisticsType statisticsType;
 
-    @Column(name = "country", length = 100)
     private String country;
 
-    @Column(name = "city", length = 100)
     private String city;
 
-    @Column(name = "hour_of_day")
     private Integer hourOfDay; // 0-23 for hourly statistics
 
-    @Column(name = "total_visitors", nullable = false)
     private Long totalVisitors;
 
-    @Column(name = "unique_visitors", nullable = false)
     private Long uniqueVisitors;
 
-    @Column(name = "total_page_views", nullable = false)
     private Long totalPageViews;
 
-    @Column(name = "average_session_duration")
     private Double averageSessionDuration; // in milliseconds
 
-    @Column(name = "bounce_rate")
     private Double bounceRate;
 
-    @Column(name = "new_visitors")
+    private Long newVisitors;
     private Long newVisitors;
 
     @Column(name = "returning_visitors")

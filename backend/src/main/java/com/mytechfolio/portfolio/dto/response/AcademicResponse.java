@@ -2,36 +2,55 @@ package com.mytechfolio.portfolio.dto.response;
 
 import com.mytechfolio.portfolio.domain.Academic;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AcademicResponse {
-    private Long id;
-    private String name;
-    private String semester;
-    private String grade;
+    private String id;
+    private String institution;
+    private String degree;
+    private String fieldOfStudy;
     private String description;
-    private List<RelatedProject> relatedProjects;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private String grade;
+    private String activities;
+    private String location;
+    private Boolean isCurrent;
+    private String logoUrl;
 
     // Constructor
     public AcademicResponse() {}
 
-    public AcademicResponse(Long id, String name, String semester, String grade, String description, List<RelatedProject> relatedProjects) {
+    public AcademicResponse(String id, String institution, String degree, String fieldOfStudy, String description, 
+                           LocalDate startDate, LocalDate endDate, String grade, String activities, 
+                           String location, Boolean isCurrent, String logoUrl) {
         this.id = id;
-        this.name = name;
-        this.semester = semester;
-        this.grade = grade;
+        this.institution = institution;
+        this.degree = degree;
+        this.fieldOfStudy = fieldOfStudy;
         this.description = description;
-        this.relatedProjects = relatedProjects;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.grade = grade;
+        this.activities = activities;
+        this.location = location;
+        this.isCurrent = isCurrent;
+        this.logoUrl = logoUrl;
     }
 
     // Getters
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getSemester() { return semester; }
-    public String getGrade() { return grade; }
+    public String getId() { return id; }
+    public String getDegree() { return degree; }
+    public String getFieldOfStudy() { return fieldOfStudy; }
     public String getDescription() { return description; }
-    public List<RelatedProject> getRelatedProjects() { return relatedProjects; }
+    public LocalDate getStartDate() { return startDate; }
+    public LocalDate getEndDate() { return endDate; }
+    public String getGrade() { return grade; }
+    public String getActivities() { return activities; }
+    public String getLocation() { return location; }
+    public Boolean getIsCurrent() { return isCurrent; }
+    public String getLogoUrl() { return logoUrl; }
 
     // Builder
     public static AcademicResponseBuilder builder() {
@@ -39,71 +58,52 @@ public class AcademicResponse {
     }
 
     public static class AcademicResponseBuilder {
-        private Long id;
-        private String name;
-        private String semester;
-        private String grade;
+        private String id;
+        private String institution;
+        private String degree;
+        private String fieldOfStudy;
         private String description;
-        private List<RelatedProject> relatedProjects;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private String grade;
+        private String activities;
+        private String location;
+        private Boolean isCurrent;
+        private String logoUrl;
 
-        public AcademicResponseBuilder id(Long id) { this.id = id; return this; }
-        public AcademicResponseBuilder name(String name) { this.name = name; return this; }
-        public AcademicResponseBuilder semester(String semester) { this.semester = semester; return this; }
-        public AcademicResponseBuilder grade(String grade) { this.grade = grade; return this; }
+        public AcademicResponseBuilder id(String id) { this.id = id; return this; }
+        public AcademicResponseBuilder institution(String institution) { this.institution = institution; return this; }
+        public AcademicResponseBuilder degree(String degree) { this.degree = degree; return this; }
+        public AcademicResponseBuilder fieldOfStudy(String fieldOfStudy) { this.fieldOfStudy = fieldOfStudy; return this; }
         public AcademicResponseBuilder description(String description) { this.description = description; return this; }
-        public AcademicResponseBuilder relatedProjects(List<RelatedProject> relatedProjects) { this.relatedProjects = relatedProjects; return this; }
+        public AcademicResponseBuilder startDate(LocalDate startDate) { this.startDate = startDate; return this; }
+        public AcademicResponseBuilder endDate(LocalDate endDate) { this.endDate = endDate; return this; }
+        public AcademicResponseBuilder grade(String grade) { this.grade = grade; return this; }
+        public AcademicResponseBuilder activities(String activities) { this.activities = activities; return this; }
+        public AcademicResponseBuilder location(String location) { this.location = location; return this; }
+        public AcademicResponseBuilder isCurrent(Boolean isCurrent) { this.isCurrent = isCurrent; return this; }
+        public AcademicResponseBuilder logoUrl(String logoUrl) { this.logoUrl = logoUrl; return this; }
 
         public AcademicResponse build() {
-            return new AcademicResponse(id, name, semester, grade, description, relatedProjects);
-        }
-    }
-
-    public static class RelatedProject {
-        private Long id;
-        private String title;
-
-        public RelatedProject() {}
-
-        public RelatedProject(Long id, String title) {
-            this.id = id;
-            this.title = title;
-        }
-
-        // Getters
-        public Long getId() { return id; }
-        public String getTitle() { return title; }
-
-        // Builder
-        public static RelatedProjectBuilder builder() {
-            return new RelatedProjectBuilder();
-        }
-
-        public static class RelatedProjectBuilder {
-            private Long id;
-            private String title;
-
-            public RelatedProjectBuilder id(Long id) { this.id = id; return this; }
-            public RelatedProjectBuilder title(String title) { this.title = title; return this; }
-
-            public RelatedProject build() {
-                return new RelatedProject(id, title);
-            }
+            return new AcademicResponse(id, institution, degree, fieldOfStudy, description, startDate, endDate, 
+                                      grade, activities, location, isCurrent, logoUrl);
         }
     }
 
     public static AcademicResponse from(Academic academic) {
         return AcademicResponse.builder()
                 .id(academic.getId())
-                .name(academic.getName())
-                .semester(academic.getSemester())
-                .grade(academic.getGrade())
+                .institution(academic.getInstitution())
+                .degree(academic.getDegree())
+                .fieldOfStudy(academic.getFieldOfStudy())
                 .description(academic.getDescription())
-                .relatedProjects(academic.getProjects().stream()
-                        .map(project -> RelatedProject.builder()
-                                .id(project.getId())
-                                .title(project.getTitle())
-                                .build())
-                        .collect(Collectors.toList()))
+                .startDate(academic.getStartDate())
+                .endDate(academic.getEndDate())
+                .grade(academic.getGrade())
+                .activities(academic.getActivities())
+                .location(academic.getLocation())
+                .isCurrent(academic.getIsCurrent())
+                .logoUrl(academic.getLogoUrl())
                 .build();
     }
 }

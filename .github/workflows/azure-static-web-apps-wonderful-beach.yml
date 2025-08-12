@@ -3,10 +3,12 @@ name: Azure Static Web Apps CI/CD
 on:
   push:
     branches:
+      - master
       - dev
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
+      - master
       - dev
 
 jobs:
@@ -15,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
@@ -30,14 +32,17 @@ jobs:
       - name: Install dependencies
         run: |
           cd frontend
-          npm ci
-
+          npm ci --production=false
+      
       - name: Build application
         run: |
           cd frontend
           npm run build
+        env:
+          NODE_ENV: production
+          CI: true
 
-      - name: Deploy to Azure Static Web Apps (wonderful-beach)
+      - name: Deploy to Azure Static Web Apps
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -48,6 +53,10 @@ jobs:
           api_location: ""
           output_location: "dist"
           skip_app_build: true
+          skip_api_build: true
+          production_branch: "master"
+        env:
+          NODE_ENV: production
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

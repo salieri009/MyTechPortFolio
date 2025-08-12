@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProjectDetailResponse {
-    private Long id;
+    private String id;
     private String title;
     private String summary;
     private String description;
@@ -20,7 +20,7 @@ public class ProjectDetailResponse {
 
     public ProjectDetailResponse() {}
 
-    public ProjectDetailResponse(Long id, String title, String summary, String description, LocalDate startDate, LocalDate endDate, String githubUrl, String demoUrl, List<String> techStacks, List<String> relatedAcademics) {
+    public ProjectDetailResponse(String id, String title, String summary, String description, LocalDate startDate, LocalDate endDate, String githubUrl, String demoUrl, List<String> techStacks, List<String> relatedAcademics) {
         this.id = id;
         this.title = title;
         this.summary = summary;
@@ -34,7 +34,7 @@ public class ProjectDetailResponse {
     }
 
     // Getters
-    public Long getId() { return id; }
+    public String getId() { return id; }
     public String getTitle() { return title; }
     public String getSummary() { return summary; }
     public String getDescription() { return description; }
@@ -51,7 +51,7 @@ public class ProjectDetailResponse {
     }
 
     public static class ProjectDetailResponseBuilder {
-        private Long id;
+        private String id;
         private String title;
         private String summary;
         private String description;
@@ -62,7 +62,7 @@ public class ProjectDetailResponse {
         private List<String> techStacks;
         private List<String> relatedAcademics;
 
-        public ProjectDetailResponseBuilder id(Long id) { this.id = id; return this; }
+        public ProjectDetailResponseBuilder id(String id) { this.id = id; return this; }
         public ProjectDetailResponseBuilder title(String title) { this.title = title; return this; }
         public ProjectDetailResponseBuilder summary(String summary) { this.summary = summary; return this; }
         public ProjectDetailResponseBuilder description(String description) { this.description = description; return this; }
@@ -88,12 +88,8 @@ public class ProjectDetailResponse {
                 .endDate(project.getEndDate())
                 .githubUrl(project.getGithubUrl())
                 .demoUrl(project.getDemoUrl())
-                .techStacks(project.getTechStacks().stream()
-                        .map(techStack -> techStack.getName())
-                        .collect(Collectors.toList()))
-                .relatedAcademics(project.getAcademics().stream()
-                        .map(academic -> academic.getName())
-                        .collect(Collectors.toList()))
+                .techStacks(project.getTechStack())  // 직접 List<String> 사용
+                .relatedAcademics(List.of())  // 현재 Project에 academics 연관관계가 없으므로 빈 리스트
                 .build();
     }
 }
