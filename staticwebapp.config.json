@@ -1,65 +1,25 @@
 {
-  "routes": [
-    {
-      "route": "/assets/*",
-      "headers": {
-        "Content-Type": "application/javascript"
-      },
-      "methods": ["GET"]
-    },
-    {
-      "route": "*.js",
-      "headers": {
-        "Content-Type": "application/javascript"
-      }
-    },
-    {
-      "route": "*.mjs",
-      "headers": {
-        "Content-Type": "application/javascript"
-      }
-    },
-    {
-      "route": "*.css",
-      "headers": {
-        "Content-Type": "text/css"
-      }
-    },
-    {
-      "route": "/*",
-      "rewrite": "/index.html"
-    }
-  ],
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": [
       "/assets/*",
       "*.js",
-      "*.mjs", 
+      "*.mjs",
       "*.css",
+      "*.json",
       "*.ico",
       "*.svg",
       "*.png",
       "*.jpg",
       "*.gif",
       "*.woff",
-      "*.woff2",
-      "*.json",
-      "*.txt",
-      "*.xml"
+      "*.woff2"
     ]
   },
   "mimeTypes": {
     ".js": "application/javascript",
     ".mjs": "application/javascript",
     ".css": "text/css",
-    ".json": "application/json",
-    ".woff": "font/woff",
-    ".woff2": "font/woff2"
-  },
-  "globalHeaders": {
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "Referrer-Policy": "strict-origin-when-cross-origin"
+    ".json": "application/json"
   }
 }
