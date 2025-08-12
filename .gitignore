@@ -69,3 +69,4 @@ coverage/
 # Testing
 .coverage
 htmlcov/
+test-case-results/

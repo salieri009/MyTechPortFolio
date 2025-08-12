@@ -3,30 +3,15 @@
     {
       "route": "/api/*",
       "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/*",
+      "rewrite": "/index.html"
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": [
-  "/images/*",
-  "/css/*",
-  "/js/*",
-  "/assets/*",
-  "/favicon.*",
-  "/meta/*",
-  "/*.css",
-  "/*.js",
-  "/*.mjs",
-  "/*.map",
-  "/*.ico",
-  "/*.svg",
-  "/*.png",
-  "/*.jpg",
-  "/*.gif",
-  "/*.webp",
-  "/*.json",
-  "/assets/*.{css,js,mjs,map}"
-    ]
+    "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
   },
   "responseOverrides": {
     "400": {
@@ -46,14 +31,6 @@
     "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
   },
   "mimeTypes": {
-    ".js": "text/javascript",
-    ".mjs": "text/javascript", 
-    ".json": "application/json",
-    ".css": "text/css",
-    ".svg": "image/svg+xml",
-    ".png": "image/png",
-    ".jpg": "image/jpeg",
-    ".gif": "image/gif",
-    ".ico": "image/x-icon"
+    ".json": "text/json"
   }
 }

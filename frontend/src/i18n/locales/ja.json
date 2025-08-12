@@ -16,7 +16,9 @@
     "blog": "ブログ",
     "about": "自己紹介",
     "contact": "お問い合わせ",
-    "login": "ログイン"
+    "login": "ログイン",
+    "openMenu": "メニューを開く",
+    "closeMenu": "メニューを閉じる"
   },
   "hero": {
     "title": "問題解決を楽しむ開発者",

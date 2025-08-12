@@ -6,8 +6,8 @@ export const CONTACT_INFO = {
     display: 'jungwook.van-1@student.uts.edu.au'
   },
   phone: {
-    display: '+61 4XX XXX XXX', // 실제 번호로 변경 필요
-    href: 'tel:+61400000000'
+    display: '+61 413719847',
+    href: 'tel:+61413719847'
   },
   linkedin: {
     url: 'https://www.linkedin.com/in/jungwook-van-562827293/',

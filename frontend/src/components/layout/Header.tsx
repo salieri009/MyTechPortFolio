@@ -14,7 +14,7 @@ const HeaderWrapper = styled.header`
   border-bottom: 1px solid ${props => props.theme.colors.border};
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 `
@@ -76,46 +76,93 @@ const MobileMenuButton = styled.button`
   border: none;
   cursor: pointer;
   color: ${props => props.theme.colors.text};
-  font-size: 20px;
-  padding: 8px;
+  font-size: 24px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  min-width: 44px;
+  min-height: 44px;
+  
+  &:hover {
+    background: ${props => props.theme.colors.surface};
+    color: ${props => props.theme.colors.primary[500]};
+  }
+  
+  &:focus {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: 2px;
+  }
+  
+  &:active {
+    transform: scale(0.95);
+    background: ${props => props.theme.colors.primary[100]};
+  }
   
   @media (max-width: 768px) {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `
 
 const MobileMenu = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'isOpen',
 })<{ isOpen: boolean }>`
-  display: none;
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
   background: ${props => props.theme.colors.surface};
   border-bottom: 1px solid ${props => props.theme.colors.border};
-  flex-direction: column;
-  padding: 16px;
-  gap: 16px;
-  transform: translateY(${props => props.isOpen ? '0' : '-100%'});
-  opacity: ${props => props.isOpen ? '1' : '0'};
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  box-shadow: ${props => props.theme.shadows.lg};
+  backdrop-filter: blur(20px);
+  z-index: 1001;
   
-  @media (max-width: 768px) {
-    display: flex;
+  /* 애니메이션 개선 */
+  max-height: ${props => props.isOpen ? '600px' : '0'};
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  opacity: ${props => props.isOpen ? '1' : '0'};
+  transform: ${props => props.isOpen ? 'translateY(0)' : 'translateY(-10px)'};
+  
+  @media (min-width: 769px) {
+    display: none !important;
   }
+`
+
+const MobileMenuContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  gap: 16px;
 `
 
 const MobileNavLink = styled(Link)`
   color: ${props => props.theme.colors.text};
   text-decoration: none;
   font-weight: 500;
-  padding: 12px 0;
-  border-bottom: 1px solid ${props => props.theme.colors.border};
+  padding: 20px 16px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  font-size: 16px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
   
-  &:last-child {
-    border-bottom: none;
+  &:hover, &:focus {
+    background: ${props => props.theme.colors.primary[50]};
+    color: ${props => props.theme.colors.primary[600]};
+    transform: translateX(4px);
+  }
+  
+  &:focus {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: 2px;
+  }
+  
+  &:active {
+    transform: scale(0.98) translateX(4px);
+    background: ${props => props.theme.colors.primary[100]};
   }
 `
 
@@ -123,11 +170,47 @@ const MobileBlogLink = styled.a`
   color: ${props => props.theme.colors.text};
   text-decoration: none;
   font-weight: 500;
-  padding: 12px 0;
-  border-bottom: 1px solid ${props => props.theme.colors.border};
+  padding: 20px 16px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  font-size: 16px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
   
-  &:last-child {
-    border-bottom: none;
+  &:hover, &:focus {
+    background: ${props => props.theme.colors.primary[50]};
+    color: ${props => props.theme.colors.primary[600]};
+    transform: translateX(4px);
+  }
+  
+  &:focus {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: 2px;
+  }
+  
+  &:active {
+    transform: scale(0.98) translateX(4px);
+    background: ${props => props.theme.colors.primary[100]};
+  }
+`
+
+const MobileControlsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 20px 16px 16px;
+  border-top: 1px solid ${props => props.theme.colors.border};
+  margin-top: 16px;
+  background: ${props => props.theme.colors.surface};
+  
+  /* 각 컨트롤 요소들이 터치하기 쉽도록 */
+  > * {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `
 
@@ -135,6 +218,10 @@ const ControlsContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
 `
 
 export function Header() {
@@ -149,6 +236,38 @@ export function Header() {
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false)
   }
+
+  // 모바일 메뉴가 열릴 때 스크롤 방지
+  React.useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    
+    // 컴포넌트 언마운트 시 정리
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isMobileMenuOpen])
+
+  // 외부 클릭 시 메뉴 닫기
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (isMobileMenuOpen && !target.closest('[data-mobile-menu]')) {
+        closeMobileMenu()
+      }
+    }
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('click', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [isMobileMenuOpen])
 
   return (
     <HeaderWrapper>
@@ -173,38 +292,45 @@ export function Header() {
             </ControlsContainer>
           </NavLinks>
 
-          <MobileMenuButton onClick={toggleMobileMenu}>
-            ☰
+          <MobileMenuButton 
+            onClick={toggleMobileMenu}
+            aria-label={isMobileMenuOpen ? t('navigation.closeMenu') : t('navigation.openMenu')}
+            aria-expanded={isMobileMenuOpen}
+            data-mobile-menu
+          >
+            {isMobileMenuOpen ? '✕' : '☰'}
           </MobileMenuButton>
         </Nav>
         
-        <MobileMenu isOpen={isMobileMenuOpen}>
-          <MobileNavLink to="/" onClick={closeMobileMenu}>
-            {t('navigation.home')}
-          </MobileNavLink>
-          <MobileNavLink to="/projects" onClick={closeMobileMenu}>
-            {t('navigation.projects')}
-          </MobileNavLink>
-          <MobileNavLink to="/academics" onClick={closeMobileMenu}>
-            {t('navigation.academics')}
-          </MobileNavLink>
-          <MobileBlogLink href="https://igewaedam630.tistory.com/" target="_blank" rel="noopener noreferrer" onClick={closeMobileMenu}>
-            {t('navigation.blog')}
-          </MobileBlogLink>
-          <MobileNavLink to="/about" onClick={closeMobileMenu}>
-            {t('navigation.about')}
-          </MobileNavLink>
-          {!user && (
-            <MobileNavLink to="/login" onClick={closeMobileMenu}>
-              {t('navigation.login')}
+        <MobileMenu isOpen={isMobileMenuOpen} data-mobile-menu>
+          <MobileMenuContent>
+            <MobileNavLink to="/" onClick={closeMobileMenu}>
+              {t('navigation.home')}
             </MobileNavLink>
-          )}
-          
-          <ControlsContainer>
-            <LanguageSwiper showHint={true} />
-            <ThemeToggle />
-            {user && <GoogleLoginButton />}
-          </ControlsContainer>
+            <MobileNavLink to="/projects" onClick={closeMobileMenu}>
+              {t('navigation.projects')}
+            </MobileNavLink>
+            <MobileNavLink to="/academics" onClick={closeMobileMenu}>
+              {t('navigation.academics')}
+            </MobileNavLink>
+            <MobileBlogLink href="https://igewaedam630.tistory.com/" target="_blank" rel="noopener noreferrer" onClick={closeMobileMenu}>
+              {t('navigation.blog')}
+            </MobileBlogLink>
+            <MobileNavLink to="/about" onClick={closeMobileMenu}>
+              {t('navigation.about')}
+            </MobileNavLink>
+            {!user && (
+              <MobileNavLink to="/login" onClick={closeMobileMenu}>
+                {t('navigation.login')}
+              </MobileNavLink>
+            )}
+            
+            <MobileControlsContainer>
+              <LanguageSwiper showHint={true} />
+              <ThemeToggle />
+              {user && <GoogleLoginButton />}
+            </MobileControlsContainer>
+          </MobileMenuContent>
         </MobileMenu>
       </Container>
     </HeaderWrapper>

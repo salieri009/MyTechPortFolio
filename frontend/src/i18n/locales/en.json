@@ -16,7 +16,9 @@
     "blog": "Blog",
     "about": "About",
     "contact": "Contact",
-    "login": "Login"
+    "login": "Login",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "hero": {
     "title": "Developer who loves solving problems",
