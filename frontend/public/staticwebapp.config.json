@@ -11,7 +11,13 @@
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
+    "exclude": [
+      "/images/*.{png,jpg,gif,ico,svg,webp}",
+      "/css/*",
+      "/js/*",
+      "/assets/*",
+      "/*.{css,js,mjs,map,ico,svg,png,jpg,gif,webp,json}"
+    ]
   },
   "responseOverrides": {
     "400": {
@@ -31,6 +37,14 @@
     "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
   },
   "mimeTypes": {
-    ".json": "text/json"
+    ".js": "text/javascript",
+    ".mjs": "text/javascript", 
+    ".json": "application/json",
+    ".css": "text/css",
+    ".svg": "image/svg+xml",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".gif": "image/gif",
+    ".ico": "image/x-icon"
   }
 }
