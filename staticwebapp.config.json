@@ -1,24 +1,28 @@
 {
   "routes": [
     {
-      "route": "/api/*",
-      "allowedRoles": ["anonymous"]
-    },
-    {
       "route": "/*",
       "rewrite": "/index.html"
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif,ico}", "/css/*", "/js/*"]
+    "exclude": ["/images/*.{png,jpg,gif,ico}", "/assets/*", "/favicon.*"]
   },
   "mimeTypes": {
-    ".json": "application/json"
+    ".json": "application/json",
+    ".js": "text/javascript",
+    ".mjs": "text/javascript",
+    ".css": "text/css"
   },
   "globalHeaders": {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "strict-origin-when-cross-origin"
+  },
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/index.html"
+    }
   }
 }
