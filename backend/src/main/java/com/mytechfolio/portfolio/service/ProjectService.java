@@ -68,7 +68,7 @@ public class ProjectService {
                 .build();
     }
 
-    public ProjectDetailResponse getProject(Long id) {
+    public ProjectDetailResponse getProject(String id) {
         Project project = projectRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
         return ProjectDetailResponse.from(project);
@@ -99,7 +99,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectDetailResponse updateProject(Long id, ProjectUpdateRequest request) {
+    public ProjectDetailResponse updateProject(String id, ProjectUpdateRequest request) {
         Project project = projectRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
 
@@ -125,7 +125,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public void deleteProject(Long id) {
+    public void deleteProject(String id) {
         if (!projectRepository.existsById(id)) {
             throw new RuntimeException("Project not found with id: " + id);
         }

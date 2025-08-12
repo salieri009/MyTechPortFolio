@@ -1,5 +1,7 @@
 package com.mytechfolio.portfolio.config;
 
+// Temporarily disabled during MongoDB migration
+/*
 import com.mytechfolio.portfolio.domain.Academic;
 import com.mytechfolio.portfolio.domain.Project;
 import com.mytechfolio.portfolio.domain.TechStack;
@@ -303,4 +305,4 @@ public class DataInitializer {
             }
         };
     }
-}
+*/

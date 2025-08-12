@@ -40,7 +40,7 @@ public class AcademicService {
                 .build();
     }
 
-    public AcademicResponse getAcademic(Long id) {
+    public AcademicResponse getAcademic(String id) {
         Academic academic = academicRepository.findByIdWithProjects(id)
                 .orElseThrow(() -> new RuntimeException("Academic not found with id: " + id));
         return AcademicResponse.from(academic);
@@ -60,7 +60,7 @@ public class AcademicService {
     }
     
     @Transactional
-    public AcademicResponse updateAcademic(Long id, AcademicUpdateRequest request) {
+    public AcademicResponse updateAcademic(String id, AcademicUpdateRequest request) {
         Academic academic = academicRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Academic not found with id: " + id));
         
@@ -71,7 +71,7 @@ public class AcademicService {
     }
     
     @Transactional
-    public void deleteAcademic(Long id) {
+    public void deleteAcademic(String id) {
         if (!academicRepository.existsById(id)) {
             throw new RuntimeException("Academic not found with id: " + id);
         }

@@ -55,7 +55,7 @@ public class TechStackService {
     }
     
     @Transactional
-    public void deleteTechStack(Long id) {
+    public void deleteTechStack(String id) {
         if (!techStackRepository.existsById(id)) {
             throw new RuntimeException("TechStack not found with id: " + id);
         }
