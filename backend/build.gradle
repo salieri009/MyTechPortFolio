@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.flywaydb.flyway' version '9.22.3'
 }
 
 group = 'com.mytechfolio'
@@ -29,6 +30,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
     
+    // Database Migration
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
+    
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
@@ -54,4 +59,14 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// Flyway configuration
+flyway {
+    url = project.hasProperty('flyway.url') ? project.property('flyway.url') : 'jdbc:h2:mem:testdb'
+    user = project.hasProperty('flyway.user') ? project.property('flyway.user') : 'sa'
+    password = project.hasProperty('flyway.password') ? project.property('flyway.password') : ''
+    locations = ['classpath:db/migration']
+    baselineOnMigrate = true
+    validateOnMigrate = true
 }

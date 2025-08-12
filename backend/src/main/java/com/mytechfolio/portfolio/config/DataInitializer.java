@@ -3,10 +3,13 @@ package com.mytechfolio.portfolio.config;
 import com.mytechfolio.portfolio.domain.Academic;
 import com.mytechfolio.portfolio.domain.Project;
 import com.mytechfolio.portfolio.domain.TechStack;
+import com.mytechfolio.portfolio.domain.admin.AdminRole;
 import com.mytechfolio.portfolio.repository.AcademicRepository;
 import com.mytechfolio.portfolio.repository.ProjectRepository;
 import com.mytechfolio.portfolio.repository.TechStackRepository;
+import com.mytechfolio.portfolio.service.admin.AdminUserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +17,12 @@ import org.springframework.context.annotation.Configuration;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class DataInitializer {
+    
+    private final AdminUserService adminUserService;
 
     @Bean
     public CommandLineRunner initData(
@@ -25,6 +31,29 @@ public class DataInitializer {
             ProjectRepository projectRepository) {
         
         return args -> {
+            // Initialize Admin Users first
+            if (adminUserService.isUsernameAvailable("admin")) {
+                log.info("Creating default admin user...");
+                adminUserService.createSuperAdmin(
+                    "admin",
+                    "admin@mytechfolio.com",
+                    "System Administrator", 
+                    "admin123!"
+                );
+                log.info("Default admin user created successfully!");
+            }
+            
+            if (adminUserService.isUsernameAvailable("contentmanager")) {
+                adminUserService.createAdmin(
+                    "contentmanager",
+                    "content@mytechfolio.com",
+                    "Content Manager",
+                    "content123!",
+                    AdminRole.CONTENT_MANAGER
+                );
+                log.info("Content manager user created successfully!");
+            }
+            
             // Initialize Tech Stacks if empty
             if (techStackRepository.count() == 0) {
                 List<TechStack> techStacks = List.of(
