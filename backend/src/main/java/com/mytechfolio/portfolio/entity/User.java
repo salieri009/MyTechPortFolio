@@ -1,50 +1,50 @@
 package com.mytechfolio.portfolio.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "users")
+@Document(collection = "users")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(unique = true, nullable = false)
+    @Indexed(unique = true)
+    @Field("email")
     private String email;
 
+    @Field("password")
     private String password;
 
-    @Column(name = "display_name")
+    @Field("display_name")
     private String displayName;
 
-    @Column(name = "profile_image_url")
+    @Field("profile_image_url")
     private String profileImageUrl;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Field("role")
     @Builder.Default
     private Role role = Role.USER;
 
-    @Column(name = "is_enabled")
+    @Field("is_enabled")
     @Builder.Default
     private boolean enabled = true;
 
-    @Column(name = "oauth_provider")
+    @Field("oauth_provider")
     private String oauthProvider;
 
     @Column(name = "oauth_id")

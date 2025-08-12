@@ -34,7 +34,7 @@ const Grid = styled.div`
   }
 `
 
-const TechStackContainer = styled.div<{ isVisible: boolean }>`
+const TechStackContainer = styled.div<{ $isVisible: boolean }>`
   margin-top: 40px;
   padding: 48px;
   background: ${props => props.theme.colors.surface};
@@ -48,7 +48,7 @@ const TechStackContainer = styled.div<{ isVisible: boolean }>`
   backdrop-filter: blur(20px);
   box-shadow: ${props => props.theme.shadows.lg};
   
-  ${props => props.isVisible && `
+  ${props => props.$isVisible && `
     border-color: ${props.theme.colors.primary[400]};
     box-shadow: ${props.theme.shadows['2xl']};
   `}
@@ -93,11 +93,11 @@ const TechItem = styled.div`
   }
 `
 
-const TechStackContent = styled.div<{ isVisible: boolean }>`
-  opacity: ${props => props.isVisible ? 1 : 0};
-  transform: translateY(${props => props.isVisible ? 0 : 20}px);
+const TechStackContent = styled.div<{ $isVisible: boolean }>`
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transform: translateY(${props => props.$isVisible ? 0 : 20}px);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: ${props => props.isVisible ? fadeInUp : 'none'} 0.6s ease-out;
+  animation: ${props => props.$isVisible ? fadeInUp : 'none'} 0.6s ease-out;
 `
 
 const ColumnCard = styled.div<{ $isHovered: boolean; $animationType: 'right' | 'both' | 'left' }>`
@@ -324,8 +324,8 @@ export function ProjectShowcaseSection() {
           ))}
         </Grid>
 
-        <TechStackContainer isVisible={hoveredColumn !== null}>
-          <TechStackContent isVisible={hoveredColumn !== null}>
+        <TechStackContainer $isVisible={hoveredColumn !== null}>
+          <TechStackContent $isVisible={hoveredColumn !== null}>
             <TechStackTitle>{getCurrentTitle()}</TechStackTitle>
             <TechStackGrid>
               {getCurrentTechStack().map((tech, index) => (
