@@ -1,7 +1,8 @@
 # MyTechPortfolio 🚀
 
 > **세련되고 미래지향적인 개인 포트폴리오 웹사이트**  
-> React TypeScript + Spring Boot로 구축된 풀스택 포트폴리오 애플리케이션
+> React TypeScript + Spring Boot로 구축된 풀스택 포트폴리오 애플리케이션  
+> 🔥 **Live:** https://salieri009.studio
 
 [![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
