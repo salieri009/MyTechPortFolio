@@ -16,6 +16,8 @@
       "/css/*",
       "/js/*",
       "/assets/*",
+      "/favicon.*",
+      "/meta/*",
       "/*.{css,js,mjs,map,ico,svg,png,jpg,gif,webp,json}"
     ]
   },

@@ -1,8 +1,8 @@
 package com.mytechfolio.portfolio.repository;
 
 import com.mytechfolio.portfolio.domain.VisitorLog;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface VisitorLogRepository extends JpaRepository<VisitorLog, Long> {
+public interface VisitorLogRepository extends MongoRepository<VisitorLog, String> {
 
     // Find visitor logs by IP address
     List<VisitorLog> findByIpAddress(String ipAddress);

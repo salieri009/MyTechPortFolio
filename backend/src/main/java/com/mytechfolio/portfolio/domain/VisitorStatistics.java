@@ -49,7 +49,6 @@ public class VisitorStatistics {
     private Double bounceRate;
 
     private Long newVisitors;
-    private Long newVisitors;
 
     @Column(name = "returning_visitors")
     private Long returningVisitors;
