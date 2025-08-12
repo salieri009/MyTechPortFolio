@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Container, Button } from '@components/common'
 import { Typewriter } from '@components/Typewriter'
-import { TechStackSection } from '@components/sections/TechStackSection'
+import { ProjectShowcaseSection } from '@components/sections/ProjectShowcaseSection'
 import { CONTACT_INFO } from '../constants/contact'
 import { useThemeStore } from '../stores/themeStore'
 
@@ -147,6 +147,12 @@ export function HomePage() {
               {t('hero.cta.contact')}
             </ContactButton>
             <ContactButton 
+              as={Link} 
+              to="/about"
+            >
+              🛠️ {t('hero.cta.techStack')}
+            </ContactButton>
+            <ContactButton 
               href={`mailto:${CONTACT_INFO.email.student}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -164,7 +170,7 @@ export function HomePage() {
         </Container>
       </Hero>
 
-      <TechStackSection />
+      <ProjectShowcaseSection />
     </>
   )
 }

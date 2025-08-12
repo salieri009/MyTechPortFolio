@@ -27,7 +27,8 @@
       "email": "Send Email",
       "github": "GitHub",
       "linkedin": "LinkedIn",
-      "contact": "Contact Me"
+      "contact": "Contact Me",
+      "techStack": "Tech Stack"
     }
   },
   "projects": {
@@ -120,6 +121,28 @@
           "impact": "60% reduction in bug occurrence"
         }
       }
+    }
+  },
+  "showcase": {
+    "title": "Featured Projects",
+    "subtitle": "Explore my diverse portfolio across different domains",
+    "threejs": {
+      "title": "3D & Interactive",
+      "description": "Immersive 3D experiences and interactive visualizations"
+    },
+    "software": {
+      "title": "Software Development", 
+      "description": "Full-stack applications and enterprise solutions"
+    },
+    "gamedev": {
+      "title": "Game Development",
+      "description": "Interactive games and real-time applications"
+    },
+    "techStack": {
+      "default": "Hover over a project to see technologies",
+      "threejs": "3D Development Technologies",
+      "software": "Software Development Stack", 
+      "gamedev": "Game Development Tools"
     }
   },
   "language": {

@@ -1,0 +1,12 @@
+name: mytechportfolio
+infra:
+  provider: bicep
+services:
+  frontend:
+    project: frontend
+    host: staticwebapp
+    language: ts
+  backend:
+    project: backend
+    host: appservice
+    language: java

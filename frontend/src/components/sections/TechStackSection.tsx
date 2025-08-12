@@ -4,10 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { TechCategory, TechIcon } from './TechIcon'
 
 const TechStackContainer = styled.section`
-  padding: 60px 0;
+  padding: 100px 0 120px 0;
   text-align: center;
   background: ${props => props.theme.colors.background};
   transition: background-color 0.3s ease;
+  min-height: 100vh;
 `
 
 const SectionTitle = styled.h2`

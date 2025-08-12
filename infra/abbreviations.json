@@ -1,0 +1,9 @@
+{
+  "operationalInsightsWorkspaces": "log-",
+  "insightsComponents": "appi-",
+  "managedIdentityUserAssignedIdentities": "id-",
+  "sqlServers": "sql-",
+  "webServerFarms": "plan-",
+  "webSitesAppService": "app-",
+  "webStaticSites": "stapp-"
+}

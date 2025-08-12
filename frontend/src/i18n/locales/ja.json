@@ -27,7 +27,30 @@
       "email": "メール送信",
       "github": "GitHub",
       "linkedin": "LinkedIn",
-      "contact": "お問い合わせ"
+      "contact": "お問い合わせ",
+      "techStack": "技術スタック"
+    }
+  },
+  "showcase": {
+    "title": "注目のプロジェクト",
+    "subtitle": "異なる分野での多様なポートフォリオをご覧ください",
+    "threejs": {
+      "title": "3D & インタラクティブ",
+      "description": "没入感のある3D体験とインタラクティブ視覚化"
+    },
+    "software": {
+      "title": "ソフトウェア開発", 
+      "description": "フルスタックアプリケーションとエンタープライズソリューション"
+    },
+    "gamedev": {
+      "title": "ゲーム開発",
+      "description": "インタラクティブゲームとリアルタイムアプリケーション"
+    },
+    "techStack": {
+      "default": "プロジェクトにマウスをホバーして技術を確認",
+      "threejs": "3D開発技術",
+      "software": "ソフトウェア開発スタック", 
+      "gamedev": "ゲーム開発ツール"
     }
   },
   "projects": {

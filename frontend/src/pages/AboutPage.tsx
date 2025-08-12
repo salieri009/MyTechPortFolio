@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Container, Card, Button } from '@components/common'
 import { PersonalInfoHeader, CareerSummaryDashboard } from '@components/recruiter'
+import { TechStackSection } from '@components/sections/TechStackSection'
 import { CONTACT_INFO } from '../constants/contact'
 
 const AboutSection = styled.section`
@@ -116,63 +117,68 @@ export function AboutPage() {
   const { t } = useTranslation()
 
   return (
-    <Container>
-      {/* 채용담당자 중심 섹션 */}
-      <PersonalInfoHeader />
-      <CareerSummaryDashboard />
-      
-      <AboutSection>
-        <AboutTitle>{t('about.greeting')}</AboutTitle>
-        <AboutContent>
-          <p>{t('about.description')}</p>
-        </AboutContent>
+    <>
+      <Container>
+        {/* 채용담당자 중심 섹션 */}
+        <PersonalInfoHeader />
+        <CareerSummaryDashboard />
+        
+        <AboutSection>
+          <AboutTitle>{t('about.greeting')}</AboutTitle>
+          <AboutContent>
+            <p>{t('about.description')}</p>
+          </AboutContent>
 
-        <ContactSection>
-          <ContactTitle>{t('about.contact.title')}</ContactTitle>
-          
-          <ContactInfo>
-            <ContactItem>
-              <ContactLabel>{t('about.contact.studentEmail')}:</ContactLabel>
-              <ContactValue 
+          <ContactSection>
+            <ContactTitle>{t('about.contact.title')}</ContactTitle>
+            
+            <ContactInfo>
+              <ContactItem>
+                <ContactLabel>{t('about.contact.studentEmail')}:</ContactLabel>
+                <ContactValue 
+                  href={`mailto:${CONTACT_INFO.email.student}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {CONTACT_INFO.email.display}
+                </ContactValue>
+              </ContactItem>
+              
+              <ContactItem>
+                <ContactLabel>{t('about.contact.personalLinkedIn')}:</ContactLabel>
+                <ContactValue 
+                  href={CONTACT_INFO.linkedin.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {CONTACT_INFO.linkedin.display}
+                </ContactValue>
+              </ContactItem>
+            </ContactInfo>
+
+            <ContactButtons>
+              <ContactButton 
                 href={`mailto:${CONTACT_INFO.email.student}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {CONTACT_INFO.email.display}
-              </ContactValue>
-            </ContactItem>
-            
-            <ContactItem>
-              <ContactLabel>{t('about.contact.personalLinkedIn')}:</ContactLabel>
-              <ContactValue 
+                📧 {t('about.contact.email')}
+              </ContactButton>
+              
+              <ContactButton 
                 href={CONTACT_INFO.linkedin.url}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {CONTACT_INFO.linkedin.display}
-              </ContactValue>
-            </ContactItem>
-          </ContactInfo>
-
-          <ContactButtons>
-            <ContactButton 
-              href={`mailto:${CONTACT_INFO.email.student}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              📧 {t('about.contact.email')}
-            </ContactButton>
-            
-            <ContactButton 
-              href={CONTACT_INFO.linkedin.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              💼 {t('about.contact.linkedin')}
-            </ContactButton>
-          </ContactButtons>
-        </ContactSection>
-      </AboutSection>
-    </Container>
+                💼 {t('about.contact.linkedin')}
+              </ContactButton>
+            </ContactButtons>
+          </ContactSection>
+        </AboutSection>
+      </Container>
+      
+      {/* 기술 스택 섹션 - 별도 배경 */}
+      <TechStackSection />
+    </>
   )
 }
