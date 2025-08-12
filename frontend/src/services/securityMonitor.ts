@@ -54,8 +54,9 @@ export class SecurityMonitor {
   private setupPerformanceMonitoring() {
     // Monitor for potential DoS attacks through excessive resource usage
     setInterval(() => {
-      if (performance.memory) {
-        const memory = (performance.memory as any)
+      // Check if performance.memory exists (Chrome-specific)
+      if ('memory' in performance) {
+        const memory = (performance as any).memory
         if (memory.usedJSHeapSize > 100 * 1024 * 1024) { // 100MB threshold
           this.reportSecurityEvent('high_memory_usage', {
             usedJSHeapSize: memory.usedJSHeapSize,

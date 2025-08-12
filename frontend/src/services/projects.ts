@@ -1,7 +1,7 @@
 import { api } from './apiClient'
-import type { ApiResponse, Page } from '@model/api'
-import type { ProjectDetail, ProjectSummary } from '@model/domain'
-import * as mock from '@mocks/projects'
+import type { ApiResponse, Page } from '../types/api'
+import type { ProjectDetail, ProjectSummary } from '../types/domain'
+import * as mock from '../mocks/projects'
 
 const USE_MOCK = (import.meta as any).env.VITE_USE_MOCK === 'true'
 
