@@ -1,28 +1,65 @@
 {
   "routes": [
     {
+      "route": "/assets/*",
+      "headers": {
+        "Content-Type": "application/javascript"
+      },
+      "methods": ["GET"]
+    },
+    {
+      "route": "*.js",
+      "headers": {
+        "Content-Type": "application/javascript"
+      }
+    },
+    {
+      "route": "*.mjs",
+      "headers": {
+        "Content-Type": "application/javascript"
+      }
+    },
+    {
+      "route": "*.css",
+      "headers": {
+        "Content-Type": "text/css"
+      }
+    },
+    {
       "route": "/*",
       "rewrite": "/index.html"
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif,ico}", "/assets/*", "/favicon.*"]
+    "exclude": [
+      "/assets/*",
+      "*.js",
+      "*.mjs", 
+      "*.css",
+      "*.ico",
+      "*.svg",
+      "*.png",
+      "*.jpg",
+      "*.gif",
+      "*.woff",
+      "*.woff2",
+      "*.json",
+      "*.txt",
+      "*.xml"
+    ]
   },
   "mimeTypes": {
+    ".js": "application/javascript",
+    ".mjs": "application/javascript",
+    ".css": "text/css",
     ".json": "application/json",
-    ".js": "text/javascript",
-    ".mjs": "text/javascript",
-    ".css": "text/css"
+    ".woff": "font/woff",
+    ".woff2": "font/woff2"
   },
   "globalHeaders": {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "strict-origin-when-cross-origin"
-  },
-  "responseOverrides": {
-    "404": {
-      "rewrite": "/index.html"
-    }
   }
 }
