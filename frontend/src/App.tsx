@@ -1,40 +1,38 @@
 import React from 'react'
+import { Routes, Route } from 'react-router-dom'
+import { ThemeProvider } from 'styled-components'
+import { Layout } from '@components/layout/Layout'
+import { HomePage } from '@pages/HomePage'
+import { ProjectsPage } from '@pages/ProjectsPage'
+import { ProjectDetailPage } from '@pages/ProjectDetailPage'
+import { AcademicsPage } from '@pages/AcademicsPage'
+import { AboutPage } from '@pages/AboutPage'
+import { LoginPage } from './pages/LoginPage'
+import { lightTheme, darkTheme } from '@styles/theme'
+import { useThemeStore } from './stores/themeStore'
+import './i18n/config'
 
 function App() {
+  const { isDark } = useThemeStore()
+  const currentTheme = isDark ? darkTheme : lightTheme
+
   return (
-    <div style={{ 
-      padding: '2rem', 
-      fontFamily: 'Arial, sans-serif',
-      backgroundColor: '#f0f0f0',
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center'
-    }}>
-      <h1 style={{ color: '#333', marginBottom: '1rem' }}>
-        🎉 Portfolio App is Working! 
-      </h1>
-      <p style={{ color: '#666', textAlign: 'center', maxWidth: '600px' }}>
-        This is a test version to verify Azure Static Web Apps deployment. 
-        If you can see this message, the deployment is successful!
-      </p>
-      <div style={{ marginTop: '2rem' }}>
-        <button 
-          onClick={() => alert('Button works!')}
-          style={{ 
-            padding: '0.5rem 1rem', 
-            backgroundColor: '#007acc',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Test Button
-        </button>
-      </div>
-    </div>
+    <ThemeProvider theme={currentTheme}>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/*" element={
+          <Layout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/projects" element={<ProjectsPage />} />
+              <Route path="/projects/:id" element={<ProjectDetailPage />} />
+              <Route path="/academics" element={<AcademicsPage />} />
+              <Route path="/about" element={<AboutPage />} />
+            </Routes>
+          </Layout>
+        } />
+      </Routes>
+    </ThemeProvider>
   )
 }
 
