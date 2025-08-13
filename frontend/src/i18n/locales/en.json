@@ -122,6 +122,12 @@
           "description": "TypeScript adoption and test coverage increase",
           "impact": "60% reduction in bug occurrence"
         }
+      },
+      "resumeDownload": {
+        "label": "Resume Download",
+        "korean": "Download Korean Resume",
+        "english": "Download English Resume",
+        "japanese": "Download Japanese Resume"
       }
     }
   },

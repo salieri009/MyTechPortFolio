@@ -1,0 +1,30 @@
+# salieri009 - Resume (English)
+
+## Personal Information
+- Name: salieri009
+- Position: Full Stack Developer
+- Email: contact@salieri009.dev
+- GitHub: https://github.com/salieri009
+
+## Technical Skills
+- Frontend: React, TypeScript, Next.js
+- Backend: Spring Boot, Java, Node.js
+- Database: PostgreSQL, MongoDB
+- DevOps: Docker, AWS, CI/CD
+
+## Experience
+### Full Stack Developer (2023 - Present)
+- Developed React-based web applications
+- Built Spring Boot API servers
+- Configured AWS infrastructure and deployment automation
+
+## Projects
+### MyTechPortfolio
+- Personal portfolio website
+- React + TypeScript + Spring Boot
+- Deployed on Azure Static Web Apps
+
+## Education
+- University of Technology Sydney
+- Bachelor of Information Technology
+- GPA: 5.88/7.0 (78.62%)

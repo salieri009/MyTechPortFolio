@@ -1,0 +1,30 @@
+# salieri009 - Resume (Korean)
+
+## 개인정보
+- 이름: salieri009
+- 직책: Full Stack Developer
+- 이메일: contact@salieri009.dev
+- GitHub: https://github.com/salieri009
+
+## 기술 스택
+- Frontend: React, TypeScript, Next.js
+- Backend: Spring Boot, Java, Node.js
+- Database: PostgreSQL, MongoDB
+- DevOps: Docker, AWS, CI/CD
+
+## 경력
+### Full Stack Developer (2023 - Present)
+- React 기반 웹 애플리케이션 개발
+- Spring Boot API 서버 구축
+- AWS 인프라 구성 및 배포 자동화
+
+## 프로젝트
+### MyTechPortfolio
+- 개인 포트폴리오 웹사이트
+- React + TypeScript + Spring Boot
+- Azure Static Web Apps 배포
+
+## 학력
+- University of Technology Sydney
+- Bachelor of Information Technology
+- GPA: 5.88/7.0 (78.62%)

@@ -144,6 +144,12 @@
           "description": "TypeScript導入・テストカバレッジ拡大",
           "impact": "バグ発生率60％減少"
         }
+      },
+      "resumeDownload": {
+        "label": "履歴書ダウンロード",
+        "korean": "韓国語履歴書ダウンロード",
+        "english": "英語履歴書ダウンロード",
+        "japanese": "日本語履歴書ダウンロード"
       }
     }
   },

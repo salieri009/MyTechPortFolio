@@ -1,0 +1,30 @@
+# salieri009 - 履歴書 (日本語)
+
+## 個人情報
+- 氏名: salieri009
+- 職種: フルスタックデベロッパー
+- メール: contact@salieri009.dev
+- GitHub: https://github.com/salieri009
+
+## 技術スキル
+- フロントエンド: React, TypeScript, Next.js
+- バックエンド: Spring Boot, Java, Node.js
+- データベース: PostgreSQL, MongoDB
+- DevOps: Docker, AWS, CI/CD
+
+## 経歴
+### フルスタックデベロッパー (2023 - 現在)
+- Reactベースのウェブアプリケーション開発
+- Spring Boot APIサーバー構築
+- AWSインフラ構成とデプロイ自動化
+
+## プロジェクト
+### MyTechPortfolio
+- 個人ポートフォリオウェブサイト
+- React + TypeScript + Spring Boot
+- Azure Static Web Appsでデプロイ
+
+## 学歴
+- シドニー工科大学
+- 情報技術学士
+- GPA: 5.88/7.0 (78.62%)

@@ -28,6 +28,81 @@ const DashboardContainer = styled.div<{ $isDark: boolean }>`
 
 const Header = styled.div`
   margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+`
+
+const HeaderContent = styled.div`
+  flex: 1;
+`
+
+const ResumeDownloadSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+  
+  @media (max-width: 768px) {
+    align-items: flex-start;
+    width: 100%;
+  }
+`
+
+const ResumeButtonGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+`
+
+const ResumeButton = styled.button<{ $isDark: boolean; $language: 'ko' | 'en' | 'ja' }>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  background: ${({ $isDark, $language }) => {
+    const colors = {
+      ko: $isDark ? 'linear-gradient(45deg, #ff6b6b, #ee5a24)' : 'linear-gradient(45deg, #ff7675, #fd79a8)',
+      en: $isDark ? 'linear-gradient(45deg, #4facfe, #00f2fe)' : 'linear-gradient(45deg, #74b9ff, #0984e3)',
+      ja: $isDark ? 'linear-gradient(45deg, #a29bfe, #6c5ce7)' : 'linear-gradient(45deg, #fd79a8, #e84393)'
+    }
+    return colors[$language]
+  }};
+  
+  color: white;
+  box-shadow: ${({ $isDark }) => 
+    $isDark 
+      ? '0 4px 15px rgba(0, 0, 0, 0.3)'
+      : '0 4px 15px rgba(0, 0, 0, 0.1)'
+  };
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${({ $isDark }) => 
+      $isDark 
+        ? '0 6px 20px rgba(0, 0, 0, 0.4)'
+        : '0 6px 20px rgba(0, 0, 0, 0.15)'
+    };
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+`
+
+const ResumeLabel = styled.span<{ $isDark: boolean }>`
+  font-size: 0.75rem;
+  color: ${({ $isDark }) => $isDark ? '#a0aec0' : '#718096'};
+  margin-bottom: 0.25rem;
 `
 
 const Title = styled.h2<{ $isDark: boolean }>`
@@ -227,6 +302,31 @@ export const CareerSummaryDashboard: React.FC = () => {
     })
   }
   
+  // 이력서 다운로드 함수
+  const downloadResume = (language: 'ko' | 'en' | 'ja') => {
+    const fileNames = {
+      ko: 'resume-korean.txt',
+      en: 'resume-english.txt', 
+      ja: 'resume-japanese.txt'
+    }
+    
+    const displayNames = {
+      ko: 'salieri009_이력서_한국어.txt',
+      en: 'salieri009_Resume_English.txt',
+      ja: 'salieri009_履歴書_日本語.txt'
+    }
+    
+    const filePath = `/resumes/${fileNames[language]}`
+    
+    // 파일 다운로드
+    const link = document.createElement('a')
+    link.href = filePath
+    link.download = displayNames[language]
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+  
   // 번역된 성과 데이터 생성
   const translatedAchievements = [
     {
@@ -252,12 +352,46 @@ export const CareerSummaryDashboard: React.FC = () => {
   return (
     <DashboardContainer $isDark={isDark}>
       <Header>
-        <Title $isDark={isDark}>
-          {t('recruiter.careerSummary.title')}
-        </Title>
-        <Subtitle $isDark={isDark}>
-          {t('recruiter.careerSummary.subtitle')}
-        </Subtitle>
+        <HeaderContent>
+          <Title $isDark={isDark}>
+            {t('recruiter.careerSummary.title')}
+          </Title>
+          <Subtitle $isDark={isDark}>
+            {t('recruiter.careerSummary.subtitle')}
+          </Subtitle>
+        </HeaderContent>
+        
+        <ResumeDownloadSection>
+          <ResumeLabel $isDark={isDark}>
+            📄 {t('recruiter.careerSummary.resumeDownload.label', '이력서 다운로드')}
+          </ResumeLabel>
+          <ResumeButtonGroup>
+            <ResumeButton 
+              $isDark={isDark} 
+              $language="ko"
+              onClick={() => downloadResume('ko')}
+              title={t('recruiter.careerSummary.resumeDownload.korean', '한국어 이력서 다운로드')}
+            >
+              🇰🇷 한국어
+            </ResumeButton>
+            <ResumeButton 
+              $isDark={isDark} 
+              $language="en"
+              onClick={() => downloadResume('en')}
+              title={t('recruiter.careerSummary.resumeDownload.english', 'English Resume Download')}
+            >
+              🇺🇸 English
+            </ResumeButton>
+            <ResumeButton 
+              $isDark={isDark} 
+              $language="ja"
+              onClick={() => downloadResume('ja')}
+              title={t('recruiter.careerSummary.resumeDownload.japanese', '日本語履歴書ダウンロード')}
+            >
+              🇯🇵 日本語
+            </ResumeButton>
+          </ResumeButtonGroup>
+        </ResumeDownloadSection>
       </Header>
       
       <Grid>

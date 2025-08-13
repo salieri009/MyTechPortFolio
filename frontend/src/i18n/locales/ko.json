@@ -154,6 +154,12 @@
           "description": "TypeScript 도입 및 테스트 커버리지 증대",
           "impact": "버그 발생률 60% 감소"
         }
+      },
+      "resumeDownload": {
+        "label": "이력서 다운로드",
+        "korean": "한국어 이력서 다운로드",
+        "english": "영어 이력서 다운로드",
+        "japanese": "일본어 이력서 다운로드"
       }
     }
   },
