@@ -1,7 +1,7 @@
 // Google Analytics 4 연동 서비스
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void;
+    gtag?: (...args: any[]) => void;
     dataLayer: any[];
   }
 }
@@ -34,6 +34,14 @@ class AnalyticsService {
     this.GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || '';
   }
 
+  // Safe accessor for gtag to satisfy TypeScript when gtag might be undefined
+  private getGtag(): (...args: any[]) => void {
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      return window.gtag as (...args: any[]) => void;
+    }
+    return () => {};
+  }
+
   // GA4 초기화
   async init(): Promise<void> {
     if (!this.GA_MEASUREMENT_ID) {
@@ -46,7 +54,7 @@ class AnalyticsService {
       await this.loadGoogleAnalytics();
       
       // 기본 설정
-      window.gtag('config', this.GA_MEASUREMENT_ID, {
+      this.getGtag()('config', this.GA_MEASUREMENT_ID, {
         page_title: 'MyPortfolio',
         page_location: window.location.href,
         custom_map: {
@@ -65,7 +73,7 @@ class AnalyticsService {
   // Google Analytics 스크립트 동적 로드
   private loadGoogleAnalytics(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (window.gtag) {
+      if (typeof window.gtag === 'function') {
         resolve();
         return;
       }
@@ -82,7 +90,7 @@ class AnalyticsService {
       script.src = `https://www.googletagmanager.com/gtag/js?id=${this.GA_MEASUREMENT_ID}`;
       
       script.onload = () => {
-        window.gtag('js', new Date());
+        this.getGtag()('js', new Date());
         resolve();
       };
       
@@ -99,7 +107,7 @@ class AnalyticsService {
     this.userContext = { ...context };
     
     if (this.isInitialized && context.userId) {
-      window.gtag('config', this.GA_MEASUREMENT_ID, {
+      this.getGtag()('config', this.GA_MEASUREMENT_ID, {
         user_id: context.userId,
         custom_parameter_1: context.role || 'anonymous'
       });
@@ -117,14 +125,14 @@ class AnalyticsService {
       user_type: this.userContext.isAuthenticated ? 'authenticated' : 'anonymous'
     };
 
-    window.gtag('event', 'page_view', enrichedParams);
+    this.getGtag()('event', 'page_view', enrichedParams);
   }
 
   // 프로젝트 조회 추적
   trackProjectView(projectId: number, projectTitle: string, techStacks: string[]): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'project_view', {
+    this.getGtag()('event', 'project_view', {
       project_id: projectId,
       project_title: projectTitle,
       tech_stacks: techStacks.join(','),
@@ -138,7 +146,7 @@ class AnalyticsService {
   trackAcademicView(academicId: number, subjectName: string, semester: string): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'academic_view', {
+    this.getGtag()('event', 'academic_view', {
       academic_id: academicId,
       subject_name: subjectName,
       semester: semester,
@@ -151,7 +159,7 @@ class AnalyticsService {
   trackLogin(method: 'google' | 'email' | 'github', success: boolean): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'login', {
+    this.getGtag()('event', 'login', {
       method,
       success: success ? 'true' : 'false',
       timestamp: new Date().toISOString()
@@ -162,7 +170,7 @@ class AnalyticsService {
   trackDownload(fileName: string, fileType: 'resume' | 'portfolio' | 'document'): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'file_download', {
+    this.getGtag()('event', 'file_download', {
       file_name: fileName,
       file_extension: fileName.split('.').pop(),
       file_type: fileType,
@@ -174,7 +182,7 @@ class AnalyticsService {
   trackContactClick(contactType: 'email' | 'linkedin' | 'github' | 'phone'): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'contact_click', {
+    this.getGtag()('event', 'contact_click', {
       contact_type: contactType,
       user_role: this.userContext.role || 'anonymous',
       page_location: window.location.href
@@ -185,7 +193,7 @@ class AnalyticsService {
   trackSearch(searchTerm: string, category: 'projects' | 'academics' | 'techstacks'): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'search', {
+    this.getGtag()('event', 'search', {
       search_term: searchTerm,
       search_category: category,
       user_role: this.userContext.role || 'anonymous'
@@ -196,7 +204,7 @@ class AnalyticsService {
   trackFilterUsage(filterType: string, filterValue: string, resultCount: number): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'filter_usage', {
+    this.getGtag()('event', 'filter_usage', {
       filter_type: filterType,
       filter_value: filterValue,
       result_count: resultCount,
@@ -208,7 +216,7 @@ class AnalyticsService {
   trackEngagement(eventType: 'scroll' | 'click' | 'hover' | 'focus', element: string): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'user_engagement', {
+    this.getGtag()('event', 'user_engagement', {
       engagement_type: eventType,
       element_name: element,
       user_role: this.userContext.role || 'anonymous',
@@ -229,14 +237,14 @@ class AnalyticsService {
       user_role: event.userRole || this.userContext.role || 'anonymous'
     };
 
-    window.gtag('event', event.action, enrichedParams);
+    this.getGtag()('event', event.action, enrichedParams);
   }
 
   // 오류 추적
   trackError(errorMessage: string, errorType: 'javascript' | 'api' | 'auth' | 'network'): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'exception', {
+    this.getGtag()('event', 'exception', {
       description: errorMessage,
       error_type: errorType,
       fatal: false,
@@ -249,7 +257,7 @@ class AnalyticsService {
   trackPerformance(metricName: string, value: number, unit: 'ms' | 'bytes' | 'count'): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'timing_complete', {
+    this.getGtag()('event', 'timing_complete', {
       name: metricName,
       value: value,
       unit: unit,
@@ -261,7 +269,7 @@ class AnalyticsService {
   trackUserFlow(step: string, flowName: string, completed: boolean): void {
     if (!this.isInitialized) return;
 
-    window.gtag('event', 'user_flow', {
+    this.getGtag()('event', 'user_flow', {
       step_name: step,
       flow_name: flowName,
       completed: completed ? 'true' : 'false',

@@ -11,12 +11,12 @@ export function useAnalytics() {
   // 사용자 컨텍스트 설정
   useEffect(() => {
     const userContext: UserAnalyticsContext = {
-      userId: user?.id?.toString(),
-      email: user?.email,
-      role: user?.roles?.[0] || user?.role || 'anonymous',
+      userId: (user as any)?.id?.toString(),
+      email: (user as any)?.email,
+      role: (user as any)?.roles?.[0] || 'anonymous',
       isAuthenticated,
-      registrationSource: user?.registrationSource,
-      sessionId: user?.sessionId
+      registrationSource: (user as any)?.registrationSource,
+      sessionId: (user as any)?.sessionId
     };
 
     analytics.setUser(userContext);
@@ -32,8 +32,8 @@ export function useAnalytics() {
   const trackWithUserContext = useCallback((eventName: string, parameters: any) => {
     analytics.customEvent({
       action: eventName,
-      userId: user?.id?.toString(),
-      userRole: user?.roles?.[0] || user?.role || 'anonymous',
+      userId: (user as any)?.id?.toString(),
+      userRole: (user as any)?.roles?.[0] || 'anonymous',
       customParameters: {
         ...parameters,
         timestamp: new Date().toISOString(),
