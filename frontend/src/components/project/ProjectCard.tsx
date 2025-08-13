@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Card, Tag } from '../common'
+import { useProjectAnalytics } from '../../hooks/useAnalytics'
 
 const ProjectCardWrapper = styled(Card)`
   display: flex;
@@ -65,6 +66,8 @@ export function ProjectCard({
   endDate, 
   techStacks 
 }: ProjectCardProps) {
+  const { trackView, trackTechStackClick } = useProjectAnalytics()
+  
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ko-KR', {
       year: 'numeric',
@@ -72,8 +75,18 @@ export function ProjectCard({
     })
   }
 
+  const handleProjectClick = () => {
+    trackView(id, title, techStacks)
+  }
+
+  const handleTechStackClick = (e: React.MouseEvent, techStack: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    trackTechStackClick(id, techStack)
+  }
+
   return (
-    <StyledLink to={`/projects/${id}`}>
+    <StyledLink to={`/projects/${id}`} onClick={handleProjectClick}>
       <ProjectCardWrapper isHover>
         <ProjectTitle>{title}</ProjectTitle>
         <ProjectSummary>{summary}</ProjectSummary>
@@ -82,7 +95,13 @@ export function ProjectCard({
         </ProjectMeta>
         <TechStacks>
           {techStacks.map((tech) => (
-            <Tag key={tech}>{tech}</Tag>
+            <Tag 
+              key={tech}
+              onClick={(e) => handleTechStackClick(e, tech)}
+              style={{ cursor: 'pointer' }}
+            >
+              {tech}
+            </Tag>
           ))}
         </TechStacks>
       </ProjectCardWrapper>

@@ -1,0 +1,39 @@
+# Exclude unnecessary files and directories
+.git
+.gitignore
+README.md
+Dockerfile*
+docker-compose*
+
+# Build artifacts
+build/
+target/
+.gradle/
+bin/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Log files
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# Node modules (if any)
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local

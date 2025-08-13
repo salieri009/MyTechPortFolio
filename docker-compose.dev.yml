@@ -1,0 +1,72 @@
+# Development Docker Compose
+version: '3.8'
+
+services:
+  # MongoDB for development
+  mongodb-dev:
+    image: mongo:7.0
+    container_name: portfolio-mongodb-dev
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: portfolio_dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_dev_data:/data/db
+    networks:
+      - portfolio-dev-network
+
+  # Backend for development
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: portfolio-backend-dev
+    restart: unless-stopped
+    depends_on:
+      - mongodb-dev
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      MONGODB_URI: mongodb://mongodb-dev:27017/portfolio_dev
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:-devSecretKey123456789012345678901234567890}
+    ports:
+      - "8080:8080"
+      - "5005:5005"  # Debug port
+    volumes:
+      - ./backend/src:/app/src
+      - ./logs/backend-dev:/app/logs
+    networks:
+      - portfolio-dev-network
+    command: ["./gradlew", "bootRun", "--debug-jvm"]
+
+  # Frontend for development
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: portfolio-frontend-dev
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:8080/api
+      VITE_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      VITE_GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID}
+      VITE_USE_BACKEND_API: "true"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - /app/node_modules
+    networks:
+      - portfolio-dev-network
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+volumes:
+  mongodb_dev_data:
+    driver: local
+
+networks:
+  portfolio-dev-network:
+    driver: bridge

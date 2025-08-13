@@ -1,7 +1,8 @@
 import type { ApiResponse, Page } from '../types/api'
 import type { Academic } from '../types/domain'
 
-const MOCK_ACADEMICS: Academic[] = [
+// 실제 UTS 성적표 기반 학업 데이터
+const UTS_ACADEMICS: Academic[] = [
   {
     id: 1,
     name: 'Problem Solving and Programming',
@@ -105,7 +106,7 @@ export async function getAcademics(params: {
   size?: number
   semester?: string
 }): Promise<ApiResponse<Page<Academic>>> {
-  let items = [...MOCK_ACADEMICS]
+  let items = [...UTS_ACADEMICS]
 
   if (params.semester) {
     items = items.filter(a => a.semester.includes(params.semester!))

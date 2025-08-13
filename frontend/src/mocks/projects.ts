@@ -2,7 +2,7 @@ import type { ApiResponse, Page } from '../types/api'
 import type { ProjectDetail, ProjectSummary } from '../types/domain'
 
 // 실제 GitHub 리포지토리 기반 프로젝트 데이터
-const mockProjects: ProjectSummary[] = [
+const GITHUB_PROJECTS: ProjectSummary[] = [
   {
     id: 1,
     title: "MyTechPortFolio",
@@ -61,7 +61,7 @@ const mockProjects: ProjectSummary[] = [
   }
 ]
 
-const mockProjectDetails: Record<number, ProjectDetail> = {
+const PROJECT_DETAILS: Record<number, ProjectDetail> = {
   1: {
     id: 1,
     title: "MyTechPortFolio",
@@ -94,7 +94,7 @@ export async function getProjects(params: {
 }): Promise<ApiResponse<Page<ProjectSummary>>> {
   const { page = 0, size = 10, techStacks, year } = params
   
-  let filteredProjects = mockProjects
+  let filteredProjects = GITHUB_PROJECTS
   
   if (techStacks && techStacks.length > 0) {
     filteredProjects = filteredProjects.filter(project =>
@@ -126,7 +126,7 @@ export async function getProjects(params: {
 }
 
 export async function getProject(id: number): Promise<ApiResponse<ProjectDetail>> {
-  const project = mockProjectDetails[id]
+  const project = PROJECT_DETAILS[id]
   if (!project) {
     return {
       success: false,
@@ -144,7 +144,7 @@ export async function getProject(id: number): Promise<ApiResponse<ProjectDetail>
 
 export async function getTechStacks(): Promise<ApiResponse<string[]>> {
   const allTechStacks = Array.from(
-    new Set(mockProjects.flatMap(project => project.techStacks))
+    new Set(GITHUB_PROJECTS.flatMap(project => project.techStacks))
   ).sort()
   
   return {

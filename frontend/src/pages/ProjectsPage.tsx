@@ -123,44 +123,26 @@ const ProjectsPage: React.FC = () => {
     setSort
   } = useFilters()
 
-  // Mock data for development
-  const mockProjects: ProjectSummary[] = [
-    {
-      id: 1,
-      title: 'E-Commerce Platform',
-      summary: 'Full-stack e-commerce solution with React and Spring Boot',
-      startDate: '2024-01-01',
-      endDate: '2024-06-30',
-      techStacks: ['React', 'TypeScript', 'Spring Boot', 'PostgreSQL']
-    },
-    {
-      id: 2,
-      title: 'AI Chat Application',
-      summary: 'Real-time chat application with AI integration',
-      startDate: '2024-03-01',
-      endDate: '2024-08-31',
-      techStacks: ['Next.js', 'Node.js', 'OpenAI', 'Socket.io']
-    },
-    {
-      id: 3,
-      title: 'Portfolio Website',
-      summary: 'Personal portfolio built with modern web technologies',
-      startDate: '2023-09-01',
-      endDate: '2023-12-31',
-      techStacks: ['React', 'TypeScript', 'Styled Components']
-    }
-  ]
-
   useEffect(() => {
     const loadProjects = async () => {
       try {
         setIsLoading(true)
-        // In a real app, this would fetch from the API
-        // const data = await getProjects()
-        setProjects(mockProjects)
+        // 실제 GitHub 기반 프로젝트 데이터 로드
+        const response = await getProjects({
+          page: 0,
+          size: 50,
+          sort: 'endDate,desc'
+        })
+        
+        if (response.success && response.data) {
+          setProjects(response.data.items)
+        } else {
+          console.error('Failed to load projects:', response.error)
+          setProjects([])
+        }
       } catch (error) {
         console.error('Failed to load projects:', error)
-        setProjects(mockProjects) // Fallback to mock data
+        setProjects([])
       } finally {
         setIsLoading(false)
       }

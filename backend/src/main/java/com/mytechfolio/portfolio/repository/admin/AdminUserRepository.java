@@ -2,11 +2,8 @@ package com.mytechfolio.portfolio.repository.admin;
 
 import com.mytechfolio.portfolio.domain.admin.AdminRole;
 import com.mytechfolio.portfolio.domain.admin.AdminUser;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -14,43 +11,111 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface AdminUserRepository extends JpaRepository<AdminUser, Long> {
+public interface AdminUserRepository extends MongoRepository<AdminUser, String> {
     
-    // Basic Queries
+    // 기본 조회
     Optional<AdminUser> findByUsername(String username);
+    
     Optional<AdminUser> findByEmail(String email);
-    boolean existsByUsername(String username);
-    boolean existsByEmail(String email);
     
-    // Role-based Queries
+    Optional<AdminUser> findByUsernameAndEnabled(String username, boolean enabled);
+    
+    Optional<AdminUser> findByEmailAndEnabled(String email, boolean enabled);
+    
+    // OAuth 관련
+    Optional<AdminUser> findByOauthProviderAndOauthId(String oauthProvider, String oauthId);
+    
+    // 세션 관리
+    Optional<AdminUser> findBySessionId(String sessionId);
+    
+    List<AdminUser> findByLastActivityAfter(LocalDateTime since);
+    
+    // 권한별 조회
     List<AdminUser> findByRole(AdminRole role);
-    List<AdminUser> findByRoleIn(List<AdminRole> roles);
     
-    // Status-based Queries
-    List<AdminUser> findByEnabled(Boolean enabled);
-    Page<AdminUser> findByEnabledOrderByCreatedAtDesc(Boolean enabled, Pageable pageable);
+    List<AdminUser> findByRoleAndEnabled(AdminRole role, boolean enabled);
     
-    // Advanced Queries
-    @Query("SELECT a FROM AdminUser a WHERE a.enabled = true AND a.lastLoginAt > :since")
-    List<AdminUser> findActiveUsersSince(@Param("since") LocalDateTime since);
+    @Query("{ 'role': { $in: [?0] }, 'enabled': true }")
+    List<AdminUser> findEnabledUsersByRoles(List<AdminRole> roles);
     
-    @Query("SELECT a FROM AdminUser a WHERE " +
-           "(LOWER(a.username) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-           "LOWER(a.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-           "LOWER(a.fullName) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-           "ORDER BY a.createdAt DESC")
-    Page<AdminUser> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    // 관리 권한별 조회
+    @Query("{ 'role': { $in: ['SUPER_ADMIN', 'ADMIN'] }, 'enabled': true }")
+    List<AdminUser> findAllManagers();
     
-    @Query("SELECT a FROM AdminUser a WHERE a.role = :role AND a.enabled = :enabled ORDER BY a.lastLoginAt DESC")
-    Page<AdminUser> findByRoleAndEnabled(@Param("role") AdminRole role, @Param("enabled") Boolean enabled, Pageable pageable);
+    @Query("{ 'role': { $in: ['CONTENT_MANAGER', 'VIEWER'] }, 'enabled': true }")
+    List<AdminUser> findAllManagedUsers();
     
-    // Statistics Queries
-    @Query("SELECT COUNT(a) FROM AdminUser a WHERE a.enabled = true")
+    // 통계용 쿼리
+    long countByEnabled(boolean enabled);
+    
+    long countByRole(AdminRole role);
+    
+    @Query(value = "{ 'enabled': true }", count = true)
     long countActiveUsers();
     
-    @Query("SELECT a.role, COUNT(a) FROM AdminUser a WHERE a.enabled = true GROUP BY a.role")
+    @Query(value = "{ 'lastLoginAt': { $gte: ?0 } }", count = true)
+    long countRecentlyActiveUsers(LocalDateTime since);
+    
+    @Query(value = "{ 'createdAt': { $gte: ?0 } }", count = true)
+    long countNewUsersAfter(LocalDateTime since);
+    
+    // 집계 쿼리 (통계용)
+    @Query(value = "{ $group: { _id: '$role', count: { $sum: 1 } } }")
     List<Object[]> countUsersByRole();
     
-    @Query("SELECT COUNT(a) FROM AdminUser a WHERE a.lastLoginAt > :since")
-    long countRecentlyActiveUsers(@Param("since") LocalDateTime since);
+    // 보안 관련
+    @Query("{ 'lastActivity': { $lt: ?0 } }")
+    List<AdminUser> findInactiveUsersSince(LocalDateTime threshold);
+    
+    @Query("{ 'accountNonLocked': false }")
+    List<AdminUser> findLockedUsers();
+    
+    @Query("{ 'twoFactorEnabled': true }")
+    List<AdminUser> findUsersWithTwoFactor();
+    
+    // 관리용
+    boolean existsByUsername(String username);
+    
+    boolean existsByEmail(String email);
+    
+    boolean existsByOauthProviderAndOauthId(String oauthProvider, String oauthId);
+    
+    @Query(value = "{ $or: [ { 'username': { $regex: ?0, $options: 'i' } }, { 'email': { $regex: ?0, $options: 'i' } }, { 'fullName': { $regex: ?0, $options: 'i' } } ] }")
+    List<AdminUser> searchUsers(String searchTerm);
+    
+    // 최근 활동 기준 조회
+    List<AdminUser> findActiveUsersSince(LocalDateTime since);
+    
+    @Query("{ 'lastLoginAt': { $gte: ?0 }, 'enabled': true }")
+    List<AdminUser> findRecentlyLoggedInUsers(LocalDateTime since);
+    
+    // 권한 레벨별 조회
+    @Query("{ 'role': { $in: ['SUPER_ADMIN'] } }")
+    List<AdminUser> findSuperAdmins();
+    
+    @Query("{ 'role': { $in: ['SUPER_ADMIN', 'ADMIN'] } }")
+    List<AdminUser> findAdministrators();
+    
+    @Query("{ 'role': { $in: ['CONTENT_MANAGER'] } }")
+    List<AdminUser> findContentManagers();
+    
+    @Query("{ 'role': { $in: ['VIEWER'] } }")
+    List<AdminUser> findViewers();
+    
+    // 배치 처리용
+    @Query("{ 'enabled': false, 'updatedAt': { $lt: ?0 } }")
+    List<AdminUser> findDisabledUsersOlderThan(LocalDateTime threshold);
+    
+    void deleteByEnabledAndUpdatedAtBefore(boolean enabled, LocalDateTime threshold);
+    
+    // 디바이스 관리
+    @Query("{ 'deviceFingerprint': ?0 }")
+    List<AdminUser> findByDeviceFingerprint(String deviceFingerprint);
+    
+    // OAuth 사용자 조회
+    @Query("{ 'oauthProvider': { $exists: true, $ne: null } }")
+    List<AdminUser> findOAuthUsers();
+    
+    @Query("{ 'oauthProvider': ?0 }")
+    List<AdminUser> findByOauthProvider(String provider);
 }

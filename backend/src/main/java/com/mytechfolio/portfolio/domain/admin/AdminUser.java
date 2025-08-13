@@ -1,16 +1,15 @@
 package com.mytechfolio.portfolio.domain.admin;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "admin_users")
-@EntityListeners(AuditingEntityListener.class)
+@Document(collection = "admin_users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,59 +19,60 @@ import java.time.LocalDateTime;
 public class AdminUser {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     
-    @Column(nullable = false, unique = true, length = 50)
+    @Indexed(unique = true)
     private String username;
     
-    @Column(nullable = false)
     private String password;
     
-    @Column(nullable = false, unique = true, length = 100)
+    @Indexed(unique = true)
     private String email;
     
-    @Column(name = "full_name", length = 100)
     private String fullName;
     
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     @Builder.Default
     private AdminRole role = AdminRole.VIEWER;
     
-    @Column(nullable = false)
     @Builder.Default
     private Boolean enabled = true;
     
-    @Column(nullable = false)
     @Builder.Default
     private Boolean accountNonExpired = true;
     
-    @Column(nullable = false)
     @Builder.Default
     private Boolean accountNonLocked = true;
     
-    @Column(nullable = false)
     @Builder.Default
     private Boolean credentialsNonExpired = true;
     
     private LocalDateTime lastLoginAt;
     
     @CreatedDate
-    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
     @LastModifiedDate
-    @Column(nullable = false)
     private LocalDateTime updatedAt;
+    
+    // OAuth 관련 필드 추가
+    private String oauthProvider; // "google", "github" 등
+    private String oauthId; // OAuth 제공자에서의 고유 ID
+    private String profileImageUrl; // 프로필 이미지 URL
+    
+    // 2FA 관련 필드
+    @Builder.Default
+    private Boolean twoFactorEnabled = false;
+    private String twoFactorSecret;
+    
+    // 세션 관리
+    private String sessionId;
+    private LocalDateTime lastActivity;
+    private String deviceFingerprint;
     
     // Business Methods
     public void updateLastLogin() {
         this.lastLoginAt = LocalDateTime.now();
-    }
-    
-    public void recordLogin() {
-        this.lastLoginAt = LocalDateTime.now();
+        this.lastActivity = LocalDateTime.now();
     }
 
     public void changePassword(String newPassword) {
@@ -139,6 +139,40 @@ public class AdminUser {
     }
     
     public boolean hasHigherOrEqualAuthority(AdminUser otherUser) {
-        return this.role.ordinal() <= otherUser.role.ordinal();
+        return this.role.getLevel() >= otherUser.role.getLevel();
+    }
+    
+    // OAuth 관련 메서드
+    public boolean isOAuthUser() {
+        return oauthProvider != null && oauthId != null;
+    }
+    
+    public void updateOAuthInfo(String provider, String oauthId, String profileImageUrl) {
+        this.oauthProvider = provider;
+        this.oauthId = oauthId;
+        this.profileImageUrl = profileImageUrl;
+    }
+    
+    // 2FA 관련 메서드
+    public void enableTwoFactor(String secret) {
+        this.twoFactorEnabled = true;
+        this.twoFactorSecret = secret;
+    }
+    
+    public void disableTwoFactor() {
+        this.twoFactorEnabled = false;
+        this.twoFactorSecret = null;
+    }
+    
+    // 세션 관리
+    public void updateSession(String sessionId, String deviceFingerprint) {
+        this.sessionId = sessionId;
+        this.deviceFingerprint = deviceFingerprint;
+        this.lastActivity = LocalDateTime.now();
+    }
+    
+    public boolean isSessionValid(int sessionTimeoutMinutes) {
+        if (lastActivity == null) return false;
+        return lastActivity.isAfter(LocalDateTime.now().minusMinutes(sessionTimeoutMinutes));
     }
 }
