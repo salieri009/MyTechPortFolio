@@ -95,6 +95,6 @@ public class AuthController {
             return ResponseEntity.ok(profile);
         }
         
-        return ResponseEntity.unauthorized().build();
+        return ResponseEntity.status(401).build();
     }
 }

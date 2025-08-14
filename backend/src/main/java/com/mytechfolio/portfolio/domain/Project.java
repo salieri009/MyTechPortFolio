@@ -94,4 +94,29 @@ public class Project {
     public boolean isActive() {
         return status != ProjectStatus.ARCHIVED;
     }
+    
+    // Compatibility methods for relationships
+    public java.util.List<com.mytechfolio.portfolio.domain.TechStack> getTechStacks() {
+        // Return empty list for now - would need actual relationship mapping
+        return new java.util.ArrayList<>();
+    }
+    
+    public java.util.List<com.mytechfolio.portfolio.domain.Academic> getAcademics() {
+        // Return empty list for now - would need actual relationship mapping
+        return new java.util.ArrayList<>();
+    }
+    
+    public void setTechStacks(java.util.List<com.mytechfolio.portfolio.domain.TechStack> techStacks) {
+        // Convert to ID list for MongoDB storage
+        this.techStackIds = techStacks.stream()
+                .map(ts -> ts.getId())
+                .collect(java.util.stream.Collectors.toList());
+    }
+    
+    public void setAcademics(java.util.List<com.mytechfolio.portfolio.domain.Academic> academics) {
+        // Convert to ID list for MongoDB storage
+        this.relatedAcademicIds = academics.stream()
+                .map(ac -> ac.getId())
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

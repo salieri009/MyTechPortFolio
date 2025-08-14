@@ -13,8 +13,8 @@ COPY src ./src
 # Build the application
 RUN gradle clean bootJar --no-daemon
 
-# Production stage
-FROM openjdk:21-jre-alpine
+# Production stage  
+FROM eclipse-temurin:21-jre-alpine
 
 LABEL maintainer="salieri009"
 LABEL description="MyPortfolio Backend - Spring Boot with MongoDB"

@@ -90,8 +90,8 @@ public class ProjectService {
                 .endDate(request.getEndDate())
                 .githubUrl(request.getGithubUrl())
                 .demoUrl(request.getDemoUrl())
-                .techStacks(techStacks)
-                .academics(academics)
+                .techStackIds(request.getTechStackIds())
+                .relatedAcademicIds(request.getAcademicIds())
                 .build();
 
         Project savedProject = projectRepository.save(project);

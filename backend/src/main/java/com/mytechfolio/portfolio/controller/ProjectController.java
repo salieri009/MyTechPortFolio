@@ -65,7 +65,7 @@ public class ProjectController {
     })
     public ResponseEntity<ApiResponse<ProjectDetailResponse>> getProject(
             @Parameter(description = "프로젝트 ID", required = true)
-            @PathVariable Long id
+            @PathVariable String id
     ) {
         ProjectDetailResponse response = projectService.getProject(id);
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -94,7 +94,7 @@ public class ProjectController {
     })
     public ResponseEntity<ApiResponse<ProjectDetailResponse>> updateProject(
             @Parameter(description = "프로젝트 ID", required = true)
-            @PathVariable Long id,
+            @PathVariable String id,
             @Valid @RequestBody ProjectUpdateRequest request
     ) {
         ProjectDetailResponse response = projectService.updateProject(id, request);
@@ -109,7 +109,7 @@ public class ProjectController {
     })
     public ResponseEntity<ApiResponse<Void>> deleteProject(
             @Parameter(description = "프로젝트 ID", required = true)
-            @PathVariable Long id
+            @PathVariable String id
     ) {
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();

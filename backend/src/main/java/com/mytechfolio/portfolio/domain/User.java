@@ -30,14 +30,21 @@ public class User {
     private String password;
 
     private String displayName;
+    
+    private String name; // Added for compatibility
 
     private String profileImageUrl;
+    
+    private String profilePictureUrl; // Compatibility field
 
     @Builder.Default
     private Role role = Role.USER;
 
     @Builder.Default
     private boolean enabled = true;
+    
+    @Builder.Default
+    private boolean isEmailVerified = false;
 
     private String oauthProvider;
 
@@ -70,6 +77,8 @@ public class User {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+    
+    private LocalDateTime lastLoginAt;
 
     public enum Role {
         USER("일반 사용자"),
@@ -160,5 +169,10 @@ public class User {
         this.userAgent = userAgent;
         this.ipAddress = ipAddress;
         this.referrer = referrer;
+    }
+    
+    // Compatibility methods
+    public void setLastLoginAt(java.time.LocalDateTime lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
     }
 }

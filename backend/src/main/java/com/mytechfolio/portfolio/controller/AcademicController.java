@@ -54,7 +54,7 @@ public class AcademicController {
     })
     public ResponseEntity<ApiResponse<AcademicResponse>> getAcademic(
             @Parameter(description = "학업 과정 ID", required = true)
-            @PathVariable Long id
+            @PathVariable String id
     ) {
         AcademicResponse response = academicService.getAcademic(id);
         return ResponseEntity.ok(ApiResponse.success(response));

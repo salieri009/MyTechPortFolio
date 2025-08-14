@@ -3,20 +3,20 @@ package com.mytechfolio.portfolio.dto.response;
 import com.mytechfolio.portfolio.domain.TechStack;
 
 public class TechStackResponse {
-    private Long id;
+    private String id;
     private String name;
     private String type;
 
     public TechStackResponse() {}
 
-    public TechStackResponse(Long id, String name, String type) {
+    public TechStackResponse(String id, String name, String type) {
         this.id = id;
         this.name = name;
         this.type = type;
     }
 
     // Getters
-    public Long getId() { return id; }
+    public String getId() { return id; }
     public String getName() { return name; }
     public String getType() { return type; }
 
@@ -26,11 +26,11 @@ public class TechStackResponse {
     }
 
     public static class TechStackResponseBuilder {
-        private Long id;
+        private String id;
         private String name;
         private String type;
 
-        public TechStackResponseBuilder id(Long id) { this.id = id; return this; }
+        public TechStackResponseBuilder id(String id) { this.id = id; return this; }
         public TechStackResponseBuilder name(String name) { this.name = name; return this; }
         public TechStackResponseBuilder type(String type) { this.type = type; return this; }
 

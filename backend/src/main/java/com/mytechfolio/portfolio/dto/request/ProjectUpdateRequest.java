@@ -37,7 +37,7 @@ public class ProjectUpdateRequest {
     private String demoUrl;
 
     @NotNull(message = "Tech stack IDs are required")
-    private List<Long> techStackIds;
+    private List<String> techStackIds;
 
-    private List<Long> academicIds;
+    private List<String> academicIds;
 }

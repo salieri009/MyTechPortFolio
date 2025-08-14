@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AcademicResponse {
-    private Long id;
+    private String id;
     private String name;
     private String semester;
     private String grade;
@@ -16,7 +16,7 @@ public class AcademicResponse {
     // Constructor
     public AcademicResponse() {}
 
-    public AcademicResponse(Long id, String name, String semester, String grade, String description, List<RelatedProject> relatedProjects) {
+    public AcademicResponse(String id, String name, String semester, String grade, String description, List<RelatedProject> relatedProjects) {
         this.id = id;
         this.name = name;
         this.semester = semester;
@@ -26,7 +26,7 @@ public class AcademicResponse {
     }
 
     // Getters
-    public Long getId() { return id; }
+    public String getId() { return id; }
     public String getName() { return name; }
     public String getSemester() { return semester; }
     public String getGrade() { return grade; }
@@ -39,14 +39,14 @@ public class AcademicResponse {
     }
 
     public static class AcademicResponseBuilder {
-        private Long id;
+        private String id;
         private String name;
         private String semester;
         private String grade;
         private String description;
         private List<RelatedProject> relatedProjects;
 
-        public AcademicResponseBuilder id(Long id) { this.id = id; return this; }
+        public AcademicResponseBuilder id(String id) { this.id = id; return this; }
         public AcademicResponseBuilder name(String name) { this.name = name; return this; }
         public AcademicResponseBuilder semester(String semester) { this.semester = semester; return this; }
         public AcademicResponseBuilder grade(String grade) { this.grade = grade; return this; }
@@ -59,18 +59,18 @@ public class AcademicResponse {
     }
 
     public static class RelatedProject {
-        private Long id;
+        private String id;
         private String title;
 
         public RelatedProject() {}
 
-        public RelatedProject(Long id, String title) {
+        public RelatedProject(String id, String title) {
             this.id = id;
             this.title = title;
         }
 
         // Getters
-        public Long getId() { return id; }
+        public String getId() { return id; }
         public String getTitle() { return title; }
 
         // Builder
@@ -79,10 +79,10 @@ public class AcademicResponse {
         }
 
         public static class RelatedProjectBuilder {
-            private Long id;
+            private String id;
             private String title;
 
-            public RelatedProjectBuilder id(Long id) { this.id = id; return this; }
+            public RelatedProjectBuilder id(String id) { this.id = id; return this; }
             public RelatedProjectBuilder title(String title) { this.title = title; return this; }
 
             public RelatedProject build() {
@@ -96,7 +96,7 @@ public class AcademicResponse {
                 .id(academic.getId())
                 .name(academic.getName())
                 .semester(academic.getSemester())
-                .grade(academic.getGrade())
+                .grade(academic.getGrade() != null ? academic.getGrade().name() : null)
                 .description(academic.getDescription())
                 .relatedProjects(academic.getProjects().stream()
                         .map(project -> RelatedProject.builder()

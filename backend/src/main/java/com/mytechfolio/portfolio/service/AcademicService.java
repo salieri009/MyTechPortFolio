@@ -51,7 +51,7 @@ public class AcademicService {
         Academic academic = Academic.builder()
                 .name(request.getName())
                 .semester(request.getSemester())
-                .grade(request.getGrade())
+                .grade(convertStringToGrade(request.getGrade()))
                 .description(request.getDescription())
                 .build();
         
@@ -81,5 +81,18 @@ public class AcademicService {
     @Transactional
     public void deleteAllAcademics() {
         academicRepository.deleteAll();
+    }
+    
+    // Helper method to convert String to AcademicGrade
+    private Academic.AcademicGrade convertStringToGrade(String gradeStr) {
+        if (gradeStr == null || gradeStr.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return Academic.AcademicGrade.valueOf(gradeStr.toUpperCase().replace(" ", "_"));
+        } catch (IllegalArgumentException e) {
+            // Return null for invalid grades or handle differently
+            return null;
+        }
     }
 }

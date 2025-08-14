@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProjectSummaryResponse {
-    private Long id;
+    private String id;
     private String title;
     private String summary;
     private LocalDate startDate;
@@ -16,7 +16,7 @@ public class ProjectSummaryResponse {
 
     public ProjectSummaryResponse() {}
 
-    public ProjectSummaryResponse(Long id, String title, String summary, LocalDate startDate, LocalDate endDate, List<String> techStacks) {
+    public ProjectSummaryResponse(String id, String title, String summary, LocalDate startDate, LocalDate endDate, List<String> techStacks) {
         this.id = id;
         this.title = title;
         this.summary = summary;
@@ -26,7 +26,7 @@ public class ProjectSummaryResponse {
     }
 
     // Getters
-    public Long getId() { return id; }
+    public String getId() { return id; }
     public String getTitle() { return title; }
     public String getSummary() { return summary; }
     public LocalDate getStartDate() { return startDate; }
@@ -39,14 +39,14 @@ public class ProjectSummaryResponse {
     }
 
     public static class ProjectSummaryResponseBuilder {
-        private Long id;
+        private String id;
         private String title;
         private String summary;
         private LocalDate startDate;
         private LocalDate endDate;
         private List<String> techStacks;
 
-        public ProjectSummaryResponseBuilder id(Long id) { this.id = id; return this; }
+        public ProjectSummaryResponseBuilder id(String id) { this.id = id; return this; }
         public ProjectSummaryResponseBuilder title(String title) { this.title = title; return this; }
         public ProjectSummaryResponseBuilder summary(String summary) { this.summary = summary; return this; }
         public ProjectSummaryResponseBuilder startDate(LocalDate startDate) { this.startDate = startDate; return this; }
