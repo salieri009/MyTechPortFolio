@@ -83,8 +83,9 @@ public interface AdminUserRepository extends MongoRepository<AdminUser, String> 
     @Query(value = "{ $or: [ { 'username': { $regex: ?0, $options: 'i' } }, { 'email': { $regex: ?0, $options: 'i' } }, { 'fullName': { $regex: ?0, $options: 'i' } } ] }")
     List<AdminUser> searchUsers(String searchTerm);
     
-    // 최근 활동 기준 조회
-    List<AdminUser> findActiveUsersSince(LocalDateTime since);
+    // 최근 활동 기준 조회 - 파생 쿼리 규칙에 맞는 메서드명 사용
+    // 참고: 최근 활동 이후의 유저 조회는 아래 메서드로 대체합니다.
+    // List<AdminUser> findByLastActivityAfter(LocalDateTime since);
     
     @Query("{ 'lastLoginAt': { $gte: ?0 }, 'enabled': true }")
     List<AdminUser> findRecentlyLoggedInUsers(LocalDateTime since);

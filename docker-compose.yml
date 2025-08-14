@@ -35,8 +35,8 @@ services:
       mongodb:
         condition: service_healthy
     environment:
-      SPRING_PROFILES_ACTIVE: prod
-      MONGODB_URI: mongodb://admin:${MONGO_ROOT_PASSWORD}@mongodb:27017/portfolio?authSource=admin
+      SPRING_PROFILES_ACTIVE: dev
+      MONGODB_URI: mongodb://mongodb:27017/portfolio_dev
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       JWT_SECRET: ${JWT_SECRET}
@@ -47,12 +47,13 @@ services:
       - portfolio-network
     volumes:
       - ./logs/backend:/app/logs
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+    # healthcheck (disabled for now to avoid curl dependency inside image)
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8080/api/actuator/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 60s
 
   # Frontend Service
   frontend:

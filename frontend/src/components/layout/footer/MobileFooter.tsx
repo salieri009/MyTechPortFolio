@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { CONTACT_INFO } from '../../../constants/contact'
+import { SocialIcon } from '@components/common/FooterComponents'
 
 const MobileFooterWrapper = styled.footer`
   display: none;
@@ -14,21 +15,6 @@ const MobileFooterWrapper = styled.footer`
     border-top: 1px solid ${props => props.theme.colors.border};
     position: relative;
     overflow: hidden;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, 
-        ${props => props.theme.colors.primary}15 0%, 
-        ${props => props.theme.colors.accent}10 100%
-      );
-      opacity: 0.5;
-      pointer-events: none;
-    }
   }
 `
 
@@ -82,83 +68,30 @@ const BrandName = styled.h3`
   color: ${props => props.theme.colors.text};
 `
 
-const QuickActions = styled.div`
+const MobileNav = styled.nav`
   display: flex;
   justify-content: center;
-  gap: ${props => props.theme.spacing[2]}px;
+  gap: ${props => props.theme.spacing[6]}px;
   margin-bottom: ${props => props.theme.spacing[4]}px;
-  flex-wrap: wrap;
-`
-
-const QuickButton = styled(Link)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: ${props => props.theme.spacing[1]}px;
-  padding: ${props => props.theme.spacing[2]}px ${props => props.theme.spacing[3]}px;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 12px;
-  text-decoration: none;
-  color: ${props => props.theme.colors.textSecondary};
-  font-size: ${props => props.theme.typography.fontSize.xs}px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  min-width: 70px;
-  backdrop-filter: blur(10px);
   
-  &:hover {
-    background: ${props => props.theme.colors.primary};
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  }
-  
-  span:first-child {
-    font-size: 20px;
-  }
-  
-  span:last-child {
-    font-size: ${props => props.theme.typography.fontSize.xs}px;
-    text-align: center;
-    line-height: 1.2;
+  a {
+    color: ${props => props.theme.colors.textSecondary};
+    text-decoration: none;
+    font-size: ${props => props.theme.typography.fontSize.sm}px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: ${props => props.theme.colors.primary[500]};
+    }
   }
 `
 
-const QuickIcon = styled.div`
-  font-size: 20px;
-  margin-bottom: 2px;
-`
-
-const ContactRow = styled.div`
+const SocialRow = styled.div`
   display: flex;
   justify-content: center;
-  gap: ${props => props.theme.spacing[4]}px;
+  gap: ${props => props.theme.spacing[3]}px;
   margin-bottom: ${props => props.theme.spacing[4]}px;
-  flex-wrap: wrap;
-`
-
-const ContactLink = styled.a`
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing[1]}px;
-  padding: ${props => props.theme.spacing[2]}px;
-  color: ${props => props.theme.colors.textSecondary};
-  text-decoration: none;
-  font-size: ${props => props.theme.typography.fontSize.xs}px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border-radius: 8px;
-  
-  &:hover {
-    color: ${props => props.theme.colors.primary};
-    background: rgba(255, 255, 255, 0.8);
-    transform: translateY(-1px);
-  }
-  
-  span:first-child {
-    font-size: 16px;
-  }
 `
 
 const Copyright = styled.p`
@@ -177,7 +110,6 @@ export function MobileFooter() {
   return (
     <MobileFooterWrapper>
       <MobileContent>
-        {/* 브랜드 섹션 */}
         <BrandSection>
           <LogoContainer to="/">
             <MobileLogo>MT</MobileLogo>
@@ -185,47 +117,18 @@ export function MobileFooter() {
           </LogoContainer>
         </BrandSection>
 
-        {/* 빠른 액션 버튼들 */}
-        <QuickActions>
-          <QuickButton to="/projects">
-            <QuickIcon>💼</QuickIcon>
-            <span>{t('navigation.projects')}</span>
-          </QuickButton>
-          <QuickButton to="/feedback">
-            <QuickIcon>💌</QuickIcon>
-            <span>{t('navigation.feedback')}</span>
-          </QuickButton>
-          <QuickButton to="/about">
-            <QuickIcon>👋</QuickIcon>
-            <span>{t('navigation.about')}</span>
-          </QuickButton>
-        </QuickActions>
+        <MobileNav>
+          <Link to="/projects">{t('navigation.projects')}</Link>
+          <Link to="/about">{t('navigation.about')}</Link>
+          <Link to="/feedback">{t('navigation.feedback')}</Link>
+        </MobileNav>
 
-        {/* 연락처 링크들 */}
-        <ContactRow>
-          <ContactLink href={`mailto:${CONTACT_INFO.email.student}`}>
-            <span>📧</span>
-            <span>Email</span>
-          </ContactLink>
-          <ContactLink 
-            href={CONTACT_INFO.linkedin.url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-          >
-            <span>💼</span>
-            <span>LinkedIn</span>
-          </ContactLink>
-          <ContactLink 
-            href={CONTACT_INFO.github.url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-          >
-            <span>🐙</span>
-            <span>GitHub</span>
-          </ContactLink>
-        </ContactRow>
+        <SocialRow>
+          <SocialIcon href={`mailto:${CONTACT_INFO.email.student}`}>✉️</SocialIcon>
+          <SocialIcon href={CONTACT_INFO.linkedin.url} target="_blank" rel="noopener noreferrer">in</SocialIcon>
+          <SocialIcon href={CONTACT_INFO.github.url} target="_blank" rel="noopener noreferrer">🐙</SocialIcon>
+        </SocialRow>
 
-        {/* 저작권 */}
         <Copyright>
           {t('footer.legal.copyright')}
         </Copyright>
