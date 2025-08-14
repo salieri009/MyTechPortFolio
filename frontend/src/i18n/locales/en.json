@@ -7,7 +7,12 @@
     "readMore": "Read more",
     "showMore": "Show more",
     "showLess": "Show less",
-    "swipeToChange": "Swipe to change language"
+    "swipeToChange": "Swipe to change language",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "success": "Success",
+    "failed": "Failed"
   },
   "navigation": {
     "home": "Home",
@@ -17,6 +22,7 @@
     "about": "About",
     "contact": "Contact",
     "login": "Login",
+    "feedback": "Feedback",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
@@ -61,17 +67,36 @@
   },
   "academics": {
     "title": "Academics",
+    "subtitle": "Learning Journey and Achievements",
     "course": "Course",
     "semester": "Semester",
     "grade": "Grade",
     "description": "Description",
-    "notFound": "Academic information not found"
+    "notFound": "Academic information not found",
+    "filters": {
+      "all": "All",
+      "semester": "Semester",
+      "major": "Major",
+      "general": "General"
+    },
+    "gradeInfo": {
+      "grade": "Grade",
+      "semester": "Semester",
+      "credits": "Credits"
+    }
   },
   "about": {
     "title": "About",
+    "subtitle": "Get to know me",
     "greeting": "Hello, I'm Jungwook!",
     "description": "I'm a developer who loves learning and applying new technologies. Currently focusing on web application development.",
     "skills": "Tech Stack",
+    "sections": {
+      "introduction": "Introduction",
+      "skills": "Skills",
+      "experience": "Experience",
+      "contact": "Contact"
+    },
     "contact": {
       "title": "Contact Information",
       "email": "Email",
@@ -80,12 +105,112 @@
       "personalLinkedIn": "Personal LinkedIn"
     }
   },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Feel free to reach out anytime",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "required": "Required",
+      "placeholder": {
+        "name": "Enter your name",
+        "email": "Email address for reply",
+        "subject": "Inquiry subject",
+        "message": "Please enter detailed content..."
+      }
+    }
+  },
+  "feedback": {
+    "title": "Send Feedback",
+    "subtitle": "Feel free to share your thoughts and suggestions about this portfolio. Your valuable feedback helps create a better portfolio.",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "category": "Category",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send Feedback",
+      "submitting": "Sending...",
+      "placeholder": {
+        "name": "Enter your name",
+        "email": "Email address for reply",
+        "subject": "Feedback subject",
+        "message": "Please enter detailed feedback...",
+        "category": "Select a category"
+      },
+      "categories": {
+        "general": "General Feedback",
+        "technical": "Technical Suggestion",
+        "design": "Design Improvement",
+        "collaboration": "Collaboration Proposal",
+        "bug": "Bug Report",
+        "other": "Other"
+      }
+    },
+    "success": {
+      "title": "Feedback has been sent!",
+      "message": "Thank you for your valuable feedback. I will respond as soon as possible.",
+      "newFeedback": "Write new feedback"
+    }
+  },
+  "footer": {
+    "branding": {
+      "name": "MyTech",
+      "tagline": "Where technology meets creativity, designing the future as a developer's portfolio",
+      "builtWith": "Built with React & Spring Boot"
+    },
+    "sections": {
+      "navigation": "Navigation",
+      "contact": "Contact",
+      "social": "Social",
+      "legal": "Legal"
+    },
+    "contact": {
+      "title": "Contact",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "linkedin": "LinkedIn Profile",
+      "feedbackButton": "Send Feedback"
+    },
+    "social": {
+      "title": "Social Media",
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "twitter": "Twitter",
+      "instagram": "Instagram"
+    },
+    "legal": {
+      "copyright": "© 2024 Jungwook Van. All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "licenses": "Licenses"
+    }
+  },
+  "techStack": {
+    "title": "Tech Stack",
+    "subtitle": "Technologies I use",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "database": "Database",
+      "devops": "DevOps",
+      "tools": "Tools"
+    }
+  },
   "recruiter": {
+    "title": "Recruiter Dashboard",
+    "subtitle": "Key competencies and performance metrics at a glance",
     "personalInfo": {
       "title": "Personal Information",
       "name": "Jungwook Van",
       "jobTitle": "Full Stack Developer",
-      "experience": "2 years experience",
+      "experience": "2 Years Experience",
       "location": "Sydney, Australia",
       "stats": {
         "projects": "Projects",
@@ -103,13 +228,13 @@
       "subtitle": "Key competencies and performance metrics at a glance",
       "sections": {
         "coreSkills": "Core Tech Stack",
-        "expertise": "Expertise Areas",
+        "expertise": "Expertise",
         "achievements": "Key Achievements & Impact"
       },
       "achievements": {
         "performance": {
           "title": "Performance Optimization",
-          "description": "Web application loading speed improvement",
+          "description": "Improved web application loading speed",
           "impact": "40% reduction in loading time"
         },
         "userExperience": {
@@ -119,12 +244,12 @@
         },
         "codeQuality": {
           "title": "Code Quality Improvement",
-          "description": "TypeScript adoption and test coverage increase",
+          "description": "TypeScript adoption and increased test coverage",
           "impact": "60% reduction in bug occurrence"
         }
       },
       "resumeDownload": {
-        "label": "Resume Download",
+        "label": "Download Resume",
         "korean": "Download Korean Resume",
         "english": "Download English Resume",
         "japanese": "Download Japanese Resume"
@@ -133,7 +258,7 @@
   },
   "showcase": {
     "title": "Featured Projects",
-    "subtitle": "Explore my diverse portfolio across different domains",
+    "subtitle": "Explore diverse portfolios across different fields",
     "threejs": {
       "title": "3D & Interactive",
       "description": "Immersive 3D experiences and interactive visualizations"
@@ -147,7 +272,7 @@
       "description": "Interactive games and real-time applications"
     },
     "techStack": {
-      "default": "Hover over a project to see technologies",
+      "default": "Hover over projects to see technologies",
       "threejs": "3D Development Technologies",
       "software": "Software Development Stack", 
       "gamedev": "Game Development Tools"

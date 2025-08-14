@@ -7,7 +7,12 @@
     "readMore": "詳しく見る",
     "showMore": "もっと見る",
     "showLess": "閉じる",
-    "swipeToChange": "スワイプして言語を変更"
+    "swipeToChange": "スワイプして言語を変更",
+    "submit": "送信",
+    "cancel": "キャンセル",
+    "confirm": "確認",
+    "success": "成功",
+    "failed": "失敗"
   },
   "navigation": {
     "home": "ホーム",
@@ -17,6 +22,7 @@
     "about": "自己紹介",
     "contact": "お問い合わせ",
     "login": "ログイン",
+    "feedback": "フィードバック",
     "openMenu": "メニューを開く",
     "closeMenu": "メニューを閉じる"
   },
@@ -31,28 +37,6 @@
       "linkedin": "LinkedIn",
       "contact": "お問い合わせ",
       "techStack": "技術スタック"
-    }
-  },
-  "showcase": {
-    "title": "注目のプロジェクト",
-    "subtitle": "異なる分野での多様なポートフォリオをご覧ください",
-    "threejs": {
-      "title": "3D & インタラクティブ",
-      "description": "没入感のある3D体験とインタラクティブ視覚化"
-    },
-    "software": {
-      "title": "ソフトウェア開発", 
-      "description": "フルスタックアプリケーションとエンタープライズソリューション"
-    },
-    "gamedev": {
-      "title": "ゲーム開発",
-      "description": "インタラクティブゲームとリアルタイムアプリケーション"
-    },
-    "techStack": {
-      "default": "プロジェクトにマウスをホバーして技術を確認",
-      "threejs": "3D開発技術",
-      "software": "ソフトウェア開発スタック", 
-      "gamedev": "ゲーム開発ツール"
     }
   },
   "projects": {
@@ -83,17 +67,36 @@
   },
   "academics": {
     "title": "学業",
+    "subtitle": "学習の軌跡と成果",
     "course": "コース",
     "semester": "学期",
     "grade": "成績",
     "description": "説明",
-    "notFound": "学業情報が見つかりません"
+    "notFound": "学業情報が見つかりません",
+    "filters": {
+      "all": "すべて",
+      "semester": "学期",
+      "major": "専攻",
+      "general": "教養"
+    },
+    "gradeInfo": {
+      "grade": "成績",
+      "semester": "学期",
+      "credits": "単位"
+    }
   },
   "about": {
     "title": "自己紹介",
+    "subtitle": "私について知ってください",
     "greeting": "こんにちは、ジョンウックです！",
     "description": "新しい技術を学び、それを活用することが好きな開発者です。現在はWebアプリケーション開発に集中しています。",
     "skills": "技術スタック",
+    "sections": {
+      "introduction": "自己紹介",
+      "skills": "スキル",
+      "experience": "経験",
+      "contact": "連絡先"
+    },
     "contact": {
       "title": "連絡先情報",
       "email": "メール",
@@ -102,7 +105,107 @@
       "personalLinkedIn": "個人LinkedIn"
     }
   },
+  "contact": {
+    "title": "お問い合わせ",
+    "subtitle": "いつでもお気軽にご連絡ください",
+    "email": "メール",
+    "phone": "電話",
+    "location": "場所",
+    "form": {
+      "name": "名前",
+      "email": "メール",
+      "subject": "件名",
+      "message": "メッセージ",
+      "required": "必須",
+      "placeholder": {
+        "name": "お名前を入力してください",
+        "email": "返信用メールアドレス",
+        "subject": "お問い合わせ件名",
+        "message": "詳細な内容を入力してください..."
+      }
+    }
+  },
+  "feedback": {
+    "title": "フィードバック送信",
+    "subtitle": "このポートフォリオに対するご意見やご提案を自由にお聞かせください。皆様の貴重なフィードバックがより良いポートフォリオ作りに役立ちます。",
+    "form": {
+      "name": "名前",
+      "email": "メール",
+      "category": "カテゴリー",
+      "subject": "件名",
+      "message": "内容",
+      "submit": "フィードバック送信",
+      "submitting": "送信中...",
+      "placeholder": {
+        "name": "お名前を入力してください",
+        "email": "返信用メールアドレス",
+        "subject": "フィードバック件名",
+        "message": "詳細なフィードバック内容を入力してください...",
+        "category": "カテゴリーを選択してください"
+      },
+      "categories": {
+        "general": "一般的なフィードバック",
+        "technical": "技術的提案",
+        "design": "デザイン改善",
+        "collaboration": "協業提案",
+        "bug": "バグレポート",
+        "other": "その他"
+      }
+    },
+    "success": {
+      "title": "フィードバックが送信されました！",
+      "message": "貴重なご意見をありがとうございます。できるだけ早くご返答いたします。",
+      "newFeedback": "新しいフィードバックを作成"
+    }
+  },
+  "footer": {
+    "branding": {
+      "name": "MyTech",
+      "tagline": "技術と創造性が出会う場所、開発者として未来を設計するポートフォリオ",
+      "builtWith": "React & Spring Bootで構築"
+    },
+    "sections": {
+      "navigation": "ナビゲーション",
+      "contact": "連絡先",
+      "social": "ソーシャル",
+      "legal": "法的情報"
+    },
+    "contact": {
+      "title": "連絡先",
+      "email": "メール",
+      "phone": "電話",
+      "location": "場所",
+      "linkedin": "LinkedInプロフィール",
+      "feedbackButton": "フィードバック送信"
+    },
+    "social": {
+      "title": "ソーシャルメディア",
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "twitter": "Twitter",
+      "instagram": "Instagram"
+    },
+    "legal": {
+      "copyright": "© 2024 ジョンウック・バン. 全権利保有.",
+      "privacy": "プライバシーポリシー",
+      "terms": "利用規約",
+      "licenses": "ライセンス"
+    }
+  },
+  "techStack": {
+    "title": "技術スタック",
+    "subtitle": "使用している技術",
+    "categories": {
+      "frontend": "フロントエンド",
+      "backend": "バックエンド",
+      "database": "データベース",
+      "devops": "DevOps",
+      "tools": "ツール"
+    }
+  },
   "recruiter": {
+    "title": "採用担当者向けダッシュボード",
+    "subtitle": "即座に確認可能な核心的能力と成果指標",
     "personalInfo": {
       "title": "個人情報",
       "name": "ジョンウック・バン",
@@ -151,6 +254,28 @@
         "english": "英語履歴書ダウンロード",
         "japanese": "日本語履歴書ダウンロード"
       }
+    }
+  },
+  "showcase": {
+    "title": "注目のプロジェクト",
+    "subtitle": "異なる分野での多様なポートフォリオをご覧ください",
+    "threejs": {
+      "title": "3D & インタラクティブ",
+      "description": "没入感のある3D体験とインタラクティブ視覚化"
+    },
+    "software": {
+      "title": "ソフトウェア開発", 
+      "description": "フルスタックアプリケーションとエンタープライズソリューション"
+    },
+    "gamedev": {
+      "title": "ゲーム開発",
+      "description": "インタラクティブゲームとリアルタイムアプリケーション"
+    },
+    "techStack": {
+      "default": "プロジェクトにマウスをホバーして技術を確認",
+      "threejs": "3D開発技術",
+      "software": "ソフトウェア開発スタック", 
+      "gamedev": "ゲーム開発ツール"
     }
   },
   "language": {

@@ -117,3 +117,6 @@ export const Container = styled.div`
     padding: 0 16px;
   }
 `
+
+// Footer 컴포넌트들 re-export
+export * from './FooterComponents'

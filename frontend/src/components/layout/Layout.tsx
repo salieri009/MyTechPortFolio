@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Header } from './Header'
+import { Footer } from './Footer'
 import { GlobalStyle } from '@styles/GlobalStyle'
 
 const LayoutWrapper = styled.div`
@@ -29,6 +30,7 @@ export function Layout({ children }: LayoutProps) {
       <LayoutWrapper>
         <Header />
         <Main>{children}</Main>
+        <Footer />
       </LayoutWrapper>
     </>
   )

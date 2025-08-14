@@ -7,6 +7,7 @@ import { ProjectsPage } from '@pages/ProjectsPage'
 import { ProjectDetailPage } from '@pages/ProjectDetailPage'
 import { AcademicsPage } from '@pages/AcademicsPage'
 import { AboutPage } from '@pages/AboutPage'
+import { FeedbackPage } from '@pages/FeedbackPage'
 import { LoginPage } from './pages/LoginPage'
 import { lightTheme, darkTheme } from '@styles/theme'
 import { useThemeStore } from './stores/themeStore'
@@ -40,6 +41,7 @@ function App() {
               <Route path="/projects/:id" element={<ProjectDetailPage />} />
               <Route path="/academics" element={<AcademicsPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/feedback" element={<FeedbackPage />} />
             </Routes>
           </Layout>
         } />
