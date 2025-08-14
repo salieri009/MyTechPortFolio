@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Container } from '@components/ui/Container'
 import { Button, Card } from '@components/common'
 import { analytics } from '@services/analytics'
+import { sendFeedbackEmail, initEmailService } from '@services/email'
 
 const FeedbackWrapper = styled.div`
   min-height: 100vh;
@@ -165,6 +166,11 @@ export function FeedbackPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
 
+  // 컴포넌트 마운트 시 EmailJS 초기화
+  useEffect(() => {
+    initEmailService()
+  }, [])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
       ...prev,
@@ -177,23 +183,30 @@ export function FeedbackPage() {
     setIsSubmitting(true)
 
     try {
-      // 여기서 실제 이메일 전송 로직 구현
-      // 예: EmailJS, 백엔드 API 호출 등
+      // 실제 이메일 전송
+      const response = await sendFeedbackEmail(formData)
       
-      // EmailJS 사용 예시:
-      // await emailjs.send('service_id', 'template_id', formData, 'public_key')
+      if (response.success) {
+        setIsSubmitted(true)
+        
+        // 폼 리셋
+        setFormData({
+          name: '',
+          email: '',
+          category: '',
+          subject: '',
+          message: ''
+        })
+        
+        console.log('피드백이 성공적으로 전송되었습니다!', response.messageId)
+      } else {
+        throw new Error(response.error || '이메일 전송에 실패했습니다.')
+      }
       
-      // 임시로 콘솔 출력
-      console.log('피드백 데이터:', formData)
-      
-      // Analytics 추적
-      analytics.contactClick('email')
-      
-      // 성공 처리
-      setIsSubmitted(true)
     } catch (error) {
       console.error('피드백 전송 실패:', error)
       analytics.error('feedback_submission_failed', 'api')
+      alert('죄송합니다. 피드백 전송에 실패했습니다. 잠시 후 다시 시도해주세요.')
     } finally {
       setIsSubmitting(false)
     }
