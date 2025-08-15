@@ -3,6 +3,7 @@ package com.mytechfolio.portfolio.controller;
 import com.mytechfolio.portfolio.dto.auth.LoginRequest;
 import com.mytechfolio.portfolio.dto.auth.LoginResponse;
 import com.mytechfolio.portfolio.dto.auth.TwoFactorVerificationRequest;
+import com.mytechfolio.portfolio.dto.response.ApiResponse;
 import com.mytechfolio.portfolio.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,17 +62,22 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refreshToken(
+    public ResponseEntity<ApiResponse<LoginResponse>> refreshToken(
             @RequestHeader("Authorization") String refreshToken
     ) {
-        log.info("Token refresh attempt");
-        
-        String token = refreshToken.replace("Bearer ", "");
-        LoginResponse response = authService.refreshToken(token);
-        
-        log.info("Token refresh successful");
-        
-        return ResponseEntity.ok(response);
+        try {
+            log.info("Token refresh attempt");
+            
+            String token = refreshToken.replace("Bearer ", "");
+            LoginResponse response = authService.refreshToken(token);
+            
+            log.info("Token refresh successful");
+            
+            return ResponseEntity.ok(ApiResponse.success(response));
+        } catch (Exception e) {
+            log.error("Token refresh failed", e);
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
     }
 
     @PostMapping("/logout")
@@ -96,5 +102,62 @@ public class AuthController {
         }
         
         return ResponseEntity.status(401).build();
+    }
+
+    // Development login endpoints
+    @GetMapping("/login")
+    public ResponseEntity<String> getLoginPage() {
+        return ResponseEntity.ok("""
+            <html>
+            <head><title>Login - MyPortfolio</title></head>
+            <body>
+                <h1>MyPortfolio Login</h1>
+                <p>Choose your login method:</p>
+                <a href="/api/oauth2/authorization/google" style="padding: 10px 20px; background: #4285f4; color: white; text-decoration: none; border-radius: 5px;">
+                    Login with Google
+                </a>
+                <br><br>
+                <a href="/api/techstacks" style="padding: 10px 20px; background: #34a853; color: white; text-decoration: none; border-radius: 5px;">
+                    View Tech Stacks (Public)
+                </a>
+            </body>
+            </html>
+            """);
+    }
+
+    @GetMapping("/success")
+    public ResponseEntity<String> getSuccessPage() {
+        return ResponseEntity.ok("""
+            <html>
+            <head><title>Login Success - MyPortfolio</title></head>
+            <body>
+                <h1>Login Successful! 🎉</h1>
+                <p>You are now logged in.</p>
+                <a href="/api/techstacks" style="padding: 10px 20px; background: #34a853; color: white; text-decoration: none; border-radius: 5px;">
+                    View Tech Stacks
+                </a>
+                <br><br>
+                <a href="/api/auth/logout" style="padding: 10px 20px; background: #ea4335; color: white; text-decoration: none; border-radius: 5px;">
+                    Logout
+                </a>
+            </body>
+            </html>
+            """);
+    }
+
+    @GetMapping("/failure")
+    public ResponseEntity<String> getFailurePage() {
+        return ResponseEntity.ok("""
+            <html>
+            <head><title>Login Failed - MyPortfolio</title></head>
+            <body>
+                <h1>Login Failed ❌</h1>
+                <p>Please try again.</p>
+                <a href="/api/auth/login" style="padding: 10px 20px; background: #4285f4; color: white; text-decoration: none; border-radius: 5px;">
+                    Try Again
+                </a>
+            </body>
+            </html>
+            """);
     }
 }
