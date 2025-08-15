@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-const GOOGLE_CLIENT_ID = import.meta.env?.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id'
+const GOOGLE_CLIENT_ID = import.meta.env?.VITE_GOOGLE_CLIENT_ID || '1098017074065-i5kgtgj5upsvh06vtmhfi2ba78hh25sc.apps.googleusercontent.com'
 const API_BASE_URL = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:8080/api'
 
 export interface LoginRequest {

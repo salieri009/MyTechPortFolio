@@ -185,6 +185,12 @@ export function GoogleLoginButton({ onSuccess, onError }: GoogleLoginProps) {
 
   const initializeGoogleSignIn = async () => {
     try {
+      console.log('=== 환경변수 확인 ===')
+      console.log('VITE_GOOGLE_CLIENT_ID:', import.meta.env.VITE_GOOGLE_CLIENT_ID)
+      console.log('NODE_ENV:', import.meta.env.MODE)
+      console.log('DEV:', import.meta.env.DEV)
+      console.log('==================')
+      
       await authService.initializeGoogleSignIn()
       
       if (window.google && googleButtonRef.current) {

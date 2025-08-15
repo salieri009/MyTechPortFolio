@@ -83,7 +83,7 @@ export class SecurityMonitor {
     setInterval(() => {
       devtools = false
       console.log(element)
-      console.clear()
+      // console.clear()
     }, 1000)
   }
 
