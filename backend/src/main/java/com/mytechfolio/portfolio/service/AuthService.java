@@ -6,11 +6,13 @@ import com.mytechfolio.portfolio.dto.auth.LoginRequest;
 import com.mytechfolio.portfolio.dto.auth.LoginResponse;
 import com.mytechfolio.portfolio.dto.auth.TwoFactorVerificationRequest;
 import com.mytechfolio.portfolio.security.service.GoogleOAuthService;
+import com.mytechfolio.portfolio.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +23,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final GoogleOAuthService googleOAuthService;
+    private final JwtUtil jwtUtil;
 
     public LoginResponse login(LoginRequest request) {
         log.info("Login attempt for email: {}", request.getEmail());
@@ -84,8 +87,8 @@ public class AuthService {
         log.info("2FA verification for session: {}", request.getSessionId());
         
         return LoginResponse.builder()
-                .accessToken(generateDemoToken())
-                .refreshToken(generateDemoToken())
+                .accessToken(generateAccessTokenFor(user))
+                .refreshToken(generateRefreshTokenFor(user))
                 .expiresIn(3600L)
                 .build();
     }
@@ -93,8 +96,8 @@ public class AuthService {
     public LoginResponse refreshToken(String refreshToken) {
         // For demo purposes, generate new tokens
         return LoginResponse.builder()
-                .accessToken(generateDemoToken())
-                .refreshToken(generateDemoToken())
+                .accessToken(generateAccessTokenForEmail(extractEmailFromRefreshToken(refreshToken)))
+                .refreshToken(refreshToken)
                 .expiresIn(3600L)
                 .build();
     }
@@ -106,11 +109,14 @@ public class AuthService {
     
     public Object getUserProfile(String token) {
         log.info("Get user profile for token: {}", token.substring(0, Math.min(10, token.length())));
-        // For demo purposes, return a simple profile
+        if (!jwtUtil.isTokenValid(token)) {
+            throw new RuntimeException("Invalid token");
+        }
+        var claims = jwtUtil.parseClaims(token);
         return java.util.Map.of(
-            "email", "demo@example.com", 
-            "name", "Demo User",
-            "role", "USER"
+            "email", claims.getSubject(),
+            "role", String.valueOf(claims.getOrDefault("role", "USER")),
+            "roles", claims.getOrDefault("roles", java.util.List.of())
         );
     }
 
@@ -144,19 +150,45 @@ public class AuthService {
 
     private LoginResponse buildLoginResponse(User user) {
         return LoginResponse.builder()
-                .accessToken(generateDemoToken())
-                .refreshToken(generateDemoToken())
+                .accessToken(generateAccessTokenFor(user))
+                .refreshToken(generateRefreshTokenFor(user))
                 .expiresIn(3600L)
+                .user(LoginResponse.UserInfo.builder()
+                        .id(null)
+                        .email(user.getEmail())
+                        .displayName(user.getDisplayName() != null ? user.getDisplayName() : user.getName())
+                        .profileImageUrl(user.getProfileImageUrl())
+                        .role(user.getRole() != null ? user.getRole().name() : "USER")
+                        .twoFactorEnabled(Boolean.TRUE.equals(user.isTwoFactorEnabled()))
+                        .build())
                 .build();
     }
 
-    private String generateDemoToken() {
-        return "demo_token_" + UUID.randomUUID().toString().replace("-", "");
+    private String generateAccessTokenFor(User user) {
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRole() != null ? user.getRole().name() : "USER");
+        claims.put("roles", user.getRoles() != null ? user.getRoles() : java.util.List.of());
+        return jwtUtil.generateAccessToken(user.getEmail(), claims);
+    }
+
+    private String generateRefreshTokenFor(User user) {
+        return jwtUtil.generateRefreshToken(user.getEmail());
+    }
+
+    private String generateAccessTokenForEmail(String email) {
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("role", "USER");
+        claims.put("roles", java.util.List.of());
+        return jwtUtil.generateAccessToken(email, claims);
+    }
+
+    private String extractEmailFromRefreshToken(String refreshToken) {
+        var claims = jwtUtil.parseClaims(refreshToken);
+        return claims.getSubject();
     }
 
     public boolean validateToken(String token) {
-        // For demo purposes, accept any token that starts with "demo_"
-        return token != null && token.startsWith("demo_");
+        return token != null && jwtUtil.isTokenValid(token);
     }
 
     public Optional<User> getCurrentUser(String token) {

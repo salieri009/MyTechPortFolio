@@ -20,7 +20,7 @@ public class LoginResponse {
     private boolean requiresTwoFactor;
     private String sessionId;
     
-    private UserInfo user;
+    private UserInfo userInfo;
     
     @Data
     @Builder
