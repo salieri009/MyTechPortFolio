@@ -40,29 +40,29 @@
     }
   },
   "projects": {
-    "title": "プロジェクト",
-    "featuredTitle": "注目のプロジェクト",
-    "allProjects": "すべてのプロジェクト",
+    "portfolioWebsite": {
+      "title": "ポートフォリオウェブサイト",
+      "summary": "レスポンシブな個人ポートフォリオウェブサイト - HTML5, CSS3, JavaScript"
+    },
+    "fiveFloors": {
+      "title": "The Five Floors",
+      "summary": "4人チームプロジェクト - ゲーム開発とレベルデザイン"
+    },
+    "iotbay": {
+      "title": "IoTBay - 電子商取引プラットフォーム",
+      "summary": "IoTデバイス電子商取引プラットフォーム - Java, JSP, Maven"
+    },
+    "loading": "プロジェクトを読み込み中...",
     "filters": {
-      "techStack": "技術スタック",
-      "year": "年",
-      "sort": "並び順",
-      "latest": "最新",
-      "oldest": "最古"
+      "allYears": "すべての年",
+      "sort": {
+        "newest": "最新",
+        "oldest": "古い順"
+      }
     },
-    "notFound": "プロジェクトが見つかりません",
-    "backToProjects": "← プロジェクト一覧に戻る",
-    "links": {
-      "github": "GitHub",
-      "demo": "ライブデモ"
-    },
-    "sections": {
-      "overview": "概要",
-      "myRole": "私の役割",
-      "techChoice": "技術選択",
-      "problemSolution": "問題と解決策",
-      "demo": "デモ",
-      "relatedAcademics": "関連する学業"
+    "empty": {
+      "title": "プロジェクトが見つかりません",
+      "description": "選択したフィルターに一致するプロジェクトがありません。"
     }
   },
   "academics": {
@@ -288,21 +288,25 @@
       "title": "ポートフォリオウェブサイト",
       "summary": "レスポンシブな個人ポートフォリオウェブサイト - HTML5, CSS3, JavaScript"
     },
-    "threejsProject": {
-      "title": "Three.jsプロジェクト",
-      "summary": "Three.jsとVue.jsを活用したインタラクティブ3Dウェブアプリケーション"
-    },
     "fiveFloors": {
       "title": "The Five Floors",
       "summary": "4人チームプロジェクト - ゲーム開発とレベルデザイン"
     },
-    "toyGundamBoard": {
-      "title": "Toy Gundam Board",
-      "summary": "CursorAIとBoltsを活用したAIベースアプリケーション開発"
-    },
     "iotbay": {
       "title": "IoTBay - 電子商取引プラットフォーム",
       "summary": "IoTデバイス電子商取引プラットフォーム - Java, JSP, Maven"
+    },
+    "loading": "プロジェクトを読み込み中...",
+    "filters": {
+      "allYears": "すべての年",
+      "sort": {
+        "newest": "最新",
+        "oldest": "古い順"
+      }
+    },
+    "empty": {
+      "title": "プロジェクトが見つかりません",
+      "description": "選択したフィルターに一致するプロジェクトがありません。"
     }
   },
   "language": {

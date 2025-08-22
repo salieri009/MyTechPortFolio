@@ -4,7 +4,6 @@ import com.mytechfolio.portfolio.domain.User;
 import com.mytechfolio.portfolio.repository.UserRepository;
 import com.mytechfolio.portfolio.dto.auth.LoginRequest;
 import com.mytechfolio.portfolio.dto.auth.LoginResponse;
-import com.mytechfolio.portfolio.dto.auth.TwoFactorVerificationRequest;
 import com.mytechfolio.portfolio.security.service.GoogleOAuthService;
 import com.mytechfolio.portfolio.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -82,17 +81,6 @@ public class AuthService {
         return buildLoginResponse(user);
     }
 
-    public LoginResponse verifyTwoFactor(TwoFactorVerificationRequest request) {
-        // For demo purposes, just return a successful login
-        log.info("2FA verification for session: {}", request.getSessionId());
-        
-        return LoginResponse.builder()
-                .accessToken(generateAccessTokenFor(user))
-                .refreshToken(generateRefreshTokenFor(user))
-                .expiresIn(3600L)
-                .build();
-    }
-    
     public LoginResponse refreshToken(String refreshToken) {
         // For demo purposes, generate new tokens
         return LoginResponse.builder()
@@ -153,7 +141,7 @@ public class AuthService {
                 .accessToken(generateAccessTokenFor(user))
                 .refreshToken(generateRefreshTokenFor(user))
                 .expiresIn(3600L)
-                .user(LoginResponse.UserInfo.builder()
+                .userInfo(LoginResponse.UserInfo.builder()
                         .id(null)
                         .email(user.getEmail())
                         .displayName(user.getDisplayName() != null ? user.getDisplayName() : user.getName())

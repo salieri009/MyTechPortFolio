@@ -40,29 +40,29 @@
     }
   },
   "projects": {
-    "title": "Projects",
-    "featuredTitle": "Featured Projects",
-    "allProjects": "All Projects",
+    "portfolioWebsite": {
+      "title": "Portfolio Website",
+      "summary": "Responsive personal portfolio website - HTML5, CSS3, JavaScript"
+    },
+    "fiveFloors": {
+      "title": "The Five Floors",
+      "summary": "4-member team project - Game development and level design"
+    },
+    "iotbay": {
+      "title": "IoTBay - E-commerce Platform",
+      "summary": "IoT devices e-commerce platform - Java, JSP, Maven"
+    },
+    "loading": "Loading projects...",
     "filters": {
-      "techStack": "Tech Stack",
-      "year": "Year",
-      "sort": "Sort",
-      "latest": "Latest",
-      "oldest": "Oldest"
+      "allYears": "All Years",
+      "sort": {
+        "newest": "Newest",
+        "oldest": "Oldest"
+      }
     },
-    "notFound": "Project not found",
-    "backToProjects": "← Back to Projects",
-    "links": {
-      "github": "GitHub",
-      "demo": "Live Demo"
-    },
-    "sections": {
-      "overview": "Overview",
-      "myRole": "My Role",
-      "techChoice": "Technology Choices",
-      "problemSolution": "Problem & Solution",
-      "demo": "Demo",
-      "relatedAcademics": "Related Academics"
+    "empty": {
+      "title": "No projects found",
+      "description": "No projects match the selected filters."
     }
   },
   "academics": {
@@ -288,21 +288,25 @@
       "title": "Portfolio Website",
       "summary": "Responsive personal portfolio website - HTML5, CSS3, JavaScript"
     },
-    "threejsProject": {
-      "title": "Three.js Project",
-      "summary": "Interactive 3D web application using Three.js and Vue.js"
-    },
     "fiveFloors": {
       "title": "The Five Floors",
       "summary": "4-member team project - Game development and level design"
     },
-    "toyGundamBoard": {
-      "title": "Toy Gundam Board",
-      "summary": "AI-based application development using CursorAI and Bolts"
-    },
     "iotbay": {
       "title": "IoTBay - E-commerce Platform",
       "summary": "IoT devices e-commerce platform - Java, JSP, Maven"
+    },
+    "loading": "Loading projects...",
+    "filters": {
+      "allYears": "All Years",
+      "sort": {
+        "newest": "Newest",
+        "oldest": "Oldest"
+      }
+    },
+    "empty": {
+      "title": "No projects found",
+      "description": "No projects match the selected filters."
     }
   },
   "language": {

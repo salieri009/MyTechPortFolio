@@ -13,11 +13,11 @@ const GITHUB_PROJECTS: ProjectSummary[] = [
   },
   {
     id: 2,
-    title: "projects.threejsProject.title",
-    summary: "projects.threejsProject.summary",
-    techStacks: ["Three.js", "Vue.js", "JavaScript", "3D Graphics"],
-    startDate: "2025-03-01",
-    endDate: "2025-12-31"
+    title: "ThreeJSUTS26",
+    summary: "Three.js와 WebGL을 이용한 3D 웹 그래픽스 프로젝트",
+    techStacks: ["Three.js", "JavaScript", "WebGL", "HTML5", "CSS3"],
+    startDate: "2023-02-01",
+    endDate: "2023-05-31"
   },
   {
     id: 3,
@@ -29,11 +29,11 @@ const GITHUB_PROJECTS: ProjectSummary[] = [
   },
   {
     id: 4,
-    title: "projects.toyGundamBoard.title",
-    summary: "projects.toyGundamBoard.summary",
-    techStacks: ["CursorAI", "Bolts", "Rapid Development", "AI Integration"],
-    startDate: "2025-07-01",
-    endDate: "2025-07-31"
+    title: "ToyProject-Gundam",
+    summary: "TypeScript와 React를 활용한 건담 정보 웹 애플리케이션",
+    techStacks: ["TypeScript", "React", "CSS", "JavaScript"],
+    startDate: "2023-09-01",
+    endDate: "2023-11-30"
   },
   {
     id: 5,
@@ -50,46 +50,6 @@ const GITHUB_PROJECTS: ProjectSummary[] = [
     techStacks: ["React", "TypeScript", "Spring Boot", "JPA", "H2", "Tailwind CSS"],
     startDate: "2024-01-01",
     endDate: "2024-12-31"
-  },
-  {
-    id: 7,
-    title: "ToyProject-Gundam",
-    summary: "TypeScript와 React를 활용한 건담 정보 웹 애플리케이션",
-    techStacks: ["TypeScript", "React", "CSS", "JavaScript"],
-    startDate: "2023-09-01",
-    endDate: "2023-11-30"
-  },
-  {
-    id: 8,
-    title: "ThreeJSUTS26",
-    summary: "Three.js와 WebGL을 이용한 3D 웹 그래픽스 프로젝트",
-    techStacks: ["Three.js", "JavaScript", "WebGL", "HTML5", "CSS3"],
-    startDate: "2023-02-01",
-    endDate: "2023-05-31"
-  },
-  {
-    id: 9,
-    title: "MyTistoryBlog",
-    summary: "개인 기술 블로그 템플릿 및 커스터마이징",
-    techStacks: ["HTML", "CSS", "JavaScript", "Tistory"],
-    startDate: "2023-01-01",
-    endDate: "2023-12-31"
-  },
-  {
-    id: 10,
-    title: "NomadCoder-Zoom-Clone",
-    summary: "Node.js와 Socket.io를 활용한 화상회의 앱 클론",
-    techStacks: ["Node.js", "Socket.io", "Express", "WebRTC", "JavaScript"],
-    startDate: "2022-08-01",
-    endDate: "2022-10-31"
-  },
-  {
-    id: 11,
-    title: "NomadCoder-Momentum",
-    summary: "바닐라 JavaScript로 구현한 Chrome Momentum 확장프로그램 클론",
-    techStacks: ["JavaScript", "HTML5", "CSS3", "Web APIs"],
-    startDate: "2022-05-01",
-    endDate: "2022-07-31"
   }
 ]
 
@@ -106,12 +66,12 @@ const PROJECT_DETAILS: Record<number, ProjectDetail> = {
   },
   2: {
     id: 2,
-    title: "projects.threejsProject.title",
-    summary: "projects.threejsProject.summary",
-    description: `## 프로젝트 개요\nThree.js와 Vue.js를 활용하여 개발한 인터랙티브 3D 웹 애플리케이션입니다.\n\n## 주요 기능\n- 3D 씬 및 애니메이션 디자인\n- 사용자 인터랙션 통합\n- 3D 그래픽스 및 웹 렌더링 기술 구현\n- 실시간 3D 시각화\n\n## 기술적 특징\n- 3D Graphics: Three.js\n- Frontend Framework: Vue.js\n- Web Rendering: WebGL\n- Interactive Design`,
-    techStacks: ["Three.js", "Vue.js", "JavaScript", "3D Graphics"],
-    startDate: "2025-03-01",
-    endDate: "2025-12-31"
+    title: "ThreeJSUTS26",
+    summary: "Three.js와 WebGL을 이용한 3D 웹 그래픽스 프로젝트",
+    description: `## 프로젝트 개요\nThree.js와 WebGL을 활용하여 개발한 3D 웹 그래픽스 프로젝트입니다.\n\n## 주요 기능\n- 3D 씬 렌더링\n- WebGL 기반 그래픽스\n- 인터랙티브 3D 요소\n- 웹 브라우저 최적화\n\n## 기술적 특징\n- 3D Graphics: Three.js\n- Web Rendering: WebGL\n- Frontend: HTML5, CSS3, JavaScript\n- 3D Visualization`,
+    techStacks: ["Three.js", "JavaScript", "WebGL", "HTML5", "CSS3"],
+    startDate: "2023-02-01",
+    endDate: "2023-05-31"
   },
   3: {
     id: 3,
@@ -125,12 +85,12 @@ const PROJECT_DETAILS: Record<number, ProjectDetail> = {
   },
   4: {
     id: 4,
-    title: "projects.toyGundamBoard.title",
-    summary: "projects.toyGundamBoard.summary",
-    description: `## 프로젝트 개요\nCursorAI와 Bolts를 활용하여 빠른 애플리케이션 개발을 테스트한 토이 프로젝트입니다.\n\n## 주요 기능\n- AI 기반 입력 처리 실험\n- 인터랙티브 기능 구현\n- 빠른 애플리케이션 개발 테스트\n- AI 통합 개발 경험\n\n## 기술적 특징\n- AI Integration: CursorAI\n- Rapid Development: Bolts\n- Interactive Functionality\n- Repository: salieri009/ToyProject-Gundam`,
-    techStacks: ["CursorAI", "Bolts", "Rapid Development", "AI Integration"],
-    startDate: "2025-07-01",
-    endDate: "2025-07-31",
+    title: "ToyProject-Gundam",
+    summary: "TypeScript와 React를 활용한 건담 정보 웹 애플리케이션",
+    description: `## 프로젝트 개요\nTypeScript와 React를 활용하여 개발한 건담 정보 웹 애플리케이션입니다.\n\n## 주요 기능\n- 건담 정보 데이터베이스\n- 반응형 웹 디자인\n- 인터랙티브 UI 컴포넌트\n- 모던 웹 개발 기술 적용\n\n## 기술적 특징\n- Frontend: TypeScript, React\n- Styling: CSS\n- JavaScript Integration\n- Repository: salieri009/ToyProject-Gundam`,
+    techStacks: ["TypeScript", "React", "CSS", "JavaScript"],
+    startDate: "2023-09-01",
+    endDate: "2023-11-30",
     githubUrl: "https://github.com/salieri009/ToyProject-Gundam"
   },
   5: {

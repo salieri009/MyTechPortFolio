@@ -306,13 +306,13 @@ export const CareerSummaryDashboard: React.FC = () => {
   const downloadResume = (language: 'ko' | 'en' | 'ja') => {
     const fileNames = {
       ko: 'resume-korean.txt',
-      en: 'resume-english.txt', 
+      en: 'English Resume.pdf', 
       ja: 'resume-japanese.txt'
     }
     
     const displayNames = {
       ko: 'salieri009_이력서_한국어.txt',
-      en: 'salieri009_Resume_English.txt',
+      en: 'salieri009_Resume_English.pdf',
       ja: 'salieri009_履歴書_日本語.txt'
     }
     
