@@ -171,11 +171,11 @@ export function AcademicsPage() {
     },
     {
       id: 4,
-      name: 'Serious Games and Gamification Studio',
+      name: 'Interaction Media',
       semester: '2025 SPR',
       status: 'enrolled',
       creditPoints: 6,
-      description: 'Design and development of educational games and gamification systems'
+      description: 'Interactive media design, user experience, and digital interaction principles'
     },
     
     // Completed Subjects (2025 Autumn)
