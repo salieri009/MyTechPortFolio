@@ -233,19 +233,19 @@
       },
       "achievements": {
         "performance": {
-          "title": "Performance Optimization",
-          "description": "Improved web application loading speed",
-          "impact": "40% reduction in loading time"
+          "title": "",
+          "description": "",
+          "impact": ""
         },
         "userExperience": {
-          "title": "User Experience Enhancement",
-          "description": "Interface redesign and responsive implementation",
-          "impact": "95% user satisfaction achieved"
+          "title": "",
+          "description": "",
+          "impact": ""
         },
         "codeQuality": {
-          "title": "Code Quality Improvement",
-          "description": "TypeScript adoption and increased test coverage",
-          "impact": "60% reduction in bug occurrence"
+          "title": "",
+          "description": "",
+          "impact": ""
         }
       },
       "resumeDownload": {
@@ -253,6 +253,11 @@
         "korean": "Download Korean Resume",
         "english": "Download English Resume",
         "japanese": "Download Japanese Resume"
+      },
+      "placeholder": {
+        "preparing": "Preparing...",
+        "comingSoon": "Coming soon...",
+        "measuring": "Measuring..."
       }
     }
   },

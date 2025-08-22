@@ -233,19 +233,19 @@
       },
       "achievements": {
         "performance": {
-          "title": "성능 최적화",
-          "description": "웹 애플리케이션 로딩 속도 개선",
-          "impact": "로딩 시간 40% 단축"
+          "title": "",
+          "description": "",
+          "impact": ""
         },
         "userExperience": {
-          "title": "사용자 경험 개선",
-          "description": "인터페이스 리디자인 및 반응형 구현",
-          "impact": "사용자 만족도 95% 달성"
+          "title": "",
+          "description": "",
+          "impact": ""
         },
         "codeQuality": {
-          "title": "코드 품질 향상",
-          "description": "TypeScript 도입 및 테스트 커버리지 증대",
-          "impact": "버그 발생률 60% 감소"
+          "title": "",
+          "description": "",
+          "impact": ""
         }
       },
       "resumeDownload": {
@@ -253,6 +253,11 @@
         "korean": "한국어 이력서 다운로드",
         "english": "영어 이력서 다운로드",
         "japanese": "일본어 이력서 다운로드"
+      },
+      "placeholder": {
+        "preparing": "준비 중...",
+        "comingSoon": "곧 업데이트될 예정입니다.",
+        "measuring": "측정 중..."
       }
     }
   },

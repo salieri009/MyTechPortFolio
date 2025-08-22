@@ -327,24 +327,24 @@ export const CareerSummaryDashboard: React.FC = () => {
     document.body.removeChild(link)
   }
   
-  // 번역된 성과 데이터 생성
+  // 번역된 성과 데이터 생성 (현재 공백으로 설정)
   const translatedAchievements = [
     {
-      title: t('recruiter.careerSummary.achievements.performance.title'),
-      description: t('recruiter.careerSummary.achievements.performance.description'),
-      impact: t('recruiter.careerSummary.achievements.performance.impact'),
+      title: t('recruiter.careerSummary.achievements.performance.title') || '',
+      description: t('recruiter.careerSummary.achievements.performance.description') || '',
+      impact: t('recruiter.careerSummary.achievements.performance.impact') || '',
       date: CAREER_SUMMARY.achievements[0].date
     },
     {
-      title: t('recruiter.careerSummary.achievements.userExperience.title'),
-      description: t('recruiter.careerSummary.achievements.userExperience.description'),
-      impact: t('recruiter.careerSummary.achievements.userExperience.impact'),
+      title: t('recruiter.careerSummary.achievements.userExperience.title') || '',
+      description: t('recruiter.careerSummary.achievements.userExperience.description') || '',
+      impact: t('recruiter.careerSummary.achievements.userExperience.impact') || '',
       date: CAREER_SUMMARY.achievements[1].date
     },
     {
-      title: t('recruiter.careerSummary.achievements.codeQuality.title'),
-      description: t('recruiter.careerSummary.achievements.codeQuality.description'),
-      impact: t('recruiter.careerSummary.achievements.codeQuality.impact'),
+      title: t('recruiter.careerSummary.achievements.codeQuality.title') || '',
+      description: t('recruiter.careerSummary.achievements.codeQuality.description') || '',
+      impact: t('recruiter.careerSummary.achievements.codeQuality.impact') || '',
       date: CAREER_SUMMARY.achievements[2].date
     }
   ]
@@ -427,22 +427,29 @@ export const CareerSummaryDashboard: React.FC = () => {
           🏆 {t('recruiter.careerSummary.sections.achievements')}
         </SectionTitle>
         <AchievementGrid>
-          {translatedAchievements.map((achievement, index) => (
-            <AchievementCard key={index} $isDark={isDark}>
-              <AchievementTitle $isDark={isDark}>
-                {achievement.title}
-              </AchievementTitle>
-              <AchievementDescription $isDark={isDark}>
-                {achievement.description}
-              </AchievementDescription>
-              <AchievementImpact $isDark={isDark}>
-                {achievement.impact}
-              </AchievementImpact>
-              <AchievementDate $isDark={isDark}>
-                {formatDate(achievement.date)}
-              </AchievementDate>
-            </AchievementCard>
-          ))}
+          {translatedAchievements.map((achievement, index) => {
+            // 모든 필드가 비어있으면 카드를 숨김
+            if (!achievement.title && !achievement.description && !achievement.impact) {
+              return null;
+            }
+            
+            return (
+              <AchievementCard key={index} $isDark={isDark}>
+                <AchievementTitle $isDark={isDark}>
+                  {achievement.title || t('recruiter.careerSummary.placeholder.preparing')}
+                </AchievementTitle>
+                <AchievementDescription $isDark={isDark}>
+                  {achievement.description || t('recruiter.careerSummary.placeholder.comingSoon')}
+                </AchievementDescription>
+                <AchievementImpact $isDark={isDark}>
+                  {achievement.impact || t('recruiter.careerSummary.placeholder.measuring')}
+                </AchievementImpact>
+                <AchievementDate $isDark={isDark}>
+                  {formatDate(achievement.date)}
+                </AchievementDate>
+              </AchievementCard>
+            );
+          })}
         </AchievementGrid>
       </AchievementsSection>
     </DashboardContainer>

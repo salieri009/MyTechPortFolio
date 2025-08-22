@@ -233,19 +233,19 @@
       },
       "achievements": {
         "performance": {
-          "title": "パフォーマンス最適化",
-          "description": "Webアプリケーションの読み込み速度改善",
-          "impact": "読み込み時間40％短縮"
+          "title": "",
+          "description": "",
+          "impact": ""
         },
         "userExperience": {
-          "title": "ユーザーエクスペリエンス向上",
-          "description": "インターフェースリデザイン・レスポンシブ実装",
-          "impact": "ユーザー満足度95％達成"
+          "title": "",
+          "description": "",
+          "impact": ""
         },
         "codeQuality": {
-          "title": "コード品質向上",
-          "description": "TypeScript導入・テストカバレッジ拡大",
-          "impact": "バグ発生率60％減少"
+          "title": "",
+          "description": "",
+          "impact": ""
         }
       },
       "resumeDownload": {
@@ -253,6 +253,11 @@
         "korean": "韓国語履歴書ダウンロード",
         "english": "英語履歴書ダウンロード",
         "japanese": "日本語履歴書ダウンロード"
+      },
+      "placeholder": {
+        "preparing": "準備中...",
+        "comingSoon": "近日公開予定...",
+        "measuring": "測定中..."
       }
     }
   },
