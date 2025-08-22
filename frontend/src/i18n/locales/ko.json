@@ -283,6 +283,28 @@
       "gamedev": "게임 개발 도구"
     }
   },
+  "projects": {
+    "portfolioWebsite": {
+      "title": "포트폴리오 웹사이트",
+      "summary": "반응형 개인 포트폴리오 웹사이트 - HTML5, CSS3, JavaScript"
+    },
+    "threejsProject": {
+      "title": "Three.js 프로젝트",
+      "summary": "Three.js와 Vue.js를 활용한 인터랙티브 3D 웹 애플리케이션"
+    },
+    "fiveFloors": {
+      "title": "The Five Floors",
+      "summary": "4인 팀 프로젝트 - 게임 개발 및 레벨 디자인"
+    },
+    "toyGundamBoard": {
+      "title": "Toy Gundam Board",
+      "summary": "CursorAI와 Bolts를 활용한 AI 기반 애플리케이션 개발"
+    },
+    "iotbay": {
+      "title": "IoTBay - 전자상거래 플랫폼",
+      "summary": "IoT 디바이스 전자상거래 플랫폼 - Java, JSP, Maven"
+    }
+  },
   "language": {
     "korean": "한국어",
     "english": "English",

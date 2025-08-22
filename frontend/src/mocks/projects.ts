@@ -5,6 +5,46 @@ import type { ProjectDetail, ProjectSummary } from '../types/domain'
 const GITHUB_PROJECTS: ProjectSummary[] = [
   {
     id: 1,
+    title: "projects.portfolioWebsite.title",
+    summary: "projects.portfolioWebsite.summary",
+    techStacks: ["HTML5", "CSS3", "JavaScript", "Responsive Design"],
+    startDate: "2025-08-01",
+    endDate: "2025-12-31"
+  },
+  {
+    id: 2,
+    title: "projects.threejsProject.title",
+    summary: "projects.threejsProject.summary",
+    techStacks: ["Three.js", "Vue.js", "JavaScript", "3D Graphics"],
+    startDate: "2025-03-01",
+    endDate: "2025-12-31"
+  },
+  {
+    id: 3,
+    title: "projects.fiveFloors.title",
+    summary: "projects.fiveFloors.summary",
+    techStacks: ["Game Development", "Team Collaboration", "Documentation"],
+    startDate: "2025-03-01",
+    endDate: "2025-05-31"
+  },
+  {
+    id: 4,
+    title: "projects.toyGundamBoard.title",
+    summary: "projects.toyGundamBoard.summary",
+    techStacks: ["CursorAI", "Bolts", "Rapid Development", "AI Integration"],
+    startDate: "2025-07-01",
+    endDate: "2025-07-31"
+  },
+  {
+    id: 5,
+    title: "projects.iotbay.title",
+    summary: "projects.iotbay.summary",
+    techStacks: ["Java", "JSP", "Maven", "Jetty", "MVC Architecture"],
+    startDate: "2025-04-01",
+    endDate: "2025-06-30"
+  },
+  {
+    id: 6,
     title: "MyTechPortFolio",
     summary: "React + Spring Boot 기반 개인 포트폴리오 웹사이트",
     techStacks: ["React", "TypeScript", "Spring Boot", "JPA", "H2", "Tailwind CSS"],
@@ -12,15 +52,7 @@ const GITHUB_PROJECTS: ProjectSummary[] = [
     endDate: "2024-12-31"
   },
   {
-    id: 2,
-    title: "IoTBay",
-    summary: "Java 기반 IoT 제품 전자상거래 플랫폼",
-    techStacks: ["Java", "JSP", "Servlet", "MySQL", "CSS", "JavaScript"],
-    startDate: "2023-03-01",
-    endDate: "2023-06-30"
-  },
-  {
-    id: 3,
+    id: 7,
     title: "ToyProject-Gundam",
     summary: "TypeScript와 React를 활용한 건담 정보 웹 애플리케이션",
     techStacks: ["TypeScript", "React", "CSS", "JavaScript"],
@@ -28,7 +60,7 @@ const GITHUB_PROJECTS: ProjectSummary[] = [
     endDate: "2023-11-30"
   },
   {
-    id: 4,
+    id: 8,
     title: "ThreeJSUTS26",
     summary: "Three.js와 WebGL을 이용한 3D 웹 그래픽스 프로젝트",
     techStacks: ["Three.js", "JavaScript", "WebGL", "HTML5", "CSS3"],
@@ -36,7 +68,7 @@ const GITHUB_PROJECTS: ProjectSummary[] = [
     endDate: "2023-05-31"
   },
   {
-    id: 5,
+    id: 9,
     title: "MyTistoryBlog",
     summary: "개인 기술 블로그 템플릿 및 커스터마이징",
     techStacks: ["HTML", "CSS", "JavaScript", "Tistory"],
@@ -44,7 +76,7 @@ const GITHUB_PROJECTS: ProjectSummary[] = [
     endDate: "2023-12-31"
   },
   {
-    id: 6,
+    id: 10,
     title: "NomadCoder-Zoom-Clone",
     summary: "Node.js와 Socket.io를 활용한 화상회의 앱 클론",
     techStacks: ["Node.js", "Socket.io", "Express", "WebRTC", "JavaScript"],
@@ -52,7 +84,7 @@ const GITHUB_PROJECTS: ProjectSummary[] = [
     endDate: "2022-10-31"
   },
   {
-    id: 7,
+    id: 11,
     title: "NomadCoder-Momentum",
     summary: "바닐라 JavaScript로 구현한 Chrome Momentum 확장프로그램 클론",
     techStacks: ["JavaScript", "HTML5", "CSS3", "Web APIs"],
@@ -64,6 +96,55 @@ const GITHUB_PROJECTS: ProjectSummary[] = [
 const PROJECT_DETAILS: Record<number, ProjectDetail> = {
   1: {
     id: 1,
+    title: "projects.portfolioWebsite.title",
+    summary: "projects.portfolioWebsite.summary",
+    description: `## 프로젝트 개요\nHTML5, CSS3, JavaScript를 활용하여 구축한 반응형 개인 포트폴리오 웹사이트입니다.\n\n## 주요 기능\n- 모바일 퍼스트 반응형 디자인\n- 현대적인 UI/UX 디자인\n- 학업 프로젝트 및 기술 스택 전시\n- 실시간 라이브 데모\n\n## 기술적 특징\n- Frontend: HTML5, CSS3, JavaScript\n- 반응형 웹 디자인\n- 모바일 퍼스트 접근법\n- 라이브 사이트: salieri009.studio`,
+    techStacks: ["HTML5", "CSS3", "JavaScript", "Responsive Design"],
+    startDate: "2025-08-01",
+    endDate: "2025-12-31",
+    demoUrl: "https://salieri009.studio"
+  },
+  2: {
+    id: 2,
+    title: "projects.threejsProject.title",
+    summary: "projects.threejsProject.summary",
+    description: `## 프로젝트 개요\nThree.js와 Vue.js를 활용하여 개발한 인터랙티브 3D 웹 애플리케이션입니다.\n\n## 주요 기능\n- 3D 씬 및 애니메이션 디자인\n- 사용자 인터랙션 통합\n- 3D 그래픽스 및 웹 렌더링 기술 구현\n- 실시간 3D 시각화\n\n## 기술적 특징\n- 3D Graphics: Three.js\n- Frontend Framework: Vue.js\n- Web Rendering: WebGL\n- Interactive Design`,
+    techStacks: ["Three.js", "Vue.js", "JavaScript", "3D Graphics"],
+    startDate: "2025-03-01",
+    endDate: "2025-12-31"
+  },
+  3: {
+    id: 3,
+    title: "projects.fiveFloors.title",
+    summary: "projects.fiveFloors.summary",
+    description: `## 프로젝트 개요\n4명의 팀원과 함께 개발한 게임 프로젝트입니다.\n\n## 주요 기능\n- 게임 개발 및 레벨 디자인\n- 팀 커뮤니케이션 및 문서화\n- 최종 레벨 디자인 담당\n- 작업 조율 및 품질 관리\n\n## 기술적 특징\n- 팀 협업 및 프로젝트 관리\n- 게임 디자인 및 개발\n- 문서화 및 커뮤니케이션\n- 라이브 사이트: salierix009.itch.io/the-five-floors`,
+    techStacks: ["Game Development", "Team Collaboration", "Documentation"],
+    startDate: "2025-03-01",
+    endDate: "2025-05-31",
+    demoUrl: "https://salierix009.itch.io/the-five-floors"
+  },
+  4: {
+    id: 4,
+    title: "projects.toyGundamBoard.title",
+    summary: "projects.toyGundamBoard.summary",
+    description: `## 프로젝트 개요\nCursorAI와 Bolts를 활용하여 빠른 애플리케이션 개발을 테스트한 토이 프로젝트입니다.\n\n## 주요 기능\n- AI 기반 입력 처리 실험\n- 인터랙티브 기능 구현\n- 빠른 애플리케이션 개발 테스트\n- AI 통합 개발 경험\n\n## 기술적 특징\n- AI Integration: CursorAI\n- Rapid Development: Bolts\n- Interactive Functionality\n- Repository: salieri009/ToyProject-Gundam`,
+    techStacks: ["CursorAI", "Bolts", "Rapid Development", "AI Integration"],
+    startDate: "2025-07-01",
+    endDate: "2025-07-31",
+    githubUrl: "https://github.com/salieri009/ToyProject-Gundam"
+  },
+  5: {
+    id: 5,
+    title: "projects.iotbay.title",
+    summary: "projects.iotbay.summary",
+    description: `## 프로젝트 개요\nIoT 디바이스를 위한 온라인 소매 플랫폼으로, 고객 접근성과 판매 효율성을 향상시키기 위해 개발되었습니다.\n\n## 주요 기능\n- 사용자 인증 및 상품 브라우징\n- 쇼핑 카트 기능 및 주문 관리\n- 재고 및 주문 관리를 위한 스태프 대시보드\n- MVC 아키텍처 적용\n\n## 기술적 특징\n- Backend: Java, JSP, Maven, Jetty\n- Architecture: MVC Pattern\n- Database: MySQL\n- Deployment: Jetty Server\n- Repository: jason13657/IoTBay`,
+    techStacks: ["Java", "JSP", "Maven", "Jetty", "MVC Architecture"],
+    startDate: "2025-04-01",
+    endDate: "2025-06-30",
+    githubUrl: "https://github.com/jason13657/IoTBay"
+  },
+  6: {
+    id: 6,
     title: "MyTechPortFolio",
     summary: "React + Spring Boot 기반 개인 포트폴리오 웹사이트",
     description: `## 프로젝트 개요\nReact와 Spring Boot를 활용하여 구축한 개인 포트폴리오 웹사이트입니다.\n\n## 주요 기능\n- 반응형 웹 디자인\n- 프로젝트 포트폴리오 관리\n- 실시간 GitHub 연동\n- 관리자 대시보드\n\n## 기술적 특징\n- Frontend: React 18, TypeScript, Tailwind CSS\n- Backend: Spring Boot 3, Spring Data JPA\n- Database: H2 (개발), MySQL (프로덕션)\n- 배포: Azure Static Web Apps`,
@@ -72,16 +153,6 @@ const PROJECT_DETAILS: Record<number, ProjectDetail> = {
     endDate: "2024-12-31",
     githubUrl: "https://github.com/salieri009/MyTechPortFolio",
     demoUrl: "https://salieri009.studio"
-  },
-  2: {
-    id: 2,
-    title: "IoTBay",
-    summary: "Java 기반 IoT 제품 전자상거래 플랫폼",
-    description: `## 프로젝트 개요\nIoT 제품을 판매하는 전자상거래 플랫폼을 Java와 JSP로 구현한 프로젝트입니다.\n\n## 주요 기능\n- 상품 카탈로그 및 검색\n- 장바구니 및 주문 시스템\n- 사용자 인증 및 권한 관리\n- 관리자 페이지\n\n## 기술적 특징\n- MVC 패턴 적용\n- MySQL 데이터베이스 연동\n- 세션 기반 인증\n- RESTful API 설계`,
-    techStacks: ["Java", "JSP", "Servlet", "MySQL", "CSS", "JavaScript"],
-    startDate: "2023-03-01",
-    endDate: "2023-06-30",
-    githubUrl: "https://github.com/salieri009/IoTBay"
   }
 }
 

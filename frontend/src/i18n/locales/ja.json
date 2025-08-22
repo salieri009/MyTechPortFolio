@@ -283,6 +283,28 @@
       "gamedev": "ゲーム開発ツール"
     }
   },
+  "projects": {
+    "portfolioWebsite": {
+      "title": "ポートフォリオウェブサイト",
+      "summary": "レスポンシブな個人ポートフォリオウェブサイト - HTML5, CSS3, JavaScript"
+    },
+    "threejsProject": {
+      "title": "Three.jsプロジェクト",
+      "summary": "Three.jsとVue.jsを活用したインタラクティブ3Dウェブアプリケーション"
+    },
+    "fiveFloors": {
+      "title": "The Five Floors",
+      "summary": "4人チームプロジェクト - ゲーム開発とレベルデザイン"
+    },
+    "toyGundamBoard": {
+      "title": "Toy Gundam Board",
+      "summary": "CursorAIとBoltsを活用したAIベースアプリケーション開発"
+    },
+    "iotbay": {
+      "title": "IoTBay - 電子商取引プラットフォーム",
+      "summary": "IoTデバイス電子商取引プラットフォーム - Java, JSP, Maven"
+    }
+  },
   "language": {
     "korean": "한국어",
     "english": "English",

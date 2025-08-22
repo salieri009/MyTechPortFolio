@@ -283,6 +283,28 @@
       "gamedev": "Game Development Tools"
     }
   },
+  "projects": {
+    "portfolioWebsite": {
+      "title": "Portfolio Website",
+      "summary": "Responsive personal portfolio website - HTML5, CSS3, JavaScript"
+    },
+    "threejsProject": {
+      "title": "Three.js Project",
+      "summary": "Interactive 3D web application using Three.js and Vue.js"
+    },
+    "fiveFloors": {
+      "title": "The Five Floors",
+      "summary": "4-member team project - Game development and level design"
+    },
+    "toyGundamBoard": {
+      "title": "Toy Gundam Board",
+      "summary": "AI-based application development using CursorAI and Bolts"
+    },
+    "iotbay": {
+      "title": "IoTBay - E-commerce Platform",
+      "summary": "IoT devices e-commerce platform - Java, JSP, Maven"
+    }
+  },
   "language": {
     "korean": "한국어",
     "english": "English", 

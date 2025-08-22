@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
 import { Card, Tag } from '../common'
 import { useProjectAnalytics } from '../../hooks/useAnalytics'
 
@@ -66,6 +67,7 @@ export function ProjectCard({
   endDate, 
   techStacks 
 }: ProjectCardProps) {
+  const { t } = useTranslation()
   const { trackView, trackTechStackClick } = useProjectAnalytics()
   
   const formatDate = (dateString: string) => {
@@ -88,8 +90,8 @@ export function ProjectCard({
   return (
     <StyledLink to={`/projects/${id}`} onClick={handleProjectClick}>
       <ProjectCardWrapper isHover>
-        <ProjectTitle>{title}</ProjectTitle>
-        <ProjectSummary>{summary}</ProjectSummary>
+        <ProjectTitle>{t(title)}</ProjectTitle>
+        <ProjectSummary>{t(summary)}</ProjectSummary>
         <ProjectMeta>
           <span>{formatDate(startDate)} - {formatDate(endDate)}</span>
         </ProjectMeta>

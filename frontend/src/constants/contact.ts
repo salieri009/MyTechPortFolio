@@ -25,8 +25,8 @@ export const CONTACT_INFO = {
   university: {
     name: 'University of Technology Sydney',
     shortName: 'UTS',
-    program: 'Bachelor of Computer Science',
-    year: '2023 - Present'
+    program: 'Bachelor of IT, Enterprise Software Development',
+    year: 'April 2024 - July 2026'
   }
 } as const
 
@@ -39,32 +39,32 @@ export const PERSONAL_INFO: PersonalInfo = {
   phone: CONTACT_INFO.phone.display,
   github: CONTACT_INFO.github.url,
   linkedin: CONTACT_INFO.linkedin.url,
-  portfolio: 'https://jungwook-portfolio.vercel.app' // 실제 포트폴리오 URL로 변경
+  portfolio: 'https://salieri009.studio' // 실제 포트폴리오 URL로 변경
 }
 
 export const CAREER_SUMMARY: CareerSummary = {
-  totalProjects: 15,
+  totalProjects: 11,
   totalExperience: '2년',
-  primarySkills: ['React', 'TypeScript', 'Spring Boot', 'Java', 'MySQL'],
-  industryFocus: ['웹 개발', 'Full Stack', '사용자 경험'],
+  primarySkills: ['Java', 'JavaScript', 'Python', 'SQL', 'C++', 'HTML5', 'CSS3', 'React', 'Vue.js', 'Three.js'],
+  industryFocus: ['웹 개발', '게임 개발', 'AI/ML', '클라우드 컴퓨팅', 'IoT', '3D 그래픽스'],
   achievements: [
     {
-      title: '성능 최적화',
-      description: '웹 애플리케이션 로딩 속도 개선',
-      impact: '로딩 시간 40% 단축',
-      date: new Date('2024-06-01')
+      title: '',
+      description: '',
+      impact: '',
+      date: new Date('2025-06-01')
     },
     {
-      title: '사용자 경험 개선',
-      description: '인터페이스 리디자인 및 반응형 구현',
-      impact: '사용자 만족도 95% 달성',
-      date: new Date('2024-08-01')
+      title: '',
+      description: '',
+      impact: '',
+      date: new Date('2025-08-01')
     },
     {
-      title: '코드 품질 향상',
-      description: 'TypeScript 도입 및 테스트 커버리지 증대',
-      impact: '버그 발생률 60% 감소',
-      date: new Date('2024-07-01')
+      title: '',
+      description: '',
+      impact: '',
+      date: new Date('2025-07-01')
     }
   ]
 }

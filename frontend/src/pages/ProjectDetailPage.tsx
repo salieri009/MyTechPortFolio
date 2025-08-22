@@ -120,7 +120,7 @@ export function ProjectDetailPage() {
       <BackLink to="/projects">{t('projects.backToProjects')}</BackLink>
 
       <ProjectHeader>
-        <ProjectTitle>{project.title}</ProjectTitle>
+        <ProjectTitle>{t(project.title)}</ProjectTitle>
         <ProjectMeta>
           <span>{project.startDate} ~ {project.endDate}</span>
           {project.relatedAcademics?.length && (
