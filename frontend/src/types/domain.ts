@@ -7,6 +7,8 @@ export interface ProjectSummary {
   startDate: string // YYYY-MM-DD
   endDate: string   // YYYY-MM-DD
   techStacks: string[]
+  imageUrl?: string
+  featured?: boolean
 }
 
 export interface ProjectDetail extends ProjectSummary {
@@ -14,6 +16,9 @@ export interface ProjectDetail extends ProjectSummary {
   githubUrl?: string
   demoUrl?: string
   relatedAcademics?: string[]
+  challenge?: string
+  solution?: string[]
+  keyOutcomes?: string[]
 }
 
 export interface Academic {

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import { Header } from './Header'
+import { MainHeader } from './MainHeader'
 import { GlobalStyle } from '@styles/GlobalStyle'
 
 const LayoutWrapper = styled.div`
@@ -23,6 +24,8 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
+  const location = useLocation()
+
   // 페이지 하단 도달 시 자동 스크롤 기능
   useEffect(() => {
     const handleScroll = () => {
@@ -49,7 +52,7 @@ export function Layout({ children }: LayoutProps) {
     <>
       <GlobalStyle />
       <LayoutWrapper>
-        <Header />
+        <MainHeader pathname={location.pathname} />
         <Main>{children}</Main>
       </LayoutWrapper>
     </>

@@ -1,13 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Container, Button } from '@components/common'
 import { Typewriter } from '@components/Typewriter'
+import { FeaturedProjectCard } from '@components/project'
+import { TestimonialCard } from '@components/testimonials'
 import { ProjectShowcaseSection } from '@components/sections/ProjectShowcaseSection'
 import { JourneyMilestoneSection } from '@components/sections/JourneyMilestoneSection'
+import { getProjects } from '../services/projects'
+import { getTestimonials } from '../mocks/testimonials'
 import { CONTACT_INFO } from '../constants/contact'
 import { useThemeStore } from '../stores/themeStore'
+import type { ProjectSummary } from '../types/domain'
+import type { Testimonial } from '../mocks/testimonials'
 
 const Hero = styled.section<{ $isDark: boolean }>`
   text-align: center;
@@ -121,9 +127,96 @@ const ContactButton = styled.a`
   }
 `
 
+const FeaturedSection = styled.section`
+  padding: 80px 0;
+  background: ${props => props.theme?.colors?.background || '#F9FAFB'};
+`
+
+const SectionTitle = styled.h2`
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: ${props => props.theme?.colors?.text || '#1F2937'};
+
+  @media (max-width: 768px) {
+    font-size: 28px;
+  }
+`
+
+const SectionSubtitle = styled.p`
+  font-size: 18px;
+  color: ${props => props.theme?.colors?.textSecondary || '#6B7280'};
+  margin-bottom: 48px;
+  line-height: 1.6;
+`
+
+const FeaturedGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+`
+
+const ViewAllLink = styled(Link)`
+  display: inline-block;
+  margin-top: 48px;
+  padding: 12px 24px;
+  background: ${props => props.theme?.colors?.primary?.[500]} || '#3B82F6';
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.primary?.[600]} || '#2563EB';
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+`
+
+const TestimonialSection = styled.section`
+  padding: 80px 0;
+  background: ${props => props.theme?.colors?.surface || '#F3F4F6'};
+`
+
+const TestimonialGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+`
+
 export function HomePage() {
   const { t } = useTranslation()
   const { isDark } = useThemeStore()
+  const [featuredProjects, setFeaturedProjects] = useState<ProjectSummary[]>([])
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const projectsResponse = await getProjects({ size: 10 })
+        if (projectsResponse.success && projectsResponse.data.items) {
+          const featured = projectsResponse.data.items.filter(project => project.featured)
+          setFeaturedProjects(featured)
+        }
+
+        const testimonialsData = await getTestimonials()
+        setTestimonials(testimonialsData)
+      } catch (error) {
+        console.error('Failed to load data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
+  }, [])
 
   return (
     <>
@@ -170,6 +263,50 @@ export function HomePage() {
           </CTAButtons>
         </Container>
       </Hero>
+
+      {!loading && featuredProjects.length > 0 && (
+        <FeaturedSection>
+          <Container>
+            <SectionTitle>🌟 {t('featured.title') || 'Featured Projects'}</SectionTitle>
+            <SectionSubtitle>
+              {t('featured.subtitle') || 'Highlighting my most impactful and diverse projects that showcase my skills across multiple domains.'}
+            </SectionSubtitle>
+            <FeaturedGrid>
+              {featuredProjects.map(project => (
+                <FeaturedProjectCard
+                  key={project.id}
+                  id={project.id}
+                  title={project.title}
+                  summary={project.summary}
+                  startDate={project.startDate}
+                  endDate={project.endDate}
+                  techStacks={project.techStacks}
+                  imageUrl={project.imageUrl}
+                />
+              ))}
+            </FeaturedGrid>
+            <ViewAllLink to="/projects">
+              {t('featured.viewAll') || 'View All Projects'} →
+            </ViewAllLink>
+          </Container>
+        </FeaturedSection>
+      )}
+
+      {!loading && testimonials.length > 0 && (
+        <TestimonialSection>
+          <Container>
+            <SectionTitle>💬 {t('testimonials.title') || 'What Others Say'}</SectionTitle>
+            <SectionSubtitle>
+              {t('testimonials.subtitle') || 'Feedback from colleagues and clients who have worked with me.'}
+            </SectionSubtitle>
+            <TestimonialGrid>
+              {testimonials.map(testimonial => (
+                <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+              ))}
+            </TestimonialGrid>
+          </Container>
+        </TestimonialSection>
+      )}
 
       <ProjectShowcaseSection />
       <JourneyMilestoneSection />

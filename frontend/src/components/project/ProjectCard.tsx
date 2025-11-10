@@ -9,6 +9,27 @@ const ProjectCardWrapper = styled(Card)`
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+`
+
+const ProjectImage = styled.img`
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  margin-bottom: 12px;
+  border-radius: 8px;
+`
+
+const ProjectContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
 `
 
 const ProjectTitle = styled.h3`
@@ -57,6 +78,7 @@ interface ProjectCardProps {
   startDate: string
   endDate: string
   techStacks: string[]
+  imageUrl?: string
 }
 
 export function ProjectCard({ 
@@ -65,7 +87,8 @@ export function ProjectCard({
   summary, 
   startDate, 
   endDate, 
-  techStacks 
+  techStacks,
+  imageUrl
 }: ProjectCardProps) {
   const { t } = useTranslation()
   const { trackView, trackTechStackClick } = useProjectAnalytics()
@@ -90,22 +113,27 @@ export function ProjectCard({
   return (
     <StyledLink to={`/projects/${id}`} onClick={handleProjectClick}>
       <ProjectCardWrapper isHover>
-        <ProjectTitle>{t(title)}</ProjectTitle>
-        <ProjectSummary>{t(summary)}</ProjectSummary>
-        <ProjectMeta>
-          <span>{formatDate(startDate)} - {formatDate(endDate)}</span>
-        </ProjectMeta>
-        <TechStacks>
-          {techStacks.map((tech) => (
-            <Tag 
-              key={tech}
-              onClick={(e) => handleTechStackClick(e, tech)}
-              style={{ cursor: 'pointer' }}
-            >
-              {tech}
-            </Tag>
-          ))}
-        </TechStacks>
+        {imageUrl && (
+          <ProjectImage src={imageUrl} alt={t(title)} loading="lazy" />
+        )}
+        <ProjectContent>
+          <ProjectTitle>{t(title)}</ProjectTitle>
+          <ProjectSummary>{t(summary)}</ProjectSummary>
+          <ProjectMeta>
+            <span>{formatDate(startDate)} - {formatDate(endDate)}</span>
+          </ProjectMeta>
+          <TechStacks>
+            {techStacks.map((tech) => (
+              <Tag 
+                key={tech}
+                onClick={(e) => handleTechStackClick(e, tech)}
+                style={{ cursor: 'pointer' }}
+              >
+                {tech}
+              </Tag>
+            ))}
+          </TechStacks>
+        </ProjectContent>
       </ProjectCardWrapper>
     </StyledLink>
   )
