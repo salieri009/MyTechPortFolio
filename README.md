@@ -4,6 +4,8 @@
 > React TypeScript + Spring Boot + MongoDB로 구축된 풀스택 포트폴리오 애플리케이션  
 > 🔥 **Live:** https://salieri009.studio
 
+> 📚 Documentation consolidated: the canonical docs are now under the `docs/` folder. Start with `docs/important-concepts.md` for a 5-minute overview and then follow the guided links in `docs/README.md` for deeper design, specs, ADRs and test-run reports.
+
 ## 🏷️ 기술 스택 뱃지
 
 ### 🎨 프론트엔드

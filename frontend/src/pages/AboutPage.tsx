@@ -1,9 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { Container, Card, Button } from '@components/common'
-import { PersonalInfoHeader, CareerSummaryDashboard } from '@components/recruiter'
-import { TechStackSection } from '@components/sections/TechStackSection'
+import { Container, Card } from '@components/common'
 import { CONTACT_INFO } from '../constants/contact'
 
 const AboutSection = styled.section`
@@ -117,68 +115,70 @@ export function AboutPage() {
   const { t } = useTranslation()
 
   return (
-    <>
-      <Container>
-        {/* 채용담당자 중심 섹션 */}
-        <PersonalInfoHeader />
-        <CareerSummaryDashboard />
-        
-        <AboutSection>
-          <AboutTitle>{t('about.greeting')}</AboutTitle>
-          <AboutContent>
-            <p>{t('about.description')}</p>
-          </AboutContent>
+    <Container>
+      <AboutSection>
+        <AboutTitle>About Me</AboutTitle>
+        <AboutContent>
+          <p>
+            안녕하세요! 저는 문제 해결을 즐기는 풀스택 개발자입니다. 
+            현재 호주에서 유학 중이며, 최신 웹 기술을 활용하여 사용자 경험을 개선하는 것에 열정을 가지고 있습니다.
+          </p>
+          <p>
+            전북대학교에서 컴퓨터공학을 전공하고, 군 복무 중 통역병으로 근무하며 글로벌 커뮤니케이션 능력을 기를 수 있었습니다.
+            React, TypeScript, Spring Boot 등의 기술을 활용하여 다양한 프로젝트를 진행해왔습니다.
+          </p>
+          <p>
+            항상 새로운 기술을 배우고 적용하는 것을 좋아하며, 
+            사용자 중심의 서비스를 만들어 실질적인 가치를 제공하는 것이 목표입니다.
+          </p>
+        </AboutContent>
 
-          <ContactSection>
-            <ContactTitle>{t('about.contact.title')}</ContactTitle>
-            
-            <ContactInfo>
-              <ContactItem>
-                <ContactLabel>{t('about.contact.studentEmail')}:</ContactLabel>
-                <ContactValue 
-                  href={`mailto:${CONTACT_INFO.email.student}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {CONTACT_INFO.email.display}
-                </ContactValue>
-              </ContactItem>
-              
-              <ContactItem>
-                <ContactLabel>{t('about.contact.personalLinkedIn')}:</ContactLabel>
-                <ContactValue 
-                  href={CONTACT_INFO.linkedin.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {CONTACT_INFO.linkedin.display}
-                </ContactValue>
-              </ContactItem>
-            </ContactInfo>
-
-            <ContactButtons>
-              <ContactButton 
+        <ContactSection>
+          <ContactTitle>연락처</ContactTitle>
+          
+          <ContactInfo>
+            <ContactItem>
+              <ContactLabel>이메일:</ContactLabel>
+              <ContactValue 
                 href={`mailto:${CONTACT_INFO.email.student}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                📧 {t('about.contact.email')}
-              </ContactButton>
-              
-              <ContactButton 
+                {CONTACT_INFO.email.display}
+              </ContactValue>
+            </ContactItem>
+            
+            <ContactItem>
+              <ContactLabel>LinkedIn:</ContactLabel>
+              <ContactValue 
                 href={CONTACT_INFO.linkedin.url}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                💼 {t('about.contact.linkedin')}
-              </ContactButton>
-            </ContactButtons>
-          </ContactSection>
-        </AboutSection>
-      </Container>
-      
-      {/* 기술 스택 섹션 - 별도 배경 */}
-      <TechStackSection />
-    </>
+                {CONTACT_INFO.linkedin.display}
+              </ContactValue>
+            </ContactItem>
+          </ContactInfo>
+
+          <ContactButtons>
+            <ContactButton 
+              href={`mailto:${CONTACT_INFO.email.student}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              📧 이메일 보내기
+            </ContactButton>
+            
+            <ContactButton 
+              href={CONTACT_INFO.linkedin.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              💼 LinkedIn 연결
+            </ContactButton>
+          </ContactButtons>
+        </ContactSection>
+      </AboutSection>
+    </Container>
   )
 }

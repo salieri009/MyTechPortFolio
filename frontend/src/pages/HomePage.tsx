@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Container, Button } from '@components/common'
 import { Typewriter } from '@components/Typewriter'
 import { ProjectShowcaseSection } from '@components/sections/ProjectShowcaseSection'
+import { JourneyMilestoneSection } from '@components/sections/JourneyMilestoneSection'
 import { CONTACT_INFO } from '../constants/contact'
 import { useThemeStore } from '../stores/themeStore'
 
@@ -171,6 +172,7 @@ export function HomePage() {
       </Hero>
 
       <ProjectShowcaseSection />
+      <JourneyMilestoneSection />
     </>
   )
 }
