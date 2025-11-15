@@ -24,4 +24,15 @@ public class TechStackCreateRequest {
     @ValidUrl(message = "Invalid logo URL format", allowEmpty = true)
     @Size(max = 500, message = "로고 URL은 500자를 초과할 수 없습니다.")
     private String logoUrl;
+    
+    @Pattern(regexp = "^(BEGINNER|INTERMEDIATE|ADVANCED|EXPERT)$", 
+             message = "숙련도는 BEGINNER, INTERMEDIATE, ADVANCED, EXPERT 중 하나여야 합니다.")
+    private String proficiencyLevel; // Optional, defaults to INTERMEDIATE
+    
+    @Size(max = 1000, message = "설명은 1000자를 초과할 수 없습니다.")
+    private String description;
+    
+    @ValidUrl(message = "Invalid official URL format", allowEmpty = true)
+    @Size(max = 500, message = "공식 URL은 500자를 초과할 수 없습니다.")
+    private String officialUrl;
 }

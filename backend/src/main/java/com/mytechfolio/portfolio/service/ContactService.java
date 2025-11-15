@@ -26,6 +26,7 @@ public class ContactService {
     private final ContactRepository contactRepository;
     private final InputSanitizer inputSanitizer;
     private final ValidationService validationService;
+    private final EmailService emailService;
     
     /**
      * Submits a contact form.
@@ -84,8 +85,20 @@ public class ContactService {
         Contact savedContact = contactRepository.save(contact);
         log.info("Contact saved successfully with ID: {}", savedContact.getId());
         
-        // TODO: Send email notification to portfolio owner
-        // TODO: Send auto-responder to contact
+        // Send email notifications asynchronously
+        try {
+            emailService.sendContactNotification(
+                savedContact.getName(),
+                savedContact.getEmail(),
+                savedContact.getMessage(),
+                savedContact.getCompany(),
+                savedContact.getJobTitle()
+            );
+            emailService.sendContactAutoResponder(savedContact.getEmail(), savedContact.getName());
+        } catch (Exception e) {
+            log.error("Failed to send email notifications: {}", e.getMessage(), e);
+            // Don't fail the contact submission if email fails
+        }
         
         return savedContact;
     }

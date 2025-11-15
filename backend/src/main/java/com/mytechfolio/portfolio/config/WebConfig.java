@@ -44,6 +44,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods(allowedMethods)
                 .allowedHeaders(allowedHeaders)
                 .allowCredentials(allowCredentials)
-                .maxAge(maxAge);
+                .maxAge(maxAge)
+                // Expose custom headers for frontend
+                .exposedHeaders("X-Request-ID", "X-Response-Time", "X-Rate-Limit-Remaining");
     }
 }

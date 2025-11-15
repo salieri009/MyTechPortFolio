@@ -33,19 +33,31 @@ public class TechStackService {
     private final TechStackMapper techStackMapper;
 
     /**
-     * Retrieves all tech stacks, optionally filtered by type.
+     * Retrieves all tech stacks, optionally filtered by type and proficiency level.
      * Results are cached for performance.
      * 
      * @param type Optional tech stack type filter
+     * @param proficiencyLevel Optional proficiency level filter
      * @return List of tech stack responses
      */
-    @Cacheable(value = "techStacks", key = "#type != null ? #type : 'all'")
-    public List<TechStackResponse> getTechStacks(String type) {
-        log.debug("Fetching tech stacks with type filter: {}", type);
+    @Cacheable(value = "techStacks", key = "#type != null ? #type : 'all' + '_' + (#proficiencyLevel != null ? #proficiencyLevel : 'all')")
+    public List<TechStackResponse> getTechStacks(String type, String proficiencyLevel) {
+        log.debug("Fetching tech stacks with type filter: {}, proficiency level: {}", type, proficiencyLevel);
         
         List<TechStack> techStacks;
         
-        if (type != null && !type.isEmpty()) {
+        // Filter by both type and proficiency level if both provided
+        if (type != null && !type.isEmpty() && proficiencyLevel != null && !proficiencyLevel.isEmpty()) {
+            try {
+                TechStack.TechType techType = TechStack.TechType.valueOf(type.toUpperCase());
+                TechStack.ProficiencyLevel profLevel = TechStack.ProficiencyLevel.valueOf(proficiencyLevel.toUpperCase());
+                techStacks = techStackRepository.findByProficiencyLevelAndType(profLevel, techType);
+                log.debug("Found {} tech stacks of type {} and proficiency {}", techStacks.size(), type, proficiencyLevel);
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid tech stack type or proficiency level: {}, {}", type, proficiencyLevel);
+                techStacks = List.of();
+            }
+        } else if (type != null && !type.isEmpty()) {
             try {
                 TechStack.TechType techType = TechStack.TechType.valueOf(type.toUpperCase());
                 techStacks = techStackRepository.findByType(techType);
@@ -54,11 +66,56 @@ public class TechStackService {
                 log.warn("Invalid tech stack type: {}", type);
                 techStacks = List.of();
             }
+        } else if (proficiencyLevel != null && !proficiencyLevel.isEmpty()) {
+            try {
+                TechStack.ProficiencyLevel profLevel = TechStack.ProficiencyLevel.valueOf(proficiencyLevel.toUpperCase());
+                techStacks = techStackRepository.findByProficiencyLevel(profLevel);
+                log.debug("Found {} tech stacks with proficiency level: {}", techStacks.size(), proficiencyLevel);
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid proficiency level: {}", proficiencyLevel);
+                techStacks = List.of();
+            }
         } else {
             techStacks = techStackRepository.findAll();
             log.debug("Found {} total tech stacks", techStacks.size());
         }
 
+        return techStackMapper.toResponseList(techStacks);
+    }
+    
+    /**
+     * Gets expert level tech stacks.
+     * 
+     * @return List of expert tech stacks
+     */
+    @Cacheable(value = "techStacks", key = "'expert'")
+    public List<TechStackResponse> getExpertTechStacks() {
+        log.debug("Fetching expert tech stacks");
+        List<TechStack> techStacks = techStackRepository.findExpertTechStacks();
+        return techStackMapper.toResponseList(techStacks);
+    }
+    
+    /**
+     * Gets advanced or expert level tech stacks.
+     * 
+     * @return List of advanced tech stacks
+     */
+    @Cacheable(value = "techStacks", key = "'advanced'")
+    public List<TechStackResponse> getAdvancedTechStacks() {
+        log.debug("Fetching advanced tech stacks");
+        List<TechStack> techStacks = techStackRepository.findAdvancedTechStacks();
+        return techStackMapper.toResponseList(techStacks);
+    }
+    
+    /**
+     * Gets primary tech stacks.
+     * 
+     * @return List of primary tech stacks
+     */
+    @Cacheable(value = "techStacks", key = "'primary'")
+    public List<TechStackResponse> getPrimaryTechStacks() {
+        log.debug("Fetching primary tech stacks");
+        List<TechStack> techStacks = techStackRepository.findByIsPrimaryTrue();
         return techStackMapper.toResponseList(techStacks);
     }
     

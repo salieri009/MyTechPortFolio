@@ -1,11 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
+import { analyzeError, isRetryableError } from '@utils/errorHandler'
 
 /**
  * Error Message Component
  * Nielsen Heuristic #9: Help users recognize, diagnose, and recover from errors
  * Provides clear, actionable error messages with recovery suggestions
  */
+
+interface ErrorMessageProps {
+  error?: unknown
+  title?: string
+  message?: string
+  suggestion?: string
+  variant?: 'inline' | 'block' | 'toast'
+  onRetry?: () => void
+  onClose?: () => void
+  'aria-live'?: 'polite' | 'assertive'
+}
 
 const ErrorContainer = styled.div<{ variant?: 'inline' | 'block' | 'toast' }>`
   display: flex;
@@ -93,33 +105,60 @@ const CloseButton = styled.button`
   }
 `
 
-interface ErrorMessageProps {
-  title?: string
-  message: string
-  suggestion?: string
-  variant?: 'inline' | 'block' | 'toast'
-  onClose?: () => void
-  'aria-live'?: 'polite' | 'assertive'
-}
+const RetryButton = styled.button`
+  margin-top: ${props => props.theme.spacing[2]};
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]};
+  background: ${props => props.theme.colors.error[600]};
+  color: white;
+  border: none;
+  border-radius: ${props => props.theme.radius.sm};
+  cursor: pointer;
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  transition: background 0.2s;
+  
+  &:hover {
+    background: ${props => props.theme.colors.error[700]};
+  }
+  
+  &:focus {
+    outline: 2px solid ${props => props.theme.colors.error[500]};
+    outline-offset: 2px;
+  }
+`
 
 export function ErrorMessage({
+  error,
   title,
   message,
   suggestion,
   variant = 'block',
+  onRetry,
   onClose,
   'aria-live': ariaLive = 'assertive'
 }: ErrorMessageProps) {
+  // If error is provided, analyze it
+  const errorInfo = error ? analyzeError(error) : null
+  const displayMessage = message || errorInfo?.message || 'An error occurred'
+  const displayTitle = title || (errorInfo ? getErrorTitle(errorInfo.type) : undefined)
+  const displaySuggestion = suggestion || (errorInfo ? getErrorSuggestion(errorInfo) : undefined)
+  const canRetry = errorInfo ? isRetryableError(error) : false
+  
   return (
     <ErrorContainer variant={variant} role="alert" aria-live={ariaLive}>
       <ErrorIcon aria-hidden="true">⚠️</ErrorIcon>
       <ErrorContent>
-        {title && <ErrorTitle>{title}</ErrorTitle>}
-        <ErrorMessage>{message}</ErrorMessage>
-        {suggestion && (
+        {displayTitle && <ErrorTitle>{displayTitle}</ErrorTitle>}
+        <ErrorMessage>{displayMessage}</ErrorMessage>
+        {displaySuggestion && (
           <ErrorSuggestion>
-            <strong>Tip:</strong> {suggestion}
+            <strong>Tip:</strong> {displaySuggestion}
           </ErrorSuggestion>
+        )}
+        {canRetry && onRetry && (
+          <RetryButton onClick={onRetry} type="button">
+            Try Again
+          </RetryButton>
         )}
       </ErrorContent>
       {onClose && (
@@ -133,5 +172,39 @@ export function ErrorMessage({
       )}
     </ErrorContainer>
   )
+}
+
+function getErrorTitle(type: string): string {
+  switch (type) {
+    case 'network':
+      return 'Connection Error'
+    case 'timeout':
+      return 'Request Timeout'
+    case 'auth':
+      return 'Authentication Error'
+    case 'validation':
+      return 'Validation Error'
+    case 'server':
+      return 'Server Error'
+    default:
+      return 'Error'
+  }
+}
+
+function getErrorSuggestion(errorInfo: ReturnType<typeof analyzeError>): string {
+  switch (errorInfo.type) {
+    case 'network':
+      return 'Please check your internet connection and try again.'
+    case 'timeout':
+      return 'The request took too long. Please try again.'
+    case 'auth':
+      return 'Please log in again to continue.'
+    case 'validation':
+      return 'Please check your input and try again.'
+    case 'server':
+      return 'The server is experiencing issues. Please try again in a moment.'
+    default:
+      return 'Please try again. If the problem persists, contact support.'
+  }
 }
 

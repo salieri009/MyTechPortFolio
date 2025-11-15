@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class ResumeService {
     
     private final ResumeRepository resumeRepository;
+    private final EmailService emailService;
     
     /**
      * Gets all active resumes.
@@ -99,6 +100,19 @@ public class ResumeService {
         resume.incrementDownloadCount();
         Resume updatedResume = resumeRepository.save(resume);
         log.info("Resume download recorded. Total downloads: {}", updatedResume.getDownloadCount());
+        
+        // Send email notification asynchronously
+        try {
+            emailService.sendResumeDownloadNotification(
+                updatedResume.getVersion(),
+                null, // Downloader email not available
+                "unknown" // IP address not available in service layer
+            );
+        } catch (Exception e) {
+            log.error("Failed to send resume download notification: {}", e.getMessage(), e);
+            // Don't fail the download if email fails
+        }
+        
         return updatedResume;
     }
     

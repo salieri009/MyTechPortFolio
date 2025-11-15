@@ -24,7 +24,15 @@ public class TechStackMapper extends EntityMapper<TechStack, TechStackResponse, 
         return TechStackResponse.builder()
             .id(techStack.getId())
             .name(techStack.getName())
-            .type(techStack.getType().name())
+            .type(techStack.getType() != null ? techStack.getType().name() : null)
+            .proficiencyLevel(techStack.getProficiencyLevel() != null ? techStack.getProficiencyLevel().name() : null)
+            .proficiencyLevelValue(techStack.getProficiencyLevel() != null ? techStack.getProficiencyLevel().getLevel() : null)
+            .proficiencyDisplay(techStack.getProficiencyDisplay())
+            .usageCount(techStack.getUsageCount())
+            .isPrimary(techStack.getIsPrimary())
+            .logoUrl(techStack.getLogoUrl())
+            .officialUrl(techStack.getOfficialUrl())
+            .description(techStack.getDescription())
             .build();
     }
     
@@ -34,11 +42,24 @@ public class TechStackMapper extends EntityMapper<TechStack, TechStackResponse, 
             return null;
         }
         
-        return TechStack.builder()
+        TechStack.TechStackBuilder builder = TechStack.builder()
             .name(createRequest.getName())
             .type(TechStack.TechType.valueOf(createRequest.getType().toUpperCase()))
             .logoUrl(createRequest.getLogoUrl())
-            .build();
+            .officialUrl(createRequest.getOfficialUrl())
+            .description(createRequest.getDescription());
+        
+        // Set proficiency level if provided
+        if (createRequest.getProficiencyLevel() != null && !createRequest.getProficiencyLevel().isEmpty()) {
+            try {
+                builder.proficiencyLevel(TechStack.ProficiencyLevel.valueOf(createRequest.getProficiencyLevel().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                // Invalid proficiency level, use default
+                builder.proficiencyLevel(TechStack.ProficiencyLevel.INTERMEDIATE);
+            }
+        }
+        
+        return builder.build();
     }
     
     @Override
@@ -52,6 +73,17 @@ public class TechStackMapper extends EntityMapper<TechStack, TechStackResponse, 
             entity.setType(TechStack.TechType.valueOf(updateRequest.getType().toUpperCase()));
         }
         entity.setLogoUrl(updateRequest.getLogoUrl());
+        entity.setOfficialUrl(updateRequest.getOfficialUrl());
+        entity.setDescription(updateRequest.getDescription());
+        
+        // Update proficiency level if provided
+        if (updateRequest.getProficiencyLevel() != null && !updateRequest.getProficiencyLevel().isEmpty()) {
+            try {
+                entity.setProficiencyLevel(TechStack.ProficiencyLevel.valueOf(updateRequest.getProficiencyLevel().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                // Invalid proficiency level, keep existing
+            }
+        }
     }
 }
 

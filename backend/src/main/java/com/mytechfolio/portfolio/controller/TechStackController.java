@@ -34,16 +34,52 @@ public class TechStackController {
     }
 
     @GetMapping
-    @Operation(summary = "기술 스택 목록 조회", description = "타입 필터링을 지원하는 기술 스택 목록을 조회합니다.")
+    @Operation(summary = "기술 스택 목록 조회", 
+               description = "타입 및 숙련도 필터링을 지원하는 기술 스택 목록을 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     public ResponseEntity<ApiResponse<List<TechStackResponse>>> getTechStacks(
             @Parameter(description = "기술 스택 타입 필터", example = "FRONTEND")
-            @RequestParam(required = false) String type
+            @RequestParam(required = false) String type,
+            @Parameter(description = "숙련도 필터 (BEGINNER, INTERMEDIATE, ADVANCED, EXPERT)", example = "EXPERT")
+            @RequestParam(required = false) String proficiencyLevel
     ) {
-        List<TechStackResponse> response = techStackService.getTechStacks(type);
+        List<TechStackResponse> response = techStackService.getTechStacks(type, proficiencyLevel);
+        return ResponseUtil.ok(response);
+    }
+    
+    @GetMapping("/expert")
+    @Operation(summary = "전문가 수준 기술 스택 조회", 
+               description = "EXPERT 수준의 기술 스택만 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공")
+    })
+    public ResponseEntity<ApiResponse<List<TechStackResponse>>> getExpertTechStacks() {
+        List<TechStackResponse> response = techStackService.getExpertTechStacks();
+        return ResponseUtil.ok(response);
+    }
+    
+    @GetMapping("/advanced")
+    @Operation(summary = "고급 수준 기술 스택 조회", 
+               description = "ADVANCED 또는 EXPERT 수준의 기술 스택을 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공")
+    })
+    public ResponseEntity<ApiResponse<List<TechStackResponse>>> getAdvancedTechStacks() {
+        List<TechStackResponse> response = techStackService.getAdvancedTechStacks();
+        return ResponseUtil.ok(response);
+    }
+    
+    @GetMapping("/primary")
+    @Operation(summary = "주력 기술 스택 조회", 
+               description = "주력 기술로 설정된 기술 스택을 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공")
+    })
+    public ResponseEntity<ApiResponse<List<TechStackResponse>>> getPrimaryTechStacks() {
+        List<TechStackResponse> response = techStackService.getPrimaryTechStacks();
         return ResponseUtil.ok(response);
     }
 }

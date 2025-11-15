@@ -39,7 +39,10 @@ public final class SecurityConstants {
         "/api/v1/projects/**",
         "/api/v1/academics/**",
         "/api/v1/techstacks/**",
-        "/swagger-ui/**",
+        "/api/v1/seo/**",
+        "/api/v1/testimonials/**",
+        "/uploads/**",
+051        "/swagger-ui/**",
         "/v3/api-docs/**",
         "/actuator/health",
         "/actuator/info"

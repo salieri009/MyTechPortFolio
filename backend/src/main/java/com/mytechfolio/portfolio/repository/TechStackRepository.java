@@ -74,4 +74,25 @@ public interface TechStackRepository extends MongoRepository<TechStack, String> 
     default List<TechStack> findByIdIn(List<String> ids) {
         return (List<TechStack>) findAllById(ids);
     }
+    
+    // Find by proficiency level
+    List<TechStack> findByProficiencyLevel(TechStack.ProficiencyLevel proficiencyLevel);
+    
+    // Find by proficiency level and type
+    List<TechStack> findByProficiencyLevelAndType(TechStack.ProficiencyLevel proficiencyLevel, TechStack.TechType type);
+    
+    // Find primary tech stacks
+    List<TechStack> findByIsPrimaryTrue();
+    
+    // Find tech stacks ordered by proficiency level (highest first)
+    @Query(value = "{}", sort = "{'proficiencyLevel': -1, 'usageCount': -1}")
+    List<TechStack> findAllByOrderByProficiencyLevelDescUsageCountDesc();
+    
+    // Find expert level tech stacks
+    @Query("{'proficiencyLevel': 'EXPERT'}")
+    List<TechStack> findExpertTechStacks();
+    
+    // Find advanced or expert tech stacks
+    @Query("{'proficiencyLevel': {$in: ['ADVANCED', 'EXPERT']}}")
+    List<TechStack> findAdvancedTechStacks();
 }
