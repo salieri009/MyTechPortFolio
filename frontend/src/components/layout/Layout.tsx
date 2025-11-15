@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { MainHeader } from './MainHeader'
+import { Footer } from './Footer'
+import { SkipToContent } from '@components/atoms/SkipToContent'
 import { GlobalStyle } from '@styles/GlobalStyle'
 
 const LayoutWrapper = styled.div`
@@ -17,6 +19,10 @@ const Main = styled.main`
   flex: 1;
   padding: 40px 0;
   background-color: ${props => props.theme.colors.background};
+  
+  &:focus {
+    outline: none;
+  }
 `
 
 interface LayoutProps {
@@ -52,8 +58,10 @@ export function Layout({ children }: LayoutProps) {
     <>
       <GlobalStyle />
       <LayoutWrapper>
+        <SkipToContent />
         <MainHeader pathname={location.pathname} />
-        <Main>{children}</Main>
+        <Main id="main-content" tabIndex={-1}>{children}</Main>
+        <Footer />
       </LayoutWrapper>
     </>
   )

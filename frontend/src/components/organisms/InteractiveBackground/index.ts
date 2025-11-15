@@ -1,0 +1,2 @@
+export { InteractiveBackground } from './InteractiveBackground'
+

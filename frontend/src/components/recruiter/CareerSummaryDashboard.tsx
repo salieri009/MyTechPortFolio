@@ -3,6 +3,16 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { CAREER_SUMMARY } from '../../constants/contact'
 import { useThemeStore } from '../../stores/themeStore'
+import { StatCard } from '@components/molecules/StatCard'
+import { TechStackBadge } from '@components/molecules/TechStackBadge'
+
+/**
+ * CareerSummaryDashboard Component (Organism)
+ * Recruiter-focused dashboard with detailed review elements
+ * Nielsen Heuristic #1: Visibility of System Status - Clear achievement metrics
+ * Nielsen Heuristic #4: Consistency and Standards - Uniform card design
+ * Nielsen Heuristic #6: Recognition Rather Than Recall - Visual skill indicators
+ */
 
 const DashboardContainer = styled.div<{ $isDark: boolean }>`
   background: ${({ $isDark }) => 
@@ -86,7 +96,7 @@ const ResumeButton = styled.button<{ $isDark: boolean; $language: 'ko' | 'en' | 
   };
   
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px) translateZ(0);
     box-shadow: ${({ $isDark }) => 
       $isDark 
         ? '0 6px 20px rgba(0, 0, 0, 0.4)'
@@ -95,7 +105,7 @@ const ResumeButton = styled.button<{ $isDark: boolean; $language: 'ko' | 'en' | 
   }
   
   &:active {
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
   }
 `
 
@@ -173,9 +183,11 @@ const SkillTag = styled.span<{ $isDark: boolean }>`
   margin: 0.25rem 0.25rem 0.25rem 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
+  will-change: transform;
+  transform: translateZ(0);
   
   &:hover {
-    transform: translateY(-1px);
+    transform: translateY(-1px) translateZ(0);
   }
 `
 
@@ -203,10 +215,12 @@ const AchievementCard = styled.div<{ $isDark: boolean }>`
   };
   border-radius: 12px;
   padding: 1.5rem;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform;
+  transform: translateZ(0);
   
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px) translateZ(0);
     box-shadow: ${({ $isDark }) => 
       $isDark 
         ? '0 8px 25px rgba(79, 172, 254, 0.15)'
@@ -399,11 +413,16 @@ export const CareerSummaryDashboard: React.FC = () => {
           <SectionTitle $isDark={isDark}>
             🛠️ {t('recruiter.careerSummary.sections.coreSkills')}
           </SectionTitle>
-          <div>
+          <div aria-label="Core technical skills">
             {CAREER_SUMMARY.primarySkills.map((skill, index) => (
-              <SkillTag key={index} $isDark={isDark}>
-                {skill}
-              </SkillTag>
+              <TechStackBadge
+                key={index}
+                name={skill}
+                variant={isDark ? 'primary' : 'secondary'}
+                size="sm"
+                showIcon={false}
+                aria-label={`Skill: ${skill}`}
+              />
             ))}
           </div>
         </SkillsSection>

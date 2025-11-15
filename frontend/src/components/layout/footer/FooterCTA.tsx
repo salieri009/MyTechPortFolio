@@ -60,26 +60,28 @@ export function FooterCTA() {
   const { t } = useTranslation()
 
   return (
-    <CTAContainer>
-      <CTATitle>
+    <CTAContainer role="region" aria-labelledby="footer-cta-title">
+      <CTATitle id="footer-cta-title">
         {t('footer.cta.title', 'Ready to Connect?')}
       </CTATitle>
       <CTADescription>
         {t('footer.cta.description', 'Download my resume or reach out to discuss opportunities')}
       </CTADescription>
-      <CTAButtons>
-        <Link to="/resume/download">
+      <CTAButtons role="group" aria-label="Call to action buttons">
+        <Link to="/resume/download" aria-label="Download resume in PDF format">
           <DownloadButton variant="secondary" size="md">
-            📄 {t('footer.cta.downloadResume', 'Download Resume')}
+            <span aria-hidden="true">📄</span>{' '}
+            {t('footer.cta.downloadResume', 'Download Resume')}
           </DownloadButton>
         </Link>
-        <Link to="/contact">
+        <Link to="/feedback" aria-label="Get in touch via contact form">
           <Button variant="outline" size="md" style={{ 
             background: 'transparent', 
             borderColor: 'white', 
             color: 'white' 
           }}>
-            💬 {t('footer.cta.contact', 'Get in Touch')}
+            <span aria-hidden="true">💬</span>{' '}
+            {t('footer.cta.contact', 'Get in Touch')}
           </Button>
         </Link>
       </CTAButtons>

@@ -6,7 +6,7 @@ import { useAuthStore } from '../../store/authStore'
 import { authService } from '../../services/authService'
 import { Container } from '../ui/Container'
 import { ThemeToggle } from '../ThemeToggle/ThemeToggle'
-import { LanguageSwiper } from '../LanguageSwiper/LanguageSwiper'
+import { LanguageSwitcher } from '../LanguageSwitcher'
 import { GoogleLoginButton } from '../GoogleLoginButton'
 
 const HeaderWrapper = styled.header`
@@ -201,11 +201,16 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
               Portfolio
             </Logo>
 
-            <NavLinks $isOpen={mobileMenuOpen}>
+            <NavLinks 
+              $isOpen={mobileMenuOpen}
+              role="navigation"
+              aria-label="Main navigation"
+            >
               <NavLink 
                 to="/" 
                 className={isActive('/')}
                 onClick={closeMobileMenu}
+                aria-current={isActive('/') ? 'page' : undefined}
               >
                 {t('nav.home')}
               </NavLink>
@@ -213,6 +218,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
                 to="/projects" 
                 className={isActive('/projects')}
                 onClick={closeMobileMenu}
+                aria-current={isActive('/projects') ? 'page' : undefined}
               >
                 {t('nav.projects')}
               </NavLink>
@@ -220,6 +226,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
                 to="/about" 
                 className={isActive('/about')}
                 onClick={closeMobileMenu}
+                aria-current={isActive('/about') ? 'page' : undefined}
               >
                 {t('nav.about')}
               </NavLink>
@@ -227,6 +234,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
                 to="/academics" 
                 className={isActive('/academics')}
                 onClick={closeMobileMenu}
+                aria-current={isActive('/academics') ? 'page' : undefined}
               >
                 {t('nav.academics')}
               </NavLink>
@@ -235,6 +243,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={closeMobileMenu}
+                aria-label={`${t('nav.blog')} - Opens in new tab`}
               >
                 {t('nav.blog')}
               </NavExternalLink>
@@ -242,7 +251,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
           </LogoSection>
 
           <RightSection>
-            <LanguageSwiper />
+            <LanguageSwitcher />
             <ThemeToggle />
             
             <UserMenu>
@@ -262,7 +271,9 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
 
             <MobileMenuButton 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle mobile menu"
+              aria-label={mobileMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
               {mobileMenuOpen ? '✕' : '☰'}
             </MobileMenuButton>

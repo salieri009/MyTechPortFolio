@@ -1,19 +1,22 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { Layout } from '@components/layout/Layout'
-import { HomePage } from '@pages/HomePage'
-import { ProjectsPage } from '@pages/ProjectsPage'
-import { ProjectDetailPage } from '@pages/ProjectDetailPage'
-import { AcademicsPage } from '@pages/AcademicsPage'
-import { AboutPage } from '@pages/AboutPage'
-import { FeedbackPage } from '@pages/FeedbackPage'
-import { LoginPage } from './pages/LoginPage'
+import { LoadingSpinner } from '@components/ui/LoadingSpinner'
 import { lightTheme, darkTheme } from '@styles/theme'
 import { useThemeStore } from './stores/themeStore'
 import { analytics } from './services/analytics'
 import { useAnalytics } from './hooks/useAnalytics'
 import './i18n/config'
+
+// Route-based code splitting for better performance
+const HomePage = lazy(() => import('@pages/HomePage').then(module => ({ default: module.HomePage })))
+const ProjectsPage = lazy(() => import('@pages/ProjectsPage'))
+const ProjectDetailPage = lazy(() => import('@pages/ProjectDetailPage').then(module => ({ default: module.ProjectDetailPage })))
+const AcademicsPage = lazy(() => import('@pages/AcademicsPage').then(module => ({ default: module.AcademicsPage })))
+const AboutPage = lazy(() => import('@pages/AboutPage').then(module => ({ default: module.AboutPage })))
+const FeedbackPage = lazy(() => import('@pages/FeedbackPage').then(module => ({ default: module.FeedbackPage })))
+const LoginPage = lazy(() => import('./pages/LoginPage').then(module => ({ default: module.LoginPage })))
 
 function App() {
   const { isDark } = useThemeStore()
@@ -31,21 +34,25 @@ function App() {
 
   return (
     <ThemeProvider theme={currentTheme}>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/*" element={
-          <Layout>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/projects" element={<ProjectsPage />} />
-              <Route path="/projects/:id" element={<ProjectDetailPage />} />
-              <Route path="/academics" element={<AcademicsPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/feedback" element={<FeedbackPage />} />
-            </Routes>
-          </Layout>
-        } />
-      </Routes>
+      <Suspense fallback={<LoadingSpinner fullScreen message="Loading page..." />}>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/*" element={
+            <Layout>
+              <Suspense fallback={<LoadingSpinner message="Loading page..." />}>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/projects" element={<ProjectsPage />} />
+                  <Route path="/projects/:id" element={<ProjectDetailPage />} />
+                  <Route path="/academics" element={<AcademicsPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/feedback" element={<FeedbackPage />} />
+                </Routes>
+              </Suspense>
+            </Layout>
+          } />
+        </Routes>
+      </Suspense>
     </ThemeProvider>
   )
 }

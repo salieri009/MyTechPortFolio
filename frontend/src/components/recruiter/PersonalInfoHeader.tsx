@@ -3,6 +3,16 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { PERSONAL_INFO, CAREER_SUMMARY } from '../../constants/contact'
 import { useThemeStore } from '../../stores/themeStore'
+import { StatCard } from '@components/molecules/StatCard'
+import { ContactButton } from '@components/molecules/ContactButton'
+
+/**
+ * PersonalInfoHeader Component (Organism)
+ * Recruiter-focused header with immediate verification elements
+ * Nielsen Heuristic #1: Visibility of System Status - Clear metrics display
+ * Nielsen Heuristic #4: Consistency and Standards - Uniform stat cards
+ * Nielsen Heuristic #6: Recognition Rather Than Recall - Visual contact options
+ */
 
 const HeaderContainer = styled.div<{ $isDark: boolean }>`
   background: ${({ theme, $isDark }) => 
@@ -177,7 +187,7 @@ const ContactItem = styled.a<{ $isDark: boolean }>`
         ? 'rgba(255, 255, 255, 0.2)'
         : 'rgba(255, 255, 255, 0.3)'
     };
-    transform: translateY(-1px);
+    transform: translateY(-1px) translateZ(0);
   }
   
   @media (max-width: 768px) {
@@ -215,47 +225,54 @@ export const PersonalInfoHeader: React.FC = () => {
           </ProfileInfo>
         </ProfileSection>
         
-        <StatsSection>
-          <StatCard $isDark={isDark}>
-            <StatNumber>{CAREER_SUMMARY.totalProjects}</StatNumber>
-            <StatLabel>{t('recruiter.personalInfo.stats.projects')}</StatLabel>
-          </StatCard>
-          <StatCard $isDark={isDark}>
-            <StatNumber>{CAREER_SUMMARY.totalExperience}</StatNumber>
-            <StatLabel>{t('recruiter.personalInfo.stats.experience')}</StatLabel>
-          </StatCard>
-          <StatCard $isDark={isDark}>
-            <StatNumber>{CAREER_SUMMARY.achievements.length}</StatNumber>
-            <StatLabel>{t('recruiter.personalInfo.stats.achievements')}</StatLabel>
-          </StatCard>
+        <StatsSection role="region" aria-label="Career statistics">
+          <StatCard
+            value={CAREER_SUMMARY.totalProjects}
+            label={t('recruiter.personalInfo.stats.projects', 'Projects')}
+            variant={isDark ? 'glass' : 'solid'}
+            aria-label={`${CAREER_SUMMARY.totalProjects} projects completed`}
+          />
+          <StatCard
+            value={CAREER_SUMMARY.totalExperience}
+            label={t('recruiter.personalInfo.stats.experience', 'Years Experience')}
+            variant={isDark ? 'glass' : 'solid'}
+            aria-label={`${CAREER_SUMMARY.totalExperience} years of experience`}
+          />
+          <StatCard
+            value={CAREER_SUMMARY.achievements.length}
+            label={t('recruiter.personalInfo.stats.achievements', 'Achievements')}
+            variant={isDark ? 'glass' : 'solid'}
+            aria-label={`${CAREER_SUMMARY.achievements.length} major achievements`}
+          />
         </StatsSection>
         
-        <ContactSection>
-          <ContactItem 
-            href={`mailto:${PERSONAL_INFO.email}`} 
-            $isDark={isDark}
-          >
-            <Icon>📧</Icon>
-            {t('recruiter.personalInfo.contact.email')}
-          </ContactItem>
-          <ContactItem 
-            href={PERSONAL_INFO.linkedin} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            $isDark={isDark}
-          >
-            <Icon>💼</Icon>
-            {t('recruiter.personalInfo.contact.linkedin')}
-          </ContactItem>
-          <ContactItem 
-            href={PERSONAL_INFO.github} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            $isDark={isDark}
-          >
-            <Icon>💻</Icon>
-            {t('recruiter.personalInfo.contact.github')}
-          </ContactItem>
+        <ContactSection role="region" aria-label="Contact information">
+          <ContactButton
+            href={`mailto:${PERSONAL_INFO.email}`}
+            icon={<span>📧</span>}
+            label={t('recruiter.personalInfo.contact.email', 'Email')}
+            variant={isDark ? 'glass' : 'outline'}
+            size="sm"
+            aria-label={`Send email to ${PERSONAL_INFO.email}`}
+          />
+          <ContactButton
+            href={PERSONAL_INFO.linkedin}
+            icon={<span>💼</span>}
+            label={t('recruiter.personalInfo.contact.linkedin', 'LinkedIn')}
+            variant={isDark ? 'glass' : 'outline'}
+            size="sm"
+            target="_blank"
+            aria-label="View LinkedIn profile"
+          />
+          <ContactButton
+            href={PERSONAL_INFO.github}
+            icon={<span>💻</span>}
+            label={t('recruiter.personalInfo.contact.github', 'GitHub')}
+            variant={isDark ? 'glass' : 'outline'}
+            size="sm"
+            target="_blank"
+            aria-label="View GitHub profile"
+          />
         </ContactSection>
       </ContentWrapper>
     </HeaderContainer>

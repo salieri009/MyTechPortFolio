@@ -11,26 +11,19 @@ import {
 export function FooterSocial() {
   const { t } = useTranslation()
 
+  // Only show actual social media links that exist
   const socialLinks = [
     {
       name: t('footer.social.github'),
       icon: '🐙',
-      href: CONTACT_INFO.github.url
+      href: CONTACT_INFO.github.url,
+      ariaLabel: `Visit ${CONTACT_INFO.name.full}'s GitHub profile`
     },
     {
       name: t('footer.social.linkedin'),
       icon: '💼',
-      href: CONTACT_INFO.linkedin.url
-    },
-    {
-      name: t('footer.social.twitter'),
-      icon: '🐦',
-      href: 'https://twitter.com/yourhandle'
-    },
-    {
-      name: t('footer.social.instagram'),
-      icon: '📷',
-      href: 'https://instagram.com/yourhandle'
+      href: CONTACT_INFO.linkedin.url,
+      ariaLabel: `Visit ${CONTACT_INFO.name.full}'s LinkedIn profile`
     }
   ]
 
@@ -39,7 +32,7 @@ export function FooterSocial() {
       <FooterSectionTitle>
         {t('footer.social.title')}
       </FooterSectionTitle>
-      <SocialIconsGrid>
+      <SocialIconsGrid role="list" aria-label="Social media links">
         {socialLinks.map((social, index) => (
           <SocialIcon
             key={index}
@@ -47,8 +40,10 @@ export function FooterSocial() {
             target="_blank"
             rel="noopener noreferrer"
             title={social.name}
+            aria-label={social.ariaLabel || social.name}
+            role="listitem"
           >
-            {social.icon}
+            <span aria-hidden="true">{social.icon}</span>
           </SocialIcon>
         ))}
       </SocialIconsGrid>

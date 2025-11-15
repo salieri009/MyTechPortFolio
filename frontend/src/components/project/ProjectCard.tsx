@@ -5,15 +5,26 @@ import { useTranslation } from 'react-i18next'
 import { Card, Tag } from '../common'
 import { useProjectAnalytics } from '../../hooks/useAnalytics'
 
+/**
+ * ProjectCard Component (Molecule)
+ * Nielsen Heuristic #1: Visibility of System Status - Hover states and transitions
+ * Nielsen Heuristic #4: Consistency and Standards - Uniform card design
+ * Nielsen Heuristic #6: Recognition Rather Than Recall - Visual tech stack indicators
+ * Nielsen Heuristic #8: Aesthetic and Minimalist Design - Clean, focused layout
+ */
+
 const ProjectCardWrapper = styled(Card)`
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Performance optimization */
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
 
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-4px) translateZ(0);
   }
 `
 
@@ -111,23 +122,41 @@ export function ProjectCard({
   }
 
   return (
-    <StyledLink to={`/projects/${id}`} onClick={handleProjectClick}>
-      <ProjectCardWrapper isHover>
+    <StyledLink 
+      to={`/projects/${id}`} 
+      onClick={handleProjectClick}
+      aria-label={`View project: ${t(title)}`}
+    >
+      <ProjectCardWrapper isHover role="article" aria-labelledby={`project-title-${id}`}>
         {imageUrl && (
-          <ProjectImage src={imageUrl} alt={t(title)} loading="lazy" />
+          <ProjectImage 
+            src={imageUrl} 
+            alt={t(title)} 
+            loading="lazy"
+            aria-hidden="false"
+          />
         )}
         <ProjectContent>
-          <ProjectTitle>{t(title)}</ProjectTitle>
+          <ProjectTitle id={`project-title-${id}`}>{t(title)}</ProjectTitle>
           <ProjectSummary>{t(summary)}</ProjectSummary>
-          <ProjectMeta>
+          <ProjectMeta aria-label={`Project duration: ${formatDate(startDate)} to ${formatDate(endDate)}`}>
             <span>{formatDate(startDate)} - {formatDate(endDate)}</span>
           </ProjectMeta>
-          <TechStacks>
+          <TechStacks aria-label="Technologies used">
             {techStacks.map((tech) => (
               <Tag 
                 key={tech}
                 onClick={(e) => handleTechStackClick(e, tech)}
-                style={{ cursor: 'pointer' }}
+                clickable
+                aria-label={`Filter projects by ${tech}`}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleTechStackClick(e as any, tech)
+                  }
+                }}
               >
                 {tech}
               </Tag>

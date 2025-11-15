@@ -12,6 +12,18 @@ export const GlobalStyle = createGlobalStyle`
     scroll-behavior: smooth;
   }
 
+  /* Respect user's motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   body {
     font-family: ${props => props.theme.typography.fontFamily.primary};
     line-height: ${props => props.theme.typography.lineHeight.normal};
@@ -36,6 +48,14 @@ export const GlobalStyle = createGlobalStyle`
   img {
     max-width: 100%;
     height: auto;
+    /* Performance optimization */
+    content-visibility: auto;
+    will-change: auto;
+  }
+
+  /* Optimize image loading */
+  img[loading="lazy"] {
+    content-visibility: auto;
   }
 
   ul, ol {

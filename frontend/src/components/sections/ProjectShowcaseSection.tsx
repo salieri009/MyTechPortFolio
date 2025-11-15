@@ -3,6 +3,14 @@ import styled, { keyframes } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Container } from '@components/common'
 
+/**
+ * ProjectShowcaseSection Component (Organism)
+ * Nielsen Heuristic #1: Visibility of System Status - Hover feedback and animations
+ * Nielsen Heuristic #4: Consistency and Standards - Uniform column design
+ * Nielsen Heuristic #6: Recognition Rather Than Recall - Visual tech stack display on hover
+ * Nielsen Heuristic #8: Aesthetic and Minimalist Design - Clean, focused presentation
+ */
+
 const fadeInUp = keyframes`
   from {
     opacity: 0;
@@ -105,19 +113,24 @@ const TechStackContent = styled.div.withConfig({
 `
 
 const ColumnCard = styled.div<{ $isHovered: boolean; $animationType: 'right' | 'both' | 'left' }>`
+  /* Performance optimization */
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
   position: relative;
   height: 500px;
   background: ${props => props.theme.colors.surface};
   border-radius: 24px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${props => props.theme.shadows.lg};
   border: 1px solid ${props => props.theme.colors.border};
   backdrop-filter: blur(10px);
 
   &:hover {
-    transform: translateY(-12px) scale(1.02);
+    transform: translateY(-12px) scale(1.02) translateZ(0);
     box-shadow: ${props => props.theme.shadows['2xl']};
     border-color: ${props => props.theme.colors.primary[400]};
   }
@@ -308,7 +321,7 @@ export function ProjectShowcaseSection() {
           {t('showcase.subtitle')}
         </SectionSubtitle>
         
-        <Grid>
+        <Grid role="list" aria-label="Project showcase categories">
           {projectData.map((project, index) => (
             <ColumnCard
               key={project.id}
@@ -316,9 +329,15 @@ export function ProjectShowcaseSection() {
               $animationType={project.animationType}
               onMouseEnter={project.onHover}
               onMouseLeave={project.onLeave}
+              onFocus={project.onHover}
+              onBlur={project.onLeave}
+              role="listitem"
+              tabIndex={0}
+              aria-label={`${project.title}: ${project.description}`}
+              aria-expanded={hoveredColumn === project.id}
             >
               <CardContent>
-                <CardIcon>{project.icon}</CardIcon>
+                <CardIcon aria-hidden="true">{project.icon}</CardIcon>
                 <CardTitle>
                   {project.title}
                 </CardTitle>
@@ -328,12 +347,21 @@ export function ProjectShowcaseSection() {
           ))}
         </Grid>
 
-        <TechStackContainer isVisible={hoveredColumn !== null}>
+        <TechStackContainer 
+          isVisible={hoveredColumn !== null}
+          role="region"
+          aria-label="Technology stack"
+          aria-live="polite"
+        >
           <TechStackContent isVisible={hoveredColumn !== null}>
             <TechStackTitle>{getCurrentTitle()}</TechStackTitle>
-            <TechStackGrid>
+            <TechStackGrid role="list" aria-label="Technologies">
               {getCurrentTechStack().map((tech, index) => (
-                <TechItem key={`${hoveredColumn}-${tech}-${index}`}>
+                <TechItem 
+                  key={`${hoveredColumn}-${tech}-${index}`}
+                  role="listitem"
+                  aria-label={tech}
+                >
                   {tech}
                 </TechItem>
               ))}

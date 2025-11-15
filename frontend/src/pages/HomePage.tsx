@@ -8,6 +8,7 @@ import { FeaturedProjectCard } from '@components/project'
 import { TestimonialCard } from '@components/testimonials'
 import { ProjectShowcaseSection } from '@components/sections/ProjectShowcaseSection'
 import { JourneyMilestoneSection } from '@components/sections/JourneyMilestoneSection'
+import { InteractiveBackground } from '@components/organisms/InteractiveBackground'
 import { getProjects } from '../services/projects'
 import { getTestimonials } from '../mocks/testimonials'
 import { CONTACT_INFO } from '../constants/contact'
@@ -34,11 +35,12 @@ const Hero = styled.section<{ $isDark: boolean }>`
     bottom: 0;
     background: ${props => props.$isDark ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'};
     pointer-events: none;
+    z-index: 1;
   }
   
   > * {
     position: relative;
-    z-index: 1;
+    z-index: 2;
   }
 `
 
@@ -221,6 +223,7 @@ export function HomePage() {
   return (
     <>
       <Hero $isDark={isDark}>
+        <InteractiveBackground isDark={isDark} particleCount={60} connectionDistance={120} />
         <Container>
           <Greeting>
             <Typewriter text={t('hero.greeting')} speed={80} />
