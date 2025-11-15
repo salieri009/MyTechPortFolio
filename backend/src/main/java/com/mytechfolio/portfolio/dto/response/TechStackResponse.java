@@ -1,6 +1,5 @@
 package com.mytechfolio.portfolio.dto.response;
 
-import com.mytechfolio.portfolio.domain.TechStack;
 
 public class TechStackResponse {
     private String id;
@@ -39,11 +38,4 @@ public class TechStackResponse {
         }
     }
 
-    public static TechStackResponse from(TechStack techStack) {
-        return TechStackResponse.builder()
-                .id(techStack.getId())
-                .name(techStack.getName())
-                .type(techStack.getType().name())
-                .build();
-    }
 }

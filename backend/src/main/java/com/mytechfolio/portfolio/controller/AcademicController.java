@@ -1,9 +1,12 @@
 package com.mytechfolio.portfolio.controller;
 
+import com.mytechfolio.portfolio.constants.ApiConstants;
 import com.mytechfolio.portfolio.dto.response.AcademicResponse;
 import com.mytechfolio.portfolio.dto.response.ApiResponse;
 import com.mytechfolio.portfolio.dto.response.PageResponse;
 import com.mytechfolio.portfolio.service.AcademicService;
+import com.mytechfolio.portfolio.util.ResponseUtil;
+import com.mytechfolio.portfolio.validation.ValidMongoId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,9 +16,15 @@ import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for academic information management.
+ * Provides CRUD operations for academic records with pagination and filtering.
+ * 
+ * @author MyTechPortfolio Team
+ * @since 1.0.0
+ */
 @RestController
-@RequestMapping("/api/academics")
-@CrossOrigin(origins = "*")
+@RequestMapping(ApiConstants.ACADEMICS_ENDPOINT)
 @Tag(name = "Academics", description = "학업 과정 관리 API")
 public class AcademicController {
 
@@ -34,16 +43,16 @@ public class AcademicController {
     })
     public ResponseEntity<ApiResponse<PageResponse<AcademicResponse>>> getAcademics(
             @Parameter(description = "페이지 번호 (1부터 시작)", example = "1")
-            @RequestParam(defaultValue = "1") @Min(1) int page,
+            @RequestParam(defaultValue = "" + ApiConstants.DEFAULT_PAGE_NUMBER) @Min(1) int page,
             
             @Parameter(description = "페이지 크기", example = "10")
-            @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
+            @RequestParam(defaultValue = "" + ApiConstants.DEFAULT_PAGE_SIZE) @Min(1) @Max(ApiConstants.MAX_PAGE_SIZE) int size,
             
             @Parameter(description = "학기 필터", example = "2024-1")
             @RequestParam(defaultValue = "") String semester
     ) {
         PageResponse<AcademicResponse> response = academicService.getAcademics(page, size, semester);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseUtil.ok(response);
     }
 
     @GetMapping("/{id}")
@@ -53,10 +62,12 @@ public class AcademicController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "학업 과정을 찾을 수 없음")
     })
     public ResponseEntity<ApiResponse<AcademicResponse>> getAcademic(
-            @Parameter(description = "학업 과정 ID", required = true)
-            @PathVariable String id
+            @Parameter(description = "학업 과정 ID (MongoDB ObjectId)", required = true, example = "507f1f77bcf86cd799439011")
+            @PathVariable 
+            @ValidMongoId(message = "Invalid academic ID format")
+            String id
     ) {
         AcademicResponse response = academicService.getAcademic(id);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseUtil.ok(response);
     }
 }

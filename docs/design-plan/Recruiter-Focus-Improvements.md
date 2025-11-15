@@ -2,7 +2,7 @@
 
 This document prioritizes what recruiters care most about when reviewing engineering portfolios and turns them into concrete, high-impact improvements for this project.
 
-## What recruiters look for (and how we’ll show it)
+## What recruiters look for (and how we?�ll show it)
 
 - Clear value and role
   - What problem did you solve, for whom, and what was your role? Show it on the first screen with a one-sentence value prop + role tag.
@@ -17,9 +17,9 @@ This document prioritizes what recruiters care most about when reviewing enginee
 - UX polish
   - Fast, accessible, responsive, internationalized, and visually consistent.
 
-## Quick wins (1–2 hours each)
+## Quick wins (1?? hours each)
 
-- [ ] Home hero: add a one-liner “Who I am + What I do + Outcomes”
+- [ ] Home hero: add a one-liner ?�Who I am + What I do + Outcomes??
 - [ ] Add prominent links: GitHub, LinkedIn, Email (track clicks via analytics)
 - [ ] Add favicon and social preview image (fixes 404 on favicon)
 - [ ] Add a Case Study section on the Home page linking to Projects with highlights
@@ -27,7 +27,7 @@ This document prioritizes what recruiters care most about when reviewing enginee
 - [ ] Fix path aliases consistency (Vite + tsconfig) and simplify imports
 - [ ] Provide a single source of truth for UI components and theme tokens
 
-## High-impact case study template (use for 1–2 best projects)
+## High-impact case study template (use for 1?? best projects)
 
 1. Context
    - Goal, constraints, your role, timeline, stakeholders
@@ -37,7 +37,7 @@ This document prioritizes what recruiters care most about when reviewing enginee
    - Why X over Y (performance, complexity, cost, learning)
 4. Results (with numbers)
    - Performance (page load, API time), reliability (error rate), reach (users, views)
-5. What I’d improve next
+5. What I?�d improve next
    - Honest, technical, and feasible next steps
 
 Create each as `/projects/:id` detail pages with consistent sections.
@@ -122,19 +122,19 @@ project-ideas/
 
 ## Milestoned plan
 
-- Milestone 1: Baseline polish (1–2 days)
+- Milestone 1: Baseline polish (1?? days)
   - Home hero, favicon/og image, 404, export/import cleanup, a11y fixes
-- Milestone 2: Case study + performance (1–2 days)
+- Milestone 2: Case study + performance (1?? days)
   - One in-depth project page with metrics; Lighthouse improvements
-- Milestone 3: Tests + CI (1–2 days)
+- Milestone 3: Tests + CI (1?? days)
   - Unit tests, smoke e2e, GitHub Actions pipeline
-- Milestone 4: API quality + docs (1–2 days)
+- Milestone 4: API quality + docs (1?? days)
   - OpenAPI, error handling, logs, health checks
 
 ## Success criteria
 
-- Lighthouse: ≥ 90 on Performance, Accessibility, Best Practices, SEO
-- Zero “blank screen” incidents on route errors (verified by error boundary)
+- Lighthouse: ??90 on Performance, Accessibility, Best Practices, SEO
+- Zero ?�blank screen??incidents on route errors (verified by error boundary)
 - Case study page with at least 3 quantifiable outcomes
 - CI green: build, typecheck, lint, tests passing
 

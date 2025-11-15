@@ -1,0 +1,847 @@
+# Frontend Test Cases for MyTechPortfolio
+# Comprehensive test suite following best practices and Nielsen's Heuristics
+# Last Updated: 2025-01-XX
+
+api:
+  baseUrl: "http://localhost:5173"
+  apiBaseUrl: "http://localhost:8080/api"
+  version: "v1"
+
+testSuites:
+  - name: "HomePage Tests"
+    description: "Test cases for the home page functionality"
+    basePath: "/"
+    
+    testCases:
+      # Page Load and Initial Render
+      - name: "HomePage loads successfully"
+        type: "e2e"
+        method: "GET"
+        path: "/"
+        expectedStatus: 200
+        assertions:
+          - type: "elementExists"
+            selector: "h1"
+            description: "Page title should be visible"
+          - type: "elementExists"
+            selector: "[data-testid='hero-section']"
+            description: "Hero section should be present"
+          - type: "performance"
+            metric: "LCP"
+            maxMs: 2500
+            description: "Largest Contentful Paint should be under 2.5s"
+            
+      - name: "HomePage displays featured projects"
+        type: "component"
+        description: "Featured projects section should render correctly"
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='featured-projects']"
+          - type: "elementCount"
+            selector: "[data-testid='project-card']"
+            min: 1
+            max: 3
+            description: "Should show 1-3 featured projects"
+          - type: "textContent"
+            selector: "[data-testid='featured-projects'] h2"
+            contains: "Featured"
+            
+      - name: "HomePage displays tech stack section"
+        type: "component"
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='tech-stack-section']"
+          - type: "elementCount"
+            selector: "[data-testid='tech-icon']"
+            min: 5
+            description: "Should display multiple tech stack icons"
+            
+      - name: "HomePage theme toggle works"
+        type: "interaction"
+        steps:
+          - action: "click"
+            selector: "[data-testid='theme-toggle']"
+          - wait: 500
+        assertions:
+          - type: "attribute"
+            selector: "html"
+            attribute: "data-theme"
+            value: "dark"
+            description: "Theme should toggle to dark mode"
+            
+      - name: "HomePage language switcher works"
+        type: "interaction"
+        steps:
+          - action: "click"
+            selector: "[data-testid='language-switcher']"
+          - wait: 300
+          - action: "click"
+            selector: "[data-testid='lang-option-en']"
+          - wait: 500
+        assertions:
+          - type: "textContent"
+            selector: "h1"
+            contains: "Welcome"
+            description: "Text should change to English"
+            
+      - name: "HomePage navigation links work"
+        type: "navigation"
+        testCases:
+          - name: "Navigate to Projects page"
+            steps:
+              - action: "click"
+                selector: "a[href='/projects']"
+              - wait: 1000
+            assertions:
+              - type: "url"
+                contains: "/projects"
+              - type: "elementExists"
+                selector: "[data-testid='projects-page']"
+                
+          - name: "Navigate to Academics page"
+            steps:
+              - action: "click"
+                selector: "a[href='/academics']"
+              - wait: 1000
+            assertions:
+              - type: "url"
+                contains: "/academics"
+                
+      - name: "HomePage loading states display correctly"
+        type: "async"
+        description: "Test loading indicators during data fetch"
+        steps:
+          - action: "navigate"
+            path: "/"
+          - wait: 100
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='loading-spinner']"
+            optional: true
+            description: "Loading spinner may appear briefly"
+          - type: "elementNotExists"
+            selector: "[data-testid='loading-spinner']"
+            afterWait: 3000
+            description: "Loading spinner should disappear after data loads"
+            
+      - name: "HomePage error handling"
+        type: "error"
+        description: "Test error states when API fails"
+        setup:
+          - mockApi: "GET /api/projects"
+            response: "error"
+            status: 500
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='error-message']"
+            optional: true
+          - type: "textContent"
+            selector: "[data-testid='error-message']"
+            contains: "error"
+            optional: true
+
+  - name: "ProjectsPage Tests"
+    description: "Test cases for projects listing and filtering"
+    basePath: "/projects"
+    
+    testCases:
+      # Page Load
+      - name: "ProjectsPage loads successfully"
+        type: "e2e"
+        method: "GET"
+        path: "/projects"
+        expectedStatus: 200
+        assertions:
+          - type: "elementExists"
+            selector: "h1"
+            description: "Page title should be visible"
+          - type: "elementExists"
+            selector: "[data-testid='projects-grid']"
+            description: "Projects grid should be present"
+          - type: "elementExists"
+            selector: "[data-testid='filter-bar']"
+            description: "Filter bar should be visible"
+            
+      # Filtering Tests
+      - name: "Filter projects by tech stack"
+        type: "interaction"
+        steps:
+          - action: "click"
+            selector: "[data-testid='filter-tech-React']"
+          - wait: 500
+        assertions:
+          - type: "elementCount"
+            selector: "[data-testid='project-card']"
+            min: 1
+            description: "Should show at least one React project"
+          - type: "attribute"
+            selector: "[data-testid='filter-tech-React']"
+            attribute: "aria-selected"
+            value: "true"
+            description: "Filter should be marked as selected"
+          - type: "url"
+            contains: "techStacks=React"
+            description: "URL should reflect filter state"
+            
+      - name: "Filter projects by year"
+        type: "interaction"
+        steps:
+          - action: "select"
+            selector: "[data-testid='year-filter']"
+            value: "2024"
+          - wait: 500
+        assertions:
+          - type: "elementCount"
+            selector: "[data-testid='project-card']"
+            min: 0
+            description: "Should filter projects by year"
+          - type: "url"
+            contains: "year=2024"
+            
+      - name: "Sort projects by date"
+        type: "interaction"
+        steps:
+          - action: "click"
+            selector: "[data-testid='sort-newest']"
+          - wait: 500
+        assertions:
+          - type: "attribute"
+            selector: "[data-testid='sort-newest']"
+            attribute: "aria-selected"
+            value: "true"
+          - type: "elementOrder"
+            selector: "[data-testid='project-card']"
+            order: "desc"
+            field: "data-end-date"
+            description: "Projects should be sorted by newest first"
+            
+      - name: "Clear all filters"
+        type: "interaction"
+        steps:
+          - action: "click"
+            selector: "[data-testid='filter-tech-React']"
+          - wait: 300
+          - action: "click"
+            selector: "[data-testid='clear-filters']"
+          - wait: 500
+        assertions:
+          - type: "elementCount"
+            selector: "[data-testid='project-card']"
+            min: 0
+            description: "Should show all projects after clearing filters"
+          - type: "attribute"
+            selector: "[data-testid='filter-tech-React']"
+            attribute: "aria-selected"
+            value: "false"
+            
+      # Empty States
+      - name: "ProjectsPage shows empty state when no matches"
+        type: "interaction"
+        setup:
+          - mockApi: "GET /api/projects"
+            response: "empty"
+        steps:
+          - action: "click"
+            selector: "[data-testid='filter-tech-NonExistent']"
+          - wait: 500
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='empty-state']"
+          - type: "textContent"
+            selector: "[data-testid='empty-state']"
+            contains: "No projects found"
+            
+      # Loading States
+      - name: "ProjectsPage shows loading state"
+        type: "async"
+        setup:
+          - mockApi: "GET /api/projects"
+            delay: 2000
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='loading-spinner']"
+            description: "Loading spinner should appear"
+          - type: "textContent"
+            selector: "[data-testid='loading-text']"
+            contains: "Loading"
+            
+      # Error Handling
+      - name: "ProjectsPage handles API errors gracefully"
+        type: "error"
+        setup:
+          - mockApi: "GET /api/projects"
+            response: "error"
+            status: 500
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='error-message']"
+          - type: "textContent"
+            selector: "[data-testid='error-message']"
+            contains: "error"
+          - type: "elementExists"
+            selector: "[data-testid='retry-button']"
+            description: "Should provide retry option"
+            
+      # Responsive Design
+      - name: "ProjectsPage responsive layout"
+        type: "responsive"
+        viewports:
+          - width: 375
+            height: 667
+            name: "Mobile"
+          - width: 768
+            height: 1024
+            name: "Tablet"
+          - width: 1920
+            height: 1080
+            name: "Desktop"
+        assertions:
+          - type: "layout"
+            selector: "[data-testid='projects-grid']"
+            mobile:
+              columns: 1
+            tablet:
+              columns: 2
+            desktop:
+              columns: 3
+            description: "Grid should adapt to screen size"
+
+  - name: "ProjectDetailPage Tests"
+    description: "Test cases for individual project detail page"
+    basePath: "/projects/:id"
+    
+    testCases:
+      - name: "ProjectDetailPage loads with valid ID"
+        type: "e2e"
+        path: "/projects/507f1f77bcf86cd799439011"
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='project-title']"
+          - type: "elementExists"
+            selector: "[data-testid='project-description']"
+          - type: "elementExists"
+            selector: "[data-testid='project-tech-stacks']"
+          - type: "elementExists"
+            selector: "[data-testid='breadcrumbs']"
+            description: "Breadcrumbs should be visible"
+            
+      - name: "ProjectDetailPage shows 404 for invalid ID"
+        type: "error"
+        path: "/projects/invalid-id"
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='not-found']"
+          - type: "textContent"
+            selector: "[data-testid='not-found']"
+            contains: "not found"
+          - type: "elementExists"
+            selector: "a[href='/projects']"
+            description: "Should provide link back to projects"
+            
+      - name: "ProjectDetailPage breadcrumb navigation"
+        type: "navigation"
+        steps:
+          - action: "click"
+            selector: "[data-testid='breadcrumb-home']"
+          - wait: 1000
+        assertions:
+          - type: "url"
+            equals: "/"
+          - type: "action"
+            action: "goBack"
+          - wait: 1000
+          - type: "url"
+            contains: "/projects"
+            
+      - name: "ProjectDetailPage external links open in new tab"
+        type: "interaction"
+        assertions:
+          - type: "attribute"
+            selector: "a[href^='http']"
+            attribute: "target"
+            value: "_blank"
+          - type: "attribute"
+            selector: "a[href^='http']"
+            attribute: "rel"
+            contains: "noopener"
+            description: "Security: prevent tabnabbing"
+
+  - name: "FeedbackPage Tests"
+    description: "Test cases for feedback form"
+    basePath: "/feedback"
+    
+    testCases:
+      # Form Validation (Nielsen Heuristic #5: Error Prevention)
+      - name: "FeedbackPage form validation"
+        type: "form"
+        testCases:
+          - name: "Required fields show error when empty"
+            steps:
+              - action: "click"
+                selector: "[data-testid='submit-button']"
+              - wait: 300
+            assertions:
+              - type: "elementExists"
+                selector: "[data-testid='error-name']"
+              - type: "elementExists"
+                selector: "[data-testid='error-email']"
+              - type: "elementExists"
+                selector: "[data-testid='error-message']"
+              - type: "textContent"
+                selector: "[data-testid='error-email']"
+                contains: "required"
+                
+          - name: "Email validation"
+            steps:
+              - action: "type"
+                selector: "[data-testid='email-input']"
+                value: "invalid-email"
+              - action: "blur"
+                selector: "[data-testid='email-input']"
+              - wait: 300
+            assertions:
+              - type: "elementExists"
+                selector: "[data-testid='error-email']"
+              - type: "textContent"
+                selector: "[data-testid='error-email']"
+                contains: "valid email"
+                
+          - name: "Message length validation"
+            steps:
+              - action: "type"
+                selector: "[data-testid='message-input']"
+                value: "x"
+              - action: "blur"
+                selector: "[data-testid='message-input']"
+              - wait: 300
+            assertions:
+              - type: "elementExists"
+                selector: "[data-testid='error-message']"
+              - type: "textContent"
+                selector: "[data-testid='error-message']"
+                contains: "at least"
+                
+      # Form Submission (Nielsen Heuristic #1: Visibility of System Status)
+      - name: "FeedbackPage successful submission"
+        type: "form"
+        steps:
+          - action: "type"
+            selector: "[data-testid='name-input']"
+            value: "Test User"
+          - action: "type"
+            selector: "[data-testid='email-input']"
+            value: "test@example.com"
+          - action: "type"
+            selector: "[data-testid='message-input']"
+            value: "This is a test feedback message"
+          - action: "click"
+            selector: "[data-testid='submit-button']"
+          - wait: 1000
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='success-message']"
+            description: "Success message should appear"
+          - type: "textContent"
+            selector: "[data-testid='success-message']"
+            contains: "success"
+          - type: "elementExists"
+            selector: "[data-testid='loading-spinner']"
+            optional: true
+            description: "Loading state during submission"
+          - type: "attribute"
+            selector: "[data-testid='submit-button']"
+            attribute: "disabled"
+            value: "true"
+            during: "submission"
+            description: "Button should be disabled during submission"
+            
+      - name: "FeedbackPage error handling"
+        type: "error"
+        setup:
+          - mockApi: "POST /api/feedback"
+            response: "error"
+            status: 500
+        steps:
+          - action: "fillForm"
+            data:
+              name: "Test User"
+              email: "test@example.com"
+              message: "Test message"
+          - action: "click"
+            selector: "[data-testid='submit-button']"
+          - wait: 1000
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='error-message']"
+          - type: "textContent"
+            selector: "[data-testid='error-message']"
+            contains: "failed"
+          - type: "elementExists"
+            selector: "[data-testid='retry-button']"
+            description: "Should provide retry option"
+
+  - name: "LoginPage Tests"
+    description: "Test cases for authentication"
+    basePath: "/login"
+    
+    testCases:
+      - name: "LoginPage loads successfully"
+        type: "e2e"
+        path: "/login"
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='google-login-button']"
+          - type: "elementExists"
+            selector: "[data-testid='login-form']"
+            
+      - name: "Google OAuth login flow"
+        type: "oauth"
+        steps:
+          - action: "click"
+            selector: "[data-testid='google-login-button']"
+          - wait: 2000
+          - action: "mockOAuth"
+            provider: "google"
+            success: true
+          - wait: 1000
+        assertions:
+          - type: "url"
+            equals: "/"
+            description: "Should redirect to home after login"
+          - type: "elementExists"
+            selector: "[data-testid='user-menu']"
+            description: "User menu should appear"
+            
+      - name: "2FA verification"
+        type: "interaction"
+        setup:
+          - mockApi: "POST /auth/google"
+            response: "2fa_required"
+        steps:
+          - action: "click"
+            selector: "[data-testid='google-login-button']"
+          - wait: 1000
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='2fa-input']"
+          - type: "elementExists"
+            selector: "[data-testid='2fa-submit']"
+          - type: "attribute"
+            selector: "[data-testid='2fa-input']"
+            attribute: "maxLength"
+            value: "6"
+            description: "2FA code should be 6 digits"
+            
+      - name: "Login error handling"
+        type: "error"
+        setup:
+          - mockApi: "POST /auth/google"
+            response: "error"
+            status: 401
+        steps:
+          - action: "click"
+            selector: "[data-testid='google-login-button']"
+          - wait: 1000
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='error-message']"
+          - type: "textContent"
+            selector: "[data-testid='error-message']"
+            contains: "authentication"
+            description: "Should show authentication error"
+
+  - name: "Accessibility Tests"
+    description: "WCAG compliance and accessibility tests"
+    
+    testCases:
+      # Keyboard Navigation (Nielsen Heuristic #7: Flexibility)
+      - name: "Keyboard navigation works throughout site"
+        type: "accessibility"
+        steps:
+          - action: "keyboard"
+            key: "Tab"
+            count: 10
+        assertions:
+          - type: "focusVisible"
+            description: "All focusable elements should have visible focus"
+          - type: "focusOrder"
+            description: "Focus order should be logical"
+          - type: "noFocusTrap"
+            description: "No focus traps should exist"
+            
+      - name: "Skip to main content link"
+        type: "accessibility"
+        assertions:
+          - type: "elementExists"
+            selector: "a[href='#main-content']"
+          - type: "action"
+            action: "keyboard"
+            key: "Tab"
+          - type: "elementFocused"
+            selector: "a[href='#main-content']"
+            description: "Skip link should be first focusable element"
+            
+      # Screen Reader Support
+      - name: "ARIA labels and roles"
+        type: "accessibility"
+        assertions:
+          - type: "attribute"
+            selector: "[data-testid='theme-toggle']"
+            attribute: "aria-label"
+            description: "Theme toggle should have aria-label"
+          - type: "attribute"
+            selector: "[data-testid='language-switcher']"
+            attribute: "aria-label"
+          - type: "attribute"
+            selector: "nav"
+            attribute: "role"
+            value: "navigation"
+          - type: "attribute"
+            selector: "main"
+            attribute: "role"
+            value: "main"
+            
+      # Color Contrast
+      - name: "Color contrast meets WCAG AA"
+        type: "accessibility"
+        assertions:
+          - type: "contrast"
+            selector: "h1, h2, h3"
+            level: "AA"
+            ratio: 4.5
+          - type: "contrast"
+            selector: "p, span"
+            level: "AA"
+            ratio: 4.5
+          - type: "contrast"
+            selector: "a"
+            level: "AA"
+            ratio: 4.5
+            
+      # Reduced Motion
+      - name: "Respects prefers-reduced-motion"
+        type: "accessibility"
+        setup:
+          - mediaQuery: "(prefers-reduced-motion: reduce)"
+        assertions:
+          - type: "css"
+            selector: "*"
+            property: "animation"
+            value: "none"
+            description: "Animations should be disabled"
+
+  - name: "Performance Tests"
+    description: "Core Web Vitals and performance metrics"
+    
+    testCases:
+      - name: "Lighthouse performance score"
+        type: "performance"
+        assertions:
+          - type: "lighthouse"
+            metric: "performance"
+            min: 85
+          - type: "lighthouse"
+            metric: "accessibility"
+            min: 95
+          - type: "lighthouse"
+            metric: "best-practices"
+            min: 90
+          - type: "lighthouse"
+            metric: "SEO"
+            min: 90
+            
+      - name: "Core Web Vitals"
+        type: "performance"
+        assertions:
+          - type: "webVital"
+            metric: "LCP"
+            max: 2500
+            description: "Largest Contentful Paint"
+          - type: "webVital"
+            metric: "FID"
+            max: 100
+            description: "First Input Delay"
+          - type: "webVital"
+            metric: "CLS"
+            max: 0.1
+            description: "Cumulative Layout Shift"
+          - type: "webVital"
+            metric: "FCP"
+            max: 1800
+            description: "First Contentful Paint"
+            
+      - name: "Bundle size optimization"
+        type: "performance"
+        assertions:
+          - type: "bundleSize"
+            file: "main.js"
+            max: 500
+            unit: "KB"
+          - type: "bundleSize"
+            file: "vendor.js"
+            max: 300
+            unit: "KB"
+
+  - name: "Responsive Design Tests"
+    description: "Mobile-first responsive design validation"
+    
+    testCases:
+      - name: "Mobile viewport (375x667)"
+        type: "responsive"
+        viewport:
+          width: 375
+          height: 667
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='mobile-menu-button']"
+          - type: "elementNotExists"
+            selector: "[data-testid='desktop-nav']"
+          - type: "layout"
+            selector: "[data-testid='projects-grid']"
+            columns: 1
+            
+      - name: "Tablet viewport (768x1024)"
+        type: "responsive"
+        viewport:
+          width: 768
+          height: 1024
+        assertions:
+          - type: "layout"
+            selector: "[data-testid='projects-grid']"
+            columns: 2
+            
+      - name: "Desktop viewport (1920x1080)"
+        type: "responsive"
+        viewport:
+          width: 1920
+          height: 1080
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='desktop-nav']"
+          - type: "layout"
+            selector: "[data-testid='projects-grid']"
+            columns: 3
+
+  - name: "Nielsen's Heuristics Compliance Tests"
+    description: "Validation against Nielsen's 10 Usability Heuristics"
+    
+    testCases:
+      # Heuristic #1: Visibility of System Status
+      - name: "Loading states are visible"
+        type: "heuristic"
+        heuristic: "visibility_of_system_status"
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='loading-spinner']"
+            during: "async_operation"
+          - type: "textContent"
+            selector: "[data-testid='loading-text']"
+            contains: "Loading"
+            
+      # Heuristic #3: User Control and Freedom
+      - name: "Undo/Cancel options available"
+        type: "heuristic"
+        heuristic: "user_control_and_freedom"
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='cancel-button']"
+            in: "forms"
+          - type: "elementExists"
+            selector: "[data-testid='clear-filters']"
+            in: "filters"
+          - type: "keyboard"
+            key: "Escape"
+            action: "closeModal"
+            description: "Escape key should close modals"
+            
+      # Heuristic #5: Error Prevention
+      - name: "Form validation prevents errors"
+        type: "heuristic"
+        heuristic: "error_prevention"
+        assertions:
+          - type: "validation"
+            type: "real-time"
+            description: "Real-time validation on blur"
+          - type: "validation"
+            type: "before-submit"
+            description: "Validation before form submission"
+          - type: "elementExists"
+            selector: "[data-testid='submit-button']"
+            attribute: "disabled"
+            when: "form_invalid"
+            
+      # Heuristic #6: Recognition Rather Than Recall
+      - name: "Breadcrumbs and navigation visible"
+        type: "heuristic"
+        heuristic: "recognition_rather_than_recall"
+        assertions:
+          - type: "elementExists"
+            selector: "[data-testid='breadcrumbs']"
+            in: "detail_pages"
+          - type: "elementExists"
+            selector: "nav"
+            description: "Navigation always visible"
+          - type: "attribute"
+            selector: "a[aria-current='page']"
+            description: "Current page indicator"
+            
+      # Heuristic #9: Error Recovery
+      - name: "Clear error messages with recovery"
+        type: "heuristic"
+        heuristic: "help_users_recognize_diagnose_recover"
+        assertions:
+          - type: "textContent"
+            selector: "[data-testid='error-message']"
+            notContains: "Error 500"
+            description: "No technical error codes"
+          - type: "textContent"
+            selector: "[data-testid='error-message']"
+            contains: "suggestion"
+            description: "Error messages include suggestions"
+          - type: "elementExists"
+            selector: "[data-testid='retry-button']"
+            in: "error_states"
+
+# Test Execution Configuration
+execution:
+  browsers:
+    - name: "Chrome"
+      version: "latest"
+    - name: "Firefox"
+      version: "latest"
+    - name: "Safari"
+      version: "latest"
+    - name: "Edge"
+      version: "latest"
+      
+  environments:
+    - name: "Development"
+      baseUrl: "http://localhost:5173"
+    - name: "Staging"
+      baseUrl: "https://staging.salieri009.studio"
+    - name: "Production"
+      baseUrl: "https://salieri009.studio"
+      
+  parallel: true
+  maxWorkers: 4
+  timeout: 30000
+  retries: 2
+  
+# Reporting Configuration
+reporting:
+  format: ["html", "json", "junit"]
+  outputDir: "./test-results"
+  screenshots: true
+  videos: false
+  
+# CI/CD Integration
+ci:
+  triggers:
+    - "pull_request"
+    - "push_to_main"
+  notifications:
+    - type: "slack"
+      channel: "#testing"
+    - type: "email"
+      recipients: ["team@example.com"]
+

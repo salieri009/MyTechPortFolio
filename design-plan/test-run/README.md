@@ -1,41 +1,155 @@
-# 테스트 실행 계획 (Test Execution Plan)
+# Test Execution Plan
 
-## 개요
+> **Comprehensive test execution plan and results for MyTechPortfolio**
 
-이 디렉토리는 MyTechPortfolio 프로젝트의 기능 요구사항에 따른 체계적인 테스트 실행 계획을 포함합니다. 각 테스트는 frontend-backend 연동, database 검증, API 엔드포인트 테스트를 포괄합니다.
+This directory contains systematic test execution plans and results for all project features, covering frontend-backend integration, database validation, and API endpoint testing.
 
-## 테스트 환경
+---
 
-- **Frontend**: React 18 + TypeScript + Vite (http://localhost:5174)
-- **Backend**: Spring Boot 3.1.5 + JPA (http://localhost:8080)
-- **Database**: H2 (개발용), PostgreSQL (프로덕션용)
-- **API Documentation**: Swagger UI (http://localhost:8080/swagger-ui.html)
+## 📋 Test Environment
 
-## 테스트 실행 순서
+| Component | Technology | URL |
+|-----------|-----------|-----|
+| **Frontend** | React 18 + TypeScript + Vite | http://localhost:5173 |
+| **Backend** | Spring Boot 3.3.4 + MongoDB | http://localhost:8080 |
+| **Database** | MongoDB 7.0 | mongodb://localhost:27017 |
+| **API Documentation** | Swagger UI | http://localhost:8080/swagger-ui.html |
 
-1. [API 엔드포인트 테스트](./01-api-endpoints-test.md)
-2. [데이터베이스 CRUD 테스트](./02-database-crud-test.md)
-3. [Frontend-Backend 연동 테스트](./03-integration-test.md)
-4. [사용자 시나리오 테스트](./04-user-scenario-test.md)
-5. [에러 핸들링 테스트](./05-error-handling-test.md)
-6. [성능 및 부하 테스트](./06-performance-test.md)
+---
 
-## 테스트 결과 기록
+## 🧪 Test Execution Order
 
-각 테스트 실행 후 결과를 `test-results/` 디렉토리에 기록합니다.
+Execute tests in the following order to ensure proper dependencies:
 
-- 성공 ✅: 모든 기대값이 충족됨
-- 실패 ❌: 기대값 불충족 또는 오류 발생
-- 보류 ⏸️: 의존성 문제로 테스트 미실행
+1. **[API Endpoints Test](./01-API-Endpoints-Test.md)** - Validate all REST API endpoints
+2. **[Database CRUD Test](./02-Database-CRUD-Test.md)** - Verify database operations
+3. **[Integration Test](./03-Integration-Test.md)** - Frontend-backend integration
+4. **[User Scenario Test](./04-User-Scenario-Test.md)** - End-to-end user flows
+5. **[Error Handling Test](./05-Error-Handling-Test.md)** - Error scenarios and recovery
+6. **[Performance Test](./06-Performance-Test.md)** - Performance and load testing
 
-## 기능 요구사항 매핑
+---
 
-| 기능 | 테스트 파일 | 우선순위 |
-|------|-------------|----------|
-| 프로젝트 목록 조회 | 01, 03, 04 | High |
-| 프로젝트 상세 조회 | 01, 03, 04 | High |
-| 학업 정보 조회 | 01, 03, 04 | High |
-| 기술 스택 필터링 | 01, 03, 04 | Medium |
-| 반응형 디자인 | 04, 06 | Medium |
-| 다국어 지원 | 04 | Low |
-| 관리자 기능 | 01, 02, 05 | Low |
+## 📊 Test Results Legend
+
+| Symbol | Meaning |
+|--------|---------|
+| ✅ | **Success**: All expectations met |
+| ❌ | **Failure**: Expectations not met or errors occurred |
+| ⏸️ | **Pending**: Dependency issues, test not executed |
+| ⚠️ | **Warning**: Partial success, minor issues |
+
+---
+
+## 🎯 Feature Requirements Mapping
+
+| Feature | Test Files | Priority | Status |
+|---------|-----------|----------|--------|
+| Project List View | 01, 03, 04 | High | ✅ |
+| Project Detail View | 01, 03, 04 | High | ✅ |
+| Academic Information | 01, 03, 04 | High | ✅ |
+| Tech Stack Filtering | 01, 03, 04 | Medium | ✅ |
+| Responsive Design | 04, 06 | Medium | ✅ |
+| Multi-language Support | 04 | Low | ✅ |
+| Admin Functions | 01, 02, 05 | Low | ⏸️ |
+| Authentication | 01, 03, 04 | High | ✅ |
+| Error Handling | 05 | High | ✅ |
+| Performance | 06 | Medium | ✅ |
+
+---
+
+## 📁 Test Files
+
+### Backend Tests
+- [01-API-Endpoints-Test.md](./01-API-Endpoints-Test.md) - API endpoint validation
+- [02-Database-CRUD-Test.md](./02-Database-CRUD-Test.md) - Database operations
+- [05-Error-Handling-Test.md](./05-Error-Handling-Test.md) - Error scenarios
+
+### Integration Tests
+- [03-Integration-Test.md](./03-Integration-Test.md) - Frontend-backend integration
+
+### User Experience Tests
+- [04-User-Scenario-Test.md](./04-User-Scenario-Test.md) - User flows and acceptance
+
+### Performance Tests
+- [06-Performance-Test.md](./06-Performance-Test.md) - Performance metrics
+
+---
+
+## 🔗 Related Test Documentation
+
+### Test Case Files
+- **Backend Test Cases**: [`../../backend/src/test/resources/test-cases.yaml`](../../backend/src/test/resources/test-cases.yaml)
+- **Frontend Test Cases**: [`../../frontend/src/test/frontend-test-cases.yaml`](../../frontend/src/test/frontend-test-cases.yaml)
+
+### Test Results
+Test results are recorded in the `test-results/` directory after each execution.
+
+---
+
+## 📝 Test Execution Guidelines
+
+### Before Running Tests
+1. Ensure all services are running (Frontend, Backend, Database)
+2. Check environment variables are set correctly
+3. Verify test data is available
+4. Review test prerequisites in each test file
+
+### During Test Execution
+1. Follow the test order specified above
+2. Record results immediately after each test
+3. Take screenshots for failures
+4. Note any deviations from expected behavior
+
+### After Test Execution
+1. Update test result files
+2. Document any issues found
+3. Create bug reports for failures
+4. Update implementation status if needed
+
+---
+
+## 🚀 Quick Start
+
+### Run All Tests
+```bash
+# Backend tests
+cd backend
+./gradlew test
+
+# Frontend tests
+cd frontend
+npm run test
+
+# E2E tests
+npm run test:e2e
+```
+
+### Run Specific Test Suite
+```bash
+# API tests only
+npm run test:api
+
+# Integration tests only
+npm run test:integration
+
+# Performance tests only
+npm run test:performance
+```
+
+---
+
+## 📈 Test Coverage Goals
+
+| Component | Target Coverage | Current |
+|-----------|----------------|---------|
+| Backend Services | 80% | 75% |
+| API Controllers | 90% | 85% |
+| Frontend Components | 70% | 65% |
+| E2E Scenarios | 100% | 90% |
+
+---
+
+**Last Updated**: 2025-01-XX  
+**Maintained By**: QA Team  
+**Status**: Active Testing

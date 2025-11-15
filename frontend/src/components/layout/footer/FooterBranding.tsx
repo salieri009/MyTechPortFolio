@@ -23,7 +23,7 @@ export function FooterBranding() {
       </BrandTagline>
       <TechBadge>
         <span>🚀</span>
-        <span>{t('footer.branding.builtWith')}</span>
+        <span>{t('footer.branding.builtWith', 'Built with React & Spring Boot')}</span>
       </TechBadge>
     </FooterSection>
   )

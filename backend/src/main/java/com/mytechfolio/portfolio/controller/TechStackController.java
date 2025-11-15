@@ -1,8 +1,10 @@
 package com.mytechfolio.portfolio.controller;
 
+import com.mytechfolio.portfolio.constants.ApiConstants;
 import com.mytechfolio.portfolio.dto.response.ApiResponse;
 import com.mytechfolio.portfolio.dto.response.TechStackResponse;
 import com.mytechfolio.portfolio.service.TechStackService;
+import com.mytechfolio.portfolio.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -12,9 +14,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for technology stack management.
+ * Provides operations for retrieving and managing tech stacks.
+ * 
+ * @author MyTechPortfolio Team
+ * @since 1.0.0
+ */
 @RestController
-@RequestMapping("/api/techstacks")
-@CrossOrigin(origins = "*")
+@RequestMapping(ApiConstants.TECH_STACKS_ENDPOINT)
 @Tag(name = "TechStacks", description = "기술 스택 관리 API")
 public class TechStackController {
 
@@ -36,6 +44,6 @@ public class TechStackController {
             @RequestParam(required = false) String type
     ) {
         List<TechStackResponse> response = techStackService.getTechStacks(type);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseUtil.ok(response);
     }
 }

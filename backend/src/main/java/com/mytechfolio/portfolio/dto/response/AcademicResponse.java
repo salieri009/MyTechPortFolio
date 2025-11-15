@@ -1,9 +1,6 @@
 package com.mytechfolio.portfolio.dto.response;
 
-import com.mytechfolio.portfolio.domain.Academic;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AcademicResponse {
     private String id;
@@ -91,19 +88,4 @@ public class AcademicResponse {
         }
     }
 
-    public static AcademicResponse from(Academic academic) {
-        return AcademicResponse.builder()
-                .id(academic.getId())
-                .name(academic.getName())
-                .semester(academic.getSemester())
-                .grade(academic.getGrade() != null ? academic.getGrade().name() : null)
-                .description(academic.getDescription())
-                .relatedProjects(academic.getProjects().stream()
-                        .map(project -> RelatedProject.builder()
-                                .id(project.getId())
-                                .title(project.getTitle())
-                                .build())
-                        .collect(Collectors.toList()))
-                .build();
-    }
 }

@@ -6,6 +6,7 @@ import { FooterNav } from './footer/FooterNav'
 import { FooterContact } from './footer/FooterContact'
 import { FooterSocial } from './footer/FooterSocial'
 import { FooterLegal } from './footer/FooterLegal'
+import { FooterCTA } from './footer/FooterCTA'
 import { MobileFooter } from './footer/MobileFooter'
 import {
   FooterWrapper,
@@ -14,6 +15,13 @@ import {
   FooterBottom
 } from '@components/common/FooterComponents'
 import styled from 'styled-components'
+
+/**
+ * Footer Component (Organism)
+ * Portfolio-optimized footer with CTA, contact info, and navigation
+ * Nielsen Heuristic #6: Recognition Rather Than Recall
+ * Nielsen Heuristic #10: Help and Documentation
+ */
 
 const DesktopFooter = styled.div`
   @media (max-width: ${props => props.theme.breakpoints.md}) {
@@ -37,6 +45,7 @@ export function Footer() {
                 <FooterContact />
                 <FooterSocial />
               </FooterGrid>
+              <FooterCTA />
               <FooterBottom>
                 <FooterLegal />
               </FooterBottom>

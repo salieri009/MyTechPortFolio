@@ -1,10 +1,7 @@
 package com.mytechfolio.portfolio.dto.response;
 
-import com.mytechfolio.portfolio.domain.Project;
-
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProjectSummaryResponse {
     private String id;
@@ -58,16 +55,4 @@ public class ProjectSummaryResponse {
         }
     }
 
-    public static ProjectSummaryResponse from(Project project) {
-        return ProjectSummaryResponse.builder()
-                .id(project.getId())
-                .title(project.getTitle())
-                .summary(project.getSummary())
-                .startDate(project.getStartDate())
-                .endDate(project.getEndDate())
-                .techStacks(project.getTechStacks().stream()
-                        .map(techStack -> techStack.getName())
-                        .collect(Collectors.toList()))
-                .build();
-    }
 }

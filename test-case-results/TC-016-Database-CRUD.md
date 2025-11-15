@@ -2,9 +2,9 @@
 
 ## 테스트 개요
 - **테스트 그룹**: 데이터베이스 CRUD 테스트
-- **테스트 목적**: JPA/Hibernate 데이터 계층 검증
-- **실행일**: 2025년 8월 12일
-- **환경**: H2 In-Memory Database, Spring Data JPA
+- **테스트 목적**: MongoDB 데이터 계층 검증
+- **실행일**: 2025년 11월 15일
+- **환경**: MongoDB 7.0, Spring Data MongoDB
 
 ---
 

@@ -1,10 +1,7 @@
 package com.mytechfolio.portfolio.dto.response;
 
-import com.mytechfolio.portfolio.domain.Project;
-
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProjectDetailResponse {
     private String id;
@@ -78,22 +75,4 @@ public class ProjectDetailResponse {
         }
     }
 
-    public static ProjectDetailResponse from(Project project) {
-        return ProjectDetailResponse.builder()
-                .id(project.getId())
-                .title(project.getTitle())
-                .summary(project.getSummary())
-                .description(project.getDescription())
-                .startDate(project.getStartDate())
-                .endDate(project.getEndDate())
-                .githubUrl(project.getGithubUrl())
-                .demoUrl(project.getDemoUrl())
-                .techStacks(project.getTechStacks().stream()
-                        .map(techStack -> techStack.getName())
-                        .collect(Collectors.toList()))
-                .relatedAcademics(project.getAcademics().stream()
-                        .map(academic -> academic.getName())
-                        .collect(Collectors.toList()))
-                .build();
-    }
 }

@@ -3,10 +3,11 @@
 ## 테스트 개요
 - **테스트 그룹**: Frontend-Backend 연동 테스트
 - **테스트 목적**: React와 Spring Boot 간 통신 검증
-- **실행일**: 2025년 8월 12일
+- **실행일**: 2025년 11월 15일
 - **환경**: 
   - Frontend: React 18 + TypeScript (localhost:5173)
   - Backend: Spring Boot 3.3.4 (localhost:8080)
+  - Database: MongoDB 7.0
 
 ---
 
