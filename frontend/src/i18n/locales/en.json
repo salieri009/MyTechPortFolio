@@ -76,6 +76,7 @@
     "grade": "Grade",
     "description": "Description",
     "notFound": "Academic information not found",
+    "exemptions": "Exemptions",
     "filters": {
       "all": "All",
       "semester": "Semester",
@@ -86,7 +87,24 @@
       "grade": "Grade",
       "semester": "Semester",
       "credits": "Credits"
-    }
+    },
+    "stats": {
+      "title": "Academic Statistics",
+      "totalCredits": "Total Credit Points",
+      "completedCredits": "Completed Credit Points",
+      "gpa": "GPA",
+      "wam": "WAM (Weighted Average Mark)"
+    },
+    "timeline": {
+      "title": "Academic Timeline"
+    },
+    "status": {
+      "completed": "COMPLETED",
+      "enrolled": "ENROLLED",
+      "exemption": "EXEMPTION"
+    },
+    "mark": "Mark: {{mark}}",
+    "creditPoints": "{{points}} Credit Points"
   },
   "about": {
     "title": "About",

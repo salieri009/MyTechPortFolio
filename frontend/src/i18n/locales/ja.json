@@ -77,6 +77,7 @@
     "grade": "成績",
     "description": "説明",
     "notFound": "学業情報が見つかりません",
+    "exemptions": "免除科目",
     "filters": {
       "all": "すべて",
       "semester": "学期",
@@ -87,7 +88,24 @@
       "grade": "成績",
       "semester": "学期",
       "credits": "単位"
-    }
+    },
+    "stats": {
+      "title": "学業統計",
+      "totalCredits": "総単位",
+      "completedCredits": "修了単位",
+      "gpa": "GPA",
+      "wam": "加重平均点"
+    },
+    "timeline": {
+      "title": "学業タイムライン"
+    },
+    "status": {
+      "completed": "修了",
+      "enrolled": "履修中",
+      "exemption": "免除"
+    },
+    "mark": "点数: {{mark}}",
+    "creditPoints": "{{points}} 単位"
   },
   "about": {
     "title": "自己紹介",

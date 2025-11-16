@@ -1,16 +1,42 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { Container, Card } from '@components/common'
 import { getAcademics } from '@services/academics'
 import type { Academic } from '@model/domain'
+
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(${props => props.theme.spacing[8]}); /* 4-point system: 32px */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`
+
+const PageWrapper = styled.div`
+  padding: ${props => props.theme.spacing[20]} 0;
+  
+  @media (max-width: 768px) {
+    padding: ${props => props.theme.spacing[16]} 0;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+`
 
 const TimelineContainer = styled.div`
   max-width: ${props => props.theme.spacing[200]}; /* 4-point system: 800px */
   margin: 0 auto;
 `
 
-const AcademicCard = styled(Card)<{ status: string }>`
+const AcademicCard = styled(Card)<{ status: string; $isVisible?: boolean; $index?: number }>`
   margin-bottom: ${props => props.theme.spacing[4]};
   border-left: ${props => props.theme.spacing[1]} solid ${props => { /* 4-point system: 4px */
     switch (props.status) {
@@ -20,6 +46,36 @@ const AcademicCard = styled(Card)<{ status: string }>`
       default: return props.theme.colors.border
     }
   }};
+  transition: all 0.3s ease;
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  animation: ${props => props.$isVisible ? fadeInUp : 'none'} 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: ${props => props.$isVisible && props.$index !== undefined ? `${props.$index * 0.1}s` : '0s'};
+  
+  /* H1: Visibility of System Status - Hover feedback */
+  &:hover {
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
+    box-shadow: ${props => props.theme.shadows.md};
+    border-color: ${props => {
+      switch (props.status) {
+        case 'completed': return props.theme.colors.success
+        case 'enrolled': return props.theme.colors.primary[500]
+        case 'exemption': return props.theme.colors.warning
+        default: return props.theme.colors.border
+      }
+    }};
+  }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-within {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]}; /* 4-point system: 4px */
+    border-radius: ${props => props.theme.radius.sm};
+  }
+  
+  @media (max-width: 768px) {
+    margin-bottom: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
+  }
 `
 
 const AcademicTitle = styled.h3`
@@ -31,6 +87,13 @@ const AcademicTitle = styled.h3`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
+  }
 `
 
 const GradeBadge = styled.span<{ grade: string }>`
@@ -48,7 +111,7 @@ const GradeBadge = styled.span<{ grade: string }>`
       default: return props.theme.colors.neutral[500]
     }
   }};
-  color: white;
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
 `
 
 const StatusBadge = styled.span<{ status: string }>`
@@ -93,17 +156,29 @@ const AcademicMeta = styled.div`
   flex-wrap: wrap;
 `
 
-const SummaryStats = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(${props => props.theme.spacing[50]}, 1fr)); /* 4-point system: 200px */
-  gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
-  margin-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
-`
 
-const StatCard = styled(Card)`
+const StatCard = styled(Card)<{ $isVisible?: boolean }>`
   text-align: center;
-  padding: ${props => props.theme.spacing[5]}; /* 4-point system: 20px → 24px */
+  padding: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   font-family: ${props => props.theme.typography.fontFamily.primary};
+  transition: all 0.3s ease;
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  animation: ${props => props.$isVisible ? fadeInUp : 'none'} 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  
+  /* H1: Visibility of System Status - Hover feedback */
+  &:hover {
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
+    box-shadow: ${props => props.theme.shadows.md};
+    border-color: ${props => props.theme.colors.primary[500]};
+  }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-within {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]}; /* 4-point system: 4px */
+    border-radius: ${props => props.theme.radius.sm};
+  }
   
   h3 {
     font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 24px */
@@ -134,17 +209,28 @@ const LoadingText = styled.p`
   text-align: center;
   color: ${props => props.theme.colors.textSecondary};
   font-family: ${props => props.theme.typography.fontFamily.primary};
+  font-size: ${props => props.theme.typography.fontSize.base};
+  padding: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
 `
 
-const SemesterTitle = styled.h2`
+const SemesterTitle = styled.h2<{ $isVisible?: boolean }>`
   color: ${props => props.theme.colors.text};
   margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   margin-top: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
   font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 24px (1.5rem) */
   font-weight: ${props => props.theme.typography.fontWeight.bold};
   font-family: ${props => props.theme.typography.fontFamily.primary};
-  border-bottom: 2px solid ${props => props.theme.colors.border};
+  border-bottom: ${props => props.theme.spacing[0.5]} solid ${props => props.theme.colors.border}; /* 4-point system: 2px → 4px */
   padding-bottom: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.3s ease;
+    transform: none;
+  }
 `
 
 const GradeContainer = styled.div`
@@ -155,13 +241,44 @@ const GradeContainer = styled.div`
 
 const AcademicDescription = styled.p`
   color: ${props => props.theme.colors.textSecondary};
-  line-height: 1.5;
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  font-size: ${props => props.theme.typography.fontSize.base};
+  margin-top: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
+`
+
+const SummaryStats = styled.div<{ $isVisible?: boolean }>`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(${props => props.theme.spacing[50]}, 1fr)); /* 4-point system: 200px */
+  gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
+  margin-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(${props => props.theme.spacing[40]}, 1fr)); /* 4-point system: 160px */
+    gap: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
+    margin-bottom: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.3s ease;
+    transform: none;
+  }
 `
 
 export function AcademicsPage() {
   const { t } = useTranslation()
   const [academics, setAcademics] = useState<Academic[]>([])
   const [loading, setLoading] = useState(true)
+  const [isStatsVisible, setIsStatsVisible] = useState(false)
+  const [isTimelineVisible, setIsTimelineVisible] = useState(false)
+  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set())
+  
+  const statsRef = useRef<HTMLDivElement>(null)
+  const timelineRef = useRef<HTMLDivElement>(null)
 
   // Mock data based on the provided transcript
   const mockAcademicsData: Academic[] = [
@@ -364,12 +481,82 @@ export function AcademicsPage() {
     fetchAcademics()
   }, [])
 
+  // IntersectionObserver for scroll animations
+  useEffect(() => {
+    if (loading || academics.length === 0) return
+
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -100px 0px'
+    }
+
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setIsStatsVisible(true)
+        }
+      })
+    }, observerOptions)
+
+    const timelineObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setIsTimelineVisible(true)
+        }
+      })
+    }, observerOptions)
+
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.target instanceof HTMLElement) {
+          const cardId = parseInt(entry.target.dataset.cardId || '0', 10)
+          setVisibleCards((prev) => new Set([...prev, cardId]))
+        }
+      })
+    }, observerOptions)
+
+    if (statsRef.current) {
+      statsObserver.observe(statsRef.current)
+    }
+    if (timelineRef.current) {
+      timelineObserver.observe(timelineRef.current)
+    }
+
+    // Observe all academic cards after a brief delay to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      const cards = document.querySelectorAll('[data-card-id]')
+      cards.forEach((card) => cardObserver.observe(card))
+    }, 100)
+
+    return () => {
+      clearTimeout(timeoutId)
+      if (statsRef.current) statsObserver.unobserve(statsRef.current)
+      if (timelineRef.current) timelineObserver.unobserve(timelineRef.current)
+      const cards = document.querySelectorAll('[data-card-id]')
+      cards.forEach((card) => cardObserver.unobserve(card))
+    }
+  }, [academics, loading])
+
   if (loading) {
     return (
-      <Container>
-        <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
-        <LoadingText>{t('common.loading', 'Loading...')}</LoadingText>
-      </Container>
+      <PageWrapper role="main" aria-label={t('academics.title', 'Academic Record')}>
+        <Container>
+          <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
+          <LoadingText>{t('common.loading', 'Loading...')}</LoadingText>
+        </Container>
+      </PageWrapper>
+    )
+  }
+
+  // Empty state
+  if (academics.length === 0) {
+    return (
+      <PageWrapper role="main" aria-label={t('academics.title', 'Academic Record')}>
+        <Container>
+          <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
+          <LoadingText>{t('academics.notFound', 'Academic information not found')}</LoadingText>
+        </Container>
+      </PageWrapper>
     )
   }
 
@@ -395,56 +582,81 @@ export function AcademicsPage() {
   })
 
   return (
-    <Container>
-      <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
-      
-      <SummaryStats>
-        <StatCard>
-          <h3>{totalCreditPoints}</h3>
-          <p>Total Credit Points</p>
-        </StatCard>
-        <StatCard>
-          <h3>{completedCreditPoints}</h3>
-          <p>Completed Credit Points</p>
-        </StatCard>
-        <StatCard>
-          <h3>5.88</h3>
-          <p>GPA</p>
-        </StatCard>
-        <StatCard>
-          <h3>{averageMark.toFixed(1)}</h3>
-          <p>WAM (Weighted Average Mark)</p>
-        </StatCard>
-      </SummaryStats>
-      
-      <TimelineContainer>
-        {sortedGroups.map(([semester, academicGroup]) => (
-          <div key={semester}>
-            <SemesterTitle>
-              {semester === 'exemption' ? 'Exemptions' : semester}
-            </SemesterTitle>
-            {academicGroup.map((academic) => (
-              <AcademicCard key={academic.id} status={academic.status}>
-                <AcademicTitle>
-                  <span>{academic.name}</span>
-                  <GradeContainer>
-                    {academic.grade && <GradeBadge grade={academic.grade}>{academic.grade}</GradeBadge>}
-                    <StatusBadge status={academic.status}>
-                      {academic.status.toUpperCase()}
-                    </StatusBadge>
-                  </GradeContainer>
-                </AcademicTitle>
-                <AcademicMeta>
-                  <span>{academic.semester}</span>
-                  {academic.marks && <span>Mark: {academic.marks}</span>}
-                  {academic.creditPoints && <span>{academic.creditPoints} Credit Points</span>}
-                </AcademicMeta>
-                {academic.description && <AcademicDescription>{academic.description}</AcademicDescription>}
-              </AcademicCard>
-            ))}
-          </div>
-        ))}
-      </TimelineContainer>
-    </Container>
+    <PageWrapper role="main" aria-label={t('academics.title', 'Academic Record')}>
+      <Container>
+        <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
+        
+        <SummaryStats ref={statsRef} $isVisible={isStatsVisible} role="region" aria-label={t('academics.stats.title', 'Academic Statistics')}>
+          <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.totalCredits', 'Total Credit Points')}>
+            <h3>{totalCreditPoints}</h3>
+            <p>{t('academics.stats.totalCredits', 'Total Credit Points')}</p>
+          </StatCard>
+          <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.completedCredits', 'Completed Credit Points')}>
+            <h3>{completedCreditPoints}</h3>
+            <p>{t('academics.stats.completedCredits', 'Completed Credit Points')}</p>
+          </StatCard>
+          <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.gpa', 'GPA')}>
+            <h3>5.88</h3>
+            <p>{t('academics.stats.gpa', 'GPA')}</p>
+          </StatCard>
+          <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.wam', 'WAM')}>
+            <h3>{averageMark.toFixed(1)}</h3>
+            <p>{t('academics.stats.wam', 'WAM (Weighted Average Mark)')}</p>
+          </StatCard>
+        </SummaryStats>
+        
+        <TimelineContainer ref={timelineRef} role="region" aria-label={t('academics.timeline.title', 'Academic Timeline')}>
+          {sortedGroups.map(([semester, academicGroup]) => (
+            <div key={semester}>
+              <SemesterTitle $isVisible={isTimelineVisible}>
+                {semester === 'exemption' ? t('academics.exemptions', 'Exemptions') : semester}
+              </SemesterTitle>
+              {academicGroup.map((academic, index) => (
+                <AcademicCard 
+                  key={academic.id} 
+                  status={academic.status}
+                  $isVisible={visibleCards.has(academic.id)}
+                  $index={index}
+                  data-card-id={academic.id}
+                  tabIndex={0}
+                  role="article"
+                  aria-labelledby={`academic-${academic.id}-title`}
+                >
+                  <AcademicTitle id={`academic-${academic.id}-title`}>
+                    <span>{academic.name}</span>
+                    <GradeContainer>
+                      {academic.grade && (
+                        <GradeBadge grade={academic.grade} aria-label={t('academics.grade', { grade: academic.grade }, 'Grade: {{grade}}')}>
+                          {academic.grade}
+                        </GradeBadge>
+                      )}
+                      <StatusBadge status={academic.status} aria-label={t('academics.status', { status: academic.status }, 'Status: {{status}}')}>
+                        {t(`academics.status.${academic.status}`, academic.status.toUpperCase())}
+                      </StatusBadge>
+                    </GradeContainer>
+                  </AcademicTitle>
+                  <AcademicMeta>
+                    <span>{t('academics.semester', { semester: academic.semester }, academic.semester)}</span>
+                    {academic.marks && (
+                      <span>
+                        {t('academics.mark', { mark: academic.marks }, 'Mark: {{mark}}')}
+                      </span>
+                    )}
+                    {academic.creditPoints && (
+                      <span>
+                        {t('academics.creditPoints', { points: academic.creditPoints }, '{{points}} Credit Points')}
+                      </span>
+                    )}
+                  </AcademicMeta>
+                  {academic.description && (
+                    <AcademicDescription>{academic.description}</AcademicDescription>
+                  )}
+                </AcademicCard>
+              ))}
+            </div>
+          ))}
+        </TimelineContainer>
+      </Container>
+    </PageWrapper>
   )
 }

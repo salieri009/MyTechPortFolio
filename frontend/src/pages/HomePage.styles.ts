@@ -493,7 +493,7 @@ export const TestimonialGrid = styled.div<{ $isVisible?: boolean }>`
   transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
-  
+
   /* H4: Consistency & Standards - Consistent grid spacing */
   @media (max-width: 768px) {
     grid-template-columns: 1fr;

@@ -223,7 +223,7 @@ export function HomePage() {
       />
 
       <div id="journey">
-        <JourneyMilestoneSection />
+      <JourneyMilestoneSection />
       </div>
 
       <SectionBridge 
