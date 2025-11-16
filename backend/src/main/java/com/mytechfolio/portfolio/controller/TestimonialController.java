@@ -1,6 +1,7 @@
 package com.mytechfolio.portfolio.controller;
 
 import com.mytechfolio.portfolio.constants.ApiConstants;
+import com.mytechfolio.portfolio.constants.ErrorCode;
 import com.mytechfolio.portfolio.domain.Testimonial;
 import com.mytechfolio.portfolio.dto.request.TestimonialCreateRequest;
 import com.mytechfolio.portfolio.dto.response.ApiResponse;
@@ -86,8 +87,9 @@ public class TestimonialController {
             List<TestimonialResponse> testimonials = testimonialService.getTestimonialsByType(testimonialType);
             return ResponseUtil.ok(testimonials);
         } catch (IllegalArgumentException e) {
+            ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.BAD_REQUEST, "Invalid testimonial type: " + type);
             return ResponseEntity.badRequest()
-                    .body(ApiResponse.error("Invalid testimonial type: " + type));
+                    .body(ResponseUtil.enrichWithMetadata(errorResponse));
         }
     }
     
@@ -108,8 +110,9 @@ public class TestimonialController {
             @Parameter(description = "Minimum rating (1-5)", required = true, example = "4")
             @PathVariable Integer minRating) {
         if (minRating < 1 || minRating > 5) {
+            ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.BAD_REQUEST, "Rating must be between 1 and 5");
             return ResponseEntity.badRequest()
-                    .body(ApiResponse.error("Rating must be between 1 and 5"));
+                    .body(ResponseUtil.enrichWithMetadata(errorResponse));
         }
         List<TestimonialResponse> testimonials = testimonialService.getTestimonialsByRating(minRating);
         return ResponseUtil.ok(testimonials);

@@ -64,8 +64,9 @@ public class GlobalExceptionHandler {
 
         log.warn("Constraint violation: {}", errors);
         
+        ApiResponse<Map<String, String>> errorResponse = ApiResponse.error(ErrorCode.VALIDATION_ERROR, errors);
         return ResponseEntity.badRequest()
-                .body(ApiResponse.error(ErrorCode.VALIDATION_ERROR, errors));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 
     /**
@@ -75,9 +76,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleMissingParams(
             MissingServletRequestParameterException ex) {
         log.warn("Missing parameter: {}", ex.getParameterName());
+        ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.MISSING_PARAMETER, 
+            "필수 파라미터가 누락되었습니다: " + ex.getParameterName());
         return ResponseEntity.badRequest()
-                .body(ApiResponse.error(ErrorCode.MISSING_PARAMETER, 
-                    "필수 파라미터가 누락되었습니다: " + ex.getParameterName()));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 
     /**
@@ -87,9 +89,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(
             MethodArgumentTypeMismatchException ex) {
         log.warn("Type mismatch for parameter: {}", ex.getName());
+        ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.INVALID_PARAMETER_TYPE, 
+            "잘못된 파라미터 타입입니다: " + ex.getName());
         return ResponseEntity.badRequest()
-                .body(ApiResponse.error(ErrorCode.INVALID_PARAMETER_TYPE, 
-                    "잘못된 파라미터 타입입니다: " + ex.getName()));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 
     /**
@@ -98,8 +101,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccessDenied(AccessDeniedException ex) {
         log.warn("Access denied: {}", ex.getMessage());
+        ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.FORBIDDEN);
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error(ErrorCode.FORBIDDEN));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 
     /**
@@ -108,8 +112,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse<Void>> handleBadCredentials(BadCredentialsException ex) {
         log.warn("Authentication failed");
+        ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.AUTHENTICATION_FAILED);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error(ErrorCode.AUTHENTICATION_FAILED));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 
     /**
@@ -118,8 +123,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException(ResourceNotFoundException ex) {
         log.warn("Resource not found: {}", ex.getMessage());
+        ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.RESOURCE_NOT_FOUND, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error(ErrorCode.RESOURCE_NOT_FOUND, ex.getMessage()));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 
     /**
@@ -128,8 +134,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ApiResponse<Void>> handleDuplicateResourceException(DuplicateResourceException ex) {
         log.warn("Duplicate resource: {}", ex.getMessage());
+        ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.DUPLICATE_RESOURCE, ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ApiResponse.error(ErrorCode.DUPLICATE_RESOURCE, ex.getMessage()));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 
     /**
@@ -138,8 +145,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(IllegalArgumentException ex) {
         log.warn("Invalid argument: {}", ex.getMessage());
+        ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.BAD_REQUEST, "잘못된 요청입니다: " + ex.getMessage());
         return ResponseEntity.badRequest()
-                .body(ApiResponse.error(ErrorCode.BAD_REQUEST, "잘못된 요청입니다: " + ex.getMessage()));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 
     /**
@@ -159,8 +167,9 @@ public class GlobalExceptionHandler {
             message = ex.getMessage(); // Safe to expose "not found" messages
         }
         
+        ApiResponse<Void> errorResponse = ApiResponse.error(errorCode, message);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(errorCode, message));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 
     /**
@@ -170,8 +179,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
         log.error("Unexpected error occurred", ex);
+        ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 }
 

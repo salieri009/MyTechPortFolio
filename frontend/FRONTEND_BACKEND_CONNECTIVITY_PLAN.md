@@ -693,7 +693,22 @@ requiredEnvVars.forEach((key) => {
 })
 ```
 
-## 9. 테스트 전략
+## 9. 테스트 전략 (상세 계획)
+
+### 9.0 테스트 전략 개요
+
+**30년차 엔지니어 관점의 테스트 철학**:
+- **테스트 피라미드**: 단위 테스트 (70%) > 통합 테스트 (20%) > E2E 테스트 (10%)
+- **커버리지 목표**: 백엔드 80%+, 프론트엔드 80%+
+- **테스트 자동화**: CI/CD 파이프라인에 통합
+- **테스트 주도 개발**: 가능한 경우 TDD 적용
+
+**테스트 범위**:
+1. **단위 테스트**: 비즈니스 로직, 유틸리티, 서비스 레이어
+2. **통합 테스트**: API 엔드포인트, 데이터베이스 연동, 외부 서비스
+3. **E2E 테스트**: 사용자 시나리오, 크로스 브라우저 테스트
+4. **성능 테스트**: 부하 테스트, 스트레스 테스트
+5. **보안 테스트**: 취약점 스캔, 인증/인가 테스트
 
 ### 9.1 백엔드 테스트
 
@@ -986,12 +1001,12 @@ export async function getProjects(params: ProjectQueryParams): Promise<ApiRespon
 - [ ] 대시보드
 
 ### 테스트
-- [ ] 단위 테스트 (백엔드 80%+)
-- [ ] 단위 테스트 (프론트엔드 80%+)
-- [ ] 통합 테스트
-- [ ] E2E 테스트
-- [ ] 성능 테스트
-- [ ] 보안 테스트
+- [ ] 단위 테스트 (백엔드 80%+) - **Phase 4 우선순위**
+- [ ] 단위 테스트 (프론트엔드 80%+) - **Phase 4 우선순위**
+- [ ] 통합 테스트 - **Phase 4 우선순위**
+- [ ] E2E 테스트 - **Phase 4 우선순위**
+- [ ] 성능 테스트 - **Phase 2 우선순위**
+- [ ] 보안 테스트 - **Phase 1 우선순위**
 
 ### 문서화
 - [x] API 문서 (Swagger)
@@ -1026,6 +1041,528 @@ export async function getProjects(params: ProjectQueryParams): Promise<ApiRespon
 - **Phase 4**: 2-3주 (CI/CD 및 자동화)
 
 **총 예상 시간: 8-12주**
+
+## 16. 상세 테스트 케이스 계획
+
+### 16.1 백엔드 단위 테스트 케이스
+
+#### 16.1.1 Controller 레이어 테스트
+
+**ProjectController 테스트**:
+```java
+@WebMvcTest(ProjectController.class)
+class ProjectControllerTest {
+    
+    // GET /api/v1/projects
+    @Test
+    void testGetProjects_Success() {
+        // Given: Mock service returns projects
+        // When: GET /api/v1/projects?page=1&size=10
+        // Then: 200 OK, ApiResponse with PageResponse
+        // Assert: metadata.requestId present, pagination fields correct
+    }
+    
+    @Test
+    void testGetProjects_InvalidPage() {
+        // Given: page=0 or negative
+        // When: GET /api/v1/projects?page=0
+        // Then: 400 Bad Request, ErrorCode.BAD_REQUEST
+    }
+    
+    @Test
+    void testGetProjects_ExceedsMaxSize() {
+        // Given: size=200 (exceeds MAX_SIZE=100)
+        // When: GET /api/v1/projects?size=200
+        // Then: 200 OK, but size normalized to 100
+    }
+    
+    // POST /api/v1/projects
+    @Test
+    void testCreateProject_Success() {
+        // Given: Valid ProjectCreateRequest
+        // When: POST /api/v1/projects
+        // Then: 201 Created, ApiResponse with ProjectResponse
+        // Assert: metadata.requestId present, location header
+    }
+    
+    @Test
+    void testCreateProject_ValidationError() {
+        // Given: Invalid request (missing title)
+        // When: POST /api/v1/projects
+        // Then: 400 Bad Request, ErrorCode.VALIDATION_ERROR
+        // Assert: errors map contains field-level errors
+    }
+    
+    // PUT /api/v1/projects/{id}
+    @Test
+    void testUpdateProject_NotFound() {
+        // Given: Non-existent project ID
+        // When: PUT /api/v1/projects/invalid-id
+        // Then: 404 Not Found, ErrorCode.RESOURCE_NOT_FOUND
+    }
+    
+    // DELETE /api/v1/projects/{id}
+    @Test
+    void testDeleteProject_Success() {
+        // Given: Existing project ID
+        // When: DELETE /api/v1/projects/{id}
+        // Then: 204 No Content
+    }
+}
+```
+
+**TestimonialController 테스트**:
+```java
+@WebMvcTest(TestimonialController.class)
+class TestimonialControllerTest {
+    
+    @Test
+    void testGetTestimonialsByType_InvalidType() {
+        // Given: Invalid type "INVALID"
+        // When: GET /api/v1/testimonials/type/INVALID
+        // Then: 400 Bad Request, ErrorCode.BAD_REQUEST
+        // Assert: ResponseUtil.enrichWithMetadata used
+    }
+    
+    @Test
+    void testGetTestimonialsByRating_InvalidRating() {
+        // Given: rating=6 (out of range)
+        // When: GET /api/v1/testimonials/rating/6
+        // Then: 400 Bad Request, ErrorCode.BAD_REQUEST
+        // Assert: ResponseUtil.enrichWithMetadata used
+    }
+}
+```
+
+#### 16.1.2 Service 레이어 테스트
+
+**ProjectService 테스트**:
+```java
+@ExtendWith(MockitoExtension.class)
+class ProjectServiceTest {
+    
+    @Mock
+    private ProjectRepository projectRepository;
+    
+    @Mock
+    private TechStackRepository techStackRepository;
+    
+    @InjectMocks
+    private ProjectService projectService;
+    
+    @Test
+    void testGetProjects_WithFilters() {
+        // Given: Mock repository, filters
+        // When: getProjects(page, size, sort, techStacks, year)
+        // Then: Returns PageResponse with correct pagination
+        // Assert: totalPages, hasNext, hasPrevious calculated correctly
+    }
+    
+    @Test
+    void testCreateProject_WithInvalidTechStackIds() {
+        // Given: Non-existent tech stack IDs
+        // When: createProject(request)
+        // Then: Throws ResourceNotFoundException
+    }
+}
+```
+
+**TestimonialService 테스트**:
+```java
+@ExtendWith(MockitoExtension.class)
+class TestimonialServiceTest {
+    
+    @Test
+    void testCreateTestimonial_AutoDisplayOrder() {
+        // Given: Request without displayOrder, existing 5 testimonials
+        // When: createTestimonial(request)
+        // Then: displayOrder set to 5
+    }
+    
+    @Test
+    void testUpdateTestimonial_NotFound() {
+        // Given: Non-existent ID
+        // When: updateTestimonial(id, request)
+        // Then: Throws ResourceNotFoundException
+    }
+}
+```
+
+#### 16.1.3 Utility 클래스 테스트
+
+**ResponseUtil 테스트**:
+```java
+class ResponseUtilTest {
+    
+    @Test
+    void testEnrichWithMetadata_RequestIdFromMDC() {
+        // Given: MDC contains requestId
+        // When: enrichWithMetadata(response)
+        // Then: response.metadata.requestId set from MDC
+    }
+    
+    @Test
+    void testEnrichWithMetadata_NoRequestIdInMDC() {
+        // Given: MDC empty
+        // When: enrichWithMetadata(response)
+        // Then: response.metadata.requestId remains null
+    }
+}
+```
+
+**PaginationUtil 테스트**:
+```java
+class PaginationUtilTest {
+    
+    @Test
+    void testToPageResponse_CalculatesPaginationFields() {
+        // Given: Spring Data Page with 25 items, size=10
+        // When: toPageResponse(page, mapper, 1)
+        // Then: totalPages=3, hasNext=true, hasPrevious=false
+    }
+    
+    @Test
+    void testCreatePageable_NormalizesPage() {
+        // Given: page=0 (should be 1-based)
+        // When: createPageable(0, 10, null)
+        // Then: Returns PageRequest with page=0 (normalized)
+    }
+    
+    @Test
+    void testCreatePageable_LimitsMaxSize() {
+        // Given: size=200 (exceeds MAX_SIZE=100)
+        // When: createPageable(1, 200, null)
+        // Then: Returns PageRequest with size=100
+    }
+    
+    @Test
+    void testParseSort_ValidSortString() {
+        // Given: sortString="endDate,desc"
+        // When: parseSort(sortString)
+        // Then: Returns Sort.by(DESC, "endDate")
+    }
+    
+    @Test
+    void testParseSort_InvalidFieldName() {
+        // Given: sortString="'; DROP TABLE--,desc" (SQL injection attempt)
+        // When: parseSort(sortString)
+        // Then: Returns default sort (field name validation prevents injection)
+    }
+}
+```
+
+**EnvironmentValidationConfig 테스트**:
+```java
+@SpringBootTest
+class EnvironmentValidationConfigTest {
+    
+    @Test
+    void testValidateEnvironment_ProdMissingMongoUri() {
+        // Given: prod profile, MONGODB_URI not set
+        // When: Application starts
+        // Then: Throws IllegalStateException
+    }
+    
+    @Test
+    void testValidateEnvironment_ProdDefaultJwtSecret() {
+        // Given: prod profile, JWT_SECRET contains "demo-jwt-secret"
+        // When: Application starts
+        // Then: Throws IllegalStateException
+    }
+    
+    @Test
+    void testValidateEnvironment_DevProfile() {
+        // Given: dev profile
+        // When: Application starts
+        // Then: No exception (validation skipped for dev)
+    }
+}
+```
+
+### 16.2 백엔드 통합 테스트 케이스
+
+#### 16.2.1 API 통합 테스트
+
+**Project API 통합 테스트**:
+```java
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class ProjectApiIntegrationTest {
+    
+    @Autowired
+    private MockMvc mockMvc;
+    
+    @Autowired
+    private ProjectRepository projectRepository;
+    
+    @Test
+    void testGetProjects_EndToEnd() throws Exception {
+        // Given: Projects in database
+        // When: GET /api/v1/projects?page=1&size=10
+        // Then: 200 OK
+        // Assert: Response contains ApiResponse wrapper
+        // Assert: Response contains PageResponse with pagination fields
+        // Assert: Response headers contain X-Request-ID
+    }
+    
+    @Test
+    void testCreateProject_EndToEnd() throws Exception {
+        // Given: Valid JSON request body
+        // When: POST /api/v1/projects
+        // Then: 201 Created
+        // Assert: Location header present
+        // Assert: Response contains created project
+        // Assert: Database contains new project
+    }
+    
+    @Test
+    void testRequestIdPropagation() throws Exception {
+        // Given: X-Request-ID header in request
+        // When: Any API call
+        // Then: Response contains same X-Request-ID
+        // Assert: Logs contain requestId
+    }
+}
+```
+
+#### 16.2.2 데이터베이스 통합 테스트
+
+**MongoDB 통합 테스트** (Testcontainers):
+```java
+@SpringBootTest
+@Testcontainers
+class ProjectRepositoryIntegrationTest {
+    
+    @Container
+    static MongoDBContainer mongoDB = new MongoDBContainer("mongo:7.0");
+    
+    @Autowired
+    private ProjectRepository projectRepository;
+    
+    @Test
+    void testFindByTechStacks_In() {
+        // Given: Projects with tech stacks
+        // When: findByTechStacksIn(techStackIds)
+        // Then: Returns filtered projects
+    }
+}
+```
+
+### 16.3 프론트엔드 테스트 케이스
+
+#### 16.3.1 Service 레이어 테스트
+
+**projects.ts 테스트**:
+```typescript
+describe('projects service', () => {
+  describe('getProjects', () => {
+    it('should return paginated projects with metadata', async () => {
+      // Given: Mock API response
+      // When: getProjects({ page: 1, size: 10 })
+      // Then: Returns ApiResponse<Page<ProjectSummary>>
+      // Assert: data.items, data.pagination fields present
+    })
+    
+    it('should handle network errors with retry', async () => {
+      // Given: Network error (500)
+      // When: getProjects(...)
+      // Then: Retries up to 3 times with exponential backoff
+    })
+    
+    it('should include X-Request-ID header', async () => {
+      // Given: API call
+      // When: getProjects(...)
+      // Then: Request headers contain X-Request-ID
+    })
+  })
+  
+  describe('createProject', () => {
+    it('should throw error if backend API disabled', async () => {
+      // Given: VITE_USE_BACKEND_API=false
+      // When: createProject(request)
+      // Then: Throws error with message
+    })
+  })
+})
+```
+
+**testimonials.ts 테스트**:
+```typescript
+describe('testimonials service', () => {
+  it('should convert mock format to backend format', async () => {
+    // Given: Mock testimonials
+    // When: getTestimonials() with USE_BACKEND_API=false
+    // Then: Returns ApiResponse with converted format
+  })
+})
+```
+
+#### 16.3.2 컴포넌트 테스트
+
+**ProjectCard 테스트**:
+```typescript
+describe('ProjectCard', () => {
+  it('should display max 3 tech stack tags', () => {
+    // Given: Project with 5 tech stacks
+    // When: Render ProjectCard
+    // Then: Shows 3 tags + "+2" indicator
+  })
+  
+  it('should be keyboard accessible', () => {
+    // Given: ProjectCard rendered
+    // When: Tab key pressed
+    // Then: Focus moves to card, Enter key navigates
+  })
+})
+```
+
+### 16.4 E2E 테스트 케이스 (Playwright)
+
+**프로젝트 CRUD 플로우**:
+```typescript
+test.describe('Project CRUD Flow', () => {
+  test('user can create, view, update, and delete project', async ({ page }) => {
+    // 1. Navigate to /projects
+    // 2. Click "Create Project"
+    // 3. Fill form and submit
+    // 4. Verify project appears in list
+    // 5. Click project to view details
+    // 6. Click "Edit"
+    // 7. Update and save
+    // 8. Verify changes reflected
+    // 9. Click "Delete"
+    // 10. Verify project removed
+  })
+})
+```
+
+**요청 ID 추적**:
+```typescript
+test('request ID is logged in browser console', async ({ page }) => {
+  // Given: API call made
+  // When: Check browser console
+  // Then: Log contains X-Request-ID
+})
+```
+
+### 16.5 성능 테스트 케이스
+
+**부하 테스트** (JMeter/Gatling):
+```scala
+// Gatling 시나리오
+scenario("Project API Load Test")
+  .exec(http("Get Projects")
+    .get("/api/v1/projects")
+    .check(status.is(200))
+    .check(jsonPath("$.metadata.requestId").exists))
+  .pause(1)
+  .exec(http("Get Project Details")
+    .get("/api/v1/projects/${projectId}")
+    .check(status.is(200)))
+```
+
+**목표**:
+- 100 concurrent users
+- Response time P95 < 500ms
+- Error rate < 1%
+
+### 16.6 보안 테스트 케이스
+
+**인증/인가 테스트**:
+```java
+@Test
+void testUnauthenticatedAccess_ProtectedEndpoint() {
+    // Given: No JWT token
+    // When: POST /api/v1/projects
+    // Then: 401 Unauthorized
+}
+
+@Test
+void testInvalidJwtToken() {
+    // Given: Invalid JWT token
+    // When: Any protected endpoint
+    // Then: 401 Unauthorized, ErrorCode.TOKEN_INVALID
+}
+```
+
+**입력 검증 테스트**:
+```java
+@Test
+void testSqlInjection_Prevented() {
+    // Given: Sort parameter with SQL injection attempt
+    // When: GET /api/v1/projects?sort="'; DROP TABLE--"
+    // Then: Default sort used (field name validation)
+}
+```
+
+### 16.7 테스트 실행 전략
+
+**로컬 개발**:
+```bash
+# Backend
+./gradlew test
+
+# Frontend
+npm run test
+
+# E2E
+npm run test:e2e
+```
+
+**CI/CD 파이프라인**:
+```yaml
+- name: Run Backend Tests
+  run: |
+    cd backend
+    ./gradlew test jacocoTestReport
+    # Coverage report uploaded to codecov
+
+- name: Run Frontend Tests
+  run: |
+    cd frontend
+    npm run test:coverage
+    # Coverage report uploaded
+
+- name: Run E2E Tests
+  run: |
+    docker-compose up -d
+    npm run test:e2e
+```
+
+### 16.8 테스트 커버리지 목표
+
+| 레이어 | 목표 커버리지 | 현재 상태 |
+|--------|--------------|----------|
+| Controller | 90%+ | 0% (미구현) |
+| Service | 85%+ | 0% (미구현) |
+| Repository | 80%+ | 0% (미구현) |
+| Utility | 95%+ | 0% (미구현) |
+| Frontend Services | 85%+ | 0% (미구현) |
+| Frontend Components | 80%+ | 0% (미구현) |
+
+### 16.9 테스트 우선순위 (30년차 엔지니어 관점)
+
+**Phase 1 (즉시 구현)**:
+1. ✅ ResponseUtil 단위 테스트 (핵심 유틸리티)
+2. ✅ PaginationUtil 단위 테스트 (보안 중요)
+3. ✅ GlobalExceptionHandler 통합 테스트 (에러 처리)
+4. ✅ EnvironmentValidationConfig 테스트 (배포 안정성)
+
+**Phase 2 (1-2주 내)**:
+5. Controller 레이어 단위 테스트 (API 계약)
+6. Service 레이어 단위 테스트 (비즈니스 로직)
+7. API 통합 테스트 (엔드포인트 검증)
+
+**Phase 3 (2-4주 내)**:
+8. 프론트엔드 Service 테스트
+9. 프론트엔드 컴포넌트 테스트
+10. E2E 테스트 (핵심 플로우)
+
+**Phase 4 (4-8주 내)**:
+11. 성능 테스트
+12. 보안 테스트
+13. 전체 커버리지 80%+ 달성
 
 ## 15. 결론
 

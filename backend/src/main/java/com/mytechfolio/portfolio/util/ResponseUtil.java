@@ -20,7 +20,6 @@ import java.util.function.Function;
 public final class ResponseUtil {
     
     private static final String REQUEST_ID_MDC_KEY = "requestId";
-    private static final String API_VERSION = "v1";
     
     private ResponseUtil() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated");

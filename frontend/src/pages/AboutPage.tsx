@@ -5,7 +5,6 @@ import { Container } from '@components/common'
 import { JourneyMilestoneSection } from '@components/sections/JourneyMilestoneSection'
 import { SectionBridge } from '@components/sections/SectionBridge'
 import { SectionPurpose } from '@components/sections/SectionPurpose'
-import { InteractiveBackground } from '@components/organisms/InteractiveBackground/InteractiveBackground'
 import { useThemeStore } from '../stores/themeStore'
 import { CONTACT_INFO } from '../constants/contact'
 import * as S from './AboutPage.styles'
@@ -71,23 +70,12 @@ export function AboutPage() {
 
   return (
     <>
-      {/* AboutHero Section */}
+      {/* AboutHero Section - 독립적인 레이아웃 */}
       <S.AboutHero ref={heroRef} id="about-hero" $isDark={isDark} role="banner" aria-label={t('about.hero.headline', 'About Me')}>
-        <InteractiveBackground isDark={isDark} particleCount={120} connectionDistance={180} />
         <Container>
-          <HomePageStyles.HeroContent>
-            <HomePageStyles.HeroLeft>
-              <HomePageStyles.Greeting>
-                {t('about.hero.greeting', 'Hello, I am')} <HomePageStyles.Name>{t('about.hero.name', 'Jungwook Van')}</HomePageStyles.Name>
-              </HomePageStyles.Greeting>
-              <HomePageStyles.Headline>{t('about.hero.headline', 'Full Stack Developer')}</HomePageStyles.Headline>
-              <HomePageStyles.Subtitle>{t('about.hero.subtitle', 'I enjoy solving problems and creating value through efficient and creative solutions. Specialized in web application development using React, TypeScript, and Spring Boot.')}</HomePageStyles.Subtitle>
-              <HomePageStyles.CTAButtons>
-                <HomePageStyles.PrimaryCTA to="/projects">{t('about.hero.cta.primary', 'View Projects')}</HomePageStyles.PrimaryCTA>
-                <HomePageStyles.SecondaryCTA to="/feedback">{t('about.hero.cta.secondary', 'Contact Me')}</HomePageStyles.SecondaryCTA>
-              </HomePageStyles.CTAButtons>
-            </HomePageStyles.HeroLeft>
-            <HomePageStyles.HeroRight>
+          <S.AboutHeroContent>
+            {/* 좌측: 프로필 이미지 (시각적 중심) */}
+            <S.AboutHeroLeft>
               <S.ProfileImageWrapper>
                 <S.ProfileImage 
                   src="/profile.jpg" 
@@ -99,26 +87,39 @@ export function AboutPage() {
                   }}
                 />
               </S.ProfileImageWrapper>
-              <HomePageStyles.SocialLinks>
-                <HomePageStyles.SocialLink 
+            </S.AboutHeroLeft>
+            
+            {/* 우측: 텍스트 콘텐츠 */}
+            <S.AboutHeroRight>
+              <S.AboutHeroGreeting>
+                {t('about.hero.greeting', 'Hello, I am')} <S.AboutHeroName>{t('about.hero.name', 'Jungwook Van')}</S.AboutHeroName>
+              </S.AboutHeroGreeting>
+              <S.AboutHeroHeadline>{t('about.hero.headline', 'Full Stack Developer')}</S.AboutHeroHeadline>
+              <S.AboutHeroSubtitle>{t('about.hero.subtitle', 'I enjoy solving problems and creating value through efficient and creative solutions. Specialized in web application development using React, TypeScript, and Spring Boot.')}</S.AboutHeroSubtitle>
+              <S.AboutHeroCTAButtons>
+                <S.AboutHeroPrimaryCTA to="/projects">{t('about.hero.cta.primary', 'View Projects')}</S.AboutHeroPrimaryCTA>
+                <S.AboutHeroSecondaryCTA to="/feedback">{t('about.hero.cta.secondary', 'Contact Me')}</S.AboutHeroSecondaryCTA>
+              </S.AboutHeroCTAButtons>
+              <S.AboutHeroSocialLinks>
+                <S.AboutHeroSocialLink 
                   href={CONTACT_INFO.linkedin.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={t('hero.cta.linkedin', 'LinkedIn Profile')}
                 >
                   LinkedIn
-                </HomePageStyles.SocialLink>
-                <HomePageStyles.SocialLink 
+                </S.AboutHeroSocialLink>
+                <S.AboutHeroSocialLink 
                   href={`mailto:${CONTACT_INFO.email.student}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={t('hero.cta.email', 'Send Email')}
                 >
                   Email
-                </HomePageStyles.SocialLink>
-              </HomePageStyles.SocialLinks>
-            </HomePageStyles.HeroRight>
-          </HomePageStyles.HeroContent>
+                </S.AboutHeroSocialLink>
+              </S.AboutHeroSocialLinks>
+            </S.AboutHeroRight>
+          </S.AboutHeroContent>
         </Container>
         <ScrollIndicator isVisible={isHeroVisible} />
       </S.AboutHero>
