@@ -40,7 +40,18 @@ export const api = axios.create({
 const AUTH_MODE = (import.meta as any).env.VITE_AUTH_MODE || 'demo'
 
 /**
- * Request interceptor for authentication
+ * Generate a unique request ID
+ */
+function generateRequestId(): string {
+  // Use crypto.randomUUID if available, otherwise fallback to timestamp + random
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID()
+  }
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
+}
+
+/**
+ * Request interceptor for authentication and request ID
  */
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -53,8 +64,16 @@ api.interceptors.request.use(
       }
     }
     
+    // Add X-Request-ID header for request tracking
+    const requestId = generateRequestId()
+    config.headers = config.headers ?? {}
+    config.headers['X-Request-ID'] = requestId
+    
     // Add request timestamp for performance monitoring
-    config.metadata = { startTime: Date.now() }
+    config.metadata = { 
+      startTime: Date.now(),
+      requestId 
+    }
     
     return config
   },
@@ -70,12 +89,27 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     // Calculate response time
-    const config = response.config as InternalAxiosRequestConfig & { metadata?: { startTime: number } }
+    const config = response.config as InternalAxiosRequestConfig & { 
+      metadata?: { startTime: number; requestId?: string } 
+    }
     if (config.metadata?.startTime) {
       const responseTime = Date.now() - config.metadata.startTime
       // Log slow requests (> 2 seconds)
       if (responseTime > 2000) {
         console.warn(`Slow API request: ${config.method?.toUpperCase()} ${config.url} took ${responseTime}ms`)
+      }
+      
+      // Log response headers for debugging (development only)
+      if (import.meta.env.DEV) {
+        const responseRequestId = response.headers['x-request-id']
+        const responseTimeHeader = response.headers['x-response-time']
+        if (responseRequestId || responseTimeHeader) {
+          console.debug('API Response Headers:', {
+            'X-Request-ID': responseRequestId,
+            'X-Response-Time': responseTimeHeader,
+            'Request-ID': config.metadata.requestId
+          })
+        }
       }
     }
     

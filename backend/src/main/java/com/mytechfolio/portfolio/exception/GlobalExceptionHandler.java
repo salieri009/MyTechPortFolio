@@ -2,6 +2,7 @@ package com.mytechfolio.portfolio.exception;
 
 import com.mytechfolio.portfolio.constants.ErrorCode;
 import com.mytechfolio.portfolio.dto.response.ApiResponse;
+import com.mytechfolio.portfolio.util.ResponseUtil;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +45,9 @@ public class GlobalExceptionHandler {
 
         log.warn("Validation failed: {}", errors);
         
+        ApiResponse<Map<String, String>> errorResponse = ApiResponse.error(ErrorCode.VALIDATION_ERROR, errors);
         return ResponseEntity.badRequest()
-                .body(ApiResponse.error(ErrorCode.VALIDATION_ERROR, errors));
+                .body(ResponseUtil.enrichWithMetadata(errorResponse));
     }
 
     /**
