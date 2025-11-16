@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Container } from '@components/common'
 import { FeaturedProjectCard } from '@components/project'
+import { HeroProjectCard } from '@components/project/HeroProjectCard'
 import { TestimonialCard } from '@components/testimonials'
 import { ProjectShowcaseSection } from '@components/sections/ProjectShowcaseSection'
 import { JourneyMilestoneSection } from '@components/sections/JourneyMilestoneSection'
@@ -13,6 +14,9 @@ import { getTestimonials } from '../mocks/testimonials'
 import { CONTACT_INFO } from '../constants/contact'
 import { useThemeStore } from '../stores/themeStore'
 import { SkeletonProjectCard, SkeletonTestimonialCard } from '@components/common/Skeleton'
+import { StoryProgressBar } from '@components/common/StoryProgressBar'
+import { SectionBridge } from '@components/sections/SectionBridge'
+import { SectionPurpose } from '@components/sections/SectionPurpose'
 import type { ProjectSummary } from '../types/domain'
 import type { Testimonial } from '../mocks/testimonials'
 
@@ -254,6 +258,24 @@ const SocialLink = styled.a`
 const FeaturedSection = styled.section`
   padding: 80px 0;
   background: ${props => props.theme?.colors?.background || '#F9FAFB'};
+  position: relative;
+  
+  /* 상단 구분선 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${props => props.theme?.colors?.primary?.[500] || '#3B82F6'},
+      transparent
+    );
+    opacity: 0.3;
+  }
 `
 
 const SectionTitle = styled.h2`
@@ -276,16 +298,55 @@ const SectionSubtitle = styled.p`
 
 const FeaturedGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-  gap: 32px;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+  gap: 24px;
   margin-bottom: 32px;
 
+  /* 첫 번째 프로젝트: 전체 너비 (히어로) */
+  > *:first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* 나머지 프로젝트: 다양한 크기 */
+  > *:nth-child(2) {
+    grid-column: span 6; /* 중간 */
+  }
+  > *:nth-child(3) {
+    grid-column: span 3; /* 작은 */
+  }
+  > *:nth-child(4) {
+    grid-column: span 3; /* 작은 */
+  }
+  > *:nth-child(5) {
+    grid-column: span 4; /* 중간 */
+  }
+  > *:nth-child(6) {
+    grid-column: span 4; /* 중간 */
+  }
+  > *:nth-child(7) {
+    grid-column: span 4; /* 중간 */
+  }
+
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(6, 1fr);
+    
+    > *:first-child {
+      grid-column: 1 / -1;
+    }
+    
+    > *:nth-child(n+2) {
+      grid-column: span 3;
+    }
   }
 
   @media (max-width: 768px) {
+    grid-template-columns: 1fr;
     gap: 24px;
+    
+    > * {
+      grid-column: 1 !important;
+    }
   }
 `
 
@@ -310,6 +371,24 @@ const ViewAllLink = styled(Link)`
 const TestimonialSection = styled.section`
   padding: 80px 0;
   background: ${props => props.theme?.colors?.surface || '#F3F4F6'};
+  position: relative;
+  
+  /* 상단 구분선 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${props => props.theme?.colors?.primary?.[500] || '#3B82F6'},
+      transparent
+    );
+    opacity: 0.3;
+  }
 `
 
 const TestimonialGrid = styled.div`
@@ -353,6 +432,7 @@ export function HomePage() {
 
   return (
     <>
+      <StoryProgressBar />
       <Hero $isDark={isDark}>
         <InteractiveBackground isDark={isDark} particleCount={120} connectionDistance={180} />
         <Container>
@@ -400,9 +480,26 @@ export function HomePage() {
         </Container>
       </Hero>
 
+      <SectionBridge 
+        text={t('storytelling.heroToJourney')}
+        variant="primary"
+      />
+
+      <div style={{ marginBottom: '120px' }}>
+        <JourneyMilestoneSection />
+      </div>
+
+      <SectionBridge 
+        text={t('storytelling.journeyToProjects')}
+        variant="secondary"
+      />
+
       <FeaturedSection>
         <Container>
-          <SectionTitle>🌟 {t('featured.title') || 'Featured Projects'}</SectionTitle>
+          <SectionTitle>{t('featured.title') || 'Featured Projects'}</SectionTitle>
+          <SectionPurpose 
+            text={t('storytelling.projectsPurpose')}
+          />
           <SectionSubtitle>
             {t('featured.subtitle') || 'Highlighting my most impactful and diverse projects that showcase my skills across multiple domains.'}
           </SectionSubtitle>
@@ -414,30 +511,65 @@ export function HomePage() {
           ) : featuredProjects.length > 0 ? (
             <>
               <FeaturedGrid>
-                {featuredProjects.map(project => (
-                  <FeaturedProjectCard
-                    key={project.id}
-                    id={project.id}
-                    title={project.title}
-                    summary={project.summary}
-                    startDate={project.startDate}
-                    endDate={project.endDate}
-                    techStacks={project.techStacks}
-                    imageUrl={project.imageUrl}
-                  />
-                ))}
+                {featuredProjects.map((project, index) => {
+                  if (index === 0) {
+                    // 첫 번째 프로젝트: 히어로 카드
+                    return (
+                      <HeroProjectCard
+                        key={project.id}
+                        id={project.id}
+                        title={project.title}
+                        summary={project.summary}
+                        startDate={project.startDate}
+                        endDate={project.endDate}
+                        techStacks={project.techStacks}
+                        imageUrl={project.imageUrl}
+                      />
+                    )
+                  } else {
+                    // 나머지 프로젝트: 일반 카드
+                    return (
+                      <FeaturedProjectCard
+                        key={project.id}
+                        id={project.id}
+                        title={project.title}
+                        summary={project.summary}
+                        startDate={project.startDate}
+                        endDate={project.endDate}
+                        techStacks={project.techStacks}
+                        imageUrl={project.imageUrl}
+                        index={index}
+                      />
+                    )
+                  }
+                })}
               </FeaturedGrid>
               <ViewAllLink to="/projects">
-                {t('featured.viewAll') || 'View All Projects'} →
+                {t('featured.viewAll') || 'View All Projects'}
               </ViewAllLink>
             </>
           ) : null}
         </Container>
       </FeaturedSection>
 
+      <SectionBridge 
+        text={t('storytelling.projectsToShowcase')}
+        variant="secondary"
+      />
+
+      <ProjectShowcaseSection />
+
+      <SectionBridge 
+        text={t('storytelling.showcaseToTestimonials')}
+        variant="secondary"
+      />
+
       <TestimonialSection>
         <Container>
-          <SectionTitle>💬 {t('testimonials.title') || 'What Others Say'}</SectionTitle>
+          <SectionTitle>{t('testimonials.title') || 'What Others Say'}</SectionTitle>
+          <SectionPurpose 
+            text={t('storytelling.testimonialsPurpose')}
+          />
           <SectionSubtitle>
             {t('testimonials.subtitle') || 'Feedback from colleagues and clients who have worked with me.'}
           </SectionSubtitle>
@@ -456,11 +588,6 @@ export function HomePage() {
           ) : null}
         </Container>
       </TestimonialSection>
-
-      <ProjectShowcaseSection />
-      <div style={{ marginBottom: '120px' }}>
-        <JourneyMilestoneSection />
-      </div>
     </>
   )
 }

@@ -23,6 +23,7 @@
     "contact": "Contact",
     "login": "Login",
     "feedback": "Feedback",
+    "journey": "Journey",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
@@ -315,5 +316,24 @@
     "korean": "한국어",
     "english": "English", 
     "japanese": "日本語"
+  },
+  "storytelling": {
+    "heroToJourney": "Discover the journey of growth as a developer who enjoys solving problems",
+    "journeyToProjects": "Explore the projects born from this growth journey",
+    "projectsToShowcase": "Explore experiences across diverse technical domains",
+    "showcaseToTestimonials": "Hear what people who have actually worked with me have to say",
+    "journeyPurpose": "Shows the growth journey as a developer and the learning and achievements at each stage through a timeline",
+    "projectsPurpose": "Carefully selected projects that showcase meaningful and diverse technologies",
+    "showcasePurpose": "Explore technology stacks across various domains including Three.js, Software Development, and Game Development",
+    "testimonialsPurpose": "Honest feedback from colleagues and clients who have worked together on actual projects"
+  },
+  "featured": {
+    "title": "Featured Projects",
+    "subtitle": "Carefully selected projects that showcase capabilities across diverse domains",
+    "viewAll": "View All Projects"
+  },
+  "testimonials": {
+    "title": "Testimonials",
+    "subtitle": "Feedback from colleagues and clients who have worked with me"
   }
 }

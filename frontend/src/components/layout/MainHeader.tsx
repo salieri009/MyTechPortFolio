@@ -212,7 +212,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
                 onClick={closeMobileMenu}
                 aria-current={isActive('/') ? 'page' : undefined}
               >
-                {t('nav.home')}
+                {t('navigation.home')}
               </NavLink>
               <NavLink 
                 to="/projects" 
@@ -220,7 +220,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
                 onClick={closeMobileMenu}
                 aria-current={isActive('/projects') ? 'page' : undefined}
               >
-                {t('nav.projects')}
+                {t('navigation.projects')}
               </NavLink>
               <NavLink 
                 to="/about" 
@@ -228,7 +228,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
                 onClick={closeMobileMenu}
                 aria-current={isActive('/about') ? 'page' : undefined}
               >
-                {t('nav.about')}
+                {t('navigation.about')}
               </NavLink>
               <NavLink 
                 to="/academics" 
@@ -236,16 +236,16 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
                 onClick={closeMobileMenu}
                 aria-current={isActive('/academics') ? 'page' : undefined}
               >
-                {t('nav.academics')}
+                {t('navigation.academics')}
               </NavLink>
               <NavExternalLink
                 href="https://blog.salieri009.studio"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={closeMobileMenu}
-                aria-label={`${t('nav.blog')} - Opens in new tab`}
+                aria-label={`${t('navigation.blog')} - Opens in new tab`}
               >
-                {t('nav.blog')}
+                {t('navigation.blog')}
               </NavExternalLink>
             </NavLinks>
           </LogoSection>
@@ -261,7 +261,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
                     {user.name}
                   </UserInfo>
                   <LogoutButton onClick={handleLogout}>
-                    {t('nav.logout')}
+                    {t('navigation.logout') || 'Logout'}
                   </LogoutButton>
                 </>
               ) : (

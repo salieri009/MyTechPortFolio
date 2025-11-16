@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Container } from '@components/common'
+import { SectionPurpose } from './SectionPurpose'
 
 /**
  * ProjectShowcaseSection Component (Organism)
@@ -25,9 +26,26 @@ const fadeInUp = keyframes`
 
 const Section = styled.section`
   padding: 60px 0 40px 0;
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.theme.colors.surface || props.theme.colors.background};
   position: relative;
   overflow: hidden;
+  
+  /* 상단 구분선 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${props => props.theme.colors.primary[500]},
+      transparent
+    );
+    opacity: 0.3;
+  }
 `
 
 const Grid = styled.div`
@@ -36,6 +54,7 @@ const Grid = styled.div`
   gap: 48px;
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
@@ -43,100 +62,59 @@ const Grid = styled.div`
   }
 `
 
-const TechStackContainer = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== 'isVisible',
-})<{ isVisible: boolean }>`
-  margin-top: 40px;
-  padding: 48px;
-  background: ${props => props.theme.colors.surface};
-  border-radius: 24px;
-  border: 1px solid ${props => props.theme.colors.border};
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: 160px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  backdrop-filter: blur(20px);
-  box-shadow: ${props => props.theme.shadows.lg};
-  
-  ${props => props.isVisible && `
-    border-color: ${props.theme.colors.primary[400]};
-    box-shadow: ${props.theme.shadows['2xl']};
-  `}
-`
-
-const TechStackTitle = styled.h4`
-  font-size: 28px;
-  font-weight: 700;
-  color: ${props => props.theme.colors.text};
-  margin-bottom: 32px;
-  text-align: center;
-  font-family: ${props => props.theme.typography.fontFamily.display};
-  letter-spacing: -0.01em;
-`
-
-const TechStackGrid = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  max-width: 1000px;
-  transition: all 0.4s ease;
-`
-
-const TechItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  background: ${props => props.theme.colors.gradient.primary};
-  color: white;
-  border-radius: 16px;
-  font-size: 15px;
-  font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: ${props => props.theme.shadows.md};
-  backdrop-filter: blur(10px);
-  
-  &:hover {
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: ${props => props.theme.shadows.xl};
-  }
-`
-
-const TechStackContent = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== 'isVisible',
-})<{ isVisible: boolean }>`
-  opacity: ${props => props.isVisible ? 1 : 0};
-  transform: translateY(${props => props.isVisible ? 0 : 20}px);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: ${props => props.isVisible ? fadeInUp : 'none'} 0.6s ease-out;
-`
 
 const ColumnCard = styled.div<{ $isHovered: boolean; $animationType: 'right' | 'both' | 'left' }>`
   /* Performance optimization */
-  will-change: transform;
+  will-change: transform, opacity, width, height;
   transform: translateZ(0); /* Force GPU acceleration */
-  position: relative;
-  height: 500px;
+  position: ${props => props.$isHovered ? 'absolute' : 'relative'};
+  width: ${props => props.$isHovered ? '120%' : '100%'};
+  height: ${props => props.$isHovered ? 'auto' : '500px'};
+  min-height: ${props => props.$isHovered ? '600px' : '500px'};
   background: ${props => props.theme.colors.surface};
   border-radius: 24px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: ${props => props.$isHovered ? 10 : 1};
+  opacity: ${props => props.$isHovered ? 1 : 0.4};
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: ${props => props.theme.shadows.lg};
   border: 1px solid ${props => props.theme.colors.border};
   backdrop-filter: blur(10px);
+  left: ${props => props.$isHovered ? '-10%' : '0'};
 
   &:hover {
-    transform: translateY(-12px) scale(1.02) translateZ(0);
+    transform: translateY(-8px) translateZ(0);
     box-shadow: ${props => props.theme.shadows['2xl']};
     border-color: ${props => props.theme.colors.primary[400]};
   }
 
+  /* Background Pattern */
   &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        ${props => props.theme.colors.neutral[200] || props.theme.colors.primary[50]} 10px,
+        ${props => props.theme.colors.neutral[200] || props.theme.colors.primary[50]} 20px
+      );
+    opacity: ${props => props.$isHovered ? 0.08 : 0.03};
+    z-index: 1;
+    background-size: 20px 20px;
+    transition: opacity 0.4s ease, background-position 0.4s ease;
+    background-position: ${props => props.$isHovered ? '10px 10px' : '0 0'};
+  }
+
+  &::after {
     content: '';
     position: absolute;
     top: 0;
@@ -146,35 +124,38 @@ const ColumnCard = styled.div<{ $isHovered: boolean; $animationType: 'right' | '
     background: ${props => props.theme.colors.gradient.primary};
     opacity: 0.05;
     z-index: 1;
+    pointer-events: none;
   }
 
   @media (max-width: 1024px) {
-    height: 420px;
+    height: ${props => props.$isHovered ? 'auto' : '420px'};
+    min-height: ${props => props.$isHovered ? '500px' : '420px'};
+    position: relative;
+    width: 100%;
+    left: 0;
+    opacity: 1;
   }
 
   @media (max-width: 768px) {
-    height: 380px;
+    height: ${props => props.$isHovered ? 'auto' : '380px'};
+    min-height: ${props => props.$isHovered ? '450px' : '380px'};
   }
 `
 
-const CardContent = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 48px;
+const CardContent = styled.div<{ $isExpanded: boolean }>`
+  position: relative;
+  padding: ${props => props.$isExpanded ? '40px' : '48px'};
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: ${props => props.$isExpanded ? 'flex-start' : 'center'};
   align-items: center;
   text-align: center;
   z-index: 2;
-  background: ${props => props.theme.colors.glass.light};
-  backdrop-filter: blur(20px);
+  min-height: 100%;
+  transition: padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   @media (max-width: 768px) {
-    padding: 36px;
+    padding: ${props => props.$isExpanded ? '32px' : '36px'};
   }
 `
 
@@ -193,31 +174,115 @@ const CardTitle = styled.h3`
   }
 `
 
-const CardIcon = styled.div`
-  font-size: 64px;
-  margin-bottom: 32px;
+const CardIcon = styled.div<{ $isExpanded: boolean }>`
+  font-size: ${props => props.$isExpanded ? '48px' : '64px'};
+  margin-bottom: ${props => props.$isExpanded ? '20px' : '32px'};
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
   background: ${props => props.theme.colors.gradient.primary};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  transition: font-size 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              margin-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   @media (max-width: 768px) {
-    font-size: 56px;
-    margin-bottom: 24px;
+    font-size: ${props => props.$isExpanded ? '44px' : '56px'};
+    margin-bottom: ${props => props.$isExpanded ? '16px' : '24px'};
   }
 `
 
-const CardDescription = styled.p`
+const CardDescription = styled.p<{ $isExpanded: boolean }>`
   font-size: 18px;
   line-height: 1.6;
   color: ${props => props.theme.colors.textSecondary};
-  margin-bottom: 32px;
-  max-width: 280px;
+  margin-bottom: ${props => props.$isExpanded ? '24px' : '32px'};
+  max-width: ${props => props.$isExpanded ? '100%' : '280px'};
+  transition: max-width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              margin-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   @media (max-width: 768px) {
     font-size: 16px;
-    margin-bottom: 24px;
+    margin-bottom: ${props => props.$isExpanded ? '20px' : '24px'};
+  }
+`
+
+const ExpandIndicator = styled.div<{ $isExpanded: boolean }>`
+  font-size: 12px;
+  color: ${props => props.theme.colors.textTertiary || props.theme.colors.textSecondary};
+  margin-top: ${props => props.$isExpanded ? '0' : '16px'};
+  opacity: ${props => props.$isExpanded ? 0 : 0.6};
+  transition: opacity 0.3s ease, margin-top 0.3s ease;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  
+  &::before {
+    content: '...';
+    letter-spacing: 4px;
+  }
+`
+
+const TechStackSection = styled.div<{ $isVisible: boolean }>`
+  width: 100%;
+  margin-top: ${props => props.$isVisible ? '24px' : '0'};
+  padding-top: ${props => props.$isVisible ? '24px' : '0'};
+  border-top: ${props => props.$isVisible ? `1px solid ${props.theme.colors.border}` : 'none'};
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  max-height: ${props => props.$isVisible ? '500px' : '0'};
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+`
+
+const TechStackGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+`
+
+const TechTag = styled.span<{ $index: number; $isVisible: boolean }>`
+  display: inline-block;
+  padding: 6px 12px;
+  background: ${props => props.theme.colors.surface || props.theme.colors.neutral[100]};
+  color: ${props => props.theme.colors.textSecondary};
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  border: 1px solid ${props => props.theme.colors.border};
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : 'translateY(10px)'};
+  transition: opacity 0.3s ease ${props => props.$index * 0.05}s,
+              transform 0.3s ease ${props => props.$index * 0.05}s;
+  
+  ${props => props.theme.mode === 'dark' && `
+    background: ${props.theme.colors.neutral[800] || props.theme.colors.surface};
+    border-color: ${props.theme.colors.neutral[700]};
+  `}
+`
+
+const CTAButton = styled.button<{ $isVisible: boolean }>`
+  margin-top: 20px;
+  padding: 10px 24px;
+  background: transparent;
+  color: ${props => props.theme.colors.primary[500]};
+  border: 2px solid ${props => props.theme.colors.primary[500]};
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : 'translateY(10px)'};
+  transition: all 0.3s ease ${props => props.$isVisible ? '0.2s' : '0s'};
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  
+  &:hover {
+    background: ${props => props.theme.colors.primary[500]};
+    color: white;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: 2px;
   }
 `
 
@@ -343,17 +408,6 @@ export function ProjectShowcaseSection() {
     }
   ]
 
-  const getCurrentTechStack = () => {
-    if (!hoveredColumn) return []
-    const column = projectData.find(p => p.id === hoveredColumn)
-    return column?.techStack || []
-  }
-
-  const getCurrentTitle = () => {
-    if (!hoveredColumn) return t('showcase.techStack.default')
-    const column = projectData.find(p => p.id === hoveredColumn)
-    return t(`showcase.techStack.${column?.id}`)
-  }
 
   return (
     <Section>
@@ -361,59 +415,72 @@ export function ProjectShowcaseSection() {
         <SectionTitle>
           {t('showcase.title')}
         </SectionTitle>
+        <SectionPurpose 
+          text={t('storytelling.showcasePurpose')}
+          icon="🔍"
+        />
         <SectionSubtitle>
           {t('showcase.subtitle')}
         </SectionSubtitle>
         
         <Grid role="list" aria-label="Project showcase categories">
-          {projectData.map((project, index) => (
-            <ColumnCard
-              key={project.id}
-              $isHovered={hoveredColumn === project.id || tappedColumn === project.id}
-              $animationType={project.animationType}
-              onMouseEnter={project.onHover}
-              onMouseLeave={() => handleCardMouseLeave(project.id)}
-              onFocus={project.onHover}
-              onBlur={project.onLeave}
-              onClick={() => handleCardClick(project.category, project.id)}
-              onKeyDown={(e) => handleCardKeyDown(e, project.category)}
-              role="button"
-              tabIndex={0}
-              aria-label={`${project.title}: ${project.description}. ${tappedColumn === project.id ? 'Double tap' : 'Click'} to view ${project.title} projects.`}
-              aria-expanded={hoveredColumn === project.id || tappedColumn === project.id}
-            >
-              <CardContent>
-                <CardIcon aria-hidden="true">{project.icon}</CardIcon>
-                <CardTitle>
-                  {project.title}
-                </CardTitle>
-                <CardDescription>{project.description}</CardDescription>
-              </CardContent>
-            </ColumnCard>
-          ))}
+          {projectData.map((project, index) => {
+            const isExpanded = hoveredColumn === project.id || tappedColumn === project.id
+            return (
+              <ColumnCard
+                key={project.id}
+                $isHovered={isExpanded}
+                $animationType={project.animationType}
+                onMouseEnter={project.onHover}
+                onMouseLeave={() => handleCardMouseLeave(project.id)}
+                onFocus={project.onHover}
+                onBlur={project.onLeave}
+                onClick={() => handleCardClick(project.category, project.id)}
+                onKeyDown={(e) => handleCardKeyDown(e, project.category)}
+                role="button"
+                tabIndex={0}
+                aria-label={`${project.title}: ${project.description}. ${tappedColumn === project.id ? 'Double tap' : 'Click'} to view ${project.title} projects.`}
+                aria-expanded={isExpanded}
+              >
+                <CardContent $isExpanded={isExpanded}>
+                  <CardIcon $isExpanded={isExpanded} aria-hidden="true">{project.icon}</CardIcon>
+                  <CardTitle>
+                    {project.title}
+                  </CardTitle>
+                  <CardDescription $isExpanded={isExpanded}>{project.description}</CardDescription>
+                  
+                  {!isExpanded && <ExpandIndicator $isExpanded={false} aria-hidden="true" />}
+                  
+                  <TechStackSection $isVisible={isExpanded}>
+                    <TechStackGrid role="list" aria-label="Technologies">
+                      {project.techStack.map((tech, techIndex) => (
+                        <TechTag
+                          key={`${project.id}-${tech}-${techIndex}`}
+                          $index={techIndex}
+                          $isVisible={isExpanded}
+                          role="listitem"
+                          aria-label={tech}
+                        >
+                          {tech}
+                        </TechTag>
+                      ))}
+                    </TechStackGrid>
+                    <CTAButton
+                      $isVisible={isExpanded}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigate(`/projects?category=${project.category}`)
+                      }}
+                      aria-label={`View ${project.title} projects`}
+                    >
+                      View Projects →
+                    </CTAButton>
+                  </TechStackSection>
+                </CardContent>
+              </ColumnCard>
+            )
+          })}
         </Grid>
-
-        <TechStackContainer 
-          isVisible={hoveredColumn !== null}
-          role="region"
-          aria-label="Technology stack"
-          aria-live="polite"
-        >
-          <TechStackContent isVisible={hoveredColumn !== null}>
-            <TechStackTitle>{getCurrentTitle()}</TechStackTitle>
-            <TechStackGrid role="list" aria-label="Technologies">
-              {getCurrentTechStack().map((tech, index) => (
-                <TechItem 
-                  key={`${hoveredColumn}-${tech}-${index}`}
-                  role="listitem"
-                  aria-label={tech}
-                >
-                  {tech}
-                </TechItem>
-              ))}
-            </TechStackGrid>
-          </TechStackContent>
-        </TechStackContainer>
       </Container>
     </Section>
   )

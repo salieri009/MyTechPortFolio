@@ -4,12 +4,30 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Container } from '@components/common'
 import { ComplexityIndicator, MilestoneMetrics, TechStackProgression } from './journey'
+import { SectionPurpose } from './SectionPurpose'
 
 const Section = styled.section`
   padding: 120px 0;
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.theme.colors.surface || props.theme.colors.background};
   position: relative;
   overflow: hidden;
+  
+  /* 상단 구분선 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${props => props.theme.colors.primary[500]},
+      transparent
+    );
+    opacity: 0.3;
+  }
   
   @media (max-width: 768px) {
     padding: 80px 0;
@@ -548,9 +566,12 @@ export function JourneyMilestoneSection() {
   return (
     <Section id="journey">
       <Container>
-        <SectionTitle>My Journey</SectionTitle>
+        <SectionTitle>{t('journey.title') || 'My Journey'}</SectionTitle>
+        <SectionPurpose 
+          text={t('storytelling.journeyPurpose')}
+        />
         <SectionSubtitle>
-          개발자로 성장해온 여정과 앞으로의 목표를 소개합니다
+          {t('journey.subtitle') || '개발자로 성장해온 여정과 앞으로의 목표를 소개합니다'}
         </SectionSubtitle>
         
         <TimelineContainer ref={containerRef}>

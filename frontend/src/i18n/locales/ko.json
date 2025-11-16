@@ -23,6 +23,8 @@
     "contact": "연락하기",
     "login": "로그인",
     "feedback": "피드백",
+    "journey": "여정",
+    "logout": "로그아웃",
     "openMenu": "메뉴 열기",
     "closeMenu": "메뉴 닫기"
   },
@@ -315,5 +317,24 @@
     "korean": "한국어",
     "english": "English",
     "japanese": "日本語"
+  },
+  "storytelling": {
+    "heroToJourney": "문제 해결을 즐기는 개발자로 성장해온 여정을 소개합니다",
+    "journeyToProjects": "이러한 성장 과정에서 탄생한 프로젝트들을 만나보세요",
+    "projectsToShowcase": "다양한 기술 영역에서의 경험을 탐색해보세요",
+    "showcaseToTestimonials": "실제로 함께 일한 사람들의 평가를 들어보세요",
+    "journeyPurpose": "개발자로서의 성장 과정과 각 단계에서의 학습과 성과를 타임라인으로 보여줍니다",
+    "projectsPurpose": "가장 의미있고 다양한 기술을 활용한 프로젝트들을 선별하여 소개합니다",
+    "showcasePurpose": "Three.js, Software Development, Game Development 등 다양한 영역에서의 기술 스택을 탐색할 수 있습니다",
+    "testimonialsPurpose": "실제 프로젝트에서 함께 일한 동료와 클라이언트들의 솔직한 피드백입니다"
+  },
+  "featured": {
+    "title": "주요 프로젝트",
+    "subtitle": "다양한 분야에서의 역량을 보여주는 가장 의미있는 프로젝트들을 선별했습니다",
+    "viewAll": "모든 프로젝트 보기"
+  },
+  "testimonials": {
+    "title": "추천사",
+    "subtitle": "함께 일한 동료와 클라이언트들의 평가"
   }
 }

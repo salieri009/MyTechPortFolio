@@ -12,14 +12,16 @@ const spin = keyframes`
   100% { transform: rotate(360deg); }
 `
 
-const SpinnerWrapper = styled.div<{ size?: 'sm' | 'md' | 'lg'; fullScreen?: boolean }>`
+const SpinnerWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'fullScreen'
+})<{ size?: 'sm' | 'md' | 'lg'; $fullScreen?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: ${props => props.theme.spacing[4]};
   
-  ${props => props.fullScreen && `
+  ${props => props.$fullScreen && `
     position: fixed;
     top: 0;
     left: 0;
@@ -30,7 +32,7 @@ const SpinnerWrapper = styled.div<{ size?: 'sm' | 'md' | 'lg'; fullScreen?: bool
     z-index: 9999;
   `}
   
-  ${props => !props.fullScreen && `
+  ${props => !props.$fullScreen && `
     padding: ${props.theme.spacing[8]};
   `}
 `
@@ -74,7 +76,7 @@ export function LoadingSpinner({
   'aria-label': ariaLabel = 'Loading'
 }: LoadingSpinnerProps) {
   return (
-    <SpinnerWrapper size={size} fullScreen={fullScreen} role="status" aria-live="polite">
+    <SpinnerWrapper size={size} $fullScreen={fullScreen} role="status" aria-live="polite">
       <Spinner size={size} aria-label={ariaLabel} />
       {message && <LoadingText>{message}</LoadingText>}
     </SpinnerWrapper>

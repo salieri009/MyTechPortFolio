@@ -123,3 +123,6 @@ export * from './FooterComponents'
 
 // Skeleton 컴포넌트 re-export
 export * from './Skeleton'
+
+// StoryProgressBar 컴포넌트 re-export
+export * from './StoryProgressBar'
