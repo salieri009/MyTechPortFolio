@@ -26,7 +26,7 @@ const DashboardContainer = styled.div<{ $isDark: boolean }>`
       ? 'rgba(255, 255, 255, 0.1)'
       : 'rgba(0, 0, 0, 0.1)'
   };
-  border-radius: 16px;
+  border-radius: ${props => props.theme.radius['2xl']};
   padding: 2rem;
   margin-bottom: 2rem;
   box-shadow: ${({ $isDark }) => 
@@ -73,7 +73,7 @@ const ResumeButton = styled.button<{ $isDark: boolean; $language: 'ko' | 'en' | 
   gap: 0.5rem;
   padding: 0.6rem 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: ${props => props.theme.radius.lg};
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -111,7 +111,7 @@ const ResumeButton = styled.button<{ $isDark: boolean; $language: 'ko' | 'en' | 
 
 const ResumeLabel = styled.span<{ $isDark: boolean }>`
   font-size: 0.75rem;
-  color: ${({ $isDark }) => $isDark ? '#a0aec0' : '#718096'};
+  color: ${props => props.theme.colors.textMuted || props.theme.colors.textSecondary};
   margin-bottom: 0.25rem;
 `
 
@@ -119,20 +119,15 @@ const Title = styled.h2<{ $isDark: boolean }>`
   margin: 0 0 0.5rem 0;
   font-size: 1.5rem;
   font-weight: 700;
-  color: ${({ $isDark }) => $isDark ? '#e2e8f0' : '#2d3748'};
+  color: ${props => props.theme.colors.text};
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
-  &::before {
-    content: '📊';
-    font-size: 1.2rem;
-  }
 `
 
 const Subtitle = styled.p<{ $isDark: boolean }>`
   margin: 0;
-  color: ${({ $isDark }) => $isDark ? '#a0aec0' : '#718096'};
+  color: ${props => props.theme.colors.textSecondary};
   font-size: 0.95rem;
 `
 
@@ -149,7 +144,7 @@ const SkillsSection = styled.div<{ $isDark: boolean }>`
       ? 'rgba(45, 55, 72, 0.6)'
       : 'rgba(247, 250, 252, 0.8)'
   };
-  border-radius: 12px;
+  border-radius: ${props => props.theme.radius.xl};
   padding: 1.5rem;
   border: 1px solid ${({ $isDark }) => 
     $isDark 
@@ -162,7 +157,7 @@ const SectionTitle = styled.h3<{ $isDark: boolean }>`
   margin: 0 0 1rem 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: ${({ $isDark }) => $isDark ? '#e2e8f0' : '#2d3748'};
+  color: ${props => props.theme.colors.text};
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -177,7 +172,7 @@ const SkillTag = styled.span<{ $isDark: boolean }>`
   };
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: ${props => props.theme.radius.full};
   font-size: 0.85rem;
   font-weight: 500;
   margin: 0.25rem 0.25rem 0.25rem 0;
@@ -213,7 +208,7 @@ const AchievementCard = styled.div<{ $isDark: boolean }>`
       ? 'rgba(79, 172, 254, 0.2)'
       : 'rgba(102, 126, 234, 0.2)'
   };
-  border-radius: 12px;
+  border-radius: ${props => props.theme.radius.xl};
   padding: 1.5rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   will-change: transform;
@@ -233,21 +228,16 @@ const AchievementTitle = styled.h4<{ $isDark: boolean }>`
   margin: 0 0 0.5rem 0;
   font-size: 1rem;
   font-weight: 600;
-  color: ${({ $isDark }) => $isDark ? '#e2e8f0' : '#2d3748'};
+  color: ${props => props.theme.colors.text};
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
-  &::before {
-    content: '🎯';
-    font-size: 0.9rem;
-  }
 `
 
 const AchievementDescription = styled.p<{ $isDark: boolean }>`
   margin: 0 0 0.75rem 0;
   font-size: 0.9rem;
-  color: ${({ $isDark }) => $isDark ? '#a0aec0' : '#718096'};
+  color: ${props => props.theme.colors.textSecondary};
   line-height: 1.5;
 `
 
@@ -263,7 +253,7 @@ const AchievementImpact = styled.div<{ $isDark: boolean }>`
       : '#667eea'
   };
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: ${props => props.theme.radius.lg};
   font-size: 0.85rem;
   font-weight: 600;
   text-align: center;
@@ -288,7 +278,7 @@ const IndustryTag = styled.span<{ $isDark: boolean }>`
       : '#a855f7'
   };
   padding: 0.4rem 0.8rem;
-  border-radius: 16px;
+  border-radius: ${props => props.theme.radius['2xl']};
   font-size: 0.8rem;
   font-weight: 500;
   border: 1px solid ${({ $isDark }) => 
@@ -301,7 +291,7 @@ const IndustryTag = styled.span<{ $isDark: boolean }>`
 const AchievementDate = styled.div<{ $isDark: boolean }>`
   margin-top: 0.75rem;
   font-size: 0.8rem;
-  color: ${({ $isDark }) => $isDark ? '#a0aec0' : '#718096'};
+  color: ${props => props.theme.colors.textMuted || props.theme.colors.textSecondary};
   text-align: right;
 `
 
@@ -429,7 +419,7 @@ export const CareerSummaryDashboard: React.FC = () => {
         
         <SkillsSection $isDark={isDark}>
           <SectionTitle $isDark={isDark}>
-            🎯 {t('recruiter.careerSummary.sections.expertise')}
+            {t('recruiter.careerSummary.sections.expertise')}
           </SectionTitle>
           <IndustryTags>
             {CAREER_SUMMARY.industryFocus.map((industry, index) => (

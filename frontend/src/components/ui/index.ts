@@ -14,4 +14,5 @@ export { SuccessMessage } from './SuccessMessage'
 export { ConfirmationDialog } from './ConfirmationDialog'
 export { Breadcrumbs } from './Breadcrumbs'
 export { Container } from './Container'
+export { Section, type SectionProps } from './Section'
 

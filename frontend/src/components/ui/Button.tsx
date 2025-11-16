@@ -31,7 +31,7 @@ const ButtonBase = styled.button<ButtonProps>`
   }};
   font-weight: ${props => props.theme.typography.fontWeight.semibold};
   border: none;
-  border-radius: ${props => props.theme.radius.md};
+  border-radius: ${props => props.theme.radius.lg};
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
@@ -62,15 +62,17 @@ const ButtonBase = styled.button<ButtonProps>`
     switch (props.variant) {
       case 'primary':
         return css`
-          background: ${props.theme.colors.gradient.primary};
+          background: ${props.theme.colors.primary[500]};
           color: white;
           
           &:hover:not(:disabled) {
+            background: ${props.theme.colors.primary[600]};
             transform: translateY(-2px);
             box-shadow: ${props.theme.shadows.md};
           }
           
           &:active:not(:disabled) {
+            background: ${props.theme.colors.primary[700]};
             transform: translateY(0);
           }
         `
@@ -118,7 +120,7 @@ const ButtonBase = styled.button<ButtonProps>`
         `
       default:
         return css`
-          background: ${props.theme.colors.gradient.primary};
+          background: ${props.theme.colors.primary[500]};
           color: white;
         `
     }

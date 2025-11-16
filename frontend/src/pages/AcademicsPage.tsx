@@ -11,12 +11,12 @@ const TimelineContainer = styled.div`
 `
 
 const AcademicCard = styled(Card)<{ status: string }>`
-  margin-bottom: 16px;
+  margin-bottom: ${props => props.theme.spacing[4]};
   border-left: 4px solid ${props => {
     switch (props.status) {
-      case 'completed': return '#10B981' // Green
-      case 'enrolled': return '#3B82F6'  // Blue
-      case 'exemption': return '#F59E0B' // Amber
+      case 'completed': return props.theme.colors.success
+      case 'enrolled': return props.theme.colors.primary[500]
+      case 'exemption': return props.theme.colors.warning
       default: return props.theme.colors.border
     }
   }};
@@ -32,43 +32,52 @@ const AcademicTitle = styled.h3`
 `
 
 const GradeBadge = styled.span<{ grade: string }>`
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
+  padding: ${props => props.theme.spacing[1]} ${props => props.theme.spacing[2]};
+  border-radius: ${props => props.theme.radius.sm};
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   background: ${props => {
     switch (props.grade) {
-      case 'HIGH DISTINCTION': return '#DC2626'
-      case 'DISTINCTION': return '#EA580C'
-      case 'CREDIT': return '#059669'
-      case 'PASS': return '#0284C7'
-      default: return '#6B7280'
+      case 'HIGH DISTINCTION': return props.theme.colors.error
+      case 'DISTINCTION': return props.theme.colors.warning
+      case 'CREDIT': return props.theme.colors.success
+      case 'PASS': return props.theme.colors.primary[500]
+      default: return props.theme.colors.neutral[500]
     }
   }};
   color: white;
 `
 
 const StatusBadge = styled.span<{ status: string }>`
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
+  padding: ${props => props.theme.spacing[1]} ${props => props.theme.spacing[2]};
+  border-radius: ${props => props.theme.radius.sm};
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   background: ${props => {
     switch (props.status) {
-      case 'completed': return '#D1FAE5'
-      case 'enrolled': return '#DBEAFE'
-      case 'exemption': return '#FEF3C7'
-      default: return '#F3F4F6'
+      case 'completed': return props.theme.colors.success + '20'
+      case 'enrolled': return props.theme.colors.primary[500] + '20'
+      case 'exemption': return props.theme.colors.warning + '20'
+      default: return props.theme.colors.neutral[100]
     }
   }};
   color: ${props => {
     switch (props.status) {
-      case 'completed': return '#065F46'
-      case 'enrolled': return '#1E40AF'
-      case 'exemption': return '#92400E'
-      default: return '#374151'
+      case 'completed': return props.theme.colors.success
+      case 'enrolled': return props.theme.colors.primary[700]
+      case 'exemption': return props.theme.colors.warning
+      default: return props.theme.colors.textSecondary
     }
   }};
+  
+  ${props => props.theme.mode === 'dark' && `
+    background: ${props.status === 'completed' ? props.theme.colors.success + '30' :
+                  props.status === 'enrolled' ? props.theme.colors.primary[500] + '30' :
+                  props.status === 'exemption' ? props.theme.colors.warning + '30' :
+                  props.theme.colors.neutral[800]};
+  `}
 `
 
 const AcademicMeta = styled.div`

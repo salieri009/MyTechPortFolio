@@ -33,7 +33,7 @@ const ProjectImage = styled.img`
   height: 200px;
   object-fit: cover;
   margin-bottom: 12px;
-  border-radius: 8px;
+  border-radius: ${props => props.theme.radius.lg};
 `
 
 const ProjectContent = styled.div`
@@ -47,12 +47,12 @@ const ProjectTitle = styled.h3`
   margin: 0 0 12px 0;
   font-size: 20px;
   font-weight: 600;
-  color: ${props => props.theme?.colors?.text || '#1F2937'};
+  color: ${props => props.theme.colors.text};
 `
 
 const ProjectSummary = styled.p`
   margin: 0 0 16px 0;
-  color: ${props => props.theme?.colors?.textSecondary || '#6B7280'};
+  color: ${props => props.theme.colors.textSecondary};
   line-height: 1.5;
   flex: 1;
 `
@@ -63,7 +63,7 @@ const ProjectMeta = styled.div`
   align-items: center;
   margin-bottom: 16px;
   font-size: 14px;
-  color: ${props => props.theme?.colors?.textSecondary || '#6B7280'};
+  color: ${props => props.theme.colors.textSecondary};
 `
 
 const TechStacks = styled.div`
@@ -143,7 +143,7 @@ export function ProjectCard({
             <span>{formatDate(startDate)} - {formatDate(endDate)}</span>
           </ProjectMeta>
           <TechStacks aria-label="Technologies used">
-            {techStacks.map((tech) => (
+            {techStacks.slice(0, 3).map((tech) => (
               <Tag 
                 key={tech}
                 onClick={(e) => handleTechStackClick(e, tech)}
@@ -161,6 +161,11 @@ export function ProjectCard({
                 {tech}
               </Tag>
             ))}
+            {techStacks.length > 3 && (
+              <Tag aria-label={`${techStacks.length - 3} more technologies`}>
+                +{techStacks.length - 3}
+              </Tag>
+            )}
           </TechStacks>
         </ProjectContent>
       </ProjectCardWrapper>

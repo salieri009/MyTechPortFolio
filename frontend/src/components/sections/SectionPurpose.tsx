@@ -2,31 +2,30 @@ import React from 'react'
 import styled from 'styled-components'
 
 const PurposeContainer = styled.div`
-  text-align: center;
-  margin: -16px 0 24px 0;
+  text-align: left;
+  margin: -${props => props.theme.spacing[4]} 0 ${props => props.theme.spacing[6]} 0;
   max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
 `
 
 const PurposeText = styled.p`
-  font-size: 14px;
+  font-size: ${props => props.theme.typography.fontSize.sm};
   color: ${props => props.theme.colors.textSecondary};
-  line-height: 1.6;
-  font-weight: 400;
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  font-weight: ${props => props.theme.typography.fontWeight.normal};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   opacity: 0.8;
 
   @media (max-width: 768px) {
-    font-size: 13px;
-    padding: 0 24px;
+    font-size: ${props => props.theme.typography.fontSize.xs};
+    padding: 0 ${props => props.theme.spacing[6]};
   }
 `
 
 const PurposeIcon = styled.span`
   display: inline-block;
-  margin-right: 6px;
+  margin-right: ${props => props.theme.spacing[2]};
   opacity: 0.6;
-  font-size: 12px;
+  font-size: ${props => props.theme.typography.fontSize.xs};
 `
 
 interface SectionPurposeProps {

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -124,7 +125,6 @@ public class ProjectEngagementService {
      * @return List of project IDs with engagement scores
      */
     @Transactional(readOnly = true)
-    @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getMostEngagedProjects(int limit) {
         return engagementRepository.findAll().stream()
                 .collect(Collectors.groupingBy(
@@ -139,12 +139,12 @@ public class ProjectEngagementService {
                             long highValueCount = engagements.stream()
                                     .filter(ProjectEngagement::isHighValueEngagement)
                                     .count();
-                            return (Map<String, Object>) Map.of(
-                                "projectId", engagements.get(0).getProjectId(),
-                                "avgEngagementScore", avgScore,
-                                "totalViews", (long) engagements.size(),
-                                "highValueEngagements", highValueCount
-                            );
+                            Map<String, Object> result = new HashMap<>();
+                            result.put("projectId", engagements.get(0).getProjectId());
+                            result.put("avgEngagementScore", avgScore);
+                            result.put("totalViews", (long) engagements.size());
+                            result.put("highValueEngagements", highValueCount);
+                            return result;
                         }
                     )
                 ))

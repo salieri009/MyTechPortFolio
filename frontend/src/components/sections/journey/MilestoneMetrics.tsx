@@ -67,16 +67,12 @@ const MetricBadge = styled.div<{ $isVisible: boolean }>`
   }
 `
 
-const MetricIcon = styled.span`
-  font-size: 16px;
-  line-height: 1;
-`
 
 const MetricValue = styled.span<{ $isAnimating: boolean }>`
   font-size: 20px;
   font-weight: 700;
   color: ${props => props.theme.colors.primary[600]};
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   transition: text-shadow 0.05s ease;
   
   ${props => props.$isAnimating && `
@@ -207,7 +203,6 @@ export const MilestoneMetrics: React.FC<MilestoneMetricsProps> = ({
     <MetricsContainer ref={containerRef} className={className} role="group" aria-label="Milestone metrics">
       {projectCount > 0 && (
         <MetricBadge $isVisible={isVisible} aria-label={`${projectsResult.count} projects completed`}>
-          <MetricIcon>📁</MetricIcon>
           <MetricValue $isAnimating={projectsResult.isAnimating}>{projectsResult.count}</MetricValue>
           <MetricLabel>Projects</MetricLabel>
         </MetricBadge>
@@ -215,7 +210,6 @@ export const MilestoneMetrics: React.FC<MilestoneMetricsProps> = ({
       
       {codeMetrics?.linesOfCode && codeMetrics.linesOfCode > 0 && (
         <MetricBadge $isVisible={isVisible} aria-label={`${formatNumber(linesResult.count)} lines of code`}>
-          <MetricIcon>💻</MetricIcon>
           <MetricValue $isAnimating={linesResult.isAnimating}>{formatNumber(linesResult.count)}</MetricValue>
           <MetricLabel>Lines</MetricLabel>
         </MetricBadge>
@@ -223,7 +217,6 @@ export const MilestoneMetrics: React.FC<MilestoneMetricsProps> = ({
       
       {codeMetrics?.commits && codeMetrics.commits > 0 && (
         <MetricBadge $isVisible={isVisible} aria-label={`${formatNumber(commitsResult.count)} commits`}>
-          <MetricIcon>📝</MetricIcon>
           <MetricValue $isAnimating={commitsResult.isAnimating}>{formatNumber(commitsResult.count)}</MetricValue>
           <MetricLabel>Commits</MetricLabel>
         </MetricBadge>
@@ -231,7 +224,6 @@ export const MilestoneMetrics: React.FC<MilestoneMetricsProps> = ({
       
       {codeMetrics?.repositories && codeMetrics.repositories > 0 && (
         <MetricBadge $isVisible={isVisible} aria-label={`${reposResult.count} repositories`}>
-          <MetricIcon>📦</MetricIcon>
           <MetricValue $isAnimating={reposResult.isAnimating}>{reposResult.count}</MetricValue>
           <MetricLabel>Repos</MetricLabel>
         </MetricBadge>

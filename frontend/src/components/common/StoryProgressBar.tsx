@@ -22,7 +22,7 @@ const ProgressBar = styled.div<{ $progress: number }>`
   background: linear-gradient(
     90deg,
     ${props => props.theme.colors.primary[500]},
-    ${props => props.theme.colors.secondary[500] || props.theme.colors.primary[400]}
+    ${props => props.theme.colors.primary[600]}
   );
   transition: width 0.1s ease-out;
   box-shadow: 0 0 10px ${props => props.theme.colors.primary[500]}40;

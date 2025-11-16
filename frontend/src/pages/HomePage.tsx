@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Container } from '@components/common'
 import { FeaturedProjectCard } from '@components/project'
 import { HeroProjectCard } from '@components/project/HeroProjectCard'
 import { TestimonialCard } from '@components/testimonials'
-import { ProjectShowcaseSection } from '@components/sections/ProjectShowcaseSection'
 import { JourneyMilestoneSection } from '@components/sections/JourneyMilestoneSection'
 import { InteractiveBackground } from '@components/organisms/InteractiveBackground'
 import { getProjects } from '../services/projects'
@@ -19,388 +17,42 @@ import { SectionBridge } from '@components/sections/SectionBridge'
 import { SectionPurpose } from '@components/sections/SectionPurpose'
 import type { ProjectSummary } from '../types/domain'
 import type { Testimonial } from '../mocks/testimonials'
+import * as S from './HomePage.styles'
 
-const Hero = styled.section<{ $isDark: boolean }>`
-  text-align: center;
-  padding: 120px 0 100px 0;
-  min-height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.secondary[500]} 100%);
-  color: white;
-  transition: background 0.3s ease;
-  margin-top: -1px; /* Remove gap with header */
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: ${props => props.$isDark ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'};
-    pointer-events: none;
-    z-index: 1;
-  }
-  
-  > * {
-    position: relative;
-    z-index: 2;
-  }
-  
-  ${Container} {
-    max-width: 800px;
-  }
-  
-  @media (max-width: 768px) {
-    padding: 80px 0 60px 0;
-    min-height: 85vh;
-  }
-`
+// Scroll Indicator Component
+const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => (
+  <S.ScrollIndicatorContainer $isVisible={isVisible}>
+    <S.ScrollArrow aria-hidden="true" />
+    <S.ScrollText>Scroll</S.ScrollText>
+  </S.ScrollIndicatorContainer>
+)
 
-const Greeting = styled.p`
-  font-size: 18px;
-  margin-bottom: 16px;
-  opacity: 0.9;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-    margin-bottom: 12px;
-  }
-`
-
-const Name = styled.span`
-  font-weight: 600;
-  color: white;
-  opacity: 0.95;
-`
-
-const Headline = styled.h1`
-  font-size: 64px;
-  font-weight: 800;
-  margin-bottom: 24px;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: white;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-
-  @media (max-width: 768px) {
-    font-size: 40px;
-    margin-bottom: 20px;
-    line-height: 1.2;
-  }
-  
-  @media (max-width: 480px) {
-    font-size: 32px;
-  }
-`
-
-const Subtitle = styled.p`
-  font-size: 20px;
-  margin-bottom: 48px;
-  opacity: 0.95;
-  line-height: 1.6;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  font-weight: 400;
-
-  @media (max-width: 768px) {
-    font-size: 18px;
-    margin-bottom: 40px;
-    padding: 0 20px;
-  }
-`
-
-const CTAButtons = styled.div`
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 48px;
-
-  @media (max-width: 640px) {
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 40px;
-  }
-`
-
-const PrimaryCTA = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 32px;
-  background: white;
-  color: ${props => props.theme.colors.primary[600]};
-  text-decoration: none;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 18px;
-  border: 2px solid white;
-  transition: border-color 0.2s ease, color 0.2s ease;
-  cursor: pointer;
-  min-width: 200px;
-  white-space: nowrap;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.primary[500]};
-    color: ${props => props.theme.colors.primary[500]};
-  }
-  
-  &:focus-visible {
-    outline: 2px solid ${props => props.theme.colors.primary[500]};
-    outline-offset: 2px;
-  }
-  
-  &:active {
-    box-shadow: inset 0 0 0 1px ${props => props.theme.colors.primary[500]};
-  }
-  
-  @media (max-width: 640px) {
-    width: 100%;
-    max-width: 300px;
-    padding: 14px 28px;
-    font-size: 16px;
-  }
-`
-
-const SecondaryCTA = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 32px;
-  background: transparent;
-  color: white;
-  text-decoration: none;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  transition: border-color 0.2s ease, color 0.2s ease;
-  cursor: pointer;
-  min-width: 200px;
-  white-space: nowrap;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.primary[500]};
-    color: ${props => props.theme.colors.primary[500]};
-  }
-  
-  &:focus-visible {
-    outline: 2px solid ${props => props.theme.colors.primary[500]};
-    outline-offset: 2px;
-  }
-  
-  &:active {
-    box-shadow: inset 0 0 0 1px ${props => props.theme.colors.primary[500]};
-  }
-  
-  @media (max-width: 640px) {
-    width: 100%;
-    max-width: 300px;
-    padding: 14px 28px;
-    font-size: 16px;
-  }
-`
-
-const SocialLinks = styled.div`
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  margin-top: 24px;
-  
-  @media (max-width: 640px) {
-    gap: 16px;
-    margin-top: 20px;
-  }
-`
-
-const SocialLink = styled.a`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 20px;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  &:focus {
-    outline: 2px solid rgba(255, 255, 255, 0.6);
-    outline-offset: 2px;
-  }
-  
-  @media (max-width: 640px) {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
-  }
-`
-
-const FeaturedSection = styled.section`
-  padding: 80px 0;
-  background: ${props => props.theme?.colors?.background || '#F9FAFB'};
-  position: relative;
-  
-  /* 상단 구분선 */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      ${props => props.theme?.colors?.primary?.[500] || '#3B82F6'},
-      transparent
-    );
-    opacity: 0.3;
-  }
-`
-
-const SectionTitle = styled.h2`
-  font-size: 36px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: ${props => props.theme?.colors?.text || '#1F2937'};
-
-  @media (max-width: 768px) {
-    font-size: 28px;
-  }
-`
-
-const SectionSubtitle = styled.p`
-  font-size: 18px;
-  color: ${props => props.theme?.colors?.textSecondary || '#6B7280'};
-  margin-bottom: 48px;
-  line-height: 1.6;
-`
-
-const FeaturedGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: auto;
-  gap: 24px;
-  margin-bottom: 32px;
-
-  /* 첫 번째 프로젝트: 전체 너비 (히어로) */
-  > *:first-child {
-    grid-column: 1 / -1;
-  }
-
-  /* 나머지 프로젝트: 다양한 크기 */
-  > *:nth-child(2) {
-    grid-column: span 6; /* 중간 */
-  }
-  > *:nth-child(3) {
-    grid-column: span 3; /* 작은 */
-  }
-  > *:nth-child(4) {
-    grid-column: span 3; /* 작은 */
-  }
-  > *:nth-child(5) {
-    grid-column: span 4; /* 중간 */
-  }
-  > *:nth-child(6) {
-    grid-column: span 4; /* 중간 */
-  }
-  > *:nth-child(7) {
-    grid-column: span 4; /* 중간 */
-  }
-
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(6, 1fr);
-    
-    > *:first-child {
-      grid-column: 1 / -1;
-    }
-    
-    > *:nth-child(n+2) {
-      grid-column: span 3;
+// Grid layout configuration for featured projects
+// This replaces hardcoded nth-child selectors with data-driven approach
+const getGridLayout = (index: number, total: number) => {
+  // First project: full width (hero)
+  if (index === 0) {
+    return {
+      desktop: '1 / -1',
+      tablet: '1 / -1',
+      mobile: '1'
     }
   }
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    
-    > * {
-      grid-column: 1 !important;
-    }
-  }
-`
-
-const ViewAllLink = styled(Link)`
-  display: inline-block;
-  margin-top: 48px;
-  padding: 12px 24px;
-  background: ${props => props.theme?.colors?.primary?.[500]} || '#3B82F6';
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: ${props => props.theme?.colors?.primary?.[600]} || '#2563EB';
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-  }
-`
-
-const TestimonialSection = styled.section`
-  padding: 80px 0;
-  background: ${props => props.theme?.colors?.surface || '#F3F4F6'};
-  position: relative;
   
-  /* 상단 구분선 */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      ${props => props.theme?.colors?.primary?.[500] || '#3B82F6'},
-      transparent
-    );
-    opacity: 0.3;
-  }
-`
-
-const TestimonialGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 32px;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-`
+  // Define layout patterns based on position
+  const patterns = [
+    { desktop: 'span 6', tablet: 'span 3', mobile: '1' },  // 2nd: medium
+    { desktop: 'span 3', tablet: 'span 3', mobile: '1' }, // 3rd: small
+    { desktop: 'span 3', tablet: 'span 3', mobile: '1' }, // 4th: small
+    { desktop: 'span 4', tablet: 'span 3', mobile: '1' }, // 5th: medium
+    { desktop: 'span 4', tablet: 'span 3', mobile: '1' }, // 6th: medium
+    { desktop: 'span 4', tablet: 'span 3', mobile: '1' }, // 7th: medium
+  ]
+  
+  // Use pattern based on position, or default to medium
+  const patternIndex = (index - 1) % patterns.length
+  return patterns[patternIndex] || { desktop: 'span 4', tablet: 'span 3', mobile: '1' }
+}
 
 export function HomePage() {
   const { t } = useTranslation()
@@ -408,6 +60,12 @@ export function HomePage() {
   const [featuredProjects, setFeaturedProjects] = useState<ProjectSummary[]>([])
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [loading, setLoading] = useState(true)
+  const [isHeroVisible, setIsHeroVisible] = useState(true)
+  const heroRef = React.useRef<HTMLElement>(null)
+  const [isFeaturedVisible, setIsFeaturedVisible] = useState(false)
+  const [isTestimonialVisible, setIsTestimonialVisible] = useState(false)
+  const featuredRef = React.useRef<HTMLElement>(null)
+  const testimonialRef = React.useRef<HTMLElement>(null)
 
   useEffect(() => {
     const loadData = async () => {
@@ -430,164 +88,251 @@ export function HomePage() {
     loadData()
   }, [])
 
+  // Hero 섹션 가시성 감지 (스크롤 유도 힌트 표시용)
+  useEffect(() => {
+    if (!heroRef.current) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsHeroVisible(entry.isIntersecting)
+        })
+      },
+      { threshold: 0.5 }
+    )
+
+    observer.observe(heroRef.current)
+
+    return () => {
+      if (heroRef.current) {
+        observer.unobserve(heroRef.current)
+      }
+    }
+  }, [])
+
+  // Featured 섹션 애니메이션 트리거
+  useEffect(() => {
+    if (!featuredRef.current) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsFeaturedVisible(true)
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    observer.observe(featuredRef.current)
+
+    return () => {
+      if (featuredRef.current) {
+        observer.unobserve(featuredRef.current)
+      }
+    }
+  }, [])
+
+  // Testimonial 섹션 애니메이션 트리거
+  useEffect(() => {
+    if (!testimonialRef.current) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsTestimonialVisible(true)
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    observer.observe(testimonialRef.current)
+
+    return () => {
+      if (testimonialRef.current) {
+        observer.unobserve(testimonialRef.current)
+      }
+    }
+  }, [])
+
   return (
     <>
       <StoryProgressBar />
-      <Hero $isDark={isDark}>
+      <S.Hero ref={heroRef} id="hero" $isDark={isDark}>
         <InteractiveBackground isDark={isDark} particleCount={120} connectionDistance={180} />
         <Container>
-          <Greeting>
-            {t('hero.greeting')} <Name>{t('hero.name')}</Name>
-          </Greeting>
-          <Headline>
-            {t('hero.headline')}
-          </Headline>
-          <Subtitle>
-            {t('hero.subtitle')}
-          </Subtitle>
-          <CTAButtons>
-            <PrimaryCTA to="/projects">
-              {t('hero.cta.primary')}
-            </PrimaryCTA>
-            <SecondaryCTA to="/about">
-              {t('hero.cta.secondary')}
-            </SecondaryCTA>
-          </CTAButtons>
-          <SocialLinks>
-            <SocialLink
-              href={CONTACT_INFO.linkedin.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn Profile"
-            >
-              💼
-            </SocialLink>
-            <SocialLink
-              href={`mailto:${CONTACT_INFO.email.student}`}
-              aria-label="Send Email"
-            >
-              📧
-            </SocialLink>
-            <SocialLink
-              href="https://github.com/salieri009"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub Profile"
-            >
-              🔗
-            </SocialLink>
-          </SocialLinks>
+          <S.HeroContent>
+            <S.HeroLeft>
+              <S.Greeting>
+                {t('hero.greeting')} <S.Name>{t('hero.name')}</S.Name>
+              </S.Greeting>
+              <S.Headline>
+                {t('hero.headline')}
+              </S.Headline>
+              <S.Subtitle>
+                {t('hero.subtitle')}
+              </S.Subtitle>
+              <S.CTAButtons>
+                <S.PrimaryCTA to="/projects">
+                  {t('hero.cta.primary')}
+                </S.PrimaryCTA>
+                <S.SecondaryCTA to="/about">
+                  {t('hero.cta.secondary')}
+                </S.SecondaryCTA>
+              </S.CTAButtons>
+            </S.HeroLeft>
+            <S.HeroRight>
+              <S.SocialLinks>
+                <S.SocialLink
+                  href={CONTACT_INFO.linkedin.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn Profile"
+                >
+                  LinkedIn
+                </S.SocialLink>
+                <S.SocialLink
+                  href={`mailto:${CONTACT_INFO.email.student}`}
+                  aria-label="Send Email"
+                >
+                  Email
+                </S.SocialLink>
+                <S.SocialLink
+                  href="https://github.com/salieri009"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub Profile"
+                >
+                  GitHub
+                </S.SocialLink>
+              </S.SocialLinks>
+            </S.HeroRight>
+          </S.HeroContent>
         </Container>
-      </Hero>
+        <ScrollIndicator isVisible={isHeroVisible} />
+      </S.Hero>
 
       <SectionBridge 
         text={t('storytelling.heroToJourney')}
         variant="primary"
+        diagonal={true}
+        overlap={true}
       />
 
-      <div style={{ marginBottom: '120px' }}>
+      <div id="journey">
         <JourneyMilestoneSection />
       </div>
 
       <SectionBridge 
         text={t('storytelling.journeyToProjects')}
         variant="secondary"
+        diagonal={true}
       />
 
-      <FeaturedSection>
+      <S.FeaturedSection ref={featuredRef} id="projects">
         <Container>
-          <SectionTitle>{t('featured.title') || 'Featured Projects'}</SectionTitle>
+          <S.SectionTitle $isVisible={isFeaturedVisible}>{t('featured.title') || 'Featured Projects'}</S.SectionTitle>
           <SectionPurpose 
             text={t('storytelling.projectsPurpose')}
           />
-          <SectionSubtitle>
+          <S.SectionSubtitle $isVisible={isFeaturedVisible}>
             {t('featured.subtitle') || 'Highlighting my most impactful and diverse projects that showcase my skills across multiple domains.'}
-          </SectionSubtitle>
+          </S.SectionSubtitle>
           {loading ? (
-            <FeaturedGrid>
+            <S.FeaturedGrid $isVisible={isFeaturedVisible}>
               <SkeletonProjectCard />
               <SkeletonProjectCard />
-            </FeaturedGrid>
+            </S.FeaturedGrid>
           ) : featuredProjects.length > 0 ? (
             <>
-              <FeaturedGrid>
+              <S.FeaturedGrid $isVisible={isFeaturedVisible}>
                 {featuredProjects.map((project, index) => {
+                  const gridLayout = getGridLayout(index, featuredProjects.length)
+                  
                   if (index === 0) {
                     // 첫 번째 프로젝트: 히어로 카드
                     return (
-                      <HeroProjectCard
+                      <S.FeaturedGridItem
                         key={project.id}
-                        id={project.id}
-                        title={project.title}
-                        summary={project.summary}
-                        startDate={project.startDate}
-                        endDate={project.endDate}
-                        techStacks={project.techStacks}
-                        imageUrl={project.imageUrl}
-                      />
+                        $gridColumn={gridLayout.desktop}
+                        $gridColumnTablet={gridLayout.tablet}
+                        $gridColumnMobile={gridLayout.mobile}
+                      >
+                        <HeroProjectCard
+                          id={project.id}
+                          title={project.title}
+                          summary={project.summary}
+                          startDate={project.startDate}
+                          endDate={project.endDate}
+                          techStacks={project.techStacks}
+                          imageUrl={project.imageUrl}
+                        />
+                      </S.FeaturedGridItem>
                     )
                   } else {
                     // 나머지 프로젝트: 일반 카드
                     return (
-                      <FeaturedProjectCard
+                      <S.FeaturedGridItem
                         key={project.id}
-                        id={project.id}
-                        title={project.title}
-                        summary={project.summary}
-                        startDate={project.startDate}
-                        endDate={project.endDate}
-                        techStacks={project.techStacks}
-                        imageUrl={project.imageUrl}
-                        index={index}
-                      />
+                        $gridColumn={gridLayout.desktop}
+                        $gridColumnTablet={gridLayout.tablet}
+                        $gridColumnMobile={gridLayout.mobile}
+                      >
+                        <FeaturedProjectCard
+                          id={project.id}
+                          title={project.title}
+                          summary={project.summary}
+                          startDate={project.startDate}
+                          endDate={project.endDate}
+                          techStacks={project.techStacks}
+                          imageUrl={project.imageUrl}
+                          index={index}
+                        />
+                      </S.FeaturedGridItem>
                     )
                   }
                 })}
-              </FeaturedGrid>
-              <ViewAllLink to="/projects">
+              </S.FeaturedGrid>
+              <S.ViewAllLink to="/projects">
                 {t('featured.viewAll') || 'View All Projects'}
-              </ViewAllLink>
+              </S.ViewAllLink>
             </>
           ) : null}
         </Container>
-      </FeaturedSection>
+      </S.FeaturedSection>
 
       <SectionBridge 
-        text={t('storytelling.projectsToShowcase')}
+        text={t('storytelling.projectsToTestimonials')}
         variant="secondary"
       />
 
-      <ProjectShowcaseSection />
-
-      <SectionBridge 
-        text={t('storytelling.showcaseToTestimonials')}
-        variant="secondary"
-      />
-
-      <TestimonialSection>
+      <S.TestimonialSection ref={testimonialRef} id="testimonials">
         <Container>
-          <SectionTitle>{t('testimonials.title') || 'What Others Say'}</SectionTitle>
+          <S.SectionTitle $isVisible={isTestimonialVisible}>{t('testimonials.title') || 'What Others Say'}</S.SectionTitle>
           <SectionPurpose 
             text={t('storytelling.testimonialsPurpose')}
           />
-          <SectionSubtitle>
+          <S.SectionSubtitle $isVisible={isTestimonialVisible}>
             {t('testimonials.subtitle') || 'Feedback from colleagues and clients who have worked with me.'}
-          </SectionSubtitle>
+          </S.SectionSubtitle>
           {loading ? (
-            <TestimonialGrid>
+            <S.TestimonialGrid $isVisible={isTestimonialVisible}>
               <SkeletonTestimonialCard />
               <SkeletonTestimonialCard />
               <SkeletonTestimonialCard />
-            </TestimonialGrid>
+            </S.TestimonialGrid>
           ) : testimonials.length > 0 ? (
-            <TestimonialGrid>
+            <S.TestimonialGrid $isVisible={isTestimonialVisible}>
               {testimonials.map(testimonial => (
                 <TestimonialCard key={testimonial.id} testimonial={testimonial} />
               ))}
-            </TestimonialGrid>
+            </S.TestimonialGrid>
           ) : null}
         </Container>
-      </TestimonialSection>
+      </S.TestimonialSection>
     </>
   )
 }

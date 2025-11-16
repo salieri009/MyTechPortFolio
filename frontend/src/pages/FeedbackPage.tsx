@@ -20,10 +20,7 @@ const FeedbackHeader = styled.div`
 const Title = styled.h1`
   font-size: ${props => props.theme.typography.fontSize['3xl']};
   font-weight: ${props => props.theme.typography.fontWeight.bold};
-  background: ${props => props.theme.colors.gradient.primary};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: ${props => props.theme.colors.primary[500]};
   margin: 0 0 ${props => props.theme.spacing[6]} 0;
   
   @media (max-width: ${props => props.theme.breakpoints.md}) {
@@ -111,7 +108,7 @@ const Select = styled.select`
 
 const SubmitButton = styled(Button)`
   width: 100%;
-  background: ${props => props.theme.colors.gradient.primary};
+  background: ${props => props.theme.colors.primary[500]};
   border: none;
   color: white;
   font-weight: ${props => props.theme.typography.fontWeight.semibold};

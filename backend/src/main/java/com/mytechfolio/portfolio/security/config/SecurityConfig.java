@@ -54,10 +54,10 @@ public class SecurityConfig {
 			
 			// Security headers
 			.headers(headers -> headers
-				.contentTypeOptions(cto -> cto.and())
+				.contentTypeOptions(cto -> {})
 				.httpStrictTransportSecurity(hsts -> hsts
 					.maxAgeInSeconds(31536000)
-					.includeSubdomains(true)
+					.includeSubDomains(true)
 				)
 				.frameOptions(fo -> fo.deny())
 				.referrerPolicy(rp -> rp.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))

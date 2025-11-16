@@ -134,7 +134,7 @@ export const FooterIcon = styled.span`
 export const FooterButton = styled.button`
   margin-top: ${props => props.theme.spacing[2]};
   padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[4]};
-  background: ${props => props.theme.colors.gradient.secondary};
+  background: ${props => props.theme.colors.primary[500]};
   border: none;
   border-radius: ${props => props.theme.borderRadius.md};
   color: white;
@@ -234,7 +234,7 @@ export const BrandingContainer = styled(Link)`
 export const LogoIcon = styled.div`
   width: 40px;
   height: 40px;
-  background: ${props => props.theme.colors.gradient.primary};
+  background: ${props => props.theme.colors.primary[500]};
   border-radius: ${props => props.theme.borderRadius.lg};
   display: flex;
   align-items: center;
@@ -248,7 +248,7 @@ export const LogoIcon = styled.div`
     content: '';
     position: absolute;
     inset: -2px;
-    background: ${props => props.theme.colors.gradient.primary};
+    background: ${props => props.theme.colors.primary[500]};
     border-radius: ${props => props.theme.borderRadius.lg};
     z-index: -1;
     opacity: 0;
@@ -264,10 +264,7 @@ export const BrandName = styled.h3`
   font-size: ${props => props.theme.typography.fontSize.xl};
   font-weight: ${props => props.theme.typography.fontWeight.bold};
   margin: 0;
-  background: ${props => props.theme.colors.gradient.primary};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: ${props => props.theme.colors.primary[500]};
 `
 
 export const BrandTagline = styled.p`
@@ -287,7 +284,7 @@ export const TechBadge = styled.div`
   font-size: 11px;
   font-weight: ${props => props.theme.typography.fontWeight.medium};
   margin-top: ${props => props.theme.spacing[2]};
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   
   ${props => props.theme.mode === 'dark' && `
     background: ${props.theme.colors.primary[900]};

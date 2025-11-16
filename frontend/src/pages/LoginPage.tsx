@@ -10,14 +10,14 @@ const LoginContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.primary[600]} 100%);
   padding: 20px;
 `
 
 const LoginCard = styled.div`
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  background: ${props => props.theme.colors.surface || props.theme.colors.background};
+  border-radius: ${props => props.theme.radius.lg};
+  box-shadow: ${props => props.theme.shadows['2xl']};
   padding: 40px;
   width: 100%;
   max-width: 420px;
@@ -32,7 +32,7 @@ const LoginCard = styled.div`
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    background: linear-gradient(90deg, ${props => props.theme.colors.primary[500]}, ${props => props.theme.colors.primary[600]});
   }
 `
 
@@ -41,47 +41,52 @@ const LogoSection = styled.div`
 `
 
 const Logo = styled.h1`
-  font-size: 28px;
-  color: #2d3748;
-  margin: 0 0 8px 0;
-  font-weight: 700;
+  font-size: ${props => props.theme.typography.fontSize['3xl']};
+  color: ${props => props.theme.colors.text};
+  margin: 0 0 ${props => props.theme.spacing[2]} 0;
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const Subtitle = styled.p`
-  color: #718096;
+  color: ${props => props.theme.colors.textSecondary};
   margin: 0;
-  font-size: 16px;
+  font-size: ${props => props.theme.typography.fontSize.base};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const SecurityNotice = styled.div`
-  background: #f7fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 24px 0;
+  background: ${props => props.theme.colors.neutral[50]};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.radius.md};
+  padding: ${props => props.theme.spacing[4]};
+  margin: ${props => props.theme.spacing[6]} 0;
   text-align: left;
+  
+  ${props => props.theme.mode === 'dark' && `
+    background: ${props.theme.colors.neutral[800]};
+    border-color: ${props.theme.colors.neutral[700]};
+  `}
 `
 
 const SecurityTitle = styled.h3`
-  font-size: 14px;
-  color: #2d3748;
-  margin: 0 0 8px 0;
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  color: ${props => props.theme.colors.text};
+  margin: 0 0 ${props => props.theme.spacing[2]} 0;
   display: flex;
   align-items: center;
-  gap: 8px;
-
-  &::before {
-    content: '🔒';
-    font-size: 16px;
-  }
+  gap: ${props => props.theme.spacing[2]};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
 `
 
 const SecurityList = styled.ul`
   margin: 0;
-  padding-left: 16px;
-  color: #4a5568;
-  font-size: 13px;
-  line-height: 1.5;
+  padding-left: ${props => props.theme.spacing[4]};
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const SecurityItem = styled.li`
@@ -89,32 +94,35 @@ const SecurityItem = styled.li`
 `
 
 const Footer = styled.div`
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #e2e8f0;
-  color: #718096;
-  font-size: 12px;
-  line-height: 1.4;
+  margin-top: ${props => props.theme.spacing[8]};
+  padding-top: ${props => props.theme.spacing[6]};
+  border-top: 1px solid ${props => props.theme.colors.border};
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  line-height: ${props => props.theme.typography.lineHeight.normal};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const ErrorMessage = styled.div`
-  background: #fed7d7;
-  color: #c53030;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin: 16px 0;
-  font-size: 14px;
+  background: ${props => props.theme.colors.error}15;
+  color: ${props => props.theme.colors.error};
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[4]};
+  border-radius: ${props => props.theme.radius.md};
+  margin: ${props => props.theme.spacing[4]} 0;
+  font-size: ${props => props.theme.typography.fontSize.sm};
   text-align: left;
+  border: 1px solid ${props => props.theme.colors.error}40;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const LoadingSpinner = styled.div`
-  border: 2px solid #e2e8f0;
-  border-top: 2px solid #667eea;
+  border: 2px solid ${props => props.theme.colors.border};
+  border-top: 2px solid ${props => props.theme.colors.primary[500]};
   border-radius: 50%;
   width: 24px;
   height: 24px;
   animation: spin 1s linear infinite;
-  margin: 20px auto;
+  margin: ${props => props.theme.spacing[6]} auto;
 
   @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -123,58 +131,75 @@ const LoadingSpinner = styled.div`
 `
 
 const TwoFactorSection = styled.div`
-  margin-top: 24px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #dee2e6;
+  margin-top: ${props => props.theme.spacing[6]};
+  padding: ${props => props.theme.spacing[6]};
+  background: ${props => props.theme.colors.neutral[50]};
+  border-radius: ${props => props.theme.radius.md};
+  border: 1px solid ${props => props.theme.colors.border};
+  
+  ${props => props.theme.mode === 'dark' && `
+    background: ${props.theme.colors.neutral[800]};
+    border-color: ${props.theme.colors.neutral[700]};
+  `}
 `
 
 const TwoFactorTitle = styled.h3`
-  margin: 0 0 16px 0;
-  color: #2d3748;
-  font-size: 16px;
+  margin: 0 0 ${props => props.theme.spacing[4]} 0;
+  color: ${props => props.theme.colors.text};
+  font-size: ${props => props.theme.typography.fontSize.base};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
 `
 
 const TokenInput = styled.input`
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #cbd5e0;
-  border-radius: 8px;
-  font-size: 16px;
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[4]};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.radius.md};
+  font-size: ${props => props.theme.typography.fontSize.base};
   text-align: center;
   letter-spacing: 0.2em;
-  font-family: 'Courier New', monospace;
-  margin-bottom: 16px;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  margin-bottom: ${props => props.theme.spacing[4]};
+  background: ${props => props.theme.colors.background};
+  color: ${props => props.theme.colors.text};
 
   &:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: ${props => props.theme.colors.primary[500]};
+    box-shadow: 0 0 0 3px ${props => props.theme.colors.primary[500]}20;
   }
 `
 
 const VerifyButton = styled.button`
   width: 100%;
-  padding: 12px 24px;
-  background: #667eea;
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[6]};
+  background: ${props => props.theme.colors.primary[500]};
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: ${props => props.theme.radius.md};
+  font-size: ${props => props.theme.typography.fontSize.base};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
-    background: #5a67d8;
+    background: ${props => props.theme.colors.primary[600]};
     transform: translateY(-1px);
+    box-shadow: ${props => props.theme.shadows.md};
+  }
+
+  &:active:not(:disabled) {
+    background: ${props => props.theme.colors.primary[700]};
+    transform: translateY(0);
   }
 
   &:disabled {
-    background: #cbd5e0;
+    background: ${props => props.theme.colors.neutral[300]};
     cursor: not-allowed;
     transform: none;
+    opacity: 0.6;
   }
 `
 

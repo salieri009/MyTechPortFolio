@@ -67,7 +67,7 @@ const SkillName = styled.span`
   color: ${props => props.theme.colors.text};
   min-width: 120px;
   flex-shrink: 0;
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   
   @media (max-width: 768px) {
     min-width: 100px;
@@ -116,7 +116,7 @@ const SkillLevel = styled.span`
   color: ${props => props.theme.colors.textSecondary};
   min-width: 35px;
   text-align: right;
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const getLevelLabel = (level: number): string => {

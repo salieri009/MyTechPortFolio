@@ -16,7 +16,7 @@ const CanvasContainer = styled.canvas<{ $isDark: boolean }>`
   width: 100%;
   height: 100%;
   z-index: 0;
-  opacity: ${props => props.$isDark ? 0.24 : 0.16};
+  opacity: ${props => props.$isDark ? 0.5 : 0.6};
   pointer-events: none;
   transition: opacity 0.3s ease;
 `
@@ -64,15 +64,15 @@ export function InteractiveBackground({
       // Resize 시 파티클 재배치 (전체 화면에 고르게 분포)
       if (particlesRef.current.length > 0) {
         const colors = isDark 
-          ? ['rgba(79, 172, 254, 0.5)', 'rgba(0, 242, 254, 0.5)', 'rgba(120, 119, 198, 0.5)']
-          : ['rgba(102, 126, 234, 0.3)', 'rgba(118, 75, 162, 0.3)', 'rgba(240, 147, 251, 0.3)']
+          ? ['rgba(79, 172, 254, 0.8)', 'rgba(0, 242, 254, 0.8)', 'rgba(120, 119, 198, 0.8)']
+          : ['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 0.7)']
         
         particlesRef.current = particlesRef.current.map(() => ({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           vx: (Math.random() - 0.5) * 0.5,
           vy: (Math.random() - 0.5) * 0.5,
-          radius: Math.random() * 3 + 1.5,
+          radius: Math.random() * 4 + 2,
           color: colors[Math.floor(Math.random() * colors.length)]
         }))
       }
@@ -84,15 +84,15 @@ export function InteractiveBackground({
       
       // Create particles - 전체 화면에 고르게 분포
       const colors = isDark 
-        ? ['rgba(79, 172, 254, 0.5)', 'rgba(0, 242, 254, 0.5)', 'rgba(120, 119, 198, 0.5)']
-        : ['rgba(102, 126, 234, 0.3)', 'rgba(118, 75, 162, 0.3)', 'rgba(240, 147, 251, 0.3)']
+        ? ['rgba(79, 172, 254, 0.8)', 'rgba(0, 242, 254, 0.8)', 'rgba(120, 119, 198, 0.8)']
+        : ['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 0.7)']
 
       particlesRef.current = Array.from({ length: particleCount }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         vx: (Math.random() - 0.5) * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
-        radius: Math.random() * 3 + 1.5, // 크기 범위를 1.5-4.5로 확장
+        radius: Math.random() * 4 + 2, // 크기 범위를 2-6으로 확장
         color: colors[Math.floor(Math.random() * colors.length)]
       }))
     }
@@ -171,14 +171,14 @@ export function InteractiveBackground({
           const distance = Math.sqrt(dx * dx + dy * dy)
 
           if (distance < connectionDistance) {
-            const opacity = (1 - distance / connectionDistance) * 0.3
+            const opacity = (1 - distance / connectionDistance) * (isDark ? 0.5 : 0.5)
             ctx.beginPath()
             ctx.moveTo(particle.x, particle.y)
             ctx.lineTo(otherParticle.x, otherParticle.y)
             ctx.strokeStyle = isDark 
               ? `rgba(79, 172, 254, ${opacity})`
-              : `rgba(102, 126, 234, ${opacity})`
-            ctx.lineWidth = 1
+              : `rgba(255, 255, 255, ${opacity})`
+            ctx.lineWidth = isDark ? 1.5 : 1.5
             ctx.stroke()
           }
         })

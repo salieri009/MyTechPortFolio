@@ -4,10 +4,10 @@ import { useAuthStore } from '../store/authStore'
 import { authService } from '../services/authService'
 
 const LoginButton = styled.button`
-  background: #4285f4;
+  background: ${props => props.theme.colors.primary[500]};
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: ${props => props.theme.radius.lg};
   padding: 8px 16px;
   font-weight: 500;
   cursor: pointer;
@@ -17,7 +17,7 @@ const LoginButton = styled.button`
   transition: background-color 0.2s ease;
 
   &:hover {
-    background: #3367d6;
+    background: ${props => props.theme.colors.primary[600]};
   }
 
   &:disabled {
@@ -73,8 +73,8 @@ const Dropdown = styled.div<{ isOpen: boolean }>`
   right: 0;
   background: ${props => props.theme.colors.surface};
   border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: ${props => props.theme.radius.lg};
+  box-shadow: ${props => props.theme.shadows.md || '0 4px 12px rgba(0, 0, 0, 0.1)'};
   z-index: 1000;
   min-width: 200px;
   display: ${props => props.isOpen ? 'block' : 'none'};
@@ -95,11 +95,11 @@ const DropdownItem = styled.button`
   }
 
   &:first-child {
-    border-radius: 8px 8px 0 0;
+    border-radius: ${props => props.theme.radius.lg} ${props => props.theme.radius.lg} 0 0;
   }
 
   &:last-child {
-    border-radius: 0 0 8px 8px;
+    border-radius: 0 0 ${props => props.theme.radius.lg} ${props => props.theme.radius.lg};
   }
 `
 
@@ -119,7 +119,7 @@ const TwoFactorContainer = styled.div`
 const TwoFactorInput = styled.input`
   padding: 8px;
   border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 4px;
+  border-radius: ${props => props.theme.radius.lg};
   width: 120px;
   font-size: 14px;
 `
@@ -133,7 +133,7 @@ const CancelButton = styled.button`
   padding: 6px 12px;
   background: ${props => props.theme.colors.background};
   border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 4px;
+  border-radius: ${props => props.theme.radius.lg};
   cursor: pointer;
   color: ${props => props.theme.colors.text};
   
@@ -155,8 +155,8 @@ const GoogleButtonWrapper = styled.div`
 const LoadingSpinner = styled.div`
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.25);
-  border-top: 2px solid rgba(255, 255, 255, 1);
+  border: 2px solid ${props => props.theme.colors.neutral[300] || 'rgba(255, 255, 255, 0.25)'};
+  border-top: 2px solid ${props => props.theme.colors.neutral[50] || 'rgba(255, 255, 255, 1)'};
   border-radius: 50%;
   animation: spin 1s linear infinite;
 

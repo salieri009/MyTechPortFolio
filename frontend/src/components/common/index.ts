@@ -43,7 +43,7 @@ export const Button = styled.button<{ variant?: 'primary' | 'ghost'; size?: 'sm'
   }}
 
   &:focus-visible {
-    outline: 2px solid ${(props) => props.theme.colors.secondary[500]};
+    outline: 2px solid ${(props) => props.theme.colors.primary[500]};
     outline-offset: 2px;
   }
 

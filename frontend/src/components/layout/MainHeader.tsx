@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../store/authStore'
@@ -10,13 +10,12 @@ import { LanguageSwitcher } from '../LanguageSwitcher'
 import { GoogleLoginButton } from '../GoogleLoginButton'
 
 const HeaderWrapper = styled.header`
-  background: ${props => props.theme.colors.surface};
+  background: ${props => props.theme.colors.surface || props.theme.colors.background};
   border-bottom: 1px solid ${props => props.theme.colors.border};
   position: sticky;
   top: 0;
   z-index: 1000;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
 `
 
 const HeaderContent = styled.div`
@@ -80,14 +79,28 @@ const NavLink = styled(Link)`
     color: ${props => props.theme.colors.primary[500]};
   }
 
-  &.active::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: ${props => props.theme.colors.primary[500]};
+  &.active {
+    color: ${props => props.theme.colors.primary[500]};
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: ${props => props.theme.colors.primary[500]};
+      animation: slideIn 0.3s ease;
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
   }
 
   @media (max-width: 768px) {
@@ -175,11 +188,81 @@ interface MainHeaderProps {
 
 export function MainHeader({ pathname = '' }: MainHeaderProps) {
   const { t } = useTranslation()
+  const location = useLocation()
   const { isAuthenticated, user, logout } = useAuthStore()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState<string>('')
+
+  // ScrollSpy: IntersectionObserver로 활성 섹션 감지
+  useEffect(() => {
+    // HomePage에서만 ScrollSpy 작동
+    if (location.pathname !== '/') {
+      setActiveSection('')
+      return
+    }
+
+    const sections = ['hero', 'journey', 'projects', 'testimonials']
+    const observers: IntersectionObserver[] = []
+    const sectionElements: Map<string, HTMLElement> = new Map()
+
+    // 각 섹션 요소 찾기
+    sections.forEach((sectionId) => {
+      const element = document.getElementById(sectionId)
+      if (element) {
+        sectionElements.set(sectionId, element)
+      }
+    })
+
+    if (sectionElements.size === 0) return
+
+    // IntersectionObserver 생성 및 설정
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px', // 섹션이 뷰포트 상단 20% 지점에 도달하면 활성화
+      threshold: 0
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id
+          if (sections.includes(sectionId)) {
+            setActiveSection(sectionId)
+          }
+        }
+      })
+    }, observerOptions)
+
+    // 각 섹션 관찰 시작
+    sectionElements.forEach((element) => {
+      observer.observe(element)
+    })
+
+    // 초기 활성 섹션 설정 (Hero 섹션이 보이면)
+    const heroElement = sectionElements.get('hero')
+    if (heroElement) {
+      const rect = heroElement.getBoundingClientRect()
+      if (rect.top < window.innerHeight * 0.5 && rect.bottom > 0) {
+        setActiveSection('hero')
+      }
+    }
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [location.pathname])
 
   const isActive = (path: string) => {
+    // HomePage에서 ScrollSpy 사용
+    if (location.pathname === '/' && path === '/') {
+      return activeSection === 'hero' ? 'active' : ''
+    }
+    // 다른 페이지에서는 기존 로직 사용
     return pathname === path ? 'active' : ''
+  }
+
+  const isSectionActive = (sectionId: string) => {
+    return location.pathname === '/' && activeSection === sectionId
   }
 
   const handleLogout = async () => {
@@ -208,17 +291,35 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
             >
               <NavLink 
                 to="/" 
-                className={isActive('/')}
-                onClick={closeMobileMenu}
-                aria-current={isActive('/') ? 'page' : undefined}
+                className={isActive('/') || isSectionActive('hero') ? 'active' : ''}
+                onClick={(e) => {
+                  closeMobileMenu()
+                  if (location.pathname === '/') {
+                    e.preventDefault()
+                    const heroSection = document.getElementById('hero')
+                    if (heroSection) {
+                      heroSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }
+                  }
+                }}
+                aria-current={isActive('/') || isSectionActive('hero') ? 'page' : undefined}
               >
                 {t('navigation.home')}
               </NavLink>
               <NavLink 
                 to="/projects" 
-                className={isActive('/projects')}
-                onClick={closeMobileMenu}
-                aria-current={isActive('/projects') ? 'page' : undefined}
+                className={isActive('/projects') || isSectionActive('projects') ? 'active' : ''}
+                onClick={(e) => {
+                  closeMobileMenu()
+                  if (location.pathname === '/') {
+                    e.preventDefault()
+                    const projectsSection = document.getElementById('projects')
+                    if (projectsSection) {
+                      projectsSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }
+                  }
+                }}
+                aria-current={isActive('/projects') || isSectionActive('projects') ? 'page' : undefined}
               >
                 {t('navigation.projects')}
               </NavLink>

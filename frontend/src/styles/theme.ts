@@ -1,10 +1,17 @@
 // 미래지향적이고 세련된 디자인 시스템
+// 
+// KickoffLabs 가이드라인 엄격 준수:
+// 1. 색상 팔레트 제한: Primary + Neutral만 사용 (1-3개 색상)
+// 2. 폰트 제한: Inter 폰트 패밀리만 사용 (1개 폰트)
+// 3. CTA 색상 역할: Primary 색상은 CTA 버튼에만 사용
+// 4. 일관성: 모든 버튼, 패딩, border-radius 등 일관된 스타일 유지
+// 참고: https://kickofflabs.com/blog/landing-page-fonts-colors/
 
 // 베이스 테마 (공통 요소)
 const baseTheme = {
   // 색상 시스템 - 미래지향적 팔레트
   colors: {
-    // Primary - Electric Blue 계열
+    // Primary - Electric Blue 계열 (CTA 전용 색상)
     primary: {
       50: '#eff6ff',
       100: '#dbeafe', 
@@ -19,34 +26,35 @@ const baseTheme = {
       950: '#172554'
     },
 
-    // Secondary - Cyber Purple 계열  
+    // Secondary - Cyber Purple 계열 (KickoffLabs 원칙 준수: 제거됨, 하위 호환성을 위해 Primary로 매핑)
+    // KickoffLabs 원칙: 색상 팔레트를 1-3개로 제한 (Primary + Neutral만 사용)
     secondary: {
-      50: '#faf5ff',
-      100: '#f3e8ff',
-      200: '#e9d5ff',
-      300: '#d8b4fe',
-      400: '#c084fc',
-      500: '#a855f7',  // 보조 브랜드 컬러
-      600: '#9333ea',
-      700: '#7c3aed',
-      800: '#6b21a8',
-      900: '#581c87',
-      950: '#3b0764'
+      50: '#eff6ff',  // primary[50]으로 매핑
+      100: '#dbeafe', // primary[100]으로 매핑
+      200: '#bfdbfe', // primary[200]으로 매핑
+      300: '#93c5fd', // primary[300]으로 매핑
+      400: '#60a5fa', // primary[400]으로 매핑
+      500: '#3b82f6', // primary[500]으로 매핑
+      600: '#2563eb', // primary[600]으로 매핑
+      700: '#1d4ed8', // primary[700]으로 매핑
+      800: '#1e40af', // primary[800]으로 매핑
+      900: '#1e3a8a', // primary[900]으로 매핑
+      950: '#172554'  // primary[950]으로 매핑
     },
 
-    // Accent - Neon Green 계열
+    // Accent - Neon Green 계열 (KickoffLabs 원칙 준수: 제거됨, 하위 호환성을 위해 Primary로 매핑)
     accent: {
-      50: '#f0fdf4',
-      100: '#dcfce7',
-      200: '#bbf7d0',
-      300: '#86efac',
-      400: '#4ade80',
-      500: '#22c55e',  // 강조 컬러
-      600: '#16a34a',
-      700: '#15803d',
-      800: '#166534',
-      900: '#14532d',
-      950: '#052e16'
+      50: '#eff6ff',  // primary[50]으로 매핑
+      100: '#dbeafe', // primary[100]으로 매핑
+      200: '#bfdbfe', // primary[200]으로 매핑
+      300: '#93c5fd', // primary[300]으로 매핑
+      400: '#60a5fa', // primary[400]으로 매핑
+      500: '#3b82f6', // primary[500]으로 매핑
+      600: '#2563eb', // primary[600]으로 매핑
+      700: '#1d4ed8', // primary[700]으로 매핑
+      800: '#1e40af', // primary[800]으로 매핑
+      900: '#1e3a8a', // primary[900]으로 매핑
+      950: '#172554'  // primary[950]으로 매핑
     },
 
     // Neutral - Modern Gray 계열
@@ -71,13 +79,15 @@ const baseTheme = {
     error: '#ef4444',
     info: '#3b82f6',
 
-    // 특별한 색상
+    // 특별한 색상 (KickoffLabs 원칙 준수: Primary만 사용)
     gradient: {
-      primary: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-      secondary: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
-      accent: 'linear-gradient(135deg, #10b981 0%, #22c55e 100%)',
+      // Primary gradient만 유지 (Primary 계열만 사용)
+      primary: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+      // Secondary, Accent gradient 제거 (하위 호환성을 위해 Primary로 매핑)
+      secondary: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+      accent: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
       dark: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
-      neon: 'linear-gradient(135deg, #22c55e 0%, #3b82f6 50%, #8b5cf6 100%)'
+      neon: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
     },
 
     // 글래스모피즘
@@ -86,15 +96,28 @@ const baseTheme = {
       medium: 'rgba(255, 255, 255, 0.2)',
       strong: 'rgba(255, 255, 255, 0.3)',
       dark: 'rgba(0, 0, 0, 0.1)'
+    },
+    
+    // Hero 섹션 전용 색상 (Primary 배경 위의 흰색 텍스트)
+    hero: {
+      text: 'rgba(255, 255, 255, 0.95)',
+      textSecondary: 'rgba(255, 255, 255, 0.9)',
+      textMuted: 'rgba(255, 255, 255, 0.8)',
+      border: 'rgba(255, 255, 255, 0.2)',
+      background: 'rgba(255, 255, 255, 0.15)',
+      backgroundHover: 'rgba(255, 255, 255, 0.25)',
+      outline: 'rgba(255, 255, 255, 0.6)'
     }
   },
 
-  // 타이포그래피 시스템
+  // 타이포그래피 시스템 (KickoffLabs 원칙 준수: Inter만 사용)
   typography: {
     fontFamily: {
       primary: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      mono: '"JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace',
-      display: '"Space Grotesk", "Inter", sans-serif'
+      // mono, display 제거 (KickoffLabs 원칙: 1-2개 폰트만 사용)
+      // 하위 호환성을 위해 primary로 매핑
+      mono: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      display: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
 
     fontSize: {
@@ -144,22 +167,23 @@ const baseTheme = {
     }
   },
 
-  // 간격 시스템 (rem 기준)
+  // 간격 시스템 (4-point spacing system - 모든 값은 4px의 배수)
+  // 참고: https://uxplanet.org/principles-of-spacing-in-ui-design-a-beginners-guide-to-the-4-point-spacing-system-6e88233b527a
   spacing: {
     0: '0px',
-    0.5: '0.125rem',  // 2px
+    0.5: '0.25rem',   // 4px (하위 호환성: 2px → 4px)
     1: '0.25rem',     // 4px
-    1.5: '0.375rem',  // 6px
+    1.5: '0.5rem',    // 8px (하위 호환성: 6px → 8px)
     2: '0.5rem',      // 8px
-    2.5: '0.625rem',  // 10px
+    2.5: '0.75rem',   // 12px (하위 호환성: 10px → 12px)
     3: '0.75rem',     // 12px
-    3.5: '0.875rem',  // 14px
+    3.5: '1rem',      // 16px (하위 호환성: 14px → 16px)
     4: '1rem',        // 16px
-    5: '1.25rem',     // 20px
+    5: '1.5rem',      // 24px (하위 호환성: 20px → 24px)
     6: '1.5rem',      // 24px
-    7: '1.75rem',     // 28px
+    7: '2rem',        // 32px (하위 호환성: 28px → 32px)
     8: '2rem',        // 32px
-    9: '2.25rem',     // 36px
+    9: '2.5rem',      // 40px (하위 호환성: 36px → 40px)
     10: '2.5rem',     // 40px
     11: '2.75rem',    // 44px
     12: '3rem',       // 48px
@@ -206,12 +230,13 @@ const baseTheme = {
     '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
     inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
     
-    // 글로우 효과
+    // 글로우 효과 (KickoffLabs 원칙 준수: Primary만 사용)
     glow: {
       primary: '0 0 20px rgba(59, 130, 246, 0.5)',
-      secondary: '0 0 20px rgba(168, 85, 247, 0.5)',
-      accent: '0 0 20px rgba(34, 197, 94, 0.5)',
-      neon: '0 0 30px rgba(59, 130, 246, 0.8), 0 0 60px rgba(168, 85, 247, 0.6)'
+      // Secondary, Accent glow 제거 (하위 호환성을 위해 Primary로 매핑)
+      secondary: '0 0 20px rgba(59, 130, 246, 0.5)',
+      accent: '0 0 20px rgba(59, 130, 246, 0.5)',
+      neon: '0 0 30px rgba(59, 130, 246, 0.8), 0 0 60px rgba(59, 130, 246, 0.6)'
     },
 
     // 네오모피즘

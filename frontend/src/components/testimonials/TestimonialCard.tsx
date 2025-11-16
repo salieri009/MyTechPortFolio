@@ -3,51 +3,54 @@ import styled from 'styled-components'
 import type { Testimonial } from '../../mocks/testimonials'
 
 const TestimonialCardWrapper = styled.div`
-  background: ${props => props.theme?.colors?.card || '#FFFFFF'};
-  border: 1px solid ${props => props.theme?.colors?.border || '#E5E7EB'};
-  border-radius: 12px;
-  padding: 32px;
+  background: ${props => props.theme.colors.surface || props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.radius.lg};
+  padding: ${props => props.theme.spacing[8]};
   transition: all 0.3s ease;
   position: relative;
+  box-shadow: ${props => props.theme.shadows.sm};
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-    border-color: ${props => props.theme?.colors?.primary?.[500]} || '#3B82F6';
+    box-shadow: ${props => props.theme.shadows.lg};
+    border-color: ${props => props.theme.colors.primary[500]};
   }
 
   @media (max-width: 768px) {
-    padding: 24px;
+    padding: ${props => props.theme.spacing[6]};
   }
 `
 
 const QuoteMark = styled.span`
-  font-size: 48px;
-  color: ${props => props.theme?.colors?.primary?.[500]} || '#3B82F6';
+  font-size: ${props => props.theme.typography.fontSize['5xl']};
+  color: ${props => props.theme.colors.primary[500]};
   opacity: 0.2;
   position: absolute;
-  top: 12px;
-  left: 20px;
+  top: ${props => props.theme.spacing[3]};
+  left: ${props => props.theme.spacing[6]};
   line-height: 1;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const QuoteText = styled.p`
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.8;
-  color: ${props => props.theme?.colors?.text || '#1F2937'};
-  margin: 0 0 24px 0;
+  font-size: ${props => props.theme.typography.fontSize.lg};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  color: ${props => props.theme.colors.text};
+  margin: 0 0 ${props => props.theme.spacing[6]} 0;
   font-style: italic;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 
   @media (max-width: 768px) {
-    font-size: 16px;
+    font-size: ${props => props.theme.typography.fontSize.base};
   }
 `
 
 const AuthorSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: ${props => props.theme.spacing[3]};
 `
 
 const AuthorImage = styled.img`
@@ -55,14 +58,14 @@ const AuthorImage = styled.img`
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  background: ${props => props.theme?.colors?.primary?.[100]} || '#DBEAFE';
+  background: ${props => props.theme.colors.primary[100] || props.theme.colors.primary[50]};
 `
 
 const AuthorPlaceholder = styled.div`
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: ${props => props.theme?.colors?.primary?.[500]} || '#3B82F6';
+  background: ${props => props.theme.colors.primary[500]};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,13 +80,15 @@ const AuthorInfo = styled.div`
 `
 
 const AuthorName = styled.div`
-  font-weight: 600;
-  color: ${props => props.theme?.colors?.text || '#1F2937'};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  color: ${props => props.theme.colors.text};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const AuthorPosition = styled.div`
-  font-size: 14px;
-  color: ${props => props.theme?.colors?.textSecondary || '#6B7280'};
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  color: ${props => props.theme.colors.textSecondary};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 interface TestimonialCardProps {

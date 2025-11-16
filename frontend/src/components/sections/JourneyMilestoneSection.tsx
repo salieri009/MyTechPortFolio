@@ -3,14 +3,15 @@ import styled from 'styled-components'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Container } from '@components/common'
-import { ComplexityIndicator, MilestoneMetrics, TechStackProgression } from './journey'
+import { ComplexityIndicator, TechStackProgression } from './journey'
 import { SectionPurpose } from './SectionPurpose'
 
 const Section = styled.section`
-  padding: 120px 0;
+  padding: ${props => props.theme.spacing[20]} 0;
   background: ${props => props.theme.colors.surface || props.theme.colors.background};
   position: relative;
   overflow: hidden;
+  margin-bottom: ${props => props.theme.spacing[20]};
   
   /* 상단 구분선 */
   &::before {
@@ -30,7 +31,8 @@ const Section = styled.section`
   }
   
   @media (max-width: 768px) {
-    padding: 80px 0;
+    padding: ${props => props.theme.spacing[16]} 0;
+    margin-bottom: ${props => props.theme.spacing[20]};
   }
   
   @media (prefers-reduced-motion: reduce) {
@@ -42,39 +44,81 @@ const Section = styled.section`
 `
 
 const SectionTitle = styled.h2`
-  font-size: 48px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 24px;
+  font-size: ${props => props.theme.typography.fontSize['4xl']};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  text-align: left;
+  margin-bottom: ${props => props.theme.spacing[3]};
   color: ${props => props.theme.colors.text};
-  letter-spacing: -0.02em;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 
   @media (max-width: 768px) {
-    font-size: 36px;
-    margin-bottom: 16px;
+    font-size: ${props => props.theme.typography.fontSize['3xl']};
+    margin-bottom: ${props => props.theme.spacing[3]};
   }
 `
 
 const SectionSubtitle = styled.p`
-  font-size: 20px;
-  text-align: center;
-  margin-bottom: 100px;
+  font-size: ${props => props.theme.typography.fontSize.lg};
+  text-align: left;
+  margin-bottom: 0;
   color: ${props => props.theme.colors.textSecondary};
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
+  max-width: 100%;
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 
   @media (max-width: 768px) {
-    font-size: 18px;
-    margin-bottom: 80px;
+    font-size: ${props => props.theme.typography.fontSize.lg};
+    margin-bottom: 0;
+  }
+`
+
+// F-패턴 레이아웃을 위한 12컬럼 그리드 컨테이너
+const JourneyGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: ${props => props.theme.spacing[8]};
+  align-items: start;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[6]};
+  }
+`
+
+// 좌측 텍스트 영역 (F-패턴)
+const TextColumn = styled.div`
+  grid-column: 1 / 8; /* 7 컬럼 */
+  
+  @media (max-width: 1024px) {
+    grid-column: 1 / 4; /* 3 컬럼 */
+  }
+  
+  @media (max-width: 768px) {
+    grid-column: 1;
+  }
+`
+
+// 우측 타임라인 영역 (F-패턴)
+const TimelineColumn = styled.div`
+  grid-column: 8 / -1; /* 5 컬럼 */
+  
+  @media (max-width: 1024px) {
+    grid-column: 4 / -1; /* 3 컬럼 */
+  }
+  
+  @media (max-width: 768px) {
+    grid-column: 1;
   }
 `
 
 const TimelineContainer = styled.div`
   position: relative;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
 `
 
 const TimelineLineBackground = styled.div`
@@ -85,6 +129,7 @@ const TimelineLineBackground = styled.div`
   width: 4px;
   background: ${props => props.theme.colors.neutral[300]};
   border-radius: 2px;
+  z-index: 1;
 
   @media (max-width: 768px) {
     left: 20px;
@@ -97,10 +142,11 @@ const TimelineLineProgress = styled.div<{ $progress: number }>`
   top: 0;
   width: 4px;
   height: ${props => props.$progress}%;
-  background: ${props => props.theme.colors.neutral[600] || props.theme.colors.neutral[500]};
+  background: ${props => props.theme.colors.primary[500]};
   border-radius: 2px;
-  box-shadow: 0 0 5px ${props => props.theme.colors.primary[500]} inset;
   transition: height 0.3s ease;
+  z-index: 2;
+  box-shadow: 0 0 8px ${props => props.theme.colors.primary[500]}40;
 
   @media (max-width: 768px) {
     left: 20px;
@@ -109,58 +155,30 @@ const TimelineLineProgress = styled.div<{ $progress: number }>`
 
 const MilestoneItem = styled(motion.div)`
   display: flex;
-  align-items: center;
-  margin-bottom: 80px;
+  align-items: flex-start;
+  margin-bottom: 48px;
   position: relative;
   flex-direction: row;
 
-  /* 타임라인 연결점 */
-  &::before {
-    content: '';
-    position: absolute;
-    left: 40px;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: ${props => props.theme.colors.primary[500]};
-    border: 2px solid ${props => props.theme.colors.background};
-    z-index: 3;
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-
-  &[data-visible="true"]::before {
-    transform: translate(-50%, -50%) scale(1);
-  }
-
   @media (max-width: 768px) {
-    margin-bottom: 60px;
+    margin-bottom: 48px;
     padding-left: 60px;
-    
-    &::before {
-      left: 20px;
-    }
   }
 `
 
 const MilestoneNode = styled.div<{ $status: 'completed' | 'current' | 'planned' }>`
-  width: 60px;
-  height: 60px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
   position: absolute;
-  left: 40px;
+  left: 42px; /* Bar 중심에 맞춤: 40px (bar left) + 2px (bar width/2) */
   transform: translateX(-50%);
-  z-index: 2;
+  z-index: 3;
   
   background: ${props => {
     switch (props.$status) {
       case 'completed':
-        return props.theme.colors.success || '#10B981'
+        return props.theme.colors.primary[500]
       case 'current':
         return props.theme.colors.primary[500]
       case 'planned':
@@ -170,73 +188,44 @@ const MilestoneNode = styled.div<{ $status: 'completed' | 'current' | 'planned' 
     }
   }};
   
-  border: 4px solid ${props => props.theme.colors.background};
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-
-  ${props => props.$status === 'current' && `
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    
-    @keyframes pulse {
-      0%, 100% {
-        transform: translateX(-50%) scale(1);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
-      50% {
-        transform: translateX(-50%) scale(1.1);
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-      }
+  border: 3px solid ${props => props.theme.colors.background};
+  box-shadow: 0 0 0 2px ${props => {
+    switch (props.$status) {
+      case 'completed':
+        return props.theme.colors.primary[500]
+      case 'current':
+        return props.theme.colors.primary[500]
+      case 'planned':
+        return props.theme.colors.neutral[400]
+      default:
+        return props.theme.colors.primary[500]
     }
-  `}
+  }};
 
   @media (max-width: 768px) {
-    left: 30px;
+    left: 22px; /* Bar 중심에 맞춤: 20px (bar left) + 2px (bar width/2) */
     transform: translateX(-50%);
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
+    width: 14px;
+    height: 14px;
+    border-width: 2px;
   }
 `
 
-const MilestoneCard = styled(motion.div)`
-  background: ${props => props.theme.colors.surface};
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: ${props => props.theme.shadows.lg};
-  border: 1px solid ${props => props.theme.colors.border};
+const MilestoneContent = styled(motion.div)<{ $isLast?: boolean }>`
+  background: transparent;
+  padding: 20px 0;
+  border-bottom: ${props => props.$isLast ? 'none' : `1px solid ${props.theme.colors.border}`};
   max-width: 600px;
-  margin-left: 120px;
+  margin-left: 80px;
   flex: 1;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform, box-shadow, border-color;
-  transform: translateZ(0);
   position: relative;
-  
-  /* 좌측 경계선 - 데이터 블록 구분 */
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: ${props => props.theme.colors.neutral[400] || props.theme.colors.border};
-  }
-  
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: ${props => props.theme.shadows.xl};
-    border-color: ${props => props.theme.colors.primary[400]};
-  }
+  z-index: 1;
   
   @media (max-width: 768px) {
     margin-left: 0;
     max-width: none;
     width: calc(100% - 40px);
-    padding: 24px;
-    
-    &::before {
-      display: none;
-    }
+    padding: 16px 0;
   }
 `
 
@@ -247,17 +236,9 @@ const MilestoneYear = styled.div`
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  position: absolute;
-  left: 0;
-  width: 80px;
-  text-align: right;
-  padding-right: 20px;
   
   @media (max-width: 768px) {
-    position: static;
-    width: auto;
-    text-align: left;
-    padding-right: 0;
+    font-size: 13px;
   }
 `
 
@@ -289,17 +270,16 @@ const TechTags = styled.div`
 `
 
 const TechTag = styled.span`
-  background: ${props => props.theme.colors.surface || props.theme.colors.neutral[100]};
+  background: transparent;
   color: ${props => props.theme.colors.textSecondary};
   padding: 4px 8px;
   border-radius: 2px;
   font-size: 12px;
   font-weight: 500;
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   border: 1px solid ${props => props.theme.colors.border};
   
   ${props => props.theme.mode === 'dark' && `
-    background: ${props.theme.colors.neutral[800] || props.theme.colors.surface};
     border-color: ${props.theme.colors.neutral[700]};
   `}
 `
@@ -343,7 +323,7 @@ const milestoneData: MilestoneData[] = [
     year: '2015',
     title: 'High School Graduation',
     description: '고등학교 졸업 후 대학 진학을 위한 준비 과정을 거쳤습니다. 이 시기부터 컴퓨터와 기술에 대한 관심이 싹트기 시작했습니다.',
-    icon: '🎓',
+    icon: '',
     techStack: ['Basic Computer Skills', 'Microsoft Office'],
     status: 'completed',
     technicalComplexity: 1,
@@ -358,7 +338,7 @@ const milestoneData: MilestoneData[] = [
     year: '2015~2020',
     title: 'Jeonbuk National University',
     description: '전북대학교에서 학업을 시작하며 컴퓨터공학의 기초를 다졌습니다. 프로그래밍 언어와 소프트웨어 개발의 기본기를 익혔습니다.',
-    icon: '🏫',
+    icon: '',
     techStack: ['C/C++', 'Java', 'Data Structures', 'Algorithms', 'Database'],
     status: 'completed',
     technicalComplexity: 3,
@@ -393,7 +373,7 @@ const milestoneData: MilestoneData[] = [
     year: '2021~2023',
     title: 'Military Service - Interpreter',
     description: '군 복무 중 통역병으로 근무하며 영어 실력을 크게 향상시켰습니다. 다양한 국제 업무를 경험하며 글로벌 마인드를 기를 수 있었습니다.',
-    icon: '🪖',
+    icon: '',
     techStack: ['English Communication', 'Translation', 'International Relations', 'Leadership'],
     status: 'completed',
     technicalComplexity: 2,
@@ -409,7 +389,7 @@ const milestoneData: MilestoneData[] = [
     year: '2023~Present',
     title: 'Study in Australia',
     description: '호주에서 유학 생활을 시작하며 최신 웹 기술과 소프트웨어 개발 트렌드를 학습하고 있습니다. 글로벌 환경에서의 개발 경험을 쌓고 있습니다.',
-    icon: '🇦🇺',
+    icon: '',
     techStack: ['React', 'TypeScript', 'Node.js', 'Spring Boot', 'MongoDB', 'Docker', 'AWS'],
     status: 'current',
     technicalComplexity: 4,
@@ -451,7 +431,7 @@ const milestoneData: MilestoneData[] = [
     year: '2025',
     title: 'Current Goals',
     description: '풀스택 개발자로서의 전문성을 더욱 발전시키고, 혁신적인 웹 서비스를 개발하여 사용자에게 가치를 제공하는 것이 목표입니다.',
-    icon: '🚀',
+    icon: '',
     techStack: ['Full Stack Development', 'Cloud Architecture', 'AI/ML Integration', 'DevOps'],
     status: 'planned',
     technicalComplexity: 5,
@@ -516,22 +496,25 @@ export function JourneyMilestoneSection() {
 
       // Find the closest milestone to viewport top
       const milestoneElements = container.querySelectorAll('[data-milestone-id]')
-      let closestMilestone: Element | null = null
+      let closestMilestone: HTMLElement | null = null
       let closestDistance = Infinity
 
-      milestoneElements.forEach((milestone) => {
-        const rect = milestone.getBoundingClientRect()
-        const milestoneTop = rect.top + window.scrollY
-        const distance = Math.abs(milestoneTop - viewportTop)
+      Array.from(milestoneElements).forEach((milestone) => {
+        const element = milestone as HTMLElement
+        if (element && element.getBoundingClientRect) {
+          const rect = element.getBoundingClientRect()
+          const milestoneTop = rect.top + window.scrollY
+          const distance = Math.abs(milestoneTop - viewportTop)
 
-        if (distance < closestDistance && milestoneTop <= viewportTop + viewportHeight * 0.3) {
-          closestDistance = distance
-          closestMilestone = milestone
+          if (distance < closestDistance && milestoneTop <= viewportTop + viewportHeight * 0.3) {
+            closestDistance = distance
+            closestMilestone = element
+          }
         }
       })
 
       if (closestMilestone) {
-        const milestoneRect = closestMilestone.getBoundingClientRect()
+        const milestoneRect = (closestMilestone as HTMLElement).getBoundingClientRect()
         const milestoneTop = milestoneRect.top + window.scrollY
         const progress = Math.max(0, Math.min(100, ((milestoneTop - containerTop) / containerHeight) * 100))
         setTimelineProgress(progress)
@@ -551,14 +534,14 @@ export function JourneyMilestoneSection() {
   }, [])
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
+    hidden: { opacity: 0, y: 10 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.08,
-        duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        delay: i * 0.05,
+        duration: 0.4,
+        ease: 'easeOut' as const
       }
     })
   }
@@ -566,62 +549,63 @@ export function JourneyMilestoneSection() {
   return (
     <Section id="journey">
       <Container>
-        <SectionTitle>{t('journey.title') || 'My Journey'}</SectionTitle>
-        <SectionPurpose 
-          text={t('storytelling.journeyPurpose')}
-        />
-        <SectionSubtitle>
-          {t('journey.subtitle') || '개발자로 성장해온 여정과 앞으로의 목표를 소개합니다'}
-        </SectionSubtitle>
-        
-        <TimelineContainer ref={containerRef}>
-          <TimelineLineBackground />
-          <TimelineLineProgress $progress={timelineProgress} />
+        <JourneyGrid>
+          {/* F-패턴: 좌측 텍스트 영역 */}
+          <TextColumn>
+            <SectionTitle>{t('journey.title') || 'My Journey'}</SectionTitle>
+            <SectionPurpose 
+              text={t('storytelling.journeyPurpose')}
+            />
+            <SectionSubtitle>
+              {t('journey.subtitle') || '개발자로 성장해온 여정과 앞으로의 목표를 소개합니다'}
+            </SectionSubtitle>
+          </TextColumn>
           
-          {milestoneData.map((milestone, index) => (
-            <MilestoneItem
-              key={milestone.id}
-              id={`milestone-${milestone.id}`}
-              data-milestone-id={milestone.id}
-              data-visible={visibleMilestones.includes(milestone.id)}
-              variants={itemVariants}
-              initial="hidden"
-              animate={visibleMilestones.includes(milestone.id) ? "visible" : "hidden"}
-              custom={index}
-            >
-              <MilestoneNode $status={milestone.status}>
-                {milestone.icon}
-              </MilestoneNode>
+          {/* F-패턴: 우측 타임라인 영역 */}
+          <TimelineColumn>
+            <TimelineContainer ref={containerRef}>
+              <TimelineLineBackground />
+              <TimelineLineProgress $progress={timelineProgress} />
               
-              <MilestoneCard>
-                <MilestoneYear>{milestone.year}</MilestoneYear>
-                <CardContent>
-                  <MilestoneTitle>{milestone.title}</MilestoneTitle>
-                  <MilestoneDescription>{milestone.description}</MilestoneDescription>
+              {milestoneData.map((milestone, index) => (
+                <MilestoneItem
+                  key={milestone.id}
+                  id={`milestone-${milestone.id}`}
+                  data-milestone-id={milestone.id}
+                  data-visible={visibleMilestones.includes(milestone.id)}
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate={visibleMilestones.includes(milestone.id) ? "visible" : "hidden"}
+                  custom={index}
+                >
+                  <MilestoneNode $status={milestone.status} />
                   
-                  <MilestoneMetrics
-                    projectCount={milestone.projectCount}
-                    codeMetrics={milestone.codeMetrics}
-                  />
-                  
-                  <ComplexityIndicator complexity={milestone.technicalComplexity} />
-                  
-                  {milestone.skillProgression && milestone.skillProgression.length > 0 && (
-                    <TechStackProgression skills={milestone.skillProgression} />
-                  )}
-                  
-                  <TechTags>
-                    {milestone.techStack.map((tech, techIndex) => (
-                      <TechTag key={`${milestone.id}-${techIndex}`}>
-                        {tech}
-                      </TechTag>
-                    ))}
-                  </TechTags>
-                </CardContent>
-              </MilestoneCard>
-            </MilestoneItem>
-          ))}
-        </TimelineContainer>
+                  <MilestoneContent $isLast={index === milestoneData.length - 1}>
+                    <MilestoneYear>{milestone.year}</MilestoneYear>
+                    <CardContent>
+                      <MilestoneTitle>{milestone.title}</MilestoneTitle>
+                      <MilestoneDescription>{milestone.description}</MilestoneDescription>
+                      
+                      <ComplexityIndicator complexity={milestone.technicalComplexity} />
+                      
+                      {milestone.skillProgression && milestone.skillProgression.length > 0 && (
+                        <TechStackProgression skills={milestone.skillProgression} />
+                      )}
+                      
+                      <TechTags>
+                        {milestone.techStack.map((tech, techIndex) => (
+                          <TechTag key={`${milestone.id}-${techIndex}`}>
+                            {tech}
+                          </TechTag>
+                        ))}
+                      </TechTags>
+                    </CardContent>
+                  </MilestoneContent>
+                </MilestoneItem>
+              ))}
+            </TimelineContainer>
+          </TimelineColumn>
+        </JourneyGrid>
       </Container>
     </Section>
   )

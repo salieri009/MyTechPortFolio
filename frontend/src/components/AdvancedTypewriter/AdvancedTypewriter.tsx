@@ -38,8 +38,7 @@ const TypewriterText = styled.span<{ isComplete: boolean }>`
     linear-gradient(
       90deg,
       ${props.theme.colors.primary[500]},
-      ${props.theme.colors.secondary[500]},
-      ${props.theme.colors.accent[500]},
+      ${props.theme.colors.primary[600]},
       ${props.theme.colors.primary[500]}
     )
   ` : 'transparent'};

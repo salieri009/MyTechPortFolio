@@ -50,20 +50,36 @@ const Section = styled.section`
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 48px;
+  grid-template-columns: repeat(12, 1fr);
+  gap: ${props => props.theme.spacing[6]};
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
 
   @media (max-width: 1024px) {
+    grid-template-columns: repeat(6, 1fr);
+    gap: ${props => props.theme.spacing[6]};
+  }
+
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 80px;
+    gap: ${props => props.theme.spacing[8]};
   }
 `
 
 
 const ColumnCard = styled.div<{ $isHovered: boolean; $animationType: 'right' | 'both' | 'left' }>`
+  /* 12컬럼 그리드 시스템 */
+  grid-column: span 4;
+  
+  @media (max-width: 1024px) {
+    grid-column: span 3;
+  }
+  
+  @media (max-width: 768px) {
+    grid-column: 1;
+  }
+  
   /* Performance optimization */
   will-change: transform, opacity, width, height;
   transform: translateZ(0); /* Force GPU acceleration */
@@ -121,7 +137,7 @@ const ColumnCard = styled.div<{ $isHovered: boolean; $animationType: 'right' | '
     left: 0;
     right: 0;
     bottom: 0;
-    background: ${props => props.theme.colors.gradient.primary};
+    background: ${props => props.theme.colors.primary[500]};
     opacity: 0.05;
     z-index: 1;
     pointer-events: none;
@@ -166,7 +182,7 @@ const CardTitle = styled.h3`
   margin-bottom: 20px;
   line-height: 1.2;
   letter-spacing: -0.02em;
-  font-family: ${props => props.theme.typography.fontFamily.display};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 
   @media (max-width: 768px) {
     font-size: 28px;
@@ -177,11 +193,8 @@ const CardTitle = styled.h3`
 const CardIcon = styled.div<{ $isExpanded: boolean }>`
   font-size: ${props => props.$isExpanded ? '48px' : '64px'};
   margin-bottom: ${props => props.$isExpanded ? '20px' : '32px'};
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
-  background: ${props => props.theme.colors.gradient.primary};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  color: ${props => props.theme.colors.primary[500]};
   transition: font-size 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               margin-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
@@ -208,11 +221,11 @@ const CardDescription = styled.p<{ $isExpanded: boolean }>`
 
 const ExpandIndicator = styled.div<{ $isExpanded: boolean }>`
   font-size: 12px;
-  color: ${props => props.theme.colors.textTertiary || props.theme.colors.textSecondary};
+  color: ${props => props.theme.colors.textMuted || props.theme.colors.textSecondary};
   margin-top: ${props => props.$isExpanded ? '0' : '16px'};
   opacity: ${props => props.$isExpanded ? 0 : 0.6};
   transition: opacity 0.3s ease, margin-top 0.3s ease;
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   
   &::before {
     content: '...';
@@ -247,7 +260,7 @@ const TechTag = styled.span<{ $index: number; $isVisible: boolean }>`
   border-radius: 2px;
   font-size: 12px;
   font-weight: 500;
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   border: 1px solid ${props => props.theme.colors.border};
   opacity: ${props => props.$isVisible ? 1 : 0};
   transform: ${props => props.$isVisible ? 'translateY(0)' : 'translateY(10px)'};
@@ -261,19 +274,19 @@ const TechTag = styled.span<{ $index: number; $isVisible: boolean }>`
 `
 
 const CTAButton = styled.button<{ $isVisible: boolean }>`
-  margin-top: 20px;
-  padding: 10px 24px;
+  margin-top: ${props => props.theme.spacing[6]};
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[6]};
   background: transparent;
   color: ${props => props.theme.colors.primary[500]};
   border: 2px solid ${props => props.theme.colors.primary[500]};
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
+  border-radius: ${props => props.theme.radius.lg};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-size: ${props => props.theme.typography.fontSize.sm};
   cursor: pointer;
   opacity: ${props => props.$isVisible ? 1 : 0};
   transform: ${props => props.$isVisible ? 'translateY(0)' : 'translateY(10px)'};
   transition: all 0.3s ease ${props => props.$isVisible ? '0.2s' : '0s'};
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   
   &:hover {
     background: ${props => props.theme.colors.primary[500]};
@@ -287,33 +300,32 @@ const CTAButton = styled.button<{ $isVisible: boolean }>`
 `
 
 const SectionTitle = styled.h2`
-  font-size: 48px;
-  font-weight: 800;
-  text-align: center;
-  margin-bottom: 64px;
+  font-size: ${props => props.theme.typography.fontSize['4xl']};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  text-align: left;
+  margin-bottom: ${props => props.theme.spacing[3]};
   color: ${props => props.theme.colors.text};
-  font-family: ${props => props.theme.typography.fontFamily.display};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   letter-spacing: -0.02em;
 
   @media (max-width: 768px) {
-    font-size: 36px;
-    margin-bottom: 48px;
+    font-size: ${props => props.theme.typography.fontSize['3xl']};
+    margin-bottom: ${props => props.theme.spacing[3]};
   }
 `
 
 const SectionSubtitle = styled.p`
-  font-size: 20px;
-  text-align: center;
-  margin-bottom: 80px;
+  font-size: ${props => props.theme.typography.fontSize.lg};
+  text-align: left;
+  margin-bottom: ${props => props.theme.spacing[12]};
   color: ${props => props.theme.colors.textSecondary};
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
+  max-width: 700px;
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 
   @media (max-width: 768px) {
-    font-size: 18px;
-    margin-bottom: 60px;
+    font-size: ${props => props.theme.typography.fontSize.lg};
+    margin-bottom: ${props => props.theme.spacing[12]};
   }
 `
 
@@ -380,7 +392,7 @@ export function ProjectShowcaseSection() {
       category: 'threejs',
       onHover: () => setHoveredColumn('threejs'),
       onLeave: () => setHoveredColumn(null),
-      onClick: () => handleCardClick('threejs')
+      onClick: () => handleCardClick('threejs', 'threejs')
     },
     {
       id: 'software',
@@ -392,7 +404,7 @@ export function ProjectShowcaseSection() {
       category: 'software',
       onHover: () => setHoveredColumn('software'),
       onLeave: () => setHoveredColumn(null),
-      onClick: () => handleCardClick('software')
+      onClick: () => handleCardClick('software', 'software')
     },
     {
       id: 'gamedev',
@@ -404,7 +416,7 @@ export function ProjectShowcaseSection() {
       category: 'gamedev',
       onHover: () => setHoveredColumn('gamedev'),
       onLeave: () => setHoveredColumn(null),
-      onClick: () => handleCardClick('gamedev')
+      onClick: () => handleCardClick('gamedev', 'gamedev')
     }
   ]
 
@@ -417,7 +429,6 @@ export function ProjectShowcaseSection() {
         </SectionTitle>
         <SectionPurpose 
           text={t('storytelling.showcasePurpose')}
-          icon="🔍"
         />
         <SectionSubtitle>
           {t('showcase.subtitle')}

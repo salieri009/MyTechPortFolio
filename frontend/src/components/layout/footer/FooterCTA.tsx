@@ -16,7 +16,7 @@ import {
  */
 
 const CTAContainer = styled(FooterSection)`
-  background: ${props => props.theme.colors.gradient.primary};
+  background: ${props => props.theme.colors.primary[500]};
   border-radius: ${props => props.theme.radius.lg};
   padding: ${props => props.theme.spacing[6]};
   margin-top: ${props => props.theme.spacing[4]};
@@ -70,7 +70,6 @@ export function FooterCTA() {
       <CTAButtons role="group" aria-label="Call to action buttons">
         <Link to="/resume/download" aria-label="Download resume in PDF format">
           <DownloadButton variant="secondary" size="md">
-            <span aria-hidden="true">📄</span>{' '}
             {t('footer.cta.downloadResume', 'Download Resume')}
           </DownloadButton>
         </Link>
@@ -80,7 +79,6 @@ export function FooterCTA() {
             borderColor: 'white', 
             color: 'white' 
           }}>
-            <span aria-hidden="true">💬</span>{' '}
             {t('footer.cta.contact', 'Get in Touch')}
           </Button>
         </Link>

@@ -11,14 +11,14 @@ import { Card } from '@components/ui/Card'
 
 const StatCardContainer = styled(Card)<{ $variant?: 'default' | 'glass' | 'solid' }>`
   text-align: center;
-  padding: ${props => props.theme.spacing[5]};
+  padding: ${props => props.theme.spacing[6]};
   transition: all 0.3s ease;
   
   ${props => props.$variant === 'glass' && `
-    background: rgba(255, 255, 255, 0.1);
+    background: ${props.theme.colors.glass.light};
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    border: 1px solid ${props.theme.colors.glass.medium};
+    color: ${props.theme.colors.hero.text};
   `}
   
   ${props => props.$variant === 'solid' && `
@@ -46,7 +46,7 @@ const StatNumber = styled.div<{ $color?: string }>`
 const StatLabel = styled.div<{ $variant?: string }>`
   font-size: ${props => props.theme.typography.fontSize.sm};
   color: ${props => {
-    if (props.$variant === 'glass') return 'rgba(255, 255, 255, 0.9)'
+    if (props.$variant === 'glass') return props.theme.colors.hero.textSecondary
     return props.theme.colors.textSecondary
   }};
   font-weight: ${props => props.theme.typography.fontWeight.medium};
@@ -56,7 +56,7 @@ const StatLabel = styled.div<{ $variant?: string }>`
 const StatDescription = styled.p<{ $variant?: string }>`
   font-size: ${props => props.theme.typography.fontSize.xs};
   color: ${props => {
-    if (props.$variant === 'glass') return 'rgba(255, 255, 255, 0.7)'
+    if (props.$variant === 'glass') return props.theme.colors.hero.textMuted
     return props.theme.colors.textMuted
   }};
   margin: ${props => props.theme.spacing[2]} 0 0 0;

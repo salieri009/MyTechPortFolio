@@ -302,14 +302,14 @@ export function ProjectDetailPage() {
         <MainContent>
           {project.challenge && (
             <Section>
-              <SectionTitle><span>🎯</span> The Challenge</SectionTitle>
+              <SectionTitle>The Challenge</SectionTitle>
               <SectionDescription>{project.challenge}</SectionDescription>
             </Section>
           )}
 
           {project.solution && project.solution.length > 0 && (
             <Section>
-              <SectionTitle><span>💡</span> My Solution</SectionTitle>
+              <SectionTitle>My Solution</SectionTitle>
               <SolutionList>
                 {project.solution.map((item, index) => (
                   <li key={index}>{item}</li>

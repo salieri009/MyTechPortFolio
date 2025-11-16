@@ -3,13 +3,13 @@ import { FeedbackData, EmailTemplate, CategoryType } from './types'
 
 // 카테고리 정보 매핑
 const getCategoryInfo = (category: string) => {
-  const categoryMap: Record<string, { label: string; emoji: string; color: string }> = {
-    'general': { label: '일반 피드백', emoji: '💬', color: '#3b82f6' },
-    'technical': { label: '기술적 제안', emoji: '⚙️', color: '#059669' },
-    'design': { label: '디자인 개선', emoji: '🎨', color: '#dc2626' },
-    'collaboration': { label: '협업 제안', emoji: '🤝', color: '#7c3aed' },
-    'bug': { label: '버그 리포트', emoji: '🐛', color: '#ea580c' },
-    'other': { label: '기타', emoji: '📝', color: '#6b7280' }
+  const categoryMap: Record<string, { label: string; color: string }> = {
+    'general': { label: '일반 피드백', color: '#3b82f6' },
+    'technical': { label: '기술적 제안', color: '#059669' },
+    'design': { label: '디자인 개선', color: '#dc2626' },
+    'collaboration': { label: '협업 제안', color: '#7c3aed' },
+    'bug': { label: '버그 리포트', color: '#ea580c' },
+    'other': { label: '기타', color: '#6b7280' }
   }
   return categoryMap[category] || categoryMap['other']
 }
@@ -336,7 +336,7 @@ export const buildEmailTemplate = (data: FeedbackData): EmailTemplate => {
             <div class="logo">
                 <span class="logo-text">MT</span>
             </div>
-            <h1 class="header-title">${categoryInfo.emoji} 새로운 피드백</h1>
+            <h1 class="header-title">새로운 피드백</h1>
             <p class="header-subtitle">MyTech Portfolio에서 새로운 메시지가 도착했습니다</p>
         </div>
 
@@ -364,7 +364,7 @@ export const buildEmailTemplate = (data: FeedbackData): EmailTemplate => {
                 <div class="info-grid">
                     <div class="info-item">
                         <p class="info-label">카테고리</p>
-                        <span class="category-badge">${categoryInfo.emoji} ${categoryInfo.label}</span>
+                        <span class="category-badge">${categoryInfo.label}</span>
                     </div>
                     <div class="info-item">
                         <p class="info-label">수신 시간</p>
@@ -376,7 +376,7 @@ export const buildEmailTemplate = (data: FeedbackData): EmailTemplate => {
             <!-- 제목 -->
             <div class="subject-section">
                 <h3 class="subject-title">
-                    📝 ${escapeHtml(data.subject)}
+                    ${escapeHtml(data.subject)}
                 </h3>
             </div>
 
@@ -393,7 +393,7 @@ export const buildEmailTemplate = (data: FeedbackData): EmailTemplate => {
             <div class="action-section">
                 <a href="mailto:${escapeHtml(data.email)}?subject=Re: ${encodeURIComponent(data.subject)}" 
                    class="reply-button">
-                    ↩️ 답장하기
+                    답장하기
                 </a>
             </div>
         </div>
@@ -401,7 +401,7 @@ export const buildEmailTemplate = (data: FeedbackData): EmailTemplate => {
         <!-- 푸터 -->
         <div class="footer">
             <a href="${websiteUrl}" class="footer-link">
-                🌐 MyTech Portfolio 방문하기
+                MyTech Portfolio 방문하기
             </a>
             <p class="footer-text">
                 이 메시지는 ${websiteUrl}에서 자동으로 전송되었습니다.<br>
@@ -413,7 +413,7 @@ export const buildEmailTemplate = (data: FeedbackData): EmailTemplate => {
 </html>`
 
   const plain = `
-${categoryInfo.emoji} 새로운 포트폴리오 피드백
+새로운 포트폴리오 피드백
 
 발신자: ${data.name}
 이메일: ${data.email}

@@ -21,7 +21,7 @@ const HeaderContainer = styled.div<{ $isDark: boolean }>`
       : 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)'
   };
   padding: 2rem;
-  border-radius: 16px;
+  border-radius: ${props => props.theme.radius['2xl']};
   margin-bottom: 2rem;
   position: relative;
   overflow: hidden;
@@ -81,7 +81,7 @@ const Avatar = styled.div<{ $isDark: boolean }>`
   justify-content: center;
   font-size: 2rem;
   font-weight: bold;
-  color: ${({ $isDark }) => $isDark ? '#1a1a2e' : '#2d3748'};
+  color: ${props => props.theme.colors.text};
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 `
 
@@ -131,7 +131,7 @@ const StatCard = styled.div<{ $isDark: boolean }>`
       ? 'rgba(255, 255, 255, 0.1)'
       : 'rgba(255, 255, 255, 0.3)'
   };
-  border-radius: 12px;
+  border-radius: ${props => props.theme.radius.xl};
   padding: 1rem;
   text-align: center;
   color: white;
@@ -167,7 +167,7 @@ const ContactItem = styled.a<{ $isDark: boolean }>`
   text-decoration: none;
   font-size: 0.9rem;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: ${props => props.theme.radius.lg};
   background: ${({ $isDark }) => 
     $isDark 
       ? 'rgba(255, 255, 255, 0.1)'

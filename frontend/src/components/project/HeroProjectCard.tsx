@@ -16,9 +16,9 @@ const HeroCardWrapper = styled(Link)`
   }
   
   &:focus-visible {
-    outline: 2px solid ${props => props.theme?.colors?.primary?.[500] || '#3B82F6'};
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
     outline-offset: 2px;
-    border-radius: 16px;
+    border-radius: ${props => props.theme.radius['2xl']};
   }
   
   @media (max-width: 1024px) {
@@ -29,11 +29,12 @@ const HeroCardWrapper = styled(Link)`
 const HeroCardContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  padding: 40px;
-  background: ${props => props.theme?.colors?.card || '#FFFFFF'};
-  border: 1px solid ${props => props.theme?.colors?.border || '#E5E7EB'};
-  border-radius: 16px;
+  gap: ${props => props.theme.spacing[8]};
+  padding: ${props => props.theme.spacing[8]};
+  background: ${props => props.theme.colors.surface || props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.radius['2xl']};
+  box-shadow: ${props => props.theme.shadows.lg};
   transition: all 0.3s ease;
   height: 100%;
   min-height: 400px;
@@ -52,24 +53,24 @@ const HeroCardContainer = styled.div`
         45deg,
         transparent,
         transparent 20px,
-        ${props => props.theme?.colors?.neutral?.[200] || props.theme?.colors?.primary?.[50]} 20px,
-        ${props => props.theme?.colors?.neutral?.[200] || props.theme?.colors?.primary?.[50]} 40px
+        ${props => props.theme.colors.neutral[props.theme.mode === 'dark' ? 700 : 200]} 20px,
+        ${props => props.theme.colors.neutral[props.theme.mode === 'dark' ? 700 : 200]} 40px
       );
-    opacity: 0.03;
+    opacity: ${props => props.theme.mode === 'dark' ? 0.05 : 0.03};
     z-index: 0;
     background-size: 40px 40px;
   }
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-    border-color: ${props => props.theme?.colors?.primary?.[500] || '#3B82F6'};
+    box-shadow: ${props => props.theme.shadows['2xl']};
+    border-color: ${props => props.theme.colors.primary[500]};
   }
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 24px;
-    padding: 32px;
+    gap: ${props => props.theme.spacing[6]};
+    padding: ${props => props.theme.spacing[6]};
     min-height: auto;
   }
 `
@@ -78,9 +79,9 @@ const HeroImageContainer = styled.div`
   width: 100%;
   height: 100%;
   min-height: 300px;
-  border-radius: 12px;
+  border-radius: ${props => props.theme.radius.lg};
   overflow: hidden;
-  background: ${props => props.theme.colors.neutral[200]};
+  background: ${props => props.theme.colors.neutral[props.theme.mode === 'dark' ? 800 : 200]};
   position: relative;
   z-index: 1;
 
@@ -112,39 +113,41 @@ const HeroContent = styled.div`
 
 const HeroBadge = styled.span`
   display: inline-block;
-  padding: 6px 16px;
-  background: ${props => props.theme?.colors?.primary?.[500]} || '#3B82F6';
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[4]};
+  background: ${props => props.theme.colors.primary[500]};
   color: white;
-  border-radius: 2px;
-  font-size: 11px;
-  font-weight: 600;
+  border-radius: ${props => props.theme.radius.sm};
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: ${props => props.theme.spacing[4]};
   width: fit-content;
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
   letter-spacing: 0.1em;
 `
 
 const HeroTitle = styled.h3`
-  margin: 0 0 16px 0;
-  font-size: 36px;
-  font-weight: 700;
-  color: ${props => props.theme?.colors?.text || '#1F2937'};
-  line-height: 1.2;
+  margin: 0 0 ${props => props.theme.spacing[4]} 0;
+  font-size: ${props => props.theme.typography.fontSize['4xl']};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.text};
+  line-height: ${props => props.theme.typography.lineHeight.tight};
 
   @media (max-width: 768px) {
-    font-size: 28px;
+    font-size: ${props => props.theme.typography.fontSize['3xl']};
   }
 `
 
 const HeroSummary = styled.p`
-  margin: 0 0 24px 0;
-  color: ${props => props.theme?.colors?.textSecondary || '#6B7280'};
-  font-size: 18px;
-  line-height: 1.6;
+  margin: 0 0 ${props => props.theme.spacing[6]} 0;
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: ${props => props.theme.typography.fontSize.lg};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
 
   @media (max-width: 768px) {
-    font-size: 16px;
+    font-size: ${props => props.theme.typography.fontSize.base};
   }
 `
 
@@ -152,46 +155,54 @@ const HeroMeta = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  font-size: 14px;
-  color: ${props => props.theme?.colors?.textSecondary || '#6B7280'};
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  margin-bottom: ${props => props.theme.spacing[6]};
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.textSecondary};
 `
 
 const HeroTechStacks = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: ${props => props.theme.spacing[2]};
+  margin-bottom: ${props => props.theme.spacing[6]};
 `
 
 const HeroTechTag = styled.span`
   display: inline-block;
-  padding: 6px 12px;
-  background: ${props => props.theme?.colors?.background || '#F3F4F6'};
-  color: ${props => props.theme?.colors?.text || '#1F2937'};
-  border-radius: 2px;
-  font-size: 12px;
-  font-weight: 500;
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
-  border: 1px solid ${props => props.theme?.colors?.border || '#E5E7EB'};
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]};
+  background: ${props => props.theme.mode === 'dark' 
+    ? props.theme.colors.neutral[800] 
+    : props.theme.colors.neutral[100]};
+  color: ${props => props.theme.colors.textSecondary};
+  border-radius: ${props => props.theme.radius.sm};
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  border: 1px solid ${props => props.theme.colors.border};
 `
 
 const HeroCTA = styled.div`
-  padding: 12px 24px;
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[6]};
   background: transparent;
-  color: ${props => props.theme?.colors?.primary?.[500] || '#3B82F6'};
-  border: 2px solid ${props => props.theme?.colors?.primary?.[500] || '#3B82F6'};
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
+  color: ${props => props.theme.colors.primary[500]};
+  border: 2px solid ${props => props.theme.colors.primary[500]};
+  border-radius: ${props => props.theme.radius.md};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: center;
   transition: all 0.2s ease;
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 
   ${HeroCardWrapper}:hover & {
-    background: ${props => props.theme?.colors?.primary?.[500] || '#3B82F6'};
+    background: ${props => props.theme.colors.primary[500]};
     color: white;
+    box-shadow: ${props => props.theme.shadows.md};
+  }
+  
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: 2px;
   }
 `
 
@@ -245,12 +256,14 @@ export function HeroProjectCard({
               <span>{formatDate(startDate)} - {formatDate(endDate)}</span>
             </HeroMeta>
             <HeroTechStacks>
-              {techStacks.slice(0, 6).map((tech) => (
-                <HeroTechTag key={tech}>{tech}</HeroTechTag>
-              ))}
-              {techStacks.length > 6 && (
-                <HeroTechTag>+{techStacks.length - 6}</HeroTechTag>
-              )}
+            {techStacks.slice(0, 3).map((tech) => (
+              <HeroTechTag key={tech}>{tech}</HeroTechTag>
+            ))}
+            {techStacks.length > 3 && (
+              <HeroTechTag aria-label={`${techStacks.length - 3} more technologies`}>
+                +{techStacks.length - 3}
+              </HeroTechTag>
+            )}
             </HeroTechStacks>
           </div>
           <HeroCTA>View Project</HeroCTA>
