@@ -35,8 +35,9 @@ export function Footer() {
   return (
     <>
       {/* 데스크톱/태블릿 Footer */}
+      {/* H6: Recognition Rather Than Recall - Semantic HTML */}
       <DesktopFooter>
-        <FooterWrapper>
+        <FooterWrapper role="contentinfo" aria-label="Site footer">
           <Container>
             <FooterContent>
               <FooterGrid>

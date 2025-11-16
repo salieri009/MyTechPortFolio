@@ -6,13 +6,13 @@ import { getAcademics } from '@services/academics'
 import type { Academic } from '@model/domain'
 
 const TimelineContainer = styled.div`
-  max-width: 800px;
+  max-width: ${props => props.theme.spacing[200]}; /* 4-point system: 800px */
   margin: 0 auto;
 `
 
 const AcademicCard = styled(Card)<{ status: string }>`
   margin-bottom: ${props => props.theme.spacing[4]};
-  border-left: 4px solid ${props => {
+  border-left: ${props => props.theme.spacing[1]} solid ${props => { /* 4-point system: 4px */
     switch (props.status) {
       case 'completed': return props.theme.colors.success
       case 'enrolled': return props.theme.colors.primary[500]
@@ -23,8 +23,10 @@ const AcademicCard = styled(Card)<{ status: string }>`
 `
 
 const AcademicTitle = styled.h3`
-  font-size: 20px;
-  margin-bottom: 8px;
+  font-size: ${props => props.theme.typography.fontSize.xl}; /* 4-point system: 20px */
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  margin-bottom: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   color: ${props => props.theme.colors.text};
   display: flex;
   justify-content: space-between;
@@ -82,62 +84,72 @@ const StatusBadge = styled.span<{ status: string }>`
 
 const AcademicMeta = styled.div`
   display: flex;
-  gap: 16px;
-  margin-bottom: 12px;
+  gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
+  margin-bottom: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
   color: ${props => props.theme.colors.textSecondary};
-  font-size: 14px;
+  font-size: ${props => props.theme.typography.fontSize.sm}; /* 4-point system: 14px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   align-items: center;
   flex-wrap: wrap;
 `
 
 const SummaryStats = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(${props => props.theme.spacing[50]}, 1fr)); /* 4-point system: 200px */
+  gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
+  margin-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
 `
 
 const StatCard = styled(Card)`
   text-align: center;
-  padding: 20px;
+  padding: ${props => props.theme.spacing[5]}; /* 4-point system: 20px → 24px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   
   h3 {
-    font-size: 24px;
-    font-weight: bold;
-    color: ${props => props.theme.colors.primary};
-    margin: 0 0 8px 0;
+    font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 24px */
+    font-weight: ${props => props.theme.typography.fontWeight.bold};
+    font-family: ${props => props.theme.typography.fontFamily.primary};
+    color: ${props => props.theme.colors.primary[500]};
+    margin: 0 0 ${props => props.theme.spacing[2]} 0; /* 4-point system: 8px */
   }
   
   p {
     color: ${props => props.theme.colors.textSecondary};
     margin: 0;
-    font-size: 14px;
+    font-size: ${props => props.theme.typography.fontSize.sm}; /* 4-point system: 14px */
+    font-family: ${props => props.theme.typography.fontFamily.primary};
   }
 `
 
 const PageTitle = styled.h1`
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
   color: ${props => props.theme.colors.text};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  font-size: ${props => props.theme.typography.fontSize['3xl']};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
 `
 
 const LoadingText = styled.p`
   text-align: center;
   color: ${props => props.theme.colors.textSecondary};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const SemesterTitle = styled.h2`
   color: ${props => props.theme.colors.text};
-  margin-bottom: 16px;
-  margin-top: 32px;
-  font-size: 1.5rem;
+  margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
+  margin-top: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
+  font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 24px (1.5rem) */
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   border-bottom: 2px solid ${props => props.theme.colors.border};
-  padding-bottom: 8px;
+  padding-bottom: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
 `
 
 const GradeContainer = styled.div`
   display: flex;
-  gap: 8px;
+  gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   align-items: center;
 `
 

@@ -5,7 +5,7 @@ import { Container } from '@components/common'
 const fadeInUp = keyframes`
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(${props => props.theme.spacing[8]}); /* 4-point system: 32px */
   }
   to {
     opacity: 1;
@@ -19,9 +19,9 @@ export const Hero = styled.section<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.primary[600]} 100%);
-  color: white;
+  color: ${props => props.theme.colors.hero.text};
   transition: background 0.3s ease;
-  margin-top: -1px; /* Remove gap with header */
+  margin-top: -${props => props.theme.spacing[0.25]}; /* 4-point system: -1px → 0 (헤더와의 gap 제거) */
   position: relative;
   overflow: hidden;
   
@@ -43,7 +43,7 @@ export const Hero = styled.section<{ $isDark: boolean }>`
   }
   
   ${Container} {
-    max-width: 1200px;
+    max-width: ${props => props.theme.spacing[300]}; /* 4-point system: 1200px */
     width: 100%;
   }
   
@@ -68,30 +68,31 @@ export const Greeting = styled.p`
 `
 
 export const Name = styled.span`
-  font-weight: 600;
-  color: white;
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.hero.text};
   opacity: 0.95;
 `
 
 export const Headline = styled.h1`
-  font-size: clamp(32px, 5vw, 64px);
+  font-size: clamp(${props => props.theme.spacing[8]}, 5vw, ${props => props.theme.spacing[16]}); /* 4-point system: 32px, 64px */
   font-weight: ${props => props.theme.typography.fontWeight.extrabold};
   margin-bottom: ${props => props.theme.spacing[6]};
   line-height: 1.1;
   letter-spacing: -0.02em;
-  color: white;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: ${props => props.theme.colors.hero.text};
+  text-shadow: 0 ${props => props.theme.spacing[0.5]} ${props => props.theme.spacing[2]} rgba(0, 0, 0, 0.2); /* 4-point system: 0 2px 8px */
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
 
   @media (max-width: 768px) {
-    font-size: 40px;
+    font-size: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
     margin-bottom: ${props => props.theme.spacing[6]};
     line-height: 1.2;
   }
   
   @media (max-width: 480px) {
-    font-size: 32px;
+    font-size: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
   }
 `
 
@@ -195,20 +196,23 @@ export const PrimaryCTA = styled(Link)`
   border: 2px solid ${props => props.theme.colors.primary[500]};
   transition: background 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
-  min-width: 200px;
+  min-width: ${props => props.theme.spacing[50]}; /* 4-point system: 200px */
   white-space: nowrap;
 
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover {
     background: ${props => props.theme.colors.primary[700]};
     border-color: ${props => props.theme.colors.primary[700]};
     box-shadow: ${props => props.theme.shadows.md};
   }
   
+  /* H3: User Control & Freedom - Focus state */
   &:focus-visible {
     outline: 2px solid ${props => props.theme.colors.primary[500]};
-    outline-offset: 2px;
+    outline-offset: ${props => props.theme.spacing[0.5]}; /* 4-point system: 4px */
   }
   
+  /* H1: Visibility - Active state */
   &:active {
     background: ${props => props.theme.colors.primary[800]};
     border-color: ${props => props.theme.colors.primary[800]};
@@ -216,7 +220,7 @@ export const PrimaryCTA = styled(Link)`
   
   @media (max-width: 640px) {
     width: 100%;
-    max-width: 300px;
+    max-width: ${props => props.theme.spacing[75]}; /* 4-point system: 300px */
     padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[8]};
     font-size: ${props => props.theme.typography.fontSize.base};
   }
@@ -237,27 +241,30 @@ export const SecondaryCTA = styled(Link)`
   border: 2px solid ${props => props.theme.colors.hero.textSecondary};
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
   cursor: pointer;
-  min-width: 200px;
+  min-width: ${props => props.theme.spacing[50]}; /* 4-point system: 200px */
   white-space: nowrap;
 
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover {
     border-color: ${props => props.theme.colors.hero.text};
     background: ${props => props.theme.colors.hero.background};
     box-shadow: ${props => props.theme.shadows.sm};
   }
   
+  /* H3: User Control & Freedom - Focus state */
   &:focus-visible {
     outline: 2px solid ${props => props.theme.colors.hero.text};
-    outline-offset: 2px;
+    outline-offset: ${props => props.theme.spacing[0.5]}; /* 4-point system: 4px */
   }
   
+  /* H1: Visibility - Active state */
   &:active {
     background: ${props => props.theme.colors.hero.backgroundHover};
   }
   
   @media (max-width: 640px) {
     width: 100%;
-    max-width: 300px;
+    max-width: ${props => props.theme.spacing[75]}; /* 4-point system: 300px */
     padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[8]};
     font-size: ${props => props.theme.typography.fontSize.base};
   }
@@ -291,15 +298,17 @@ export const SocialLink = styled.a`
   font-family: ${props => props.theme.typography.fontFamily.primary};
   white-space: nowrap;
   
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover {
     background: ${props => props.theme.colors.hero.backgroundHover};
-    transform: translateY(-2px);
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
     box-shadow: ${props => props.theme.shadows.md};
   }
   
+  /* H3: User Control & Freedom - Focus state */
   &:focus-visible {
     outline: 2px solid ${props => props.theme.colors.hero.outline};
-    outline-offset: 2px;
+    outline-offset: ${props => props.theme.spacing[0.5]}; /* 4-point system: 4px */
   }
   
   @media (max-width: 640px) {
@@ -341,7 +350,7 @@ export const SectionTitle = styled.h2<{ $isVisible?: boolean }>`
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : 'translateY(30px)'};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
@@ -362,9 +371,9 @@ export const SectionSubtitle = styled.p<{ $isVisible?: boolean }>`
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
-  max-width: 700px;
+  max-width: 704px; /* 4-point system: 700px → 704px (4의 배수) */
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : 'translateY(30px)'};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
   
@@ -399,7 +408,7 @@ export const FeaturedGrid = styled.div<{ $isVisible?: boolean }>`
   gap: ${props => props.theme.spacing[8]};
   margin-bottom: ${props => props.theme.spacing[8]};
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : 'translateY(30px)'};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
 
@@ -436,13 +445,13 @@ export const ViewAllLink = styled(Link)`
 
   &:hover {
     background: ${props => props.theme.colors.primary[600]};
-    transform: translateY(-2px);
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
     box-shadow: ${props => props.theme.shadows.lg};
   }
   
   &:focus-visible {
     outline: 2px solid ${props => props.theme.colors.primary[500]};
-    outline-offset: 2px;
+    outline-offset: ${props => props.theme.spacing[0.5]}; /* 4-point system: 4px */
   }
 `
 
@@ -453,7 +462,7 @@ export const TestimonialSection = styled.section`
   background: ${props => props.theme.colors.surface || props.theme.colors.background};
   position: relative;
   
-  /* 상단 구분선 */
+  /* H8: Aesthetic & Minimalist - Visual separator */
   &::before {
     content: '';
     position: absolute;
@@ -469,22 +478,29 @@ export const TestimonialSection = styled.section`
     );
     opacity: 0.3;
   }
+  
+  /* H4: Consistency & Standards - Responsive padding */
+  @media (max-width: 768px) {
+    padding: ${props => props.theme.spacing[12]} 0;
+  }
 `
 
 export const TestimonialGrid = styled.div<{ $isVisible?: boolean }>`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(${props => props.theme.spacing[80]}, 1fr)); /* 4-point system: 320px = spacing[80] */
   gap: ${props => props.theme.spacing[8]};
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : 'translateY(30px)'};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
-
+  
+  /* H4: Consistency & Standards - Consistent grid spacing */
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[6]};
   }
   
+  /* H8: Aesthetic & Minimalist - Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     transition: opacity 0.3s ease;
     transform: none;
@@ -516,22 +532,22 @@ const ScrollIndicatorContainer = styled.div<{ $isVisible: boolean }>`
 `
 
 const ScrollArrow = styled.div`
-  width: 24px;
-  height: 40px;
+  width: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
+  height: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
   border: 2px solid ${props => props.theme.colors.hero.textMuted};
-  border-radius: 12px;
+  border-radius: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
   position: relative;
   
   &::before {
     content: '';
     position: absolute;
-    top: 8px;
+    top: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
     left: 50%;
     transform: translateX(-50%);
-    width: 4px;
-    height: 8px;
+    width: ${props => props.theme.spacing[1]}; /* 4-point system: 4px */
+    height: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
     background: ${props => props.theme.colors.hero.textMuted};
-    border-radius: 2px;
+    border-radius: ${props => props.theme.spacing[0.5]}; /* 4-point system: 4px (2px → 4px) */
     animation: scrollBounce 2s infinite;
   }
   
@@ -541,7 +557,7 @@ const ScrollArrow = styled.div`
       opacity: 1;
     }
     50% {
-      transform: translateX(-50%) translateY(12px);
+      transform: translateX(-50%) translateY(${props => props.theme.spacing[3]}); /* 4-point system: 12px */
       opacity: 0.5;
     }
   }

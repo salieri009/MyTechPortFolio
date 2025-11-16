@@ -7,71 +7,83 @@ import { getProject } from '@services/projects'
 import type { ProjectDetail } from '@model/domain'
 
 const BackLink = styled(Link)`
-  color: ${props => props.theme.colors.primary};
+  color: ${props => props.theme.colors.primary[500]};
   text-decoration: none;
-  margin-bottom: 24px;
+  margin-bottom: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   display: inline-block;
-  font-weight: 500;
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   transition: all 0.3s ease;
 
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover {
     text-decoration: underline;
-    transform: translateX(-4px);
+    transform: translateX(-${props => props.theme.spacing[1]}); /* 4-point system: 4px */
+    color: ${props => props.theme.colors.primary[600]};
+  }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]};
+    border-radius: ${props => props.theme.radius.sm};
   }
 `
 
 const ProjectHeader = styled.div`
-  margin-bottom: 48px;
-  padding-bottom: 32px;
+  margin-bottom: ${props => props.theme.spacing[12]}; /* 4-point system: 48px */
+  padding-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
   border-bottom: 2px solid ${props => props.theme.colors.border || '#E5E7EB'};
 `
 
 const ProjectTitle = styled.h1`
-  font-size: 40px;
-  font-weight: 700;
-  margin-bottom: 16px;
+  font-size: ${props => props.theme.typography.fontSize['3xl']}; /* 4-point system: 40px */
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   color: ${props => props.theme.colors.text};
-  line-height: 1.2;
+  line-height: ${props => props.theme.typography.lineHeight.tight};
 
   @media (max-width: 768px) {
-    font-size: 28px;
+    font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 28px → 24px */
   }
 `
 
 const ProjectMeta = styled.div`
   display: flex;
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
+  margin-bottom: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   flex-wrap: wrap;
-  font-size: 16px;
+  font-size: ${props => props.theme.typography.fontSize.base}; /* 4-point system: 16px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.textSecondary};
 
   > span {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   }
 `
 
 const ProjectLinks = styled.div`
   display: flex;
-  gap: 12px;
+  gap: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
   flex-wrap: wrap;
 `
 
 const ProjectImage = styled.img`
   width: 100%;
-  max-height: 400px;
+  max-height: ${props => props.theme.spacing[100]}; /* 4-point system: 400px */
   object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 48px;
+  border-radius: ${props => props.theme.radius.xl}; /* 4-point system: 12px */
+  margin-bottom: ${props => props.theme.spacing[12]}; /* 4-point system: 48px */
 `
 
 const ContentWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 48px;
-  margin-bottom: 48px;
+  grid-template-columns: 1fr ${props => props.theme.spacing[80]}; /* 4-point system: 320px */
+  gap: ${props => props.theme.spacing[12]}; /* 4-point system: 48px */
+  margin-bottom: ${props => props.theme.spacing[12]}; /* 4-point system: 48px */
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
@@ -95,7 +107,8 @@ const SideContent = styled.div`
 `
 
 const Section = styled.div`
-  margin-bottom: 48px;
+  margin-bottom: ${props => props.theme.spacing[12]}; /* 4-point system: 48px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 
   &:last-child {
     margin-bottom: 0;
@@ -103,45 +116,48 @@ const Section = styled.div`
 `
 
 const SectionTitle = styled.h2`
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 16px;
+  font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 24px */
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   color: ${props => props.theme.colors.text};
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
 
   span {
-    font-size: 28px;
+    font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 28px → 24px */
   }
 `
 
 const SectionDescription = styled.p`
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: ${props => props.theme.typography.fontSize.base}; /* 4-point system: 16px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
   color: ${props => props.theme.colors.textSecondary};
-  margin-bottom: 16px;
+  margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
 `
 
 const SolutionList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 
   li {
-    padding: 12px 0;
-    padding-left: 28px;
+    padding: ${props => props.theme.spacing[3]} 0; /* 4-point system: 12px */
+    padding-left: ${props => props.theme.spacing[7]}; /* 4-point system: 28px */
     position: relative;
     color: ${props => props.theme.colors.textSecondary};
-    line-height: 1.6;
+    line-height: ${props => props.theme.typography.lineHeight.relaxed};
 
     &:before {
       content: '✓';
       position: absolute;
       left: 0;
-      color: ${props => props.theme.colors.primary?.[500]} || '#3B82F6';
-      font-weight: bold;
-      font-size: 18px;
+      color: ${props => props.theme.colors.primary[500]};
+      font-weight: ${props => props.theme.typography.fontWeight.bold};
+      font-size: ${props => props.theme.typography.fontSize.lg}; /* 4-point system: 18px */
     }
   }
 `
@@ -150,18 +166,20 @@ const OutcomeList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 
   li {
-    padding: 12px 0;
-    padding-left: 28px;
+    padding: ${props => props.theme.spacing[3]} 0; /* 4-point system: 12px */
+    padding-left: ${props => props.theme.spacing[7]}; /* 4-point system: 28px */
     position: relative;
     color: ${props => props.theme.colors.textSecondary};
-    line-height: 1.6;
+    line-height: ${props => props.theme.typography.lineHeight.relaxed};
 
     &:before {
       content: '🎯';
       position: absolute;
       left: 0;
+      font-size: ${props => props.theme.typography.fontSize.lg}; /* 4-point system: 18px */
     }
   }
 `
@@ -169,16 +187,18 @@ const OutcomeList = styled.ul`
 const SideCard = styled.div`
   background: ${props => props.theme.colors.card || '#FFFFFF'};
   border: 1px solid ${props => props.theme.colors.border || '#E5E7EB'};
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: ${props => props.theme.radius.xl}; /* 4-point system: 12px */
+  padding: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   position: sticky;
-  top: 100px;
+  top: ${props => props.theme.spacing[25]}; /* 4-point system: 100px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const SideCardTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 16px;
+  font-size: ${props => props.theme.typography.fontSize.base}; /* 4-point system: 16px */
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   color: ${props => props.theme.colors.text};
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -187,32 +207,34 @@ const SideCardTitle = styled.h3`
 
 const TechTags = styled.div`
   display: flex;
-  gap: 8px;
+  gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   flex-wrap: wrap;
   margin: 0;
 `
 
 const OriginalDescription = styled.div`
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: ${props => props.theme.typography.fontSize.base}; /* 4-point system: 16px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
   color: ${props => props.theme.colors.textSecondary};
 
   h1,
   h2,
   h3 {
     color: ${props => props.theme.colors.text};
-    margin-top: 24px;
-    margin-bottom: 12px;
+    font-family: ${props => props.theme.typography.fontFamily.primary};
+    margin-top: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
+    margin-bottom: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
   }
 
   p {
-    margin-bottom: 16px;
+    margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   }
 
   ul,
   ol {
-    margin-bottom: 16px;
-    padding-left: 24px;
+    margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
+    padding-left: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   }
 `
 

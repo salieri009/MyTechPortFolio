@@ -16,73 +16,83 @@ const MobileFooterWrapper = styled.footer`
     position: relative;
     overflow: hidden;
   }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-within {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: -${props => props.theme.spacing[0.5]}; /* 4-point system: 4px */
+  }
 `
 
 const MobileContent = styled.div`
   position: relative;
   z-index: 1;
-  padding: ${props => props.theme.spacing[6]}px ${props => props.theme.spacing[4]}px;
+  padding: ${props => props.theme.spacing[6]} ${props => props.theme.spacing[4]};
   max-width: 100%;
 `
 
 const BrandSection = styled.div`
   text-align: center;
-  margin-bottom: ${props => props.theme.spacing[4]}px;
+  margin-bottom: ${props => props.theme.spacing[4]};
 `
 
 const LogoContainer = styled(Link)`
   display: inline-flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[2]}px;
+  gap: ${props => props.theme.spacing[2]};
   text-decoration: none;
   color: ${props => props.theme.colors.text};
   transition: all 0.3s ease;
   
   &:hover {
-    transform: translateY(-1px);
-    color: ${props => props.theme.colors.primary};
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
+    color: ${props => props.theme.colors.primary[500]};
   }
 `
 
 const MobileLogo = styled.div`
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, 
-    ${props => props.theme.colors.primary}, 
-    ${props => props.theme.colors.accent}
-  );
-  border-radius: 8px;
+  width: ${props => props.theme.spacing[9]};
+  height: ${props => props.theme.spacing[9]};
+  background: ${props => props.theme.colors.gradient.primary};
+  border-radius: ${props => props.theme.radius.lg};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  color: ${props => props.theme.colors.hero.text};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-size: ${props => props.theme.typography.fontSize.base};
+  box-shadow: ${props => props.theme.shadows.sm};
 `
 
 const BrandName = styled.h3`
   margin: 0;
-  font-size: ${props => props.theme.typography.fontSize.base}px;
-  font-weight: 600;
+  font-size: ${props => props.theme.typography.fontSize.base};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
   color: ${props => props.theme.colors.text};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const MobileNav = styled.nav`
   display: flex;
   justify-content: center;
-  gap: ${props => props.theme.spacing[6]}px;
-  margin-bottom: ${props => props.theme.spacing[4]}px;
+  gap: ${props => props.theme.spacing[6]};
+  margin-bottom: ${props => props.theme.spacing[4]};
   
   a {
     color: ${props => props.theme.colors.textSecondary};
     text-decoration: none;
-    font-size: ${props => props.theme.typography.fontSize.sm}px;
-    font-weight: 500;
+    font-size: ${props => props.theme.typography.fontSize.sm};
+    font-weight: ${props => props.theme.typography.fontWeight.medium};
+    font-family: ${props => props.theme.typography.fontFamily.primary};
     transition: color 0.2s ease;
     
     &:hover {
       color: ${props => props.theme.colors.primary[500]};
+    }
+    
+    &:focus-visible {
+      outline: 2px solid ${props => props.theme.colors.primary[500]};
+      outline-offset: ${props => props.theme.spacing[0.5]}; /* 4-point system: 4px */
     }
   }
 `
@@ -90,16 +100,17 @@ const MobileNav = styled.nav`
 const SocialRow = styled.div`
   display: flex;
   justify-content: center;
-  gap: ${props => props.theme.spacing[3]}px;
-  margin-bottom: ${props => props.theme.spacing[4]}px;
+  gap: ${props => props.theme.spacing[3]};
+  margin-bottom: ${props => props.theme.spacing[4]};
 `
 
 const Copyright = styled.p`
   text-align: center;
   color: ${props => props.theme.colors.textMuted};
-  font-size: ${props => props.theme.typography.fontSize.xs}px;
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   margin: 0;
-  padding-top: ${props => props.theme.spacing[2]}px;
+  padding-top: ${props => props.theme.spacing[2]};
   border-top: 1px solid ${props => props.theme.colors.border};
   opacity: 0.8;
 `

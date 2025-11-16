@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
 import { CONTACT_INFO } from '../../../constants/contact'
 import {
   FooterSection,
@@ -10,6 +11,24 @@ import {
   FooterIcon,
   FooterButton
 } from '@components/common/FooterComponents'
+
+const FeedbackLink = styled(Link)`
+  display: inline-block;
+  margin-top: ${props => props.theme.spacing[2]};
+  text-decoration: none;
+  
+  /* H1: Visibility of System Status - Hover feedback */
+  &:hover {
+    transform: translateY(-${props => props.theme.spacing[0.5]});
+  }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]};
+    border-radius: ${props => props.theme.radius.sm};
+  }
+`
 
 /**
  * FooterContact Component (Molecule)
@@ -75,12 +94,15 @@ export function FooterContact() {
         ))}
       </FooterList>
       
-      <Link to="/feedback" aria-label="Send feedback or contact via form">
-        <FooterButton>
+      <FeedbackLink 
+        to="/feedback" 
+        aria-label="Send feedback or contact via form"
+      >
+        <FooterButton type="button">
           <span aria-hidden="true">💌</span>{' '}
           {t('footer.contact.feedbackButton', 'Send Feedback')}
         </FooterButton>
-      </Link>
+      </FeedbackLink>
     </FooterSection>
   )
 }

@@ -18,51 +18,57 @@ const CATEGORY_TECH_MAP: Record<string, string[]> = {
 // Styled Components with proper theme properties
 const FilterBar = styled(Card)`
   display: flex;
-  gap: 16px;
-  margin-bottom: 32px;
+  gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
+  margin-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
   flex-wrap: wrap;
   align-items: center;
-  padding: 20px;
+  padding: ${props => props.theme.spacing[5]}; /* 4-point system: 20px → 24px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 
   .filter-label {
-    font-weight: 600;
-    margin-right: 8px;
+    font-weight: ${props => props.theme.typography.fontWeight.semibold};
+    font-family: ${props => props.theme.typography.fontFamily.primary};
+    margin-right: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   }
 `
 
 const LoadingText = styled.p`
   text-align: center;
   color: ${props => props.theme?.colors?.textSecondary || '#6B7280'};
-  padding: 40px;
-  font-size: 16px;
+  padding: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
+  font-size: ${props => props.theme.typography.fontSize.base}; /* 4-point system: 16px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const PageTitle = styled.h1`
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: ${props => props.theme.typography.fontSize['3xl']}; /* 4-point system: 2.5rem → 40px */
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme?.colors?.text || '#1F2937'};
-  margin-bottom: 32px;
+  margin-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
   text-align: center;
 `
 
 const ProjectGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(${props => props.theme.spacing[80]}, 1fr)); /* 4-point system: 320px */
+  gap: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
+  margin-bottom: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
 `
 
 const FilterSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
   flex-wrap: wrap;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   
   .filter-label {
-    font-weight: 600;
+    font-weight: ${props => props.theme.typography.fontWeight.semibold};
+    font-family: ${props => props.theme.typography.fontFamily.primary};
     color: ${props => props.theme?.colors?.text || '#1F2937'};
-    font-size: 14px;
-    margin-right: 8px;
+    font-size: ${props => props.theme.typography.fontSize.sm}; /* 4-point system: 14px */
+    margin-right: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   }
 `
 
@@ -70,49 +76,55 @@ const SelectWrapper = styled.div`
   position: relative;
   
   select {
-    padding: 8px 12px;
+    padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]}; /* 4-point system: 8px 12px */
     border: 1px solid ${props => props.theme.colors.border};
     border-radius: ${props => props.theme.radius.md};
     background: ${props => props.theme.colors.surface};
     color: ${props => props.theme.colors.text};
-    font-size: 14px;
+    font-size: ${props => props.theme.typography.fontSize.sm}; /* 4-point system: 14px */
+    font-family: ${props => props.theme.typography.fontFamily.primary};
     cursor: pointer;
     outline: none;
     transition: all 0.2s ease;
     
+    /* H3: User Control & Freedom - Focus state */
     &:focus {
       border-color: ${props => props.theme.colors.primary[500]};
-      box-shadow: 0 0 0 3px ${props => props.theme.colors.primary[500]}20;
+      box-shadow: 0 0 0 ${props => props.theme.spacing[0.75]} ${props => props.theme.colors.primary[500]}20; /* 4-point system: 3px → 12px */
     }
   }
 `
 
 const TechStackFilters = styled.div`
   display: flex;
-  gap: 8px;
+  gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   flex-wrap: wrap;
 `
 
 const SortFilters = styled.div`
   display: flex;
-  gap: 8px;
+  gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   flex-wrap: wrap;
 `
 
 const EmptyState = styled.div`
   text-align: center;
-  padding: 60px 20px;
+  padding: ${props => props.theme.spacing[15]} ${props => props.theme.spacing[5]}; /* 4-point system: 60px 20px → 60px 24px */
   color: ${props => props.theme.colors.textSecondary};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   
   h3 {
-    font-size: 1.5rem;
-    margin-bottom: 12px;
+    font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 24px (1.5rem) */
+    font-weight: ${props => props.theme.typography.fontWeight.bold};
+    font-family: ${props => props.theme.typography.fontFamily.primary};
+    margin-bottom: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
     color: ${props => props.theme?.colors?.text || '#1F2937'};
   }
   
   p {
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: ${props => props.theme.typography.fontSize.base}; /* 4-point system: 16px */
+    font-family: ${props => props.theme.typography.fontFamily.primary};
+    line-height: ${props => props.theme.typography.lineHeight.relaxed};
   }
 `
 

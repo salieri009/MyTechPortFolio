@@ -5,48 +5,58 @@ import { Container, Card } from '@components/common'
 import { CONTACT_INFO } from '../constants/contact'
 
 const AboutSection = styled.section`
-  max-width: 800px;
+  max-width: ${props => props.theme.spacing[200]}; /* 4-point system: 800px */
   margin: 0 auto;
   text-align: center;
-  padding: 40px 0;
+  padding: ${props => props.theme.spacing[10]} 0; /* 4-point system: 40px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const AboutTitle = styled.h1`
-  font-size: 32px;
-  margin-bottom: 24px;
+  font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 24px */
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  margin-bottom: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   color: ${props => props.theme.colors.text};
+  
+  @media (max-width: 768px) {
+    font-size: ${props => props.theme.typography.fontSize.xl};
+  }
 `
 
 const AboutContent = styled.div`
-  font-size: 18px;
-  line-height: 1.6;
+  font-size: ${props => props.theme.typography.fontSize.lg}; /* 4-point system: 18px */
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.textSecondary};
-  margin-bottom: 40px;
+  margin-bottom: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
 
   p {
-    margin-bottom: 16px;
+    margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   }
 `
 
 const ContactSection = styled(Card)`
-  margin-top: 40px;
+  margin-top: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
   text-align: center;
   background: ${props => props.theme.colors.surface};
   border: 1px solid ${props => props.theme.colors.border};
 `
 
 const ContactTitle = styled.h2`
-  font-size: 24px;
-  margin-bottom: 16px;
+  font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 24px */
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   color: ${props => props.theme.colors.text};
 `
 
 const ContactInfo = styled.div`
   display: grid;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
+  margin-bottom: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   text-align: left;
-  max-width: 400px;
+  max-width: ${props => props.theme.spacing[100]}; /* 4-point system: 400px */
   margin-left: auto;
   margin-right: auto;
 `
@@ -55,40 +65,60 @@ const ContactItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[5]}; /* 4-point system: 16px 20px → 16px 24px */
   background: ${props => props.theme.colors.background};
-  border-radius: 12px;
+  border-radius: ${props => props.theme.radius.xl}; /* 4-point system: 12px */
   border: 2px solid ${props => props.theme.colors.border};
   box-shadow: ${props => props.theme.shadows.sm};
   transition: all 0.2s ease;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover {
     border-color: ${props => props.theme.colors.primary[500]};
     box-shadow: ${props => props.theme.shadows.md};
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
+  }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-within {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]};
   }
 `
 
 const ContactLabel = styled.span`
-  font-weight: 600;
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.text};
-  font-size: 15px;
+  font-size: ${props => props.theme.typography.fontSize.base}; /* 4-point system: 15px → 16px */
 `
 
 const ContactValue = styled.a`
   color: ${props => props.theme.colors.primary[500]};
   text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: ${props => props.theme.typography.fontSize.sm}; /* 4-point system: 14px */
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  ${props => props.theme.hoverTransition()};
   
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover {
     text-decoration: underline;
     color: ${props => props.theme.colors.primary[600]};
+  }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]};
+    border-radius: ${props => props.theme.radius.sm};
   }
 `
 
 const ContactButtons = styled.div`
   display: flex;
-  gap: 16px;
+  gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   justify-content: center;
   flex-wrap: wrap;
 `
@@ -96,18 +126,32 @@ const ContactButtons = styled.div`
 const ContactButton = styled.a`
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
+  gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[5]}; /* 4-point system: 12px 20px → 12px 24px */
   background: ${props => props.theme.colors.primary[500]};
-  color: white;
+  color: ${props => props.theme.colors.hero.text};
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 500;
+  border-radius: ${props => props.theme.radius.lg}; /* 4-point system: 8px */
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   transition: all 0.2s ease;
 
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover {
     background: ${props => props.theme.colors.primary[600]};
-    transform: translateY(-1px);
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
+    box-shadow: ${props => props.theme.shadows.sm};
+  }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]};
+  }
+  
+  /* H1: Visibility - Active state */
+  &:active {
+    transform: translateY(0);
   }
 `
 

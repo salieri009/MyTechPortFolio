@@ -552,58 +552,58 @@ export function JourneyMilestoneSection() {
         <JourneyGrid>
           {/* F-패턴: 좌측 텍스트 영역 */}
           <TextColumn>
-            <SectionTitle>{t('journey.title') || 'My Journey'}</SectionTitle>
-            <SectionPurpose 
-              text={t('storytelling.journeyPurpose')}
-            />
-            <SectionSubtitle>
-              {t('journey.subtitle') || '개발자로 성장해온 여정과 앞으로의 목표를 소개합니다'}
-            </SectionSubtitle>
+        <SectionTitle>{t('journey.title') || 'My Journey'}</SectionTitle>
+        <SectionPurpose 
+          text={t('storytelling.journeyPurpose')}
+        />
+        <SectionSubtitle>
+          {t('journey.subtitle') || '개발자로 성장해온 여정과 앞으로의 목표를 소개합니다'}
+        </SectionSubtitle>
           </TextColumn>
-          
+        
           {/* F-패턴: 우측 타임라인 영역 */}
           <TimelineColumn>
-            <TimelineContainer ref={containerRef}>
-              <TimelineLineBackground />
-              <TimelineLineProgress $progress={timelineProgress} />
+        <TimelineContainer ref={containerRef}>
+          <TimelineLineBackground />
+          <TimelineLineProgress $progress={timelineProgress} />
+          
+          {milestoneData.map((milestone, index) => (
+            <MilestoneItem
+              key={milestone.id}
+              id={`milestone-${milestone.id}`}
+              data-milestone-id={milestone.id}
+              data-visible={visibleMilestones.includes(milestone.id)}
+              variants={itemVariants}
+              initial="hidden"
+              animate={visibleMilestones.includes(milestone.id) ? "visible" : "hidden"}
+              custom={index}
+            >
+              <MilestoneNode $status={milestone.status} />
               
-              {milestoneData.map((milestone, index) => (
-                <MilestoneItem
-                  key={milestone.id}
-                  id={`milestone-${milestone.id}`}
-                  data-milestone-id={milestone.id}
-                  data-visible={visibleMilestones.includes(milestone.id)}
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate={visibleMilestones.includes(milestone.id) ? "visible" : "hidden"}
-                  custom={index}
-                >
-                  <MilestoneNode $status={milestone.status} />
+              <MilestoneContent $isLast={index === milestoneData.length - 1}>
+                <MilestoneYear>{milestone.year}</MilestoneYear>
+                <CardContent>
+                  <MilestoneTitle>{milestone.title}</MilestoneTitle>
+                  <MilestoneDescription>{milestone.description}</MilestoneDescription>
                   
-                  <MilestoneContent $isLast={index === milestoneData.length - 1}>
-                    <MilestoneYear>{milestone.year}</MilestoneYear>
-                    <CardContent>
-                      <MilestoneTitle>{milestone.title}</MilestoneTitle>
-                      <MilestoneDescription>{milestone.description}</MilestoneDescription>
-                      
-                      <ComplexityIndicator complexity={milestone.technicalComplexity} />
-                      
-                      {milestone.skillProgression && milestone.skillProgression.length > 0 && (
-                        <TechStackProgression skills={milestone.skillProgression} />
-                      )}
-                      
-                      <TechTags>
-                        {milestone.techStack.map((tech, techIndex) => (
-                          <TechTag key={`${milestone.id}-${techIndex}`}>
-                            {tech}
-                          </TechTag>
-                        ))}
-                      </TechTags>
-                    </CardContent>
-                  </MilestoneContent>
-                </MilestoneItem>
-              ))}
-            </TimelineContainer>
+                  <ComplexityIndicator complexity={milestone.technicalComplexity} />
+                  
+                  {milestone.skillProgression && milestone.skillProgression.length > 0 && (
+                    <TechStackProgression skills={milestone.skillProgression} />
+                  )}
+                  
+                  <TechTags>
+                    {milestone.techStack.map((tech, techIndex) => (
+                      <TechTag key={`${milestone.id}-${techIndex}`}>
+                        {tech}
+                      </TechTag>
+                    ))}
+                  </TechTags>
+                </CardContent>
+              </MilestoneContent>
+            </MilestoneItem>
+          ))}
+        </TimelineContainer>
           </TimelineColumn>
         </JourneyGrid>
       </Container>

@@ -11,16 +11,16 @@ const LoginContainer = styled.div`
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.primary[600]} 100%);
-  padding: 20px;
+  padding: ${props => props.theme.spacing[5]}; /* 4-point system: 20px */
 `
 
 const LoginCard = styled.div`
   background: ${props => props.theme.colors.surface || props.theme.colors.background};
   border-radius: ${props => props.theme.radius.lg};
   box-shadow: ${props => props.theme.shadows['2xl']};
-  padding: 40px;
+  padding: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
   width: 100%;
-  max-width: 420px;
+  max-width: ${props => props.theme.spacing[105]}; /* 4-point system: 420px */
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -31,13 +31,13 @@ const LoginCard = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
+    height: ${props => props.theme.spacing[1]}; /* 4-point system: 4px */
     background: linear-gradient(90deg, ${props => props.theme.colors.primary[500]}, ${props => props.theme.colors.primary[600]});
   }
 `
 
 const LogoSection = styled.div`
-  margin-bottom: 32px;
+  margin-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
 `
 
 const Logo = styled.h1`
@@ -90,7 +90,7 @@ const SecurityList = styled.ul`
 `
 
 const SecurityItem = styled.li`
-  margin-bottom: 4px;
+  margin-bottom: ${props => props.theme.spacing[1]}; /* 4-point system: 4px */
 `
 
 const Footer = styled.div`
@@ -119,8 +119,8 @@ const LoadingSpinner = styled.div`
   border: 2px solid ${props => props.theme.colors.border};
   border-top: 2px solid ${props => props.theme.colors.primary[500]};
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
+  height: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   animation: spin 1s linear infinite;
   margin: ${props => props.theme.spacing[6]} auto;
 
@@ -184,10 +184,17 @@ const VerifyButton = styled.button`
   cursor: pointer;
   transition: all 0.2s ease;
 
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover:not(:disabled) {
     background: ${props => props.theme.colors.primary[600]};
-    transform: translateY(-1px);
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
     box-shadow: ${props => props.theme.shadows.md};
+  }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]};
   }
 
   &:active:not(:disabled) {

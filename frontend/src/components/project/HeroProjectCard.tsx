@@ -257,13 +257,13 @@ export function HeroProjectCard({
             </HeroMeta>
             <HeroTechStacks>
             {techStacks.slice(0, 3).map((tech) => (
-              <HeroTechTag key={tech}>{tech}</HeroTechTag>
-            ))}
+                <HeroTechTag key={tech}>{tech}</HeroTechTag>
+              ))}
             {techStacks.length > 3 && (
               <HeroTechTag aria-label={`${techStacks.length - 3} more technologies`}>
                 +{techStacks.length - 3}
               </HeroTechTag>
-            )}
+              )}
             </HeroTechStacks>
           </div>
           <HeroCTA>View Project</HeroCTA>

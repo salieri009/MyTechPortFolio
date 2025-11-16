@@ -30,14 +30,15 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
   font-size: ${props => props.theme.typography.fontSize.lg};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.textSecondary};
-  max-width: 600px;
+  max-width: ${props => props.theme.spacing[150]}; /* 4-point system: 600px */
   margin: 0 auto;
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
 `
 
 const FeedbackForm = styled.form`
-  max-width: 600px;
+  max-width: ${props => props.theme.spacing[150]}; /* 4-point system: 600px */
   margin: 0 auto;
 `
 
@@ -48,6 +49,7 @@ const FormGroup = styled.div`
 const Label = styled.label`
   display: block;
   font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   margin-bottom: ${props => props.theme.spacing[2]};
   color: ${props => props.theme.colors.text};
 `
@@ -60,32 +62,35 @@ const Input = styled.input`
   background: ${props => props.theme.colors.surface};
   color: ${props => props.theme.colors.text};
   font-size: ${props => props.theme.typography.fontSize.base};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   ${props => props.theme.hoverTransition()};
   
+  /* H3: User Control & Freedom - Focus state */
   &:focus {
     outline: none;
     border-color: ${props => props.theme.colors.primary[500]};
-    box-shadow: 0 0 0 3px ${props => props.theme.colors.primary[100]};
+    box-shadow: 0 0 0 ${props => props.theme.spacing[0.75]} ${props => props.theme.colors.primary[100]}; /* 4-point system: 3px → 12px */
   }
 `
 
 const TextArea = styled.textarea`
   width: 100%;
-  min-height: 120px;
+  min-height: ${props => props.theme.spacing[30]}; /* 4-point system: 120px */
   padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[4]};
   border: 2px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
   background: ${props => props.theme.colors.surface};
   color: ${props => props.theme.colors.text};
   font-size: ${props => props.theme.typography.fontSize.base};
-  font-family: inherit;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   resize: vertical;
   ${props => props.theme.hoverTransition()};
   
+  /* H3: User Control & Freedom - Focus state */
   &:focus {
     outline: none;
     border-color: ${props => props.theme.colors.primary[500]};
-    box-shadow: 0 0 0 3px ${props => props.theme.colors.primary[100]};
+    box-shadow: 0 0 0 ${props => props.theme.spacing[0.75]} ${props => props.theme.colors.primary[100]}; /* 4-point system: 3px → 12px */
   }
 `
 
@@ -97,12 +102,14 @@ const Select = styled.select`
   background: ${props => props.theme.colors.surface};
   color: ${props => props.theme.colors.text};
   font-size: ${props => props.theme.typography.fontSize.base};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   ${props => props.theme.hoverTransition()};
   
+  /* H3: User Control & Freedom - Focus state */
   &:focus {
     outline: none;
     border-color: ${props => props.theme.colors.primary[500]};
-    box-shadow: 0 0 0 3px ${props => props.theme.colors.primary[100]};
+    box-shadow: 0 0 0 ${props => props.theme.spacing[0.75]} ${props => props.theme.colors.primary[100]}; /* 4-point system: 3px → 12px */
   }
 `
 
@@ -110,19 +117,33 @@ const SubmitButton = styled(Button)`
   width: 100%;
   background: ${props => props.theme.colors.primary[500]};
   border: none;
-  color: white;
+  color: ${props => props.theme.colors.hero.text};
   font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   padding: ${props => props.theme.spacing[4]};
   font-size: ${props => props.theme.typography.fontSize.base};
   
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
     box-shadow: ${props => props.theme.shadows.lg};
+    background: ${props => props.theme.colors.primary[600]};
+  }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]};
+  }
+  
+  /* H1: Visibility - Active state */
+  &:active {
+    transform: translateY(0);
   }
 `
 
 const SuccessCard = styled(Card)`
-  max-width: 500px;
+  max-width: ${props => props.theme.spacing[125]}; /* 4-point system: 500px */
   margin: 0 auto;
   text-align: center;
   padding: ${props => props.theme.spacing[12]};
@@ -136,11 +157,14 @@ const SuccessIcon = styled.div`
 const SuccessTitle = styled.h2`
   margin-bottom: ${props => props.theme.spacing[6]};
   color: ${props => props.theme.colors.text};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
 `
 
 const SuccessMessage = styled.p`
   color: ${props => props.theme.colors.textSecondary};
   margin-bottom: ${props => props.theme.spacing[8]};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 interface FeedbackData {

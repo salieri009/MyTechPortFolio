@@ -7,18 +7,36 @@ const TestimonialCardWrapper = styled.div`
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.radius.lg};
   padding: ${props => props.theme.spacing[8]};
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
   box-shadow: ${props => props.theme.shadows.sm};
-
+  
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-${props => props.theme.spacing[1]});
     box-shadow: ${props => props.theme.shadows.lg};
+    border-color: ${props => props.theme.colors.primary[500]};
+  }
+  
+  /* H3: User Control & Freedom - Focus state for keyboard navigation */
+  &:focus-within {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]};
     border-color: ${props => props.theme.colors.primary[500]};
   }
 
   @media (max-width: 768px) {
     padding: ${props => props.theme.spacing[6]};
+  }
+  
+  /* H8: Aesthetic & Minimalist - Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transform: none;
+    
+    &:hover {
+      transform: none;
+    }
   }
 `
 
@@ -31,6 +49,8 @@ const QuoteMark = styled.span`
   left: ${props => props.theme.spacing[6]};
   line-height: 1;
   font-family: ${props => props.theme.typography.fontFamily.primary};
+  pointer-events: none; /* H8: Aesthetic & Minimalist - Prevent interaction */
+  user-select: none; /* Prevent text selection */
 `
 
 const QuoteText = styled.p`
@@ -54,29 +74,31 @@ const AuthorSection = styled.div`
 `
 
 const AuthorImage = styled.img`
-  width: 48px;
-  height: 48px;
+  width: ${props => props.theme.spacing[12]};
+  height: ${props => props.theme.spacing[12]};
   border-radius: 50%;
   object-fit: cover;
   background: ${props => props.theme.colors.primary[100] || props.theme.colors.primary[50]};
 `
 
 const AuthorPlaceholder = styled.div`
-  width: 48px;
-  height: 48px;
+  width: ${props => props.theme.spacing[12]};
+  height: ${props => props.theme.spacing[12]};
   border-radius: 50%;
   background: ${props => props.theme.colors.primary[500]};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 20px;
+  color: ${props => props.theme.colors.hero.text};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-size: ${props => props.theme.typography.fontSize.lg};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const AuthorInfo = styled.div`
   display: flex;
   flex-direction: column;
+  gap: ${props => props.theme.spacing[0.5]}; /* 4-point system: 4px spacing between name and position */
 `
 
 const AuthorName = styled.div`
@@ -99,14 +121,25 @@ export function TestimonialCard({ testimonial }: TestimonialCardProps) {
   const getInitial = (name: string) => name.charAt(0).toUpperCase()
 
   return (
-    <TestimonialCardWrapper>
-      <QuoteMark>"</QuoteMark>
-      <QuoteText>{testimonial.quote}</QuoteText>
+    <TestimonialCardWrapper
+      role="article"
+      aria-labelledby={`testimonial-${testimonial.author.replace(/\s+/g, '-').toLowerCase()}`}
+    >
+      <QuoteMark aria-hidden="true">"</QuoteMark>
+      <QuoteText id={`testimonial-${testimonial.author.replace(/\s+/g, '-').toLowerCase()}`}>
+        {testimonial.quote}
+      </QuoteText>
       <AuthorSection>
         {testimonial.image ? (
-          <AuthorImage src={testimonial.image} alt={testimonial.author} />
+          <AuthorImage 
+            src={testimonial.image} 
+            alt={`${testimonial.author}, ${testimonial.position}`}
+            loading="lazy"
+          />
         ) : (
-          <AuthorPlaceholder>{getInitial(testimonial.author)}</AuthorPlaceholder>
+          <AuthorPlaceholder aria-hidden="true">
+            {getInitial(testimonial.author)}
+          </AuthorPlaceholder>
         )}
         <AuthorInfo>
           <AuthorName>{testimonial.author}</AuthorName>

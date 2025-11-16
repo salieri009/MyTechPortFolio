@@ -309,28 +309,54 @@ export function HomePage() {
         variant="secondary"
       />
 
-      <S.TestimonialSection ref={testimonialRef} id="testimonials">
+      <S.TestimonialSection 
+        ref={testimonialRef} 
+        id="testimonials"
+        role="region"
+        aria-labelledby="testimonials-title"
+        aria-describedby="testimonials-subtitle"
+      >
         <Container>
-          <S.SectionTitle $isVisible={isTestimonialVisible}>{t('testimonials.title') || 'What Others Say'}</S.SectionTitle>
+          <S.SectionTitle 
+            id="testimonials-title"
+            $isVisible={isTestimonialVisible}
+          >
+            {t('testimonials.title') || 'What Others Say'}
+          </S.SectionTitle>
           <SectionPurpose 
             text={t('storytelling.testimonialsPurpose')}
           />
-          <S.SectionSubtitle $isVisible={isTestimonialVisible}>
+          <S.SectionSubtitle 
+            id="testimonials-subtitle"
+            $isVisible={isTestimonialVisible}
+          >
             {t('testimonials.subtitle') || 'Feedback from colleagues and clients who have worked with me.'}
           </S.SectionSubtitle>
           {loading ? (
-            <S.TestimonialGrid $isVisible={isTestimonialVisible}>
+            <S.TestimonialGrid 
+              $isVisible={isTestimonialVisible}
+              role="list"
+              aria-label="Loading testimonials"
+            >
               <SkeletonTestimonialCard />
               <SkeletonTestimonialCard />
               <SkeletonTestimonialCard />
             </S.TestimonialGrid>
           ) : testimonials.length > 0 ? (
-            <S.TestimonialGrid $isVisible={isTestimonialVisible}>
+            <S.TestimonialGrid 
+              $isVisible={isTestimonialVisible}
+              role="list"
+              aria-label="Testimonials from colleagues and clients"
+            >
               {testimonials.map(testimonial => (
                 <TestimonialCard key={testimonial.id} testimonial={testimonial} />
               ))}
             </S.TestimonialGrid>
-          ) : null}
+          ) : (
+            <S.SectionSubtitle $isVisible={isTestimonialVisible}>
+              {t('testimonials.empty', 'No testimonials available at this time.')}
+            </S.SectionSubtitle>
+          )}
         </Container>
       </S.TestimonialSection>
     </>
