@@ -16,7 +16,7 @@ const CanvasContainer = styled.canvas<{ $isDark: boolean }>`
   width: 100%;
   height: 100%;
   z-index: 0;
-  opacity: ${props => props.$isDark ? 0.3 : 0.2};
+  opacity: ${props => props.$isDark ? 0.24 : 0.16};
   pointer-events: none;
   transition: opacity 0.3s ease;
 `
@@ -60,24 +60,46 @@ export function InteractiveBackground({
     const resizeCanvas = () => {
       canvas.width = canvas.offsetWidth
       canvas.height = canvas.offsetHeight
+      
+      // Resize 시 파티클 재배치 (전체 화면에 고르게 분포)
+      if (particlesRef.current.length > 0) {
+        const colors = isDark 
+          ? ['rgba(79, 172, 254, 0.5)', 'rgba(0, 242, 254, 0.5)', 'rgba(120, 119, 198, 0.5)']
+          : ['rgba(102, 126, 234, 0.3)', 'rgba(118, 75, 162, 0.3)', 'rgba(240, 147, 251, 0.3)']
+        
+        particlesRef.current = particlesRef.current.map(() => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          radius: Math.random() * 3 + 1.5,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        }))
+      }
     }
 
-    resizeCanvas()
+    // 초기 캔버스 크기 설정 (약간의 지연으로 확실히 설정)
+    const initCanvas = () => {
+      resizeCanvas()
+      
+      // Create particles - 전체 화면에 고르게 분포
+      const colors = isDark 
+        ? ['rgba(79, 172, 254, 0.5)', 'rgba(0, 242, 254, 0.5)', 'rgba(120, 119, 198, 0.5)']
+        : ['rgba(102, 126, 234, 0.3)', 'rgba(118, 75, 162, 0.3)', 'rgba(240, 147, 251, 0.3)']
+
+      particlesRef.current = Array.from({ length: particleCount }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 3 + 1.5, // 크기 범위를 1.5-4.5로 확장
+        color: colors[Math.floor(Math.random() * colors.length)]
+      }))
+    }
+
+    // 다음 프레임에서 초기화하여 canvas 크기가 확실히 설정된 후 실행
+    requestAnimationFrame(initCanvas)
     window.addEventListener('resize', resizeCanvas)
-
-    // Create particles
-    const colors = isDark 
-      ? ['rgba(79, 172, 254, 0.5)', 'rgba(0, 242, 254, 0.5)', 'rgba(120, 119, 198, 0.5)']
-      : ['rgba(102, 126, 234, 0.3)', 'rgba(118, 75, 162, 0.3)', 'rgba(240, 147, 251, 0.3)']
-
-    particlesRef.current = Array.from({ length: particleCount }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      radius: Math.random() * 2 + 1,
-      color: colors[Math.floor(Math.random() * colors.length)]
-    }))
 
     return () => {
       window.removeEventListener('resize', resizeCanvas)
@@ -193,26 +215,41 @@ export function InteractiveBackground({
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  // Performance optimization: pause when not visible
+  // Performance optimization: pause when not visible or tab is inactive
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          setIsVisible(entry.isIntersecting)
+          setIsVisible(entry.isIntersecting && !document.hidden)
         })
       },
       { threshold: 0 }
     )
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsVisible(false)
+      } else {
+        const canvas = canvasRef.current
+        if (canvas) {
+          const rect = canvas.getBoundingClientRect()
+          setIsVisible(rect.top < window.innerHeight && rect.bottom > 0)
+        }
+      }
+    }
 
     const canvas = canvasRef.current
     if (canvas) {
       observer.observe(canvas)
     }
 
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
     return () => {
       if (canvas) {
         observer.unobserve(canvas)
       }
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
 

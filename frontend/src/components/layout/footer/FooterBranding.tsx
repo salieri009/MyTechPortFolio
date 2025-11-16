@@ -18,15 +18,14 @@ export function FooterBranding() {
         to="/"
         aria-label={`${t('footer.branding.name')} - Return to homepage`}
       >
-        <LogoIcon aria-hidden="true">MT</LogoIcon>
-        <BrandName>{t('footer.branding.name')}</BrandName>
+        <LogoIcon aria-hidden="true">JB</LogoIcon>
+        <BrandName>{t('footer.branding.name', '정욱 반')}</BrandName>
       </BrandingContainer>
       <BrandTagline>
-        {t('footer.branding.tagline')}
+        {t('footer.branding.tagline', '풀스택 개발자')}
       </BrandTagline>
       <TechBadge aria-label="Technology stack used to build this portfolio">
-        <span aria-hidden="true">🚀</span>
-        <span>{t('footer.branding.builtWith', 'Built with React & Spring Boot')}</span>
+        {t('footer.branding.builtWith', 'Built with: [React] [Spring Boot] [Three.js]')}
       </TechBadge>
     </FooterSection>
   )

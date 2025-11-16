@@ -72,10 +72,16 @@ const MetricIcon = styled.span`
   line-height: 1;
 `
 
-const MetricValue = styled.span`
+const MetricValue = styled.span<{ $isAnimating: boolean }>`
   font-size: 20px;
   font-weight: 700;
   color: ${props => props.theme.colors.primary[600]};
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  transition: text-shadow 0.05s ease;
+  
+  ${props => props.$isAnimating && `
+    text-shadow: 0 0 8px ${props.theme.colors.primary[500]};
+  `}
   
   ${props => props.theme.mode === 'dark' && `
     color: ${props.theme.colors.primary[400]};
@@ -99,16 +105,22 @@ const formatNumber = (num: number): string => {
   return num.toString()
 }
 
-const useCountUp = (target: number, duration: number = 2000, isVisible: boolean): number => {
+const useCountUp = (target: number, duration: number = 2000, isVisible: boolean): { count: number; isAnimating: boolean } => {
   const [count, setCount] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
   const startTimeRef = useRef<number | null>(null)
   const animationFrameRef = useRef<number | null>(null)
+  const lastCountRef = useRef(0)
 
   useEffect(() => {
     if (!isVisible || target === 0) {
       setCount(0)
+      setIsAnimating(false)
       return
     }
+
+    setIsAnimating(true)
+    lastCountRef.current = 0
 
     const animate = (currentTime: number) => {
       if (!startTimeRef.current) {
@@ -122,12 +134,20 @@ const useCountUp = (target: number, duration: number = 2000, isVisible: boolean)
       const easeOut = 1 - Math.pow(1 - progress, 3)
       const currentCount = Math.floor(easeOut * target)
       
+      // 숫자가 변경될 때만 깜빡임 효과
+      if (currentCount !== lastCountRef.current) {
+        setIsAnimating(true)
+        setTimeout(() => setIsAnimating(false), 50)
+        lastCountRef.current = currentCount
+      }
+      
       setCount(currentCount)
 
       if (progress < 1) {
         animationFrameRef.current = requestAnimationFrame(animate)
       } else {
         setCount(target)
+        setIsAnimating(false)
       }
     }
 
@@ -138,10 +158,11 @@ const useCountUp = (target: number, duration: number = 2000, isVisible: boolean)
         cancelAnimationFrame(animationFrameRef.current)
       }
       startTimeRef.current = null
+      setIsAnimating(false)
     }
   }, [target, duration, isVisible])
 
-  return count
+  return { count, isAnimating }
 }
 
 export const MilestoneMetrics: React.FC<MilestoneMetricsProps> = ({
@@ -171,10 +192,10 @@ export const MilestoneMetrics: React.FC<MilestoneMetricsProps> = ({
     return () => observer.disconnect()
   }, [])
 
-  const projectsCount = useCountUp(projectCount, 1500, isVisible)
-  const linesCount = useCountUp(codeMetrics?.linesOfCode || 0, 2000, isVisible)
-  const commitsCount = useCountUp(codeMetrics?.commits || 0, 2000, isVisible)
-  const reposCount = useCountUp(codeMetrics?.repositories || 0, 1500, isVisible)
+  const projectsResult = useCountUp(projectCount, 1500, isVisible)
+  const linesResult = useCountUp(codeMetrics?.linesOfCode || 0, 2000, isVisible)
+  const commitsResult = useCountUp(codeMetrics?.commits || 0, 2000, isVisible)
+  const reposResult = useCountUp(codeMetrics?.repositories || 0, 1500, isVisible)
 
   const hasMetrics = projectCount > 0 || codeMetrics
 
@@ -185,45 +206,33 @@ export const MilestoneMetrics: React.FC<MilestoneMetricsProps> = ({
   return (
     <MetricsContainer ref={containerRef} className={className} role="group" aria-label="Milestone metrics">
       {projectCount > 0 && (
-        <MetricBadge $isVisible={isVisible} aria-label={`${projectsCount} projects completed`}>
+        <MetricBadge $isVisible={isVisible} aria-label={`${projectsResult.count} projects completed`}>
           <MetricIcon>📁</MetricIcon>
-          <MetricValue>{projectsCount}</MetricValue>
+          <MetricValue $isAnimating={projectsResult.isAnimating}>{projectsResult.count}</MetricValue>
           <MetricLabel>Projects</MetricLabel>
         </MetricBadge>
       )}
       
       {codeMetrics?.linesOfCode && codeMetrics.linesOfCode > 0 && (
-        <MetricBadge $isVisible={isVisible} aria-label={`${formatNumber(linesCount)} lines of code`}>
+        <MetricBadge $isVisible={isVisible} aria-label={`${formatNumber(linesResult.count)} lines of code`}>
           <MetricIcon>💻</MetricIcon>
-          <MetricValue>{formatNumber(linesCount)}</MetricValue>
+          <MetricValue $isAnimating={linesResult.isAnimating}>{formatNumber(linesResult.count)}</MetricValue>
           <MetricLabel>Lines</MetricLabel>
         </MetricBadge>
       )}
       
       {codeMetrics?.commits && codeMetrics.commits > 0 && (
-        <MetricBadge $isVisible={isVisible} aria-label={`${formatNumber(commitsCount)} commits`}>
+        <MetricBadge $isVisible={isVisible} aria-label={`${formatNumber(commitsResult.count)} commits`}>
           <MetricIcon>📝</MetricIcon>
-          <MetricValue>{formatNumber(commitsCount)}</MetricValue>
+          <MetricValue $isAnimating={commitsResult.isAnimating}>{formatNumber(commitsResult.count)}</MetricValue>
           <MetricLabel>Commits</MetricLabel>
         </MetricBadge>
       )}
       
       {codeMetrics?.repositories && codeMetrics.repositories > 0 && (
-        <MetricBadge $isVisible={isVisible} aria-label={`${reposCount} repositories`}>
+        <MetricBadge $isVisible={isVisible} aria-label={`${reposResult.count} repositories`}>
           <MetricIcon>📦</MetricIcon>
-          <MetricValue>{reposCount}</MetricValue>
-          <MetricLabel>Repos</MetricLabel>
-        </MetricBadge>
-      )}
-    </MetricsContainer>
-  )
-}
-
-
-      {codeMetrics?.repositories && codeMetrics.repositories > 0 && (
-        <MetricBadge $isVisible={isVisible} aria-label={`${reposCount} repositories`}>
-          <MetricIcon>📦</MetricIcon>
-          <MetricValue>{reposCount}</MetricValue>
+          <MetricValue $isAnimating={reposResult.isAnimating}>{reposResult.count}</MetricValue>
           <MetricLabel>Repos</MetricLabel>
         </MetricBadge>
       )}

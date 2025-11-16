@@ -31,13 +31,27 @@ const LanguageIndicator = styled(motion.div)`
 
 const SwipeHint = styled.div`
   position: absolute;
-  top: -25px;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 11px;
+  font-size: 12px;
   color: ${props => props.theme.colors.neutral[500]};
-  opacity: 0.7;
+  opacity: 0.8;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  
+  @media (max-width: 768px) {
+    font-size: 11px;
+    top: -28px;
+  }
+`
+
+const HintArrow = styled.span`
+  color: ${props => props.theme.colors.primary[500]};
+  font-weight: 600;
 `
 
 interface LanguageSwiperProps {
@@ -55,7 +69,7 @@ export const LanguageSwiper: React.FC<LanguageSwiperProps> = ({
   className, 
   showHint = true 
 }) => {
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation()
   
   const currentLanguageIndex = languages.findIndex(lang => lang.code === i18n.language)
   const currentLanguage = languages[currentLanguageIndex] || languages[0]
@@ -82,6 +96,14 @@ export const LanguageSwiper: React.FC<LanguageSwiperProps> = ({
     preventScrollOnSwipe: true
   })
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') {
+      changeLanguage('left')
+    } else if (e.key === 'ArrowRight') {
+      changeLanguage('right')
+    }
+  }
+
   return (
     <SwipeContainer 
       className={className}
@@ -89,10 +111,14 @@ export const LanguageSwiper: React.FC<LanguageSwiperProps> = ({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.2 }}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-label={`${t('common.swipeToChange')}: ${currentLanguage.name}`}
     >
       {showHint && (
         <SwipeHint>
-          ← Swipe to change language →
+          {currentLanguage.flag} {currentLanguage.name} <HintArrow>←</HintArrow> {t('common.swipeToChange')} <HintArrow>→</HintArrow>
         </SwipeHint>
       )}
       
@@ -103,6 +129,8 @@ export const LanguageSwiper: React.FC<LanguageSwiperProps> = ({
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.2 }}
+          aria-live="polite"
+          aria-atomic="true"
         >
           {currentLanguage.flag} {currentLanguage.name}
         </LanguageIndicator>

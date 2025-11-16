@@ -37,9 +37,10 @@ const ButtonBase = styled.button<ButtonProps>`
   position: relative;
   overflow: hidden;
   
-  /* Focus styles for accessibility */
+  /* Focus styles for accessibility - 기계적 톤 강화 */
   &:focus-visible {
-    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    border: 2px solid ${props => props.theme.colors.primary[500]};
+    outline: none;
     outline-offset: 2px;
   }
   

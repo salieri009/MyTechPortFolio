@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { Container } from '@components/common'
 
 /**
@@ -258,13 +259,50 @@ interface ProjectColumn {
   description: string
   techStack: string[]
   animationType: 'right' | 'both' | 'left'
+  category: string
   onHover?: () => void
   onLeave?: () => void
+  onClick?: () => void
 }
 
 export function ProjectShowcaseSection() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [hoveredColumn, setHoveredColumn] = useState<string | null>(null)
+  const [tappedColumn, setTappedColumn] = useState<string | null>(null)
+
+  const handleCardClick = (category: string, columnId: string) => {
+    // 모바일: 첫 번째 탭은 hover 상태, 두 번째 탭은 링크 이동
+    if (window.innerWidth <= 768) {
+      if (tappedColumn === columnId) {
+        // 두 번째 탭 - 링크 이동
+        navigate(`/projects?category=${category}`)
+        setTappedColumn(null)
+      } else {
+        // 첫 번째 탭 - hover 상태 표시
+        setTappedColumn(columnId)
+        setHoveredColumn(columnId)
+      }
+    } else {
+      // 데스크톱: 바로 링크 이동
+      navigate(`/projects?category=${category}`)
+    }
+  }
+
+  const handleCardKeyDown = (e: React.KeyboardEvent, category: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      navigate(`/projects?category=${category}`)
+    }
+  }
+
+  const handleCardMouseLeave = (columnId: string) => {
+    // 모바일에서는 hover 상태 유지
+    if (window.innerWidth > 768) {
+      setHoveredColumn(null)
+      setTappedColumn(null)
+    }
+  }
 
   const projectData: ProjectColumn[] = [
     {
@@ -274,8 +312,10 @@ export function ProjectShowcaseSection() {
       description: t('showcase.threejs.description'),
       techStack: ['Three.js', 'WebGL', 'GLSL', 'Blender', 'React Three Fiber', 'GSAP', 'Cannon.js', 'Post-processing'],
       animationType: 'right',
+      category: 'threejs',
       onHover: () => setHoveredColumn('threejs'),
-      onLeave: () => setHoveredColumn(null)
+      onLeave: () => setHoveredColumn(null),
+      onClick: () => handleCardClick('threejs')
     },
     {
       id: 'software',
@@ -284,8 +324,10 @@ export function ProjectShowcaseSection() {
       description: t('showcase.software.description'),
       techStack: ['React', 'TypeScript', 'Node.js', 'Spring Boot', 'MongoDB', 'PostgreSQL', 'Docker', 'Azure', 'REST API', 'GraphQL'],
       animationType: 'both',
+      category: 'software',
       onHover: () => setHoveredColumn('software'),
-      onLeave: () => setHoveredColumn(null)
+      onLeave: () => setHoveredColumn(null),
+      onClick: () => handleCardClick('software')
     },
     {
       id: 'gamedev',
@@ -294,8 +336,10 @@ export function ProjectShowcaseSection() {
       description: t('showcase.gamedev.description'),
       techStack: ['Unity', 'C#', 'Unreal Engine', 'JavaScript', 'Phaser.js', 'WebRTC', 'Socket.io', 'Photon'],
       animationType: 'left',
+      category: 'gamedev',
       onHover: () => setHoveredColumn('gamedev'),
-      onLeave: () => setHoveredColumn(null)
+      onLeave: () => setHoveredColumn(null),
+      onClick: () => handleCardClick('gamedev')
     }
   ]
 
@@ -325,16 +369,18 @@ export function ProjectShowcaseSection() {
           {projectData.map((project, index) => (
             <ColumnCard
               key={project.id}
-              $isHovered={hoveredColumn === project.id}
+              $isHovered={hoveredColumn === project.id || tappedColumn === project.id}
               $animationType={project.animationType}
               onMouseEnter={project.onHover}
-              onMouseLeave={project.onLeave}
+              onMouseLeave={() => handleCardMouseLeave(project.id)}
               onFocus={project.onHover}
               onBlur={project.onLeave}
-              role="listitem"
+              onClick={() => handleCardClick(project.category, project.id)}
+              onKeyDown={(e) => handleCardKeyDown(e, project.category)}
+              role="button"
               tabIndex={0}
-              aria-label={`${project.title}: ${project.description}`}
-              aria-expanded={hoveredColumn === project.id}
+              aria-label={`${project.title}: ${project.description}. ${tappedColumn === project.id ? 'Double tap' : 'Click'} to view ${project.title} projects.`}
+              aria-expanded={hoveredColumn === project.id || tappedColumn === project.id}
             >
               <CardContent>
                 <CardIcon aria-hidden="true">{project.icon}</CardIcon>

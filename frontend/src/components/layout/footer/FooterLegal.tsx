@@ -8,25 +8,13 @@ import {
 
 export function FooterLegal() {
   const { t } = useTranslation()
-
-  const legalLinks = [
-    { key: 'privacy', path: '/privacy' },
-    { key: 'terms', path: '/terms' },
-    { key: 'licenses', path: '/licenses' }
-  ]
+  const currentYear = new Date().getFullYear()
 
   return (
     <>
       <FooterCopyright>
-        {t('footer.legal.copyright')}
+        © {currentYear} 정욱 반. All rights reserved.
       </FooterCopyright>
-      <FooterLegalLinks>
-        {legalLinks.map(link => (
-          <FooterLegalLink key={link.key} to={link.path}>
-            {t(`footer.legal.${link.key}`)}
-          </FooterLegalLink>
-        ))}
-      </FooterLegalLinks>
     </>
   )
 }

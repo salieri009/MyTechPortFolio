@@ -40,7 +40,7 @@ const SectionTitle = styled.h2`
 const SectionSubtitle = styled.p`
   font-size: 20px;
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 100px;
   color: ${props => props.theme.colors.textSecondary};
   max-width: 600px;
   margin-left: auto;
@@ -49,7 +49,7 @@ const SectionSubtitle = styled.p`
 
   @media (max-width: 768px) {
     font-size: 18px;
-    margin-bottom: 60px;
+    margin-bottom: 80px;
   }
 `
 
@@ -59,22 +59,33 @@ const TimelineContainer = styled.div`
   margin: 0 auto;
 `
 
-const TimelineLine = styled.div`
+const TimelineLineBackground = styled.div`
   position: absolute;
-  left: 80px;
+  left: 40px;
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(
-    to bottom,
-    ${props => props.theme.colors.primary[500]} 0%,
-    ${props => props.theme.colors.primary[300]} 50%,
-    ${props => props.theme.colors.neutral[300]} 100%
-  );
+  background: ${props => props.theme.colors.neutral[300]};
   border-radius: 2px;
 
   @media (max-width: 768px) {
-    left: 30px;
+    left: 20px;
+  }
+`
+
+const TimelineLineProgress = styled.div<{ $progress: number }>`
+  position: absolute;
+  left: 40px;
+  top: 0;
+  width: 4px;
+  height: ${props => props.$progress}%;
+  background: ${props => props.theme.colors.neutral[600] || props.theme.colors.neutral[500]};
+  border-radius: 2px;
+  box-shadow: 0 0 5px ${props => props.theme.colors.primary[500]} inset;
+  transition: height 0.3s ease;
+
+  @media (max-width: 768px) {
+    left: 20px;
   }
 `
 
@@ -85,9 +96,33 @@ const MilestoneItem = styled(motion.div)`
   position: relative;
   flex-direction: row;
 
+  /* 타임라인 연결점 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: ${props => props.theme.colors.primary[500]};
+    border: 2px solid ${props => props.theme.colors.background};
+    z-index: 3;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  &[data-visible="true"]::before {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
   @media (max-width: 768px) {
     margin-bottom: 60px;
     padding-left: 60px;
+    
+    &::before {
+      left: 20px;
+    }
   }
 `
 
@@ -100,7 +135,7 @@ const MilestoneNode = styled.div<{ $status: 'completed' | 'current' | 'planned' 
   justify-content: center;
   font-size: 24px;
   position: absolute;
-  left: 80px;
+  left: 40px;
   transform: translateX(-50%);
   z-index: 2;
   
@@ -151,11 +186,23 @@ const MilestoneCard = styled(motion.div)`
   box-shadow: ${props => props.theme.shadows.lg};
   border: 1px solid ${props => props.theme.colors.border};
   max-width: 600px;
-  margin-left: 140px;
+  margin-left: 120px;
   flex: 1;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, box-shadow, border-color;
   transform: translateZ(0);
+  position: relative;
+  
+  /* 좌측 경계선 - 데이터 블록 구분 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: ${props => props.theme.colors.neutral[400] || props.theme.colors.border};
+  }
   
   &:hover {
     transform: translateY(-4px);
@@ -164,10 +211,14 @@ const MilestoneCard = styled(motion.div)`
   }
   
   @media (max-width: 768px) {
-    margin-left: 60px;
+    margin-left: 0;
     max-width: none;
-    width: calc(100% - 80px);
+    width: calc(100% - 40px);
     padding: 24px;
+    
+    &::before {
+      display: none;
+    }
   }
 `
 
@@ -178,6 +229,18 @@ const MilestoneYear = styled.div`
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  position: absolute;
+  left: 0;
+  width: 80px;
+  text-align: right;
+  padding-right: 20px;
+  
+  @media (max-width: 768px) {
+    position: static;
+    width: auto;
+    text-align: left;
+    padding-right: 0;
+  }
 `
 
 const MilestoneTitle = styled.h3`
@@ -208,12 +271,19 @@ const TechTags = styled.div`
 `
 
 const TechTag = styled.span`
-  background: ${props => props.theme.colors.primary[100]};
-  color: ${props => props.theme.colors.primary[700]};
-  padding: 4px 12px;
-  border-radius: 12px;
+  background: ${props => props.theme.colors.surface || props.theme.colors.neutral[100]};
+  color: ${props => props.theme.colors.textSecondary};
+  padding: 4px 8px;
+  border-radius: 2px;
   font-size: 12px;
   font-weight: 500;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  border: 1px solid ${props => props.theme.colors.border};
+  
+  ${props => props.theme.mode === 'dark' && `
+    background: ${props.theme.colors.neutral[800] || props.theme.colors.surface};
+    border-color: ${props.theme.colors.neutral[700]};
+  `}
 `
 
 interface CodeMetrics {
@@ -379,6 +449,7 @@ const milestoneData: MilestoneData[] = [
 export function JourneyMilestoneSection() {
   const { t } = useTranslation()
   const [visibleMilestones, setVisibleMilestones] = useState<string[]>([])
+  const [timelineProgress, setTimelineProgress] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -387,39 +458,95 @@ export function JourneyMilestoneSection() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const milestoneId = entry.target.getAttribute('data-milestone-id')
-            if (milestoneId && !visibleMilestones.includes(milestoneId)) {
-              setVisibleMilestones(prev => [...prev, milestoneId])
+            if (milestoneId) {
+              setVisibleMilestones(prev => {
+                // Only add if not already in the array to avoid unnecessary re-renders
+                if (!prev.includes(milestoneId)) {
+                  return [...prev, milestoneId]
+                }
+                return prev
+              })
             }
           }
         })
       },
       {
-        threshold: 0.3,
-        rootMargin: '0px 0px -100px 0px'
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
       }
     )
 
     const milestoneElements = containerRef.current?.querySelectorAll('[data-milestone-id]')
     milestoneElements?.forEach(el => observer.observe(el))
 
-    return () => observer.disconnect()
-  }, [visibleMilestones])
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
+  // Timeline progress calculation based on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return
+
+      const container = containerRef.current
+      const containerRect = container.getBoundingClientRect()
+      const containerTop = containerRect.top + window.scrollY
+      const containerHeight = container.scrollHeight
+      const viewportTop = window.scrollY
+      const viewportHeight = window.innerHeight
+
+      // Find the closest milestone to viewport top
+      const milestoneElements = container.querySelectorAll('[data-milestone-id]')
+      let closestMilestone: Element | null = null
+      let closestDistance = Infinity
+
+      milestoneElements.forEach((milestone) => {
+        const rect = milestone.getBoundingClientRect()
+        const milestoneTop = rect.top + window.scrollY
+        const distance = Math.abs(milestoneTop - viewportTop)
+
+        if (distance < closestDistance && milestoneTop <= viewportTop + viewportHeight * 0.3) {
+          closestDistance = distance
+          closestMilestone = milestone
+        }
+      })
+
+      if (closestMilestone) {
+        const milestoneRect = closestMilestone.getBoundingClientRect()
+        const milestoneTop = milestoneRect.top + window.scrollY
+        const progress = Math.max(0, Math.min(100, ((milestoneTop - containerTop) / containerHeight) * 100))
+        setTimelineProgress(progress)
+      } else {
+        // Calculate progress based on scroll position
+        const scrollProgress = Math.max(0, Math.min(100, ((viewportTop - containerTop + viewportHeight * 0.3) / containerHeight) * 100))
+        setTimelineProgress(scrollProgress)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // Initial calculation
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 50 },
+    hidden: { opacity: 0, y: 15 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.15,
-        duration: 0.6,
-        ease: [0.25, 0.25, 0, 1]
+        delay: i * 0.08,
+        duration: 0.5,
+        ease: [0.25, 0.46, 0.45, 0.94]
       }
     })
   }
 
   return (
-    <Section>
+    <Section id="journey">
       <Container>
         <SectionTitle>My Journey</SectionTitle>
         <SectionSubtitle>
@@ -427,12 +554,15 @@ export function JourneyMilestoneSection() {
         </SectionSubtitle>
         
         <TimelineContainer ref={containerRef}>
-          <TimelineLine />
+          <TimelineLineBackground />
+          <TimelineLineProgress $progress={timelineProgress} />
           
           {milestoneData.map((milestone, index) => (
             <MilestoneItem
               key={milestone.id}
+              id={`milestone-${milestone.id}`}
               data-milestone-id={milestone.id}
+              data-visible={visibleMilestones.includes(milestone.id)}
               variants={itemVariants}
               initial="hidden"
               animate={visibleMilestones.includes(milestone.id) ? "visible" : "hidden"}
@@ -443,8 +573,8 @@ export function JourneyMilestoneSection() {
               </MilestoneNode>
               
               <MilestoneCard>
+                <MilestoneYear>{milestone.year}</MilestoneYear>
                 <CardContent>
-                  <MilestoneYear>{milestone.year}</MilestoneYear>
                   <MilestoneTitle>{milestone.title}</MilestoneTitle>
                   <MilestoneDescription>{milestone.description}</MilestoneDescription>
                   
@@ -475,3 +605,4 @@ export function JourneyMilestoneSection() {
     </Section>
   )
 }
+

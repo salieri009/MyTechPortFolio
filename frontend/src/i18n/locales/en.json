@@ -27,11 +27,13 @@
     "closeMenu": "Close menu"
   },
   "hero": {
-    "title": "Developer who loves solving problems",
-    "subtitle": "Creating value through efficient and creative solutions",
+    "headline": "Full Stack Developer — React & Spring Boot",
+    "subtitle": "Creating value through efficient and creative solutions. Specialized in web application development using React, TypeScript, and Spring Boot.",
     "greeting": "Hello, I'm",
     "name": "Jungwook Van",
     "cta": {
+      "primary": "View Projects",
+      "secondary": "Learn More",
       "email": "Send Email",
       "github": "GitHub",
       "linkedin": "LinkedIn",

@@ -42,10 +42,8 @@ export function Footer() {
               <FooterGrid>
                 <FooterBranding />
                 <FooterNav />
-                <FooterContact />
                 <FooterSocial />
               </FooterGrid>
-              <FooterCTA />
               <FooterBottom>
                 <FooterLegal />
               </FooterBottom>

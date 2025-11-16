@@ -27,11 +27,13 @@
     "closeMenu": "메뉴 닫기"
   },
   "hero": {
-    "title": "문제 해결을 즐기는 개발자",
-    "subtitle": "효율적이고 창의적인 솔루션을 통해 가치를 창출합니다",
+    "headline": "풀스택 개발자 — React & Spring Boot",
+    "subtitle": "효율적이고 창의적인 솔루션을 통해 가치를 창출합니다. React, TypeScript, Spring Boot를 활용한 웹 애플리케이션 개발 전문가입니다.",
     "greeting": "안녕하세요, 저는",
     "name": "정욱 반",
     "cta": {
+      "primary": "프로젝트 보기",
+      "secondary": "더 알아보기",
       "email": "이메일 보내기",
       "github": "GitHub",
       "linkedin": "LinkedIn",

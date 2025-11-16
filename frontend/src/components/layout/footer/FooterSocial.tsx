@@ -14,36 +14,42 @@ export function FooterSocial() {
   // Only show actual social media links that exist
   const socialLinks = [
     {
+      name: t('footer.social.linkedin'),
+      label: 'LinkedIn',
+      href: CONTACT_INFO.linkedin.url,
+      ariaLabel: `Visit ${CONTACT_INFO.name.full}'s LinkedIn profile`
+    },
+    {
       name: t('footer.social.github'),
-      icon: '🐙',
+      label: 'GitHub',
       href: CONTACT_INFO.github.url,
       ariaLabel: `Visit ${CONTACT_INFO.name.full}'s GitHub profile`
     },
     {
-      name: t('footer.social.linkedin'),
-      icon: '💼',
-      href: CONTACT_INFO.linkedin.url,
-      ariaLabel: `Visit ${CONTACT_INFO.name.full}'s LinkedIn profile`
+      name: 'Email',
+      label: 'Email',
+      href: `mailto:${CONTACT_INFO.email.student}`,
+      ariaLabel: `Send email to ${CONTACT_INFO.name.full}`
     }
   ]
 
   return (
     <FooterSection>
       <FooterSectionTitle>
-        {t('footer.social.title')}
+        {t('footer.social.title', 'Connect')}
       </FooterSectionTitle>
       <SocialIconsGrid role="list" aria-label="Social media links">
         {socialLinks.map((social, index) => (
           <SocialIcon
             key={index}
             href={social.href}
-            target="_blank"
-            rel="noopener noreferrer"
+            target={social.href.startsWith('mailto:') ? undefined : '_blank'}
+            rel={social.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
             title={social.name}
             aria-label={social.ariaLabel || social.name}
             role="listitem"
           >
-            <span aria-hidden="true">{social.icon}</span>
+            {social.label}
           </SocialIcon>
         ))}
       </SocialIconsGrid>

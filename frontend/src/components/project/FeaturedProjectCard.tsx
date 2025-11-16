@@ -13,6 +13,12 @@ const FeaturedCardWrapper = styled(Link)`
   &:hover {
     text-decoration: none;
   }
+  
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme?.colors?.primary?.[500] || '#3B82F6'};
+    outline-offset: 2px;
+    border-radius: 12px;
+  }
 `
 
 const CardContainer = styled.div`

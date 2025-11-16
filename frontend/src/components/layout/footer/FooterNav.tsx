@@ -18,17 +18,20 @@ import {
 export function FooterNav() {
   const { t } = useTranslation()
 
-  // Main navigation categories (matching global navigation)
-  const mainNavigationItems = [
+  const handleJourneyClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const journeySection = document.getElementById('journey') || document.querySelector('[id*="journey"]')
+    if (journeySection) {
+      journeySection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  // 핵심 내비게이션 링크만 유지
+  const navigationItems = [
     { key: 'home', path: '/' },
     { key: 'projects', path: '/projects' },
-    { key: 'academics', path: '/academics' },
-    { key: 'about', path: '/about' }
-  ]
-
-  // Secondary navigation items
-  const secondaryNavigationItems = [
-    { key: 'feedback', path: '/feedback' }
+    { key: 'about', path: '/about' },
+    { key: 'journey', path: '#journey', onClick: handleJourneyClick }
   ]
 
   return (
@@ -37,27 +40,24 @@ export function FooterNav() {
         {t('footer.sections.navigation', 'Navigation')}
       </FooterSectionTitle>
       <FooterList role="list" aria-label="Site navigation">
-        {/* Main navigation - bold for hierarchy */}
-        {mainNavigationItems.map(item => (
+        {navigationItems.map(item => (
           <FooterListItem key={item.key} role="listitem">
-            <Link 
-              to={item.path}
-              aria-label={`Navigate to ${t(`navigation.${item.key}`)} page`}
-              style={{ fontWeight: 600 }}
-            >
-              {t(`navigation.${item.key}`)}
-            </Link>
-          </FooterListItem>
-        ))}
-        {/* Secondary navigation - normal weight */}
-        {secondaryNavigationItems.map(item => (
-          <FooterListItem key={item.key} role="listitem">
-            <Link 
-              to={item.path}
-              aria-label={`Navigate to ${t(`navigation.${item.key}`)} page`}
-            >
-              {t(`navigation.${item.key}`)}
-            </Link>
+            {item.onClick ? (
+              <a 
+                href={item.path}
+                onClick={item.onClick}
+                aria-label={`Navigate to ${t(`navigation.${item.key}`)} section`}
+              >
+                {t(`navigation.${item.key}`, item.key === 'journey' ? 'Journey' : '')}
+              </a>
+            ) : (
+              <Link 
+                to={item.path}
+                aria-label={`Navigate to ${t(`navigation.${item.key}`)} page`}
+              >
+                {t(`navigation.${item.key}`)}
+              </Link>
+            )}
           </FooterListItem>
         ))}
       </FooterList>

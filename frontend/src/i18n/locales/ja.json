@@ -27,11 +27,13 @@
     "closeMenu": "メニューを閉じる"
   },
   "hero": {
-    "title": "問題解決を楽しむ開発者",
-    "subtitle": "効率的で創造的なソリューションを通じて価値を創造します",
+    "headline": "フルスタック開発者 — React & Spring Boot",
+    "subtitle": "効率的で創造的なソリューションを通じて価値を創造します。React、TypeScript、Spring Bootを使用したWebアプリケーション開発の専門家です。",
     "greeting": "こんにちは、私は",
     "name": "ジョンウック・バン",
     "cta": {
+      "primary": "プロジェクトを見る",
+      "secondary": "もっと見る",
       "email": "メール送信",
       "github": "GitHub",
       "linkedin": "LinkedIn",

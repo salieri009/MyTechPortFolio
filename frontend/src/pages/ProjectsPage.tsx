@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Container, Card, Tag } from '../components/common'
 import { ProjectCard } from '../components/project/ProjectCard'
 import { useFilters } from '../stores/filters'
 import { getProjects } from '../services/projects'
 import type { ProjectSummary } from '../types/domain'
+
+// Category to tech stack mapping
+const CATEGORY_TECH_MAP: Record<string, string[]> = {
+  threejs: ['Three.js', 'WebGL', 'GLSL', 'Blender', 'React Three Fiber', 'GSAP', 'Cannon.js', 'Post-processing'],
+  software: ['React', 'TypeScript', 'Node.js', 'Spring Boot', 'MongoDB', 'PostgreSQL', 'Docker', 'Azure', 'REST API', 'GraphQL'],
+  gamedev: ['Unity', 'C#', 'Unreal Engine', 'JavaScript', 'Phaser.js', 'WebRTC', 'Socket.io', 'Photon']
+}
 
 // Styled Components with proper theme properties
 const FilterBar = styled(Card)`
@@ -110,6 +118,7 @@ const EmptyState = styled.div`
 
 const ProjectsPage: React.FC = () => {
   const { t } = useTranslation()
+  const [searchParams] = useSearchParams()
   const [projects, setProjects] = useState<ProjectSummary[]>([])
   const [filteredProjects, setFilteredProjects] = useState<ProjectSummary[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -122,6 +131,15 @@ const ProjectsPage: React.FC = () => {
     setYear,
     setSort
   } = useFilters()
+
+  // Handle category from URL params
+  useEffect(() => {
+    const category = searchParams.get('category')
+    if (category && CATEGORY_TECH_MAP[category]) {
+      // Set tech stacks based on category
+      setTechStacks(CATEGORY_TECH_MAP[category])
+    }
+  }, [searchParams, setTechStacks])
 
   useEffect(() => {
     const loadProjects = async () => {

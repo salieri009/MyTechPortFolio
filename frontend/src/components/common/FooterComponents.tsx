@@ -5,49 +5,14 @@ import { Link } from 'react-router-dom'
 
 export const FooterWrapper = styled.footer`
   background: ${props => props.theme.colors.surface};
-  border-top: 1px solid ${props => props.theme.colors.border};
+  border-top: 1px solid ${props => props.theme.colors.neutral[600] || props.theme.colors.border};
   margin-top: auto;
   position: relative;
   overflow: hidden;
-  
-  /* 미래지향적 그라데이션 배경 */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: ${props => props.theme.colors.gradient.primary};
-    opacity: 0.6;
-  }
-  
-  /* 미세한 애니메이션 효과 */
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      ${props => props.theme.colors.primary[400]},
-      transparent
-    );
-    animation: shimmer 3s ease-in-out infinite;
-  }
-  
-  @keyframes shimmer {
-    0% { left: -100%; }
-    50% { left: 100%; }
-    100% { left: 100%; }
-  }
 `
 
 export const FooterContent = styled.div`
-  padding: ${props => props.theme.spacing[12]} 0 ${props => props.theme.spacing[8]};
+  padding: 50px 0 ${props => props.theme.spacing[8]};
   
   @media (max-width: ${props => props.theme.breakpoints.md}) {
     padding: ${props => props.theme.spacing[8]} 0 ${props => props.theme.spacing[6]};
@@ -56,7 +21,7 @@ export const FooterContent = styled.div`
 
 export const FooterGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 2fr 1fr;
   gap: ${props => props.theme.spacing[12]};
   margin-bottom: ${props => props.theme.spacing[8]};
   
@@ -69,6 +34,18 @@ export const FooterGrid = styled.div`
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[8]};
     text-align: center;
+    /* 모바일 순서: 소셜 링크 → 내비게이션 → 브랜딩 */
+    order: 3;
+    
+    > *:nth-child(1) {
+      order: 3; /* FooterBranding */
+    }
+    > *:nth-child(2) {
+      order: 2; /* FooterNav */
+    }
+    > *:nth-child(3) {
+      order: 1; /* FooterSocial */
+    }
   }
 `
 
@@ -110,15 +87,29 @@ export const FooterListItem = styled.li`
   align-items: center;
   gap: ${props => props.theme.spacing[3]};
   color: ${props => props.theme.colors.textSecondary};
-  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-size: 14px;
   
   a {
-    color: inherit;
+    color: ${props => props.theme.colors.textSecondary};
     text-decoration: none;
+    font-size: 14px;
     ${props => props.theme.hoverTransition()};
     
     &:hover {
       color: ${props => props.theme.colors.primary[500]};
+    }
+    
+    &:focus-visible {
+      outline: 2px solid ${props => props.theme.colors.primary[500]};
+      outline-offset: 2px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 13px;
+    
+    a {
+      font-size: 13px;
     }
   }
 `
@@ -197,8 +188,13 @@ export const FooterBottom = styled.div`
 
 export const FooterCopyright = styled.p`
   margin: 0;
-  color: ${props => props.theme.colors.textMuted};
-  font-size: ${props => props.theme.typography.fontSize.sm};
+  color: ${props => props.theme.colors.textTertiary || props.theme.colors.textMuted};
+  font-size: 12px;
+  opacity: 0.6;
+  
+  @media (max-width: 768px) {
+    font-size: 11px;
+  }
 `
 
 export const FooterLegalLinks = styled.div`
@@ -283,16 +279,15 @@ export const BrandTagline = styled.p`
 `
 
 export const TechBadge = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing[2]};
+  display: inline-block;
   padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]};
   background: ${props => props.theme.colors.primary[50]};
   color: ${props => props.theme.colors.primary[700]};
-  border-radius: ${props => props.theme.borderRadius.full};
-  font-size: ${props => props.theme.typography.fontSize.xs};
+  border-radius: ${props => props.theme.borderRadius.sm};
+  font-size: 11px;
   font-weight: ${props => props.theme.typography.fontWeight.medium};
   margin-top: ${props => props.theme.spacing[2]};
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
   
   ${props => props.theme.mode === 'dark' && `
     background: ${props.theme.colors.primary[900]};
@@ -314,24 +309,42 @@ export const SocialIcon = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: ${props => props.theme.colors.primary[100]};
-  color: ${props => props.theme.colors.primary[600]};
+  min-width: 80px;
+  height: 36px;
+  background: transparent;
+  color: ${props => props.theme.colors.textSecondary};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
   text-decoration: none;
-  font-size: ${props => props.theme.typography.fontSize.lg};
+  font-size: 13px;
+  font-weight: 500;
+  position: relative;
+  padding: 0 12px;
   ${props => props.theme.hoverTransition()};
   
-  ${props => props.theme.mode === 'dark' && `
-    background: ${props.theme.colors.primary[900]};
-    color: ${props.theme.colors.primary[400]};
-  `}
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: ${props => props.theme.colors.primary[500]};
+    transition: width 0.2s ease;
+  }
   
   &:hover {
-    background: ${props => props.theme.colors.primary[500]};
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: ${props => props.theme.shadows.md};
+    color: ${props => props.theme.colors.primary[500]};
+    border-color: ${props => props.theme.colors.primary[500]};
+    
+    &::after {
+      width: 80%;
+    }
+  }
+  
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: 2px;
   }
 `
