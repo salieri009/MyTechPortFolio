@@ -23,16 +23,24 @@ const ProjectCardWrapper = styled(Card)`
   will-change: transform;
   transform: translateZ(0); /* Force GPU acceleration */
 
+  /* H1: Visibility of System Status - Hover feedback */
   &:hover {
-    transform: translateY(-4px) translateZ(0);
+    transform: translateY(-${props => props.theme.spacing[1]}) translateZ(0); /* 4-point system: 4px */
+  }
+  
+  /* H3: User Control & Freedom - Focus state */
+  &:focus-within {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[1]};
+    border-radius: ${props => props.theme.radius.lg};
   }
 `
 
 const ProjectImage = styled.img`
   width: 100%;
-  height: 200px;
+  height: ${props => props.theme.spacing[50]}; /* 4-point system: 200px */
   object-fit: cover;
-  margin-bottom: 12px;
+  margin-bottom: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
   border-radius: ${props => props.theme.radius.lg};
 `
 
@@ -44,16 +52,18 @@ const ProjectContent = styled.div`
 `
 
 const ProjectTitle = styled.h3`
-  margin: 0 0 12px 0;
-  font-size: 20px;
-  font-weight: 600;
+  margin: 0 0 ${props => props.theme.spacing[3]} 0; /* 4-point system: 12px */
+  font-size: ${props => props.theme.typography.fontSize.xl}; /* 4-point system: 20px */
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.text};
 `
 
 const ProjectSummary = styled.p`
-  margin: 0 0 16px 0;
+  margin: 0 0 ${props => props.theme.spacing[4]} 0; /* 4-point system: 16px */
   color: ${props => props.theme.colors.textSecondary};
-  line-height: 1.5;
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   flex: 1;
 `
 
@@ -61,15 +71,16 @@ const ProjectMeta = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  font-size: 14px;
+  margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
+  font-size: ${props => props.theme.typography.fontSize.sm}; /* 4-point system: 14px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.textSecondary};
 `
 
 const TechStacks = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   margin-top: auto;
 `
 

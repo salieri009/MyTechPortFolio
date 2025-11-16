@@ -57,13 +57,13 @@ const AcademicCard = styled(Card)<{ status: string; $isVisible?: boolean; $index
     transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
     box-shadow: ${props => props.theme.shadows.md};
     border-color: ${props => {
-      switch (props.status) {
-        case 'completed': return props.theme.colors.success
-        case 'enrolled': return props.theme.colors.primary[500]
-        case 'exemption': return props.theme.colors.warning
-        default: return props.theme.colors.border
-      }
-    }};
+    switch (props.status) {
+      case 'completed': return props.theme.colors.success
+      case 'enrolled': return props.theme.colors.primary[500]
+      case 'exemption': return props.theme.colors.warning
+      default: return props.theme.colors.border
+    }
+  }};
   }
   
   /* H3: User Control & Freedom - Focus state */
@@ -540,10 +540,10 @@ export function AcademicsPage() {
   if (loading) {
     return (
       <PageWrapper role="main" aria-label={t('academics.title', 'Academic Record')}>
-        <Container>
-          <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
-          <LoadingText>{t('common.loading', 'Loading...')}</LoadingText>
-        </Container>
+      <Container>
+        <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
+        <LoadingText>{t('common.loading', 'Loading...')}</LoadingText>
+      </Container>
       </PageWrapper>
     )
   }
@@ -583,34 +583,34 @@ export function AcademicsPage() {
 
   return (
     <PageWrapper role="main" aria-label={t('academics.title', 'Academic Record')}>
-      <Container>
-        <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
-        
+    <Container>
+      <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
+      
         <SummaryStats ref={statsRef} $isVisible={isStatsVisible} role="region" aria-label={t('academics.stats.title', 'Academic Statistics')}>
           <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.totalCredits', 'Total Credit Points')}>
-            <h3>{totalCreditPoints}</h3>
+          <h3>{totalCreditPoints}</h3>
             <p>{t('academics.stats.totalCredits', 'Total Credit Points')}</p>
-          </StatCard>
+        </StatCard>
           <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.completedCredits', 'Completed Credit Points')}>
-            <h3>{completedCreditPoints}</h3>
+          <h3>{completedCreditPoints}</h3>
             <p>{t('academics.stats.completedCredits', 'Completed Credit Points')}</p>
-          </StatCard>
+        </StatCard>
           <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.gpa', 'GPA')}>
-            <h3>5.88</h3>
+          <h3>5.88</h3>
             <p>{t('academics.stats.gpa', 'GPA')}</p>
-          </StatCard>
+        </StatCard>
           <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.wam', 'WAM')}>
-            <h3>{averageMark.toFixed(1)}</h3>
+          <h3>{averageMark.toFixed(1)}</h3>
             <p>{t('academics.stats.wam', 'WAM (Weighted Average Mark)')}</p>
-          </StatCard>
-        </SummaryStats>
-        
+        </StatCard>
+      </SummaryStats>
+      
         <TimelineContainer ref={timelineRef} role="region" aria-label={t('academics.timeline.title', 'Academic Timeline')}>
-          {sortedGroups.map(([semester, academicGroup]) => (
-            <div key={semester}>
+        {sortedGroups.map(([semester, academicGroup]) => (
+          <div key={semester}>
               <SemesterTitle $isVisible={isTimelineVisible}>
                 {semester === 'exemption' ? t('academics.exemptions', 'Exemptions') : semester}
-              </SemesterTitle>
+            </SemesterTitle>
               {academicGroup.map((academic, index) => (
                 <AcademicCard 
                   key={academic.id} 
@@ -623,8 +623,8 @@ export function AcademicsPage() {
                   aria-labelledby={`academic-${academic.id}-title`}
                 >
                   <AcademicTitle id={`academic-${academic.id}-title`}>
-                    <span>{academic.name}</span>
-                    <GradeContainer>
+                  <span>{academic.name}</span>
+                  <GradeContainer>
                       {academic.grade && (
                         <GradeBadge grade={academic.grade} aria-label={t('academics.grade', { grade: academic.grade }, 'Grade: {{grade}}')}>
                           {academic.grade}
@@ -632,10 +632,10 @@ export function AcademicsPage() {
                       )}
                       <StatusBadge status={academic.status} aria-label={t('academics.status', { status: academic.status }, 'Status: {{status}}')}>
                         {t(`academics.status.${academic.status}`, academic.status.toUpperCase())}
-                      </StatusBadge>
-                    </GradeContainer>
-                  </AcademicTitle>
-                  <AcademicMeta>
+                    </StatusBadge>
+                  </GradeContainer>
+                </AcademicTitle>
+                <AcademicMeta>
                     <span>{t('academics.semester', { semester: academic.semester }, academic.semester)}</span>
                     {academic.marks && (
                       <span>
@@ -647,16 +647,16 @@ export function AcademicsPage() {
                         {t('academics.creditPoints', { points: academic.creditPoints }, '{{points}} Credit Points')}
                       </span>
                     )}
-                  </AcademicMeta>
+                </AcademicMeta>
                   {academic.description && (
                     <AcademicDescription>{academic.description}</AcademicDescription>
                   )}
-                </AcademicCard>
-              ))}
-            </div>
-          ))}
-        </TimelineContainer>
-      </Container>
+              </AcademicCard>
+            ))}
+          </div>
+        ))}
+      </TimelineContainer>
+    </Container>
     </PageWrapper>
   )
 }

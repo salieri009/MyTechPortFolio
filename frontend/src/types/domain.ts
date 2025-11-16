@@ -37,3 +37,57 @@ export interface TechStack {
   name: string
   type: TechType
 }
+
+// Request DTOs for CRUD operations
+export interface ProjectCreateRequest {
+  title: string
+  summary: string
+  description: string
+  startDate: string // YYYY-MM-DD
+  endDate: string   // YYYY-MM-DD
+  githubUrl?: string
+  demoUrl?: string
+  techStackIds: string[] // MongoDB ObjectIds
+  academicIds?: string[] // MongoDB ObjectIds
+}
+
+export interface ProjectUpdateRequest {
+  title: string
+  summary: string
+  description: string
+  startDate: string // YYYY-MM-DD
+  endDate: string   // YYYY-MM-DD
+  githubUrl?: string
+  demoUrl?: string
+  techStackIds: string[] // MongoDB ObjectIds
+  academicIds?: string[] // MongoDB ObjectIds
+}
+
+export interface AcademicCreateRequest {
+  name: string
+  semester: string
+  grade?: string
+  description?: string
+}
+
+export interface AcademicUpdateRequest {
+  name: string
+  semester: string
+  grade?: string
+  description?: string
+}
+
+export interface TestimonialCreateRequest {
+  authorName: string
+  authorTitle?: string
+  authorCompany?: string
+  authorEmail?: string
+  authorLinkedInUrl?: string
+  content: string
+  rating: number // 1-5
+  type: 'CLIENT' | 'COLLEAGUE' | 'MENTOR' | 'PROFESSOR' | 'OTHER'
+  source?: 'MANUAL' | 'LINKEDIN' | 'GITHUB'
+  isFeatured?: boolean
+  displayOrder?: number
+  projectId?: string
+}

@@ -109,6 +109,73 @@
   "about": {
     "title": "About",
     "subtitle": "Get to know me",
+    "hero": {
+      "greeting": "Hello, I am",
+      "name": "Jungwook Van",
+      "headline": "Full Stack Developer",
+      "subtitle": "I enjoy solving problems and creating value through efficient and creative solutions. Specialized in web application development using React, TypeScript, and Spring Boot.",
+      "cta": {
+        "primary": "View Projects",
+        "secondary": "Contact Me"
+      }
+    },
+    "story": {
+      "title": "My Journey",
+      "purpose": "Introducing the journey as a developer and the motivation behind creating this portfolio.",
+      "subtitle": "This story tells how a passion for coding grew into becoming a professional developer.",
+      "content": {
+        "paragraph1": "My journey as a developer started with a curiosity about how things work. From building simple websites to developing full-stack applications, each project has been a learning opportunity.",
+        "paragraph2": "Currently studying in Australia, I have been able to work on diverse projects that combine creativity with technical expertise. The experience of serving as an interpreter in the military helped me develop strong communication skills and a global perspective.",
+        "paragraph3": "I believe that great software is built not just with code, but with understanding user needs and creating solutions that make a real difference. This portfolio represents that philosophy."
+      },
+      "imageAlt": "Developer working on a project"
+    },
+    "background": {
+      "title": "Background & Skills",
+      "purpose": "Educational background, career, and core technology stack.",
+      "subtitle": "A solid foundation built through education and practical experience",
+      "education": {
+        "title": "Education",
+        "content": "Computer Engineering at Jeonbuk National University, currently studying in Australia at UTS"
+      },
+      "experience": {
+        "title": "Experience",
+        "content": "Served as an interpreter in the military, worked on various projects using React, TypeScript, and Spring Boot"
+      },
+      "techStack": {
+        "title": "Tech Stack",
+        "content": "React, TypeScript, Spring Boot, Node.js, MongoDB, and more"
+      }
+    },
+    "mission": {
+      "title": "Mission & Vision",
+      "purpose": "Sharing the mission and technical vision as a developer.",
+      "subtitle": "The values and principles that guide my work",
+      "values": {
+        "innovation": {
+          "title": "Innovation",
+          "description": "Creating innovative solutions using the latest technologies."
+        },
+        "collaboration": {
+          "title": "Collaboration",
+          "description": "Working with teams to create better results."
+        },
+        "growth": {
+          "title": "Continuous Growth",
+          "description": "Continuously learning and growing to improve expertise."
+        }
+      },
+      "missionText": "The goal is to create user-centered services that provide real value.",
+      "visionText": "I aim to always learn and apply new technologies to become a better developer.",
+      "cta": "Let's Connect"
+    },
+    "contact": {
+      "title": "Contact",
+      "email": "Email",
+      "linkedin": "LinkedIn",
+      "sendEmail": "Send Email",
+      "connectLinkedIn": "Connect on LinkedIn"
+    },
     "greeting": "Hello, I'm Jungwook!",
     "description": "I'm a developer who loves learning and applying new technologies. Currently focusing on web application development.",
     "skills": "Tech Stack",
@@ -117,13 +184,6 @@
       "skills": "Skills",
       "experience": "Experience",
       "contact": "Contact"
-    },
-    "contact": {
-      "title": "Contact Information",
-      "email": "Email",
-      "linkedin": "LinkedIn Profile",
-      "studentEmail": "Student Email",
-      "personalLinkedIn": "Personal LinkedIn"
     }
   },
   "contact": {

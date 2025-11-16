@@ -176,9 +176,11 @@ const OutcomeList = styled.ul`
     line-height: ${props => props.theme.typography.lineHeight.relaxed};
 
     &:before {
-      content: '🎯';
+      content: '✓';
       position: absolute;
       left: 0;
+      color: ${props => props.theme.colors.primary[500]};
+      font-weight: ${props => props.theme.typography.fontWeight.bold};
       font-size: ${props => props.theme.typography.fontSize.lg}; /* 4-point system: 18px */
     }
   }
@@ -297,20 +299,20 @@ export function ProjectDetailPage() {
       <ProjectHeader>
         <ProjectTitle>{t(project.title)}</ProjectTitle>
         <ProjectMeta>
-          <span>📅 {formatDate(project.startDate)} ~ {formatDate(project.endDate)}</span>
+          <span>{formatDate(project.startDate)} ~ {formatDate(project.endDate)}</span>
           {project.relatedAcademics?.length && (
-            <span>🎓 {project.relatedAcademics.join(', ')}</span>
+            <span>{project.relatedAcademics.join(', ')}</span>
           )}
         </ProjectMeta>
         <ProjectLinks>
           {project.githubUrl && (
             <Button as="a" href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-              🔗 GitHub
+              GitHub
             </Button>
           )}
           {project.demoUrl && (
             <Button as="a" href={project.demoUrl} target="_blank" rel="noopener noreferrer" variant="ghost">
-              🌐 Live Demo
+              Live Demo
             </Button>
           )}
         </ProjectLinks>
@@ -342,7 +344,7 @@ export function ProjectDetailPage() {
 
           {project.keyOutcomes && project.keyOutcomes.length > 0 && (
             <Section>
-              <SectionTitle><span>📊</span> Key Outcomes</SectionTitle>
+              <SectionTitle>Key Outcomes</SectionTitle>
               <OutcomeList>
                 {project.keyOutcomes.map((outcome, index) => (
                   <li key={index}>{outcome}</li>
@@ -352,7 +354,7 @@ export function ProjectDetailPage() {
           )}
 
           <Section>
-            <SectionTitle><span>📝</span> Project Overview</SectionTitle>
+            <SectionTitle>Project Overview</SectionTitle>
             <OriginalDescription>
               <div dangerouslySetInnerHTML={{ __html: project.description.replace(/\n/g, '<br>') }} />
             </OriginalDescription>

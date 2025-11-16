@@ -110,6 +110,73 @@
   "about": {
     "title": "自己紹介",
     "subtitle": "私について知ってください",
+    "hero": {
+      "greeting": "こんにちは、私は",
+      "name": "ジョンウック・バン",
+      "headline": "フルスタック開発者",
+      "subtitle": "問題解決を楽しむ開発者です。React、TypeScript、Spring Bootを活用してユーザー体験を改善することに情熱を持っています。",
+      "cta": {
+        "primary": "プロジェクトを見る",
+        "secondary": "お問い合わせ"
+      }
+    },
+    "story": {
+      "title": "My Journey",
+      "purpose": "開発者としての旅路とこのポートフォリオを作成した動機を紹介します。",
+      "subtitle": "コーディングへの情熱がどのように専門的な開発者への成長につながったかを語ります。",
+      "content": {
+        "paragraph1": "開発者としての旅路は、物事がどのように機能するかへの好奇心から始まりました。簡単なウェブサイトの構築からフルスタックアプリケーションの開発まで、各プロジェクトは学習の機会でした。",
+        "paragraph2": "現在オーストラリアで勉強しながら、創造性と技術的専門知識を組み合わせた多様なプロジェクトに取り組むことができました。軍隊で通訳として勤務した経験は、強力なコミュニケーション能力とグローバルな視点を開発するのに役立ちました。",
+        "paragraph3": "優れたソフトウェアは、コードだけで構築されるのではなく、ユーザーのニーズを理解し、実際に違いを生むソリューションを作成することで構築されると信じています。このポートフォリオはその哲学を表しています。"
+      },
+      "imageAlt": "プロジェクトに取り組む開発者"
+    },
+    "background": {
+      "title": "Background & Skills",
+      "purpose": "教育背景、キャリア、そしてコア技術スタックを紹介します。",
+      "subtitle": "教育と実践的な経験を通じて構築された堅実な基盤",
+      "education": {
+        "title": "Education",
+        "content": "全北大学校コンピュータ工学専攻、現在オーストラリアのUTSで留学中"
+      },
+      "experience": {
+        "title": "Experience",
+        "content": "軍隊で通訳として勤務、React、TypeScript、Spring Bootを使用した様々なプロジェクトに取り組んだ経験"
+      },
+      "techStack": {
+        "title": "Tech Stack",
+        "content": "React、TypeScript、Spring Boot、Node.js、MongoDBなど"
+      }
+    },
+    "mission": {
+      "title": "Mission & Vision",
+      "purpose": "開発者としてのミッションと技術的ビジョンを共有します。",
+      "subtitle": "私の仕事を導く価値観と原則",
+      "values": {
+        "innovation": {
+          "title": "Innovation",
+          "description": "最新の技術を活用して革新的なソリューションを作成します。"
+        },
+        "collaboration": {
+          "title": "Collaboration",
+          "description": "チームと協力してより良い結果を作り出します。"
+        },
+        "growth": {
+          "title": "Continuous Growth",
+          "description": "継続的な学習と成長を通じて専門性を向上させます。"
+        }
+      },
+      "missionText": "目標は、実質的な価値を提供するユーザー中心のサービスを作成することです。",
+      "visionText": "常に新しい技術を学び、適用して、より良い開発者になることを目指しています。",
+      "cta": "Let's Connect"
+    },
+    "contact": {
+      "title": "連絡先",
+      "email": "メール",
+      "linkedin": "LinkedIn",
+      "sendEmail": "メール送信",
+      "connectLinkedIn": "LinkedInで接続"
+    },
     "greeting": "こんにちは、ジョンウックです！",
     "description": "新しい技術を学び、それを活用することが好きな開発者です。現在はWebアプリケーション開発に集中しています。",
     "skills": "技術スタック",
@@ -118,13 +185,6 @@
       "skills": "スキル",
       "experience": "経験",
       "contact": "連絡先"
-    },
-    "contact": {
-      "title": "連絡先情報",
-      "email": "メール",
-      "linkedin": "LinkedInプロフィール",
-      "studentEmail": "学生メール",
-      "personalLinkedIn": "個人LinkedIn"
     }
   },
   "contact": {

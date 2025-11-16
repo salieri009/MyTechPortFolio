@@ -247,7 +247,7 @@ export function FeedbackPage() {
       <FeedbackWrapper>
         <Container>
           <SuccessCard>
-            <SuccessIcon>✅</SuccessIcon>
+            <SuccessIcon>✓</SuccessIcon>
             <SuccessTitle>{t('feedback.success.title')}</SuccessTitle>
             <SuccessMessage>
               {t('feedback.success.message')}

@@ -18,7 +18,34 @@ import {
   ScrollArrow,
   ScrollText
 } from './HomePage.styles'
-import { JourneyGrid, TextColumn } from '@components/sections/JourneyMilestoneSection'
+// JourneyGrid and TextColumn - defined locally based on JourneyMilestoneSection pattern
+export const JourneyGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: ${props => props.theme.spacing[8]};
+  align-items: start;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[6]};
+  }
+`
+
+export const TextColumn = styled.div`
+  grid-column: 1 / 8; /* 7 컬럼 */
+  
+  @media (max-width: 1024px) {
+    grid-column: 1 / 4; /* 3 컬럼 */
+  }
+  
+  @media (max-width: 768px) {
+    grid-column: 1;
+  }
+`
 
 // AboutHero - HomePage.styles.ts Hero 스타일 재사용
 export const AboutHero = styled(Hero)`
@@ -437,6 +464,4 @@ export const ContactButton = styled.a`
   }
 `
 
-// Export JourneyGrid and TextColumn for reuse
-export { JourneyGrid, TextColumn }
 
