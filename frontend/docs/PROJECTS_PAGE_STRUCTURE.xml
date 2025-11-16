@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProjectsPage>
+  {ProjectsPage는 프로젝트 목록을 필터링, 정렬, 표시하는 페이지입니다. 필터링 기능과 스크롤 애니메이션이 강조된 인터랙티브한 디자인입니다.}
+  
+  <Container>
+    {Container: 전체 페이지 래퍼, max-width 제한, 중앙 정렬}
+    
+    <PageTitle 
+      ref="titleRef" 
+      $isVisible={isTitleVisible}
+      role="heading"
+      aria-level="1"
+    >
+      {페이지 제목: "My Projects", scroll-triggered fadeInUp 애니메이션, 중앙 정렬}
+      {스타일: fontSize['3xl'] (40px), fontWeight.bold, spacing[8] margin-bottom}
+    </PageTitle>
+    
+    <FilterBar 
+      ref="filterBarRef"
+      $isVisible={isFilterBarVisible}
+      role="region"
+      aria-label="Project filters"
+    >
+      {필터 바: 프로젝트 필터링 UI, Card 컴포넌트 기반, 상단 그라데이션 shimmer 애니메이션}
+      {스타일: flex layout, gap spacing[4], padding spacing[6], scroll-triggered fadeInUp}
+      {호버 효과: box-shadow.lg, border-color 변경}
+      {애니메이션: 상단 4px 그라데이션 바 shimmer 효과 (3s infinite)}
+      
+      <FilterSection>
+        {필터 섹션: 개별 필터 그룹, flex layout, gap spacing[3]}
+        <span className="filter-label">
+          {필터 라벨: "Tech Stack:", fontWeight.semibold, fontSize.sm}
+        </span>
+        <TechStackFilters 
+          role="group"
+          aria-label="Tech Stack filters"
+        >
+          {기술 스택 필터: flex layout, gap spacing[2], flex-wrap}
+          {allTechStacks.map(tech => (
+            <Tag
+              key={tech}
+              isSelected={techStacks.includes(tech)}
+              onClick={handleTechStackToggle}
+              role="button"
+              tabIndex="0"
+              aria-pressed={techStacks.includes(tech)}
+              aria-label="Add/Remove filter: {tech}"
+              onKeyDown="Enter or Space to toggle"
+            >
+              {Tag 컴포넌트: 클릭 가능, 키보드 접근 가능, 선택 상태 표시}
+              {tech}
+            </Tag>
+          ))}
+        </TechStackFilters>
+      </FilterSection>
+      
+      <FilterSection>
+        <span className="filter-label">Year:</span>
+        <SelectWrapper>
+          {Select 래퍼: position relative}
+          <select
+            value={year ?? 'all'}
+            onChange={setYear}
+            aria-label="Filter by year"
+          >
+            {Year 선택 드롭다운: 모든 연도 또는 특정 연도 선택}
+            <option value="all">All Years</option>
+            {allYears.map(y => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+          {스타일: padding spacing[2] spacing[3], border, borderRadius.md, focus 시 primary[500] border + box-shadow}
+        </SelectWrapper>
+      </FilterSection>
+      
+      <FilterSection>
+        <span className="filter-label">Sort:</span>
+        <SortFilters 
+          role="group"
+          aria-label="Sort options"
+        >
+          {정렬 필터: flex layout, gap spacing[2]}
+          {[
+            { value: 'endDate,desc', label: 'Newest First' },
+            { value: 'endDate,asc', label: 'Oldest First' }
+          ].map(option => (
+            <Tag
+              key={option.value}
+              isSelected={sort === option.value}
+              onClick={() => setSort(option.value)}
+              role="button"
+              tabIndex="0"
+              aria-pressed={sort === option.value}
+              aria-label="Sort by {option.label}"
+              onKeyDown="Enter or Space to select"
+            >
+              {정렬 옵션 Tag: 선택 가능, 키보드 접근 가능}
+              {option.label}
+            </Tag>
+          ))}
+        </SortFilters>
+      </FilterSection>
+    </FilterBar>
+    
+    <ConditionalRender>
+      {조건부 렌더링: filteredProjects.length === 0 ? EmptyState : ProjectGrid}
+      
+      <EmptyState 
+        condition="filteredProjects.length === 0"
+        role="status"
+        aria-live="polite"
+      >
+        {빈 상태: 필터 결과가 없을 때 표시}
+        <h3>No projects found</h3>
+        {스타일: fontSize['2xl'] (24px), fontWeight.bold, spacing[3] margin-bottom}
+        <p>Try adjusting your filters to see more projects.</p>
+        {스타일: fontSize.base (16px), lineHeight.relaxed}
+        {레이아웃: text-align center, padding spacing[15] spacing[5]}
+      </EmptyState>
+      
+      <ProjectGrid 
+        condition="filteredProjects.length > 0"
+        ref="gridRef"
+        $isVisible={isGridVisible}
+        role="list"
+        aria-label="Projects list"
+      >
+        {프로젝트 그리드: auto-fill grid, minmax(320px, 1fr), gap spacing[6]}
+        {스타일: scroll-triggered fadeIn 애니메이션 (0.2s delay)}
+        {레이아웃: repeat(auto-fill, minmax(spacing[80], 1fr))}
+        
+        {filteredProjects.map((project, index) => (
+          <AnimatedProjectCard 
+            key={project.id}
+            $index={index}
+            $isVisible={isGridVisible}
+            role="listitem"
+          >
+            {애니메이션 래퍼: stagger 효과 (index * 0.05s delay), fadeInUp 애니메이션}
+            {스타일: opacity, transform translateY, animation-delay}
+            
+            <ProjectCard
+              id={project.id}
+              title={project.title}
+              summary={project.summary}
+              startDate={project.startDate}
+              endDate={project.endDate}
+              techStacks={project.techStacks}
+            />
+            {ProjectCard 컴포넌트: 프로젝트 정보 표시, 최대 3개 tech stack 태그 + "+N" 표시}
+            {접근성: aria-label, role, tabIndex, onKeyDown 지원}
+          </AnimatedProjectCard>
+        ))}
+      </ProjectGrid>
+    </ConditionalRender>
+  </Container>
+  
+  <LoadingState condition="isLoading === true">
+    {로딩 상태: 프로젝트 데이터 로딩 중}
+    <Container>
+      <LoadingText>
+        {로딩 텍스트: "Loading projects...", 중앙 정렬, padding spacing[10]}
+        {스타일: fontSize.base, color textSecondary}
+      </LoadingText>
+    </Container>
+  </LoadingState>
+</ProjectsPage>
+
+<!-- State Management -->
+<StateManagement>
+  <LocalState>
+    <State name="projects" type="ProjectSummary[]" />
+    {프로젝트 목록: API에서 로드한 전체 프로젝트 데이터}
+    <State name="filteredProjects" type="ProjectSummary[]" />
+    {필터링된 프로젝트: 필터 및 정렬 적용 후 결과}
+    <State name="isLoading" type="boolean" />
+    {로딩 상태: 데이터 로딩 중 여부}
+    <State name="isTitleVisible" type="boolean" />
+    {제목 가시성: IntersectionObserver로 감지}
+    <State name="isFilterBarVisible" type="boolean" />
+    {필터 바 가시성: IntersectionObserver로 감지}
+    <State name="isGridVisible" type="boolean" />
+    {그리드 가시성: IntersectionObserver로 감지}
+  </LocalState>
+  
+  <GlobalState>
+    <Store name="useFilters" source="stores/filters">
+      {필터 상태: 전역 상태 관리 (Zustand)}
+      <State name="techStacks" type="string[]" />
+      {선택된 기술 스택 배열}
+      <State name="year" type="number | null" />
+      {선택된 연도 (null = 모든 연도)}
+      <State name="sort" type="'endDate,desc' | 'endDate,asc'" />
+      {정렬 옵션}
+    </Store>
+  </GlobalState>
+  
+  <URLParams>
+    <Param name="category" source="searchParams">
+      {URL 파라미터: category 값에 따라 자동으로 tech stacks 필터 설정}
+      {매핑: CATEGORY_TECH_MAP (threejs, software, gamedev)}
+    </Param>
+  </URLParams>
+</StateManagement>
+
+<!-- Data Flow -->
+<DataFlow>
+  <InitialLoad>
+    {초기 로드: useEffect로 프로젝트 데이터 가져오기}
+    <Step>1. getProjects API 호출 (page: 0, size: 50, sort: 'endDate,desc')</Step>
+    <Step>2. response.data.items를 projects state에 저장</Step>
+    <Step>3. isLoading을 false로 설정</Step>
+  </InitialLoad>
+  
+  <Filtering>
+    {필터링: projects, techStacks, year, sort 변경 시 실행}
+    <Step>1. projects 배열 복사</Step>
+    <Step>2. techStacks 필터 적용 (AND 조건: 프로젝트가 선택된 기술 중 하나라도 포함)</Step>
+    <Step>3. year 필터 적용 (endDate의 연도가 선택된 연도와 일치)</Step>
+    <Step>4. sort 정렬 적용 (endDate 기준 오름차순/내림차순)</Step>
+    <Step>5. filteredProjects state 업데이트</Step>
+  </Filtering>
+  
+  <CategoryMapping>
+    {카테고리 매핑: URL 파라미터 category에 따라 자동 필터 설정}
+    <Mapping category="threejs" techStacks="['Three.js', 'WebGL', 'GLSL', ...]" />
+    <Mapping category="software" techStacks="['React', 'TypeScript', 'Node.js', ...]" />
+    <Mapping category="gamedev" techStacks="['Unity', 'C#', 'Unreal Engine', ...]" />
+  </CategoryMapping>
+</DataFlow>
+
+<!-- Animation Strategy -->
+<Animations>
+  <Keyframes>
+    <Keyframe name="fadeInUp">
+      {fadeInUp: opacity 0→1, translateY(spacing[8])→0}
+      {사용: PageTitle, FilterBar, AnimatedProjectCard}
+    </Keyframe>
+    <Keyframe name="fadeIn">
+      {fadeIn: opacity 0→1}
+      {사용: ProjectGrid}
+    </Keyframe>
+    <Keyframe name="shimmer">
+      {shimmer: background-position 0%→100%→0% (3s infinite)}
+      {사용: FilterBar 상단 그라데이션 바}
+    </Keyframe>
+  </Keyframes>
+  
+  <ScrollTriggered>
+    {스크롤 트리거: IntersectionObserver 사용}
+    <Observer 
+      threshold="0.1"
+      rootMargin="0px 0px -50px 0px"
+    >
+      {옵션: threshold 0.1 (10% 보일 때), rootMargin -50px (50px 전에 트리거)}
+      <Target ref="titleRef" setState="setIsTitleVisible" />
+      <Target ref="filterBarRef" setState="setIsFilterBarVisible" />
+      <Target ref="gridRef" setState="setIsGridVisible" />
+    </Observer>
+  </ScrollTriggered>
+  
+  <StaggerEffect>
+    {Stagger 효과: 각 프로젝트 카드에 순차적 애니메이션 지연}
+    <Delay formula="index * 0.05s" />
+    {공식: index * 0.05초 (첫 번째: 0s, 두 번째: 0.05s, 세 번째: 0.1s, ...)}
+  </StaggerEffect>
+  
+  <Accessibility>
+    {접근성: prefers-reduced-motion 지원}
+    <MediaQuery query="prefers-reduced-motion: reduce">
+      {애니메이션 비활성화: animation: none, opacity: 1, transform: none}
+    </MediaQuery>
+  </Accessibility>
+</Animations>
+
+<!-- Design Principles Applied -->
+<DesignPrinciples>
+  <KickoffLabs>
+    {KickoffLabs 원칙: Primary + Neutral 색상, Inter 폰트, 일관된 스타일}
+    <ColorPalette>Primary + Neutral only</ColorPalette>
+    <FontFamily>Inter (typography.fontFamily.primary)</FontFamily>
+    <Consistency>일관된 spacing, border-radius, button styles</Consistency>
+  </KickoffLabs>
+  
+  <FourPointSpacing>
+    {4-point spacing 시스템: 모든 spacing 값이 4px의 배수}
+    <Spacing>
+      <Value token="spacing[0.5]" pixels="4px" usage="FilterBar border height" />
+      <Value token="spacing[2]" pixels="8px" usage="Gap, margin-right" />
+      <Value token="spacing[3]" pixels="12px" usage="Gap, padding" />
+      <Value token="spacing[4]" pixels="16px" usage="Gap, margin-bottom, padding" />
+      <Value token="spacing[6]" pixels="24px" usage="Gap, padding, margin-bottom" />
+      <Value token="spacing[8]" pixels="32px" usage="Margin-bottom, translateY" />
+      <Value token="spacing[10]" pixels="40px" usage="Padding, margin-bottom" />
+      <Value token="spacing[15]" pixels="60px" usage="EmptyState padding" />
+      <Value token="spacing[80]" pixels="320px" usage="Grid minmax min-width" />
+    </Spacing>
+  </FourPointSpacing>
+  
+  <NielsenHeuristics>
+    <H1>Visibility of System Status</H1>
+    {H1: 로딩 상태 표시, 필터 적용 피드백 (선택된 Tag 스타일), 호버 효과}
+    <H3>User Control & Freedom</H3>
+    {H3: 필터 제거 가능, 정렬 변경 가능, 키보드 접근 가능 (tabIndex, onKeyDown)}
+    <H4>Consistency & Standards</H4>
+    {H4: 일관된 필터 UI 패턴, Tag 컴포넌트 재사용, 통일된 애니메이션}
+    <H8>Aesthetic & Minimalist Design</H8>
+    {H8: 깔끔한 필터 바, 적절한 여백, 불필요한 요소 제거}
+  </NielsenHeuristics>
+</DesignPrinciples>
+
+<!-- Accessibility Features -->
+<Accessibility>
+  <ARIA>
+    <Attribute element="PageTitle" role="heading" aria-level="1" />
+    <Attribute element="FilterBar" role="region" aria-label="Project filters" />
+    <Attribute element="TechStackFilters" role="group" aria-label="Tech Stack filters" />
+    <Attribute element="SortFilters" role="group" aria-label="Sort options" />
+    <Attribute element="Tag" role="button" aria-pressed="boolean" aria-label="descriptive" />
+    <Attribute element="select" aria-label="Filter by year" />
+    <Attribute element="EmptyState" role="status" aria-live="polite" />
+    <Attribute element="ProjectGrid" role="list" aria-label="Projects list" />
+    <Attribute element="AnimatedProjectCard" role="listitem" />
+  </ARIA>
+  
+  <Keyboard>
+    <Navigation>
+      {키보드 네비게이션: Tab으로 필터 이동, Enter/Space로 필터 토글}
+      <Tag tabIndex="0" onKeyDown="Enter or Space to toggle" />
+      <Select native="true" />
+    </Navigation>
+  </Keyboard>
+  
+  <FocusManagement>
+    {포커스 관리: 명확한 포커스 스타일, outline 표시}
+    <Select focus="border-color primary[500] + box-shadow" />
+    <Tag focus="outline visible" />
+  </FocusManagement>
+</Accessibility>
+
+<!-- Responsive Breakpoints -->
+<Responsive>
+  <Desktop minWidth="1024px">
+    {데스크톱: 전체 기능, 최적 레이아웃}
+  </Desktop>
+  <Tablet minWidth="768px" maxWidth="1023px">
+    {태블릿: 필터 바 flex-wrap, 그리드 조정}
+  </Tablet>
+  <Mobile maxWidth="767px">
+    {모바일: 필터 바 스택 레이아웃, 그리드 1-column, 터치 최적화}
+  </Mobile>
+</Responsive>
+
+<!-- Component Dependencies -->
+<Dependencies>
+  <Internal>
+    <Component name="Container" source="@components/common" />
+    <Component name="Card" source="@components/common" />
+    <Component name="Tag" source="@components/common" />
+    <Component name="ProjectCard" source="@components/project/ProjectCard" />
+  </Internal>
+  
+  <External>
+    <Library name="react-i18next" usage="useTranslation for i18n" />
+    <Library name="react-router-dom" usage="useSearchParams for URL params" />
+    <Library name="styled-components" usage="Styled components, keyframes" />
+  </External>
+  
+  <Services>
+    <Service name="getProjects" source="services/projects" />
+    {프로젝트 데이터 가져오기: API 호출 또는 mock 데이터}
+  </Services>
+  
+  <Stores>
+    <Store name="useFilters" source="stores/filters" />
+    {필터 상태 관리: Zustand store}
+  </Stores>
+</Dependencies>
+

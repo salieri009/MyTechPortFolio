@@ -1,14 +1,27 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Container } from '@components/common'
 import { JourneyMilestoneSection } from '@components/sections/JourneyMilestoneSection'
 import { SectionBridge } from '@components/sections/SectionBridge'
 import { SectionPurpose } from '@components/sections/SectionPurpose'
+import { TechStackModal } from '@components/modals/TechStackModal'
 import { useThemeStore } from '../stores/themeStore'
 import { CONTACT_INFO } from '../constants/contact'
 import * as S from './AboutPage.styles'
 import * as HomePageStyles from './HomePage.styles'
+
+// Tech Stack to Mission Value mapping
+const TECH_VALUE_MAP: Record<string, string[]> = {
+  'React': ['innovation'],
+  'TypeScript': ['innovation', 'growth'],
+  'Spring Boot': ['collaboration'],
+  'Node.js': ['innovation', 'collaboration'],
+  'MongoDB': ['innovation'],
+  'PostgreSQL': ['collaboration'],
+  'Docker': ['collaboration'],
+  'Azure': ['innovation'],
+}
 
 // Scroll Indicator Component (reused from HomePage)
 const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => (
@@ -21,12 +34,28 @@ const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => (
 export function AboutPage() {
   const { t } = useTranslation()
   const { isDark } = useThemeStore()
+  const navigate = useNavigate()
   
   // Scroll animation states
   const [isHeroVisible, setIsHeroVisible] = useState(true)
   const [isStoryVisible, setIsStoryVisible] = useState(false)
   const [isBackgroundVisible, setIsBackgroundVisible] = useState(false)
   const [isMissionVisible, setIsMissionVisible] = useState(false)
+  
+  // Modal and interaction states
+  const [selectedTechStack, setSelectedTechStack] = useState<string | null>(null)
+  const [highlightedTech, setHighlightedTech] = useState<string | null>(null)
+  const [highlightedValue, setHighlightedValue] = useState<string | null>(null)
+  const [expandedValue, setExpandedValue] = useState<string | null>(null)
+  
+  // Tech stacks for the Tech Stack card
+  const techStacks = ['React', 'TypeScript', 'Spring Boot', 'Node.js', 'MongoDB', 'PostgreSQL', 'Docker', 'Azure']
+  
+  // Handle tech stack tag click - navigate to projects page with filter
+  const handleTechStackClick = (tech: string, e: React.MouseEvent) => {
+    e.preventDefault()
+    navigate(`/projects?techStacks=${encodeURIComponent(tech)}`)
+  }
   
   // Refs for IntersectionObserver
   const heroRef = useRef<HTMLElement>(null)
@@ -184,16 +213,56 @@ export function AboutPage() {
           </S.SectionSubtitle>
           <S.BackgroundGrid>
             <S.BackgroundCard tabIndex={0} role="article" aria-labelledby="education-title">
+              <S.CardIcon aria-hidden="true">🎓</S.CardIcon>
               <S.CardTitle id="education-title">{t('about.background.education.title', 'Education')}</S.CardTitle>
               <S.CardContent>{t('about.background.education.content', 'Computer Engineering at Jeonbuk National University, currently studying in Australia at UTS.')}</S.CardContent>
+              <S.DetailLabel>{t('about.background.education.period', 'Period')}</S.DetailLabel>
+              <S.DetailValue>{t('about.background.education.periodValue', '2018 - Present')}</S.DetailValue>
+              <S.DetailLabel>{t('about.background.education.location', 'Location')}</S.DetailLabel>
+              <S.DetailValue>{t('about.background.education.locationValue', 'Jeonbuk National University, UTS (Australia)')}</S.DetailValue>
             </S.BackgroundCard>
             <S.BackgroundCard tabIndex={0} role="article" aria-labelledby="experience-title">
+              <S.CardIcon aria-hidden="true">💼</S.CardIcon>
               <S.CardTitle id="experience-title">{t('about.background.experience.title', 'Experience')}</S.CardTitle>
               <S.CardContent>{t('about.background.experience.content', 'Served as an interpreter in the military, worked on various projects using React, TypeScript, and Spring Boot.')}</S.CardContent>
+              <S.DetailLabel>{t('about.background.experience.period', 'Period')}</S.DetailLabel>
+              <S.DetailValue>{t('about.background.experience.periodValue', '2020 - 2022')}</S.DetailValue>
+              <S.DetailLabel>{t('about.background.experience.location', 'Location')}</S.DetailLabel>
+              <S.DetailValue>{t('about.background.experience.locationValue', 'Military Service, Various Projects')}</S.DetailValue>
             </S.BackgroundCard>
-            <S.BackgroundCard tabIndex={0} role="article" aria-labelledby="techStack-title">
+            <S.BackgroundCard 
+              tabIndex={0} 
+              role="article" 
+              aria-labelledby="techStack-title"
+              $isHighlighted={highlightedTech !== null}
+            >
+              <S.CardIcon aria-hidden="true">⚙️</S.CardIcon>
               <S.CardTitle id="techStack-title">{t('about.background.techStack.title', 'Tech Stack')}</S.CardTitle>
-              <S.CardContent>{t('about.background.techStack.content', 'React, TypeScript, Spring Boot, Node.js, MongoDB, and more.')}</S.CardContent>
+              <S.CardContent>{t('about.background.techStack.content', 'Core technologies and frameworks I use in my projects.')}</S.CardContent>
+              <S.TechStackTags>
+                {techStacks.map((tech) => (
+                  <S.TechStackTag
+                    key={tech}
+                    href={`/projects?techStacks=${encodeURIComponent(tech)}`}
+                    onClick={(e) => handleTechStackClick(tech, e)}
+                    role="link"
+                    aria-label={`View projects using ${tech}`}
+                  >
+                    {tech}
+                  </S.TechStackTag>
+                ))}
+              </S.TechStackTags>
+              <S.TechStackCTA
+                href="/projects"
+                onClick={(e) => {
+                  e.preventDefault()
+                  navigate('/projects')
+                }}
+                role="link"
+                aria-label="View all projects"
+              >
+                {t('about.background.techStack.viewAll', 'View All Projects ➔')}
+              </S.TechStackCTA>
             </S.BackgroundCard>
           </S.BackgroundGrid>
         </Container>
@@ -229,27 +298,92 @@ export function AboutPage() {
             {t('about.mission.subtitle', 'The values and principles that guide my work.')}
           </S.SectionSubtitle>
           <S.ValuesGrid>
-            <S.ValueCard tabIndex={0} role="article" aria-labelledby="innovation-title">
-              <S.ValueIcon>💡</S.ValueIcon>
+            <S.ValueCard 
+              tabIndex={0} 
+              role="article" 
+              aria-labelledby="innovation-title"
+              aria-expanded={expandedValue === 'innovation'}
+              $isHighlighted={highlightedValue === 'innovation'}
+              $isExpanded={expandedValue === 'innovation'}
+              onClick={() => setExpandedValue(expandedValue === 'innovation' ? null : 'innovation')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  setExpandedValue(expandedValue === 'innovation' ? null : 'innovation')
+                }
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              <S.ValueIcon aria-hidden="true">I</S.ValueIcon>
               <S.CardTitle id="innovation-title">{t('about.mission.values.innovation.title', 'Innovation')}</S.CardTitle>
               <S.CardContent>{t('about.mission.values.innovation.description', 'Creating innovative solutions using the latest technologies.')}</S.CardContent>
+              {expandedValue === 'innovation' && (
+                <S.ValueExpandedContent>
+                  {t('about.mission.values.innovation.detail', 'I actively explore cutting-edge technologies and frameworks to solve complex problems. This includes experimenting with new patterns, optimizing performance, and building scalable architectures that stand the test of time.')}
+                </S.ValueExpandedContent>
+              )}
             </S.ValueCard>
-            <S.ValueCard tabIndex={0} role="article" aria-labelledby="collaboration-title">
-              <S.ValueIcon>🤝</S.ValueIcon>
+            <S.ValueCard 
+              tabIndex={0} 
+              role="article" 
+              aria-labelledby="collaboration-title"
+              aria-expanded={expandedValue === 'collaboration'}
+              $isHighlighted={highlightedValue === 'collaboration'}
+              $isExpanded={expandedValue === 'collaboration'}
+              onClick={() => setExpandedValue(expandedValue === 'collaboration' ? null : 'collaboration')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  setExpandedValue(expandedValue === 'collaboration' ? null : 'collaboration')
+                }
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              <S.ValueIcon aria-hidden="true">C</S.ValueIcon>
               <S.CardTitle id="collaboration-title">{t('about.mission.values.collaboration.title', 'Collaboration')}</S.CardTitle>
               <S.CardContent>{t('about.mission.values.collaboration.description', 'Working with teams to create better results.')}</S.CardContent>
+              {expandedValue === 'collaboration' && (
+                <S.ValueExpandedContent>
+                  {t('about.mission.values.collaboration.detail', 'I believe that the best solutions emerge from diverse perspectives. Through effective communication, code reviews, pair programming, and knowledge sharing, I contribute to building stronger teams and better products.')}
+                </S.ValueExpandedContent>
+              )}
             </S.ValueCard>
-            <S.ValueCard tabIndex={0} role="article" aria-labelledby="growth-title">
-              <S.ValueIcon>📈</S.ValueIcon>
+            <S.ValueCard 
+              tabIndex={0} 
+              role="article" 
+              aria-labelledby="growth-title"
+              aria-expanded={expandedValue === 'growth'}
+              $isHighlighted={highlightedValue === 'growth'}
+              $isExpanded={expandedValue === 'growth'}
+              onClick={() => setExpandedValue(expandedValue === 'growth' ? null : 'growth')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  setExpandedValue(expandedValue === 'growth' ? null : 'growth')
+                }
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              <S.ValueIcon aria-hidden="true">G</S.ValueIcon>
               <S.CardTitle id="growth-title">{t('about.mission.values.growth.title', 'Continuous Growth')}</S.CardTitle>
               <S.CardContent>{t('about.mission.values.growth.description', 'Continuously learning and growing to improve expertise.')}</S.CardContent>
+              {expandedValue === 'growth' && (
+                <S.ValueExpandedContent>
+                  {t('about.mission.values.growth.detail', 'Learning is a lifelong journey. I regularly engage with technical communities, contribute to open-source projects, attend conferences, and take on challenging projects that push me beyond my comfort zone.')}
+                </S.ValueExpandedContent>
+              )}
             </S.ValueCard>
           </S.ValuesGrid>
-          <S.MissionText>{t('about.mission.missionText', 'The goal is to create user-centered services that provide real value.')}</S.MissionText>
-          <S.MissionText>{t('about.mission.visionText', 'I aim to always learn and apply new technologies to become a better developer.')}</S.MissionText>
-          <HomePageStyles.CTAButtons style={{ marginTop: '0' }}>
-            <HomePageStyles.PrimaryCTA to="/feedback">{t('about.mission.cta', "Let's Connect")}</HomePageStyles.PrimaryCTA>
-          </HomePageStyles.CTAButtons>
+          <S.MissionVisionTextContainer $isVisible={isMissionVisible}>
+            <S.MissionText $isVisible={isMissionVisible}>
+              <S.MissionLabel>{t('about.mission.missionLabel', 'Mission')}</S.MissionLabel>
+              {t('about.mission.missionText', 'The goal is to create user-centered services that provide real value.')}
+            </S.MissionText>
+            <S.MissionText $isVisible={isMissionVisible}>
+              <S.MissionLabel>{t('about.mission.visionLabel', 'Vision')}</S.MissionLabel>
+              {t('about.mission.visionText', 'I aim to always learn and apply new technologies to become a better developer.')}
+            </S.MissionText>
+          </S.MissionVisionTextContainer>
         </Container>
       </S.MissionVisionSection>
 
@@ -264,6 +398,10 @@ export function AboutPage() {
       <S.ContactSection role="region" aria-labelledby="contact-title" aria-label={t('about.contact.title', 'Contact Information')}>
     <Container>
           <S.ContactTitle id="contact-title">{t('about.contact.title', 'Contact')}</S.ContactTitle>
+          
+          <S.ContactClosingMessage>
+            {t('about.contact.closingMessage', 'Ready to build something great?')}
+          </S.ContactClosingMessage>
           
           <S.ContactInfo>
             <S.ContactItem tabIndex={0}>
@@ -312,6 +450,14 @@ export function AboutPage() {
           </S.ContactButtons>
     </Container>
       </S.ContactSection>
+      
+      {/* Tech Stack Modal */}
+      {selectedTechStack && (
+        <TechStackModal
+          techStack={selectedTechStack}
+          onClose={() => setSelectedTechStack(null)}
+        />
+      )}
     </>
   )
 }

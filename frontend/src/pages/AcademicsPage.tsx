@@ -34,9 +34,36 @@ const PageWrapper = styled.div`
 const TimelineContainer = styled.div`
   max-width: ${props => props.theme.spacing[200]}; /* 4-point system: 800px */
   margin: 0 auto;
+  position: relative;
+  
+  /* Vertical timeline line */
+  &::before {
+    content: '';
+    position: absolute;
+    left: ${props => props.theme.spacing[2]}; /* 8px from left */
+    top: 0;
+    bottom: 0;
+    width: ${props => props.theme.spacing[0.5]}; /* 2px */
+    background: linear-gradient(
+      to bottom,
+      ${props => props.theme.colors.primary[500]},
+      ${props => props.theme.colors.primary[300]},
+      ${props => props.theme.colors.primary[500]}
+    );
+    opacity: 0.3;
+    z-index: 0;
+  }
+  
+  @media (max-width: 768px) {
+    &::before {
+      left: ${props => props.theme.spacing[1]}; /* 4px on mobile */
+    }
+  }
 `
 
-const AcademicCard = styled(Card)<{ status: string; $isVisible?: boolean; $index?: number }>`
+const AcademicCard = styled(Card).withConfig({
+  shouldForwardProp: (prop) => !['status', '$isVisible', '$index', '$isExpanded'].includes(prop)
+})<{ status: string; $isVisible?: boolean; $index?: number; $isExpanded?: boolean }>`
   margin-bottom: ${props => props.theme.spacing[4]};
   border-left: ${props => props.theme.spacing[1]} solid ${props => { /* 4-point system: 4px */
     switch (props.status) {
@@ -51,6 +78,13 @@ const AcademicCard = styled(Card)<{ status: string; $isVisible?: boolean; $index
   transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
   animation: ${props => props.$isVisible ? fadeInUp : 'none'} 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   animation-delay: ${props => props.$isVisible && props.$index !== undefined ? `${props.$index * 0.1}s` : '0s'};
+  cursor: pointer;
+  
+  /* Expanded state */
+  ${props => props.$isExpanded && `
+    background: ${props.theme.colors.primary[50]};
+    border-color: ${props.theme.colors.primary[500]};
+  `}
   
   /* H1: Visibility of System Status - Hover feedback */
   &:hover {
@@ -75,6 +109,41 @@ const AcademicCard = styled(Card)<{ status: string; $isVisible?: boolean; $index
   
   @media (max-width: 768px) {
     margin-bottom: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    &:hover {
+      transform: none;
+    }
+  }
+`
+
+const ExpandedContent = styled.div<{ $isExpanded: boolean }>`
+  max-height: ${props => props.$isExpanded ? '500px' : '0'};
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+  padding-top: ${props => props.$isExpanded ? props.theme.spacing[4] : '0'}; /* 16px or 0 */
+  margin-top: ${props => props.$isExpanded ? props.theme.spacing[4] : '0'}; /* 16px or 0 */
+  border-top: ${props => props.$isExpanded ? `1px solid ${props.theme.colors.border}` : 'none'};
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    max-height: ${props => props.$isExpanded ? 'none' : '0'};
+  }
+`
+
+const DetailRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: ${props => props.theme.spacing[2]} 0; /* 8px vertical */
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.textSecondary};
+  
+  strong {
+    color: ${props => props.theme.colors.text};
+    font-weight: ${props => props.theme.typography.fontWeight.semibold};
   }
 `
 
@@ -104,14 +173,23 @@ const GradeBadge = styled.span<{ grade: string }>`
   font-family: ${props => props.theme.typography.fontFamily.primary};
   background: ${props => {
     switch (props.grade) {
-      case 'HIGH DISTINCTION': return props.theme.colors.error
-      case 'DISTINCTION': return props.theme.colors.warning
-      case 'CREDIT': return props.theme.colors.success
-      case 'PASS': return props.theme.colors.primary[500]
-      default: return props.theme.colors.neutral[500]
+      case 'HIGH DISTINCTION': return props.theme.colors.error + 'E6' // 90% opacity for better contrast
+      case 'DISTINCTION': return props.theme.colors.warning + 'E6'
+      case 'CREDIT': return props.theme.colors.success + 'E6'
+      case 'PASS': return props.theme.colors.primary[600] + 'E6'
+      default: return props.theme.colors.neutral[600] + 'E6'
     }
   }};
   color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  border: 1px solid ${props => {
+    switch (props.grade) {
+      case 'HIGH DISTINCTION': return props.theme.colors.error
+      case 'DISTINCTION': return props.theme.colors.warning
+      case 'CREDIT': return props.theme.colors.success
+      case 'PASS': return props.theme.colors.primary[700]
+      default: return props.theme.colors.neutral[700]
+    }
+  }};
 `
 
 const StatusBadge = styled.span<{ status: string }>`
@@ -157,14 +235,24 @@ const AcademicMeta = styled.div`
 `
 
 
-const StatCard = styled(Card)<{ $isVisible?: boolean }>`
+const StatCard = styled(Card).withConfig({
+  shouldForwardProp: (prop) => prop !== '$isVisible' && prop !== '$isHighlighted'
+})<{ $isVisible?: boolean; $isHighlighted?: boolean }>`
   text-align: center;
-  padding: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
+  padding: ${props => props.$isHighlighted ? props.theme.spacing[8] : props.theme.spacing[6]}; /* 32px or 24px */
   font-family: ${props => props.theme.typography.fontFamily.primary};
   transition: all 0.3s ease;
   opacity: ${props => props.$isVisible ? 1 : 0};
   transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
   animation: ${props => props.$isVisible ? fadeInUp : 'none'} 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  position: relative;
+  
+  /* Highlighted state for GPA/WAM */
+  ${props => props.$isHighlighted && `
+    background: ${props.theme.colors.primary[50]};
+    border-color: ${props.theme.colors.primary[500]};
+    grid-column: span 2;
+  `}
   
   /* H1: Visibility of System Status - Hover feedback */
   &:hover {
@@ -181,10 +269,10 @@ const StatCard = styled(Card)<{ $isVisible?: boolean }>`
   }
   
   h3 {
-    font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 24px */
+    font-size: ${props => props.$isHighlighted ? props.theme.typography.fontSize['3xl'] : props.theme.typography.fontSize['2xl']}; /* 40px or 24px */
     font-weight: ${props => props.theme.typography.fontWeight.bold};
     font-family: ${props => props.theme.typography.fontFamily.primary};
-    color: ${props => props.theme.colors.primary[500]};
+    color: ${props => props.$isHighlighted ? props.theme.colors.primary[700] : props.theme.colors.primary[500]};
     margin: 0 0 ${props => props.theme.spacing[2]} 0; /* 4-point system: 8px */
   }
   
@@ -193,6 +281,48 @@ const StatCard = styled(Card)<{ $isVisible?: boolean }>`
     margin: 0;
     font-size: ${props => props.theme.typography.fontSize.sm}; /* 4-point system: 14px */
     font-family: ${props => props.theme.typography.fontFamily.primary};
+  }
+  
+  @media (max-width: 768px) {
+    ${props => props.$isHighlighted && `
+      grid-column: span 1;
+    `}
+  }
+`
+
+const SparklineChart = styled.svg`
+  width: 100%;
+  height: ${props => props.theme.spacing[8]}; /* 32px */
+  margin-top: ${props => props.theme.spacing[2]}; /* 8px */
+  overflow: visible;
+`
+
+const Tooltip = styled.div<{ $isVisible: boolean }>`
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: ${props => props.theme.spacing[2]}; /* 8px */
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]}; /* 8px 12px */
+  background: ${props => props.theme.colors.primary[700]};
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  border-radius: ${props => props.theme.radius.md};
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  white-space: nowrap;
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  pointer-events: ${props => props.$isVisible ? 'auto' : 'none'};
+  transition: opacity 0.2s ease;
+  z-index: 10;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: ${props => props.theme.spacing[1]} solid transparent; /* 4px */
+    border-top-color: ${props => props.theme.colors.primary[700]};
   }
 `
 
@@ -222,10 +352,18 @@ const SemesterTitle = styled.h2<{ $isVisible?: boolean }>`
   font-family: ${props => props.theme.typography.fontFamily.primary};
   border-bottom: ${props => props.theme.spacing[0.5]} solid ${props => props.theme.colors.border}; /* 4-point system: 2px → 4px */
   padding-bottom: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
+  padding-left: ${props => props.theme.spacing[6]}; /* 24px to overlap timeline */
+  position: relative;
+  z-index: 1;
+  background: ${props => props.theme.colors.background};
   opacity: ${props => props.$isVisible ? 1 : 0};
   transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  @media (max-width: 768px) {
+    padding-left: ${props => props.theme.spacing[4]}; /* 16px on mobile */
+  }
   
   @media (prefers-reduced-motion: reduce) {
     transition: opacity 0.3s ease;
@@ -249,7 +387,7 @@ const AcademicDescription = styled.p`
 
 const SummaryStats = styled.div<{ $isVisible?: boolean }>`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(${props => props.theme.spacing[50]}, 1fr)); /* 4-point system: 200px */
+  grid-template-columns: repeat(4, 1fr); /* 4-column grid: 2 small + 2 large */
   gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   margin-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
   opacity: ${props => props.$isVisible ? 1 : 0};
@@ -257,8 +395,12 @@ const SummaryStats = styled.div<{ $isVisible?: boolean }>`
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr); /* 2-column grid on tablet */
+  }
+  
   @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fit, minmax(${props => props.theme.spacing[40]}, 1fr)); /* 4-point system: 160px */
+    grid-template-columns: 1fr; /* 1-column grid on mobile */
     gap: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
     margin-bottom: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   }
@@ -269,6 +411,69 @@ const SummaryStats = styled.div<{ $isVisible?: boolean }>`
   }
 `
 
+const QuickNavBar = styled.div`
+  display: flex;
+  gap: ${props => props.theme.spacing[2]}; /* 8px */
+  padding: ${props => props.theme.spacing[4]}; /* 16px */
+  margin-bottom: ${props => props.theme.spacing[8]}; /* 32px */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  
+  /* Hide scrollbar but keep functionality */
+  scrollbar-width: thin;
+  scrollbar-color: ${props => props.theme.colors.primary[300]} ${props => props.theme.colors.background};
+  
+  &::-webkit-scrollbar {
+    height: ${props => props.theme.spacing[1]}; /* 4px */
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: ${props => props.theme.colors.background};
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme.colors.primary[300]};
+    border-radius: ${props => props.theme.radius.full};
+  }
+  
+  @media (max-width: 768px) {
+    padding: ${props => props.theme.spacing[3]}; /* 12px */
+    margin-bottom: ${props => props.theme.spacing[6]}; /* 24px */
+  }
+`
+
+const QuickNavButton = styled.button<{ $isActive?: boolean }>`
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[4]}; /* 8px 16px */
+  border: 1px solid ${props => props.$isActive ? props.theme.colors.primary[500] : props.theme.colors.border};
+  border-radius: ${props => props.theme.radius.md};
+  background: ${props => props.$isActive ? props.theme.colors.primary[500] : props.theme.colors.surface};
+  color: ${props => props.$isActive ? (props.theme.colors.hero?.text || '#ffffff') : props.theme.colors.text};
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-weight: ${props => props.$isActive ? props.theme.typography.fontWeight.semibold : props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  
+  &:hover {
+    border-color: ${props => props.theme.colors.primary[500]};
+    background: ${props => props.$isActive ? props.theme.colors.primary[600] : props.theme.colors.primary[50]};
+    color: ${props => props.$isActive ? (props.theme.colors.hero?.text || '#ffffff') : props.theme.colors.primary[700]};
+  }
+  
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[0.5]};
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+`
+
 export function AcademicsPage() {
   const { t } = useTranslation()
   const [academics, setAcademics] = useState<Academic[]>([])
@@ -276,9 +481,13 @@ export function AcademicsPage() {
   const [isStatsVisible, setIsStatsVisible] = useState(false)
   const [isTimelineVisible, setIsTimelineVisible] = useState(false)
   const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set())
+  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set())
+  const [hoveredStat, setHoveredStat] = useState<string | null>(null)
+  const [activeSemester, setActiveSemester] = useState<string | null>(null)
   
   const statsRef = useRef<HTMLDivElement>(null)
   const timelineRef = useRef<HTMLDivElement>(null)
+  const semesterRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
   // Mock data based on the provided transcript
   const mockAcademicsData: Academic[] = [
@@ -566,6 +775,10 @@ export function AcademicsPage() {
   const completedCreditPoints = completedSubjects.reduce((sum, a) => sum + (a.creditPoints || 0), 0)
   const averageMark = completedSubjects.filter(a => a.marks).reduce((sum, a, _, arr) => sum + (a.marks || 0) / arr.length, 0)
   
+  // Calculate GPA trend (mock data - in real app, this would come from backend)
+  const gpaTrend = [5.5, 5.7, 5.8, 5.88]
+  const wamTrend = [75, 78, 80, averageMark]
+  
   // Group academics by status and semester
   const groupedAcademics = academics.reduce((groups, academic) => {
     const key = academic.status === 'exemption' ? 'exemption' : academic.semester
@@ -580,6 +793,61 @@ export function AcademicsPage() {
     if (b === 'exemption') return -1
     return b.localeCompare(a)
   })
+  
+  // Handle card expansion
+  const handleCardClick = (academicId: number) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(academicId)) {
+        newSet.delete(academicId)
+      } else {
+        newSet.add(academicId)
+      }
+      return newSet
+    })
+  }
+  
+  // Handle semester navigation
+  const handleSemesterClick = (semester: string) => {
+    setActiveSemester(semester)
+    const element = semesterRefs.current.get(semester)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+  
+  // Generate sparkline path
+  const generateSparklinePath = (data: number[], width: number = 100, height: number = 32) => {
+    if (data.length === 0) return ''
+    const min = Math.min(...data)
+    const max = Math.max(...data)
+    const range = max - min || 1
+    const stepX = width / (data.length - 1)
+    
+    const points = data.map((value, index) => {
+      const x = index * stepX
+      const y = height - ((value - min) / range) * height
+      return `${x},${y}`
+    })
+    
+    return `M ${points.join(' L ')}`
+  }
+  
+  // Tooltip messages
+  const getTooltipMessage = (statType: string): string => {
+    switch (statType) {
+      case 'gpa':
+        return t('academics.tooltip.gpa', 'GPA 5.88 is in the top 10% of students')
+      case 'wam':
+        return t('academics.tooltip.wam', 'WAM target: Maintain above 80')
+      case 'totalCredits':
+        return t('academics.tooltip.totalCredits', 'Total credit points completed')
+      case 'completedCredits':
+        return t('academics.tooltip.completedCredits', 'Credits completed with grades')
+      default:
+        return ''
+    }
+  }
 
   return (
     <PageWrapper role="main" aria-label={t('academics.title', 'Academic Record')}>
@@ -587,27 +855,111 @@ export function AcademicsPage() {
       <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
       
         <SummaryStats ref={statsRef} $isVisible={isStatsVisible} role="region" aria-label={t('academics.stats.title', 'Academic Statistics')}>
-          <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.totalCredits', 'Total Credit Points')}>
-          <h3>{totalCreditPoints}</h3>
+          <StatCard 
+            $isVisible={isStatsVisible} 
+            $isHighlighted={false}
+            tabIndex={0} 
+            role="article" 
+            aria-label={t('academics.stats.totalCredits', 'Total Credit Points')}
+            onMouseEnter={() => setHoveredStat('totalCredits')}
+            onMouseLeave={() => setHoveredStat(null)}
+          >
+            <Tooltip $isVisible={hoveredStat === 'totalCredits'}>
+              {getTooltipMessage('totalCredits')}
+            </Tooltip>
+            <h3>{totalCreditPoints}</h3>
             <p>{t('academics.stats.totalCredits', 'Total Credit Points')}</p>
-        </StatCard>
-          <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.completedCredits', 'Completed Credit Points')}>
-          <h3>{completedCreditPoints}</h3>
+          </StatCard>
+          <StatCard 
+            $isVisible={isStatsVisible} 
+            $isHighlighted={false}
+            tabIndex={0} 
+            role="article" 
+            aria-label={t('academics.stats.completedCredits', 'Completed Credit Points')}
+            onMouseEnter={() => setHoveredStat('completedCredits')}
+            onMouseLeave={() => setHoveredStat(null)}
+          >
+            <Tooltip $isVisible={hoveredStat === 'completedCredits'}>
+              {getTooltipMessage('completedCredits')}
+            </Tooltip>
+            <h3>{completedCreditPoints}</h3>
             <p>{t('academics.stats.completedCredits', 'Completed Credit Points')}</p>
-        </StatCard>
-          <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.gpa', 'GPA')}>
-          <h3>5.88</h3>
+          </StatCard>
+          <StatCard 
+            $isVisible={isStatsVisible} 
+            $isHighlighted={true}
+            tabIndex={0} 
+            role="article" 
+            aria-label={t('academics.stats.gpa', 'GPA')}
+            onMouseEnter={() => setHoveredStat('gpa')}
+            onMouseLeave={() => setHoveredStat(null)}
+          >
+            <Tooltip $isVisible={hoveredStat === 'gpa'}>
+              {getTooltipMessage('gpa')}
+            </Tooltip>
+            <h3>5.88</h3>
             <p>{t('academics.stats.gpa', 'GPA')}</p>
-        </StatCard>
-          <StatCard $isVisible={isStatsVisible} tabIndex={0} role="article" aria-label={t('academics.stats.wam', 'WAM')}>
-          <h3>{averageMark.toFixed(1)}</h3>
+            <SparklineChart viewBox="0 0 100 32" preserveAspectRatio="none">
+              <path
+                d={generateSparklinePath(gpaTrend, 100, 32)}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ color: 'var(--primary-500)' }}
+              />
+            </SparklineChart>
+          </StatCard>
+          <StatCard 
+            $isVisible={isStatsVisible} 
+            $isHighlighted={true}
+            tabIndex={0} 
+            role="article" 
+            aria-label={t('academics.stats.wam', 'WAM')}
+            onMouseEnter={() => setHoveredStat('wam')}
+            onMouseLeave={() => setHoveredStat(null)}
+          >
+            <Tooltip $isVisible={hoveredStat === 'wam'}>
+              {getTooltipMessage('wam')}
+            </Tooltip>
+            <h3>{averageMark.toFixed(1)}</h3>
             <p>{t('academics.stats.wam', 'WAM (Weighted Average Mark)')}</p>
-        </StatCard>
-      </SummaryStats>
+            <SparklineChart viewBox="0 0 100 32" preserveAspectRatio="none">
+              <path
+                d={generateSparklinePath(wamTrend, 100, 32)}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ color: 'var(--primary-500)' }}
+              />
+            </SparklineChart>
+          </StatCard>
+        </SummaryStats>
+        
+        <QuickNavBar role="navigation" aria-label={t('academics.navigation.title', 'Quick Navigation')}>
+          {sortedGroups.map(([semester]) => (
+            <QuickNavButton
+              key={semester}
+              $isActive={activeSemester === semester}
+              onClick={() => handleSemesterClick(semester)}
+              aria-label={t('academics.navigation.semester', { semester }, `Navigate to ${semester}`)}
+            >
+              {semester === 'exemption' ? t('academics.exemptions', 'Exemptions') : semester}
+            </QuickNavButton>
+          ))}
+        </QuickNavBar>
       
         <TimelineContainer ref={timelineRef} role="region" aria-label={t('academics.timeline.title', 'Academic Timeline')}>
         {sortedGroups.map(([semester, academicGroup]) => (
-          <div key={semester}>
+          <div 
+            key={semester}
+            ref={(el) => {
+              if (el) semesterRefs.current.set(semester, el)
+            }}
+          >
               <SemesterTitle $isVisible={isTimelineVisible}>
                 {semester === 'exemption' ? t('academics.exemptions', 'Exemptions') : semester}
             </SemesterTitle>
@@ -617,10 +969,19 @@ export function AcademicsPage() {
                   status={academic.status}
                   $isVisible={visibleCards.has(academic.id)}
                   $index={index}
+                  $isExpanded={expandedCards.has(academic.id)}
                   data-card-id={academic.id}
                   tabIndex={0}
                   role="article"
                   aria-labelledby={`academic-${academic.id}-title`}
+                  aria-expanded={expandedCards.has(academic.id)}
+                  onClick={() => handleCardClick(academic.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      handleCardClick(academic.id)
+                    }
+                  }}
                 >
                   <AcademicTitle id={`academic-${academic.id}-title`}>
                   <span>{academic.name}</span>
@@ -651,6 +1012,22 @@ export function AcademicsPage() {
                   {academic.description && (
                     <AcademicDescription>{academic.description}</AcademicDescription>
                   )}
+                  <ExpandedContent $isExpanded={expandedCards.has(academic.id)}>
+                    <DetailRow>
+                      <strong>{t('academics.details.subjectCode', 'Subject Code')}:</strong>
+                      <span>{t('academics.details.subjectCodeValue', 'N/A')}</span>
+                    </DetailRow>
+                    <DetailRow>
+                      <strong>{t('academics.details.lecturer', 'Lecturer')}:</strong>
+                      <span>{t('academics.details.lecturerValue', 'TBA')}</span>
+                    </DetailRow>
+                    {academic.description && (
+                      <DetailRow>
+                        <strong>{t('academics.details.description', 'Description')}:</strong>
+                        <span style={{ textAlign: 'right', maxWidth: '60%' }}>{academic.description}</span>
+                      </DetailRow>
+                    )}
+                  </ExpandedContent>
               </AcademicCard>
             ))}
           </div>

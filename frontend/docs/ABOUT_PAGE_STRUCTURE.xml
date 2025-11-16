@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AboutPage>
+  {AboutPage는 개인 소개 및 스토리텔링 중심의 페이지입니다. HomePage와 차별화된 Hero 섹션과 여러 스토리 섹션으로 구성됩니다.}
+  
+  <Hero id="about-hero" role="banner">
+    {AboutHero는 HomePage Hero와 완전히 독립적인 컴포넌트입니다. 중립 배경(primary[50-100] 그라데이션), 대칭 2-column 레이아웃, 프로필 이미지 중심 디자인을 사용합니다.}
+    
+    <Container>
+      <AboutHeroContent layout="grid" columns="1fr 1fr">
+        {대칭 2-column 그리드 레이아웃: 좌측 프로필 이미지, 우측 텍스트 콘텐츠}
+        
+        <AboutHeroLeft>
+          {좌측 컬럼: 프로필 이미지 시각적 중심 배치}
+          <ProfileImageWrapper>
+            <ProfileImage 
+              src="/profile.jpg" 
+              size="spacing[80] (320px)"
+              border="spacing[2] solid primary[500]"
+              shadow="shadows['2xl']"
+              hover="scale(1.05) + border-color change"
+            />
+            {프로필 이미지: 큰 크기(320px), 두꺼운 테두리, 큰 그림자, 호버 시 확대 효과}
+          </ProfileImageWrapper>
+        </AboutHeroLeft>
+        
+        <AboutHeroRight>
+          {우측 컬럼: 텍스트 콘텐츠 및 CTA 버튼}
+          <AboutHeroGreeting>
+            {인사말: "Hello, I am [Name]"}
+          </AboutHeroGreeting>
+          <AboutHeroName>
+            {이름: 강조된 텍스트 (primary[700] 색상)}
+          </AboutHeroName>
+          <AboutHeroHeadline>
+            {헤드라인: HomePage보다 작은 크기 (clamp(32px, 4vw, 48px)), primary[700] 색상}
+          </AboutHeroHeadline>
+          <AboutHeroSubtitle>
+            {부제목: 개발자 소개 텍스트}
+          </AboutHeroSubtitle>
+          <AboutHeroCTAButtons>
+            <AboutHeroPrimaryCTA to="/projects" style="outline">
+              {Primary CTA: Outline 스타일 (투명 배경, Primary 테두리), 호버 시 Primary 배경으로 전환}
+            </AboutHeroPrimaryCTA>
+            <AboutHeroSecondaryCTA to="/feedback" style="ghost">
+              {Secondary CTA: Ghost 스타일 (배경 없음, Primary 텍스트)}
+            </AboutHeroSecondaryCTA>
+          </AboutHeroCTAButtons>
+          <AboutHeroSocialLinks>
+            {소셜 링크: 중립 스타일 (배경, 테두리, 텍스트 색상)}
+            <AboutHeroSocialLink href="linkedin" />
+            <AboutHeroSocialLink href="email" />
+          </AboutHeroSocialLinks>
+        </AboutHeroRight>
+      </AboutHeroContent>
+    </Container>
+    <ScrollIndicator isVisible={isHeroVisible} />
+    {스크롤 인디케이터: HomePage와 동일한 패턴 재사용}
+  </Hero>
+  
+  <SectionBridge 
+    text="storytelling.heroToStory"
+    variant="primary"
+    diagonal="true"
+    overlap="true"
+  />
+  {섹션 브릿지: Hero에서 Story로 전환, 대각선 구분자, 오버랩 효과}
+  
+  <StorySection role="region" aria-labelledby="story-title">
+    {Story 섹션: 개발자 여정 스토리텔링, F-pattern 레이아웃 (JourneyMilestoneSection 패턴 재사용)}
+    <Container>
+      <JourneyGrid layout="12-column">
+        {12-column 그리드 시스템: 텍스트 7컬럼, 이미지 5컬럼}
+        <TextColumn span="1-8">
+          {텍스트 컬럼: 7컬럼 (데스크톱), 3컬럼 (태블릿), 1컬럼 (모바일)}
+          <SectionTitle id="story-title" $isVisible={isStoryVisible}>
+            {섹션 제목: "My Journey", scroll-triggered fadeInUp 애니메이션}
+          </SectionTitle>
+          <SectionPurpose text="about.story.purpose" />
+          {섹션 목적: SectionPurpose 컴포넌트 재사용}
+          <SectionSubtitle id="story-subtitle" $isVisible={isStoryVisible}>
+            {부제목: 스토리 소개, scroll-triggered 애니메이션}
+          </SectionSubtitle>
+          <StoryContent>
+            {스토리 본문: 3개 단락으로 구성된 개발자 여정 설명}
+            <p>paragraph1</p>
+            <p>paragraph2</p>
+            <p>paragraph3</p>
+          </StoryContent>
+        </TextColumn>
+        <StoryVisualColumn span="8-13">
+          {시각적 컬럼: 5컬럼 (데스크톱), 3컬럼 (태블릿), 1컬럼 (모바일)}
+          <StoryImage 
+            src="/images/developer-story.jpg"
+            loading="lazy"
+            onError="hide"
+          />
+        </StoryVisualColumn>
+      </JourneyGrid>
+    </Container>
+  </StorySection>
+  
+  <SectionBridge 
+    text="storytelling.storyToBackground"
+    variant="secondary"
+    diagonal="true"
+  />
+  
+  <BackgroundSection role="region" aria-labelledby="background-title">
+    {Background 섹션: 교육 배경, 경력, 기술 스택 소개, FeaturedSection 스타일 패턴 재사용}
+    <Container>
+      <SectionTitle id="background-title" $isVisible={isBackgroundVisible}>
+        {섹션 제목: "Background & Skills"}
+      </SectionTitle>
+      <SectionPurpose text="about.background.purpose" />
+      <SectionSubtitle id="background-subtitle" $isVisible={isBackgroundVisible}>
+        {부제목: "A solid foundation built through education and practical experience."}
+      </SectionSubtitle>
+      <BackgroundGrid layout="12-column">
+        {12-column 그리드: 각 카드 4컬럼 (3-column grid)}
+        <BackgroundCard span="4" role="article" aria-labelledby="education-title">
+          {Background 카드: Card 컴포넌트 재사용 + ContactItem 호버 효과, 중앙 정렬}
+          <CardIcon aria-hidden="true">🎓</CardIcon>
+          {아이콘: 이모지 아이콘 (32px), 중앙 정렬, spacing[2] margin-bottom}
+          <CardTitle id="education-title">Education</CardTitle>
+          {카드 제목: 중앙 정렬, xl 폰트, spacing[4] margin-bottom}
+          <CardContent>전북대학교 컴퓨터공학, 호주 UTS 유학 중</CardContent>
+          {카드 콘텐츠: 중앙 정렬, base 폰트, spacing[4] margin-bottom}
+          <DetailLabel>Period</DetailLabel>
+          {상세 라벨: xs 폰트, uppercase, neutral[500] 색상, spacing[0.5] margin-bottom}
+          <DetailValue>2018 - Present</DetailValue>
+          {상세 값: sm 폰트, textSecondary 색상, spacing[2] margin-bottom}
+          <DetailLabel>Location</DetailLabel>
+          <DetailValue>Jeonbuk National University, UTS (Australia)</DetailValue>
+        </BackgroundCard>
+        <BackgroundCard span="4" role="article" aria-labelledby="experience-title">
+          <CardIcon aria-hidden="true">💼</CardIcon>
+          <CardTitle id="experience-title">Experience</CardTitle>
+          <CardContent>군 통역병, React/TypeScript/Spring Boot 프로젝트</CardContent>
+          <DetailLabel>Period</DetailLabel>
+          <DetailValue>2020 - 2022</DetailValue>
+          <DetailLabel>Location</DetailLabel>
+          <DetailValue>Military Service, Various Projects</DetailValue>
+        </BackgroundCard>
+        <BackgroundCard span="4" role="article" aria-labelledby="techStack-title" $isHighlighted={highlightedTech !== null}>
+          <CardIcon aria-hidden="true">⚙️</CardIcon>
+          <CardTitle id="techStack-title">Tech Stack</CardTitle>
+          <CardContent>Core technologies and frameworks I use in my projects.</CardContent>
+          <TechStackTags>
+            {기술 스택 태그 컨테이너: flex layout, gap spacing[2], 중앙 정렬, spacing[4] margin-bottom}
+            {techStacks.map((tech) => (
+              <TechStackTag
+                key={tech}
+                href="/projects?techStacks={tech}"
+                onClick={handleTechStackClick}
+                role="link"
+                aria-label="View projects using {tech}"
+              >
+                {기술 스택 태그: 클릭 가능한 링크, primary[100] 배경, primary[700] 텍스트, 호버 시 translateY(-2px) + shadow 증가}
+                {tech}
+              </TechStackTag>
+            ))}
+          </TechStackTags>
+          <TechStackCTA href="/projects" onClick={navigate('/projects')} role="link" aria-label="View all projects">
+            {CTA 링크: "View All Projects ➔", Ghost 스타일, primary[600] 색상, 호버 시 밑줄}
+            View All Projects ➔
+          </TechStackCTA>
+        </BackgroundCard>
+      </BackgroundGrid>
+    </Container>
+  </BackgroundSection>
+  
+  <SectionBridge 
+    text="storytelling.backgroundToJourney"
+    variant="secondary"
+    diagonal="true"
+  />
+  
+  <JourneyMilestoneSection id="journey" role="region">
+    {JourneyMilestoneSection: 100% 재사용 컴포넌트, F-pattern 레이아웃, 타임라인 표시}
+  </JourneyMilestoneSection>
+  
+  <SectionBridge 
+    text="storytelling.journeyToMission"
+    variant="secondary"
+    diagonal="true"
+  />
+  
+  <MissionVisionSection role="region" aria-labelledby="mission-title">
+    {Mission & Vision 섹션: 개발자 미션과 가치관 소개, FeaturedSection 스타일 패턴 재사용}
+    <Container>
+      <SectionTitle id="mission-title" $isVisible={isMissionVisible}>
+        {섹션 제목: "Mission & Vision"}
+      </SectionTitle>
+      <SectionPurpose text="about.mission.purpose" />
+      <SectionSubtitle id="mission-subtitle" $isVisible={isMissionVisible}>
+        {부제목: "The values and principles that guide my work."}
+      </SectionSubtitle>
+      <ValuesGrid layout="12-column">
+        {12-column 그리드: 각 카드 4컬럼}
+        <ValueCard span="4" role="article" aria-labelledby="innovation-title" $isHighlighted={highlightedValue === 'innovation'} $isExpanded={expandedValue === 'innovation'}>
+          {Value 카드: BackgroundCard와 동일한 패턴, 중앙 정렬, 호버 시 primary[100] 배경 전환 (300ms ease-out), 확장 가능}
+          <ValueIcon aria-hidden="true">I</ValueIcon>
+          {Value 아이콘: 텍스트 라벨 ("I", "C", "G"), 원형 배경 (64px), primary[50] 배경, primary[500] 색상, 호버 시 Pulse 애니메이션 (500ms)}
+          <CardTitle id="innovation-title">Innovation</CardTitle>
+          <CardContent>최신 기술을 활용한 혁신적인 솔루션</CardContent>
+          {expandedValue === 'innovation' && (
+            <ValueExpandedContent>
+              {확장 콘텐츠: fadeIn 애니메이션 (0.3s), 상세 설명 표시}
+              상세 설명 텍스트...
+            </ValueExpandedContent>
+          )}
+        </ValueCard>
+        <ValueCard span="4" role="article" aria-labelledby="collaboration-title" $isHighlighted={highlightedValue === 'collaboration'} $isExpanded={expandedValue === 'collaboration'}>
+          <ValueIcon aria-hidden="true">C</ValueIcon>
+          <CardTitle id="collaboration-title">Collaboration</CardTitle>
+          <CardContent>팀 협업을 통한 더 나은 결과</CardContent>
+          {expandedValue === 'collaboration' && (
+            <ValueExpandedContent>상세 설명 텍스트...</ValueExpandedContent>
+          )}
+        </ValueCard>
+        <ValueCard span="4" role="article" aria-labelledby="growth-title" $isHighlighted={highlightedValue === 'growth'} $isExpanded={expandedValue === 'growth'}>
+          <ValueIcon aria-hidden="true">G</ValueIcon>
+          <CardTitle id="growth-title">Continuous Growth</CardTitle>
+          <CardContent>지속적인 학습과 성장</CardContent>
+          {expandedValue === 'growth' && (
+            <ValueExpandedContent>상세 설명 텍스트...</ValueExpandedContent>
+          )}
+        </ValueCard>
+      </ValuesGrid>
+      <MissionVisionTextContainer $isVisible={isMissionVisible}>
+        {Mission/Vision 텍스트 컨테이너: max-width 800px, 중앙 정렬, scroll-triggered fadeInUp 애니메이션}
+        <MissionText $isVisible={isMissionVisible}>
+          {미션 텍스트: 중앙 정렬, fontSize 20px (spacing[5]), 카드 스타일, 첫 번째에만 밑줄 애니메이션}
+          <MissionLabel>Mission</MissionLabel>
+          {라벨: sm 폰트, semibold, uppercase, primary[600] 색상, spacing[2] margin-bottom}
+          {미션 텍스트 내용}
+          {밑줄 애니메이션: 첫 번째 MissionText에만, primary[500] 색상, 2px, scroll-triggered로 왼쪽에서 오른쪽으로 채워짐}
+        </MissionText>
+        <MissionText $isVisible={isMissionVisible}>
+          <MissionLabel>Vision</MissionLabel>
+          {비전 텍스트: 중앙 정렬, 카드 스타일}
+          {비전 텍스트 내용}
+        </MissionText>
+      </MissionVisionTextContainer>
+      {CTAButtons 제거됨: Mission & Vision 섹션에서 제거하여 Contact 섹션으로의 전환 집중도 향상}
+    </Container>
+  </MissionVisionSection>
+  
+  <SectionBridge 
+    text="storytelling.missionToContact"
+    variant="primary"
+    diagonal="true"
+  />
+  
+  <ContactSection role="region" aria-labelledby="contact-title">
+    {Contact 섹션: 연락처 정보 및 CTA 버튼, Card 컴포넌트 기반}
+    <Container>
+      <ContactTitle id="contact-title">Contact</ContactTitle>
+      <ContactInfo layout="grid" gap="spacing[4]">
+        {연락처 정보: 그리드 레이아웃, max-width 400px, 중앙 정렬}
+        <ContactItem tabIndex="0">
+          {Contact 아이템: 키보드 접근 가능, 호버/포커스 효과}
+          <ContactLabel>Email:</ContactLabel>
+          <ContactValue href="mailto:..." target="_blank">
+            {이메일 링크: primary[500] 색상, 호버 시 밑줄}
+          </ContactValue>
+        </ContactItem>
+        <ContactItem tabIndex="0">
+          <ContactLabel>LinkedIn:</ContactLabel>
+          <ContactValue href="linkedin-url" target="_blank">
+            {LinkedIn 링크}
+          </ContactValue>
+        </ContactItem>
+      </ContactInfo>
+      <ContactButtons layout="flex" gap="spacing[4]">
+        {CTA 버튼 그룹: 중앙 정렬, flex-wrap}
+        <ContactButton href="mailto:..." target="_blank">
+          Send Email
+        </ContactButton>
+        <ContactButton href="linkedin-url" target="_blank">
+          Connect on LinkedIn
+        </ContactButton>
+      </ContactButtons>
+    </Container>
+  </ContactSection>
+</AboutPage>
+
+<!-- Design Principles Applied -->
+<DesignPrinciples>
+  <KickoffLabs>
+    {KickoffLabs 원칙: Primary + Neutral 색상만 사용, Inter 폰트, 일관된 CTA 스타일}
+  </KickoffLabs>
+  <FourPointSpacing>
+    {4-point spacing 시스템: 모든 spacing 값이 4px의 배수 (spacing[0.5]=4px, spacing[1]=8px, spacing[2]=16px 등)}
+  </FourPointSpacing>
+  <NielsenHeuristics>
+    <H1>Visibility of System Status</H1>
+    {H1: 스크롤 애니메이션, 호버/포커스 피드백, 로딩 상태 표시}
+    <H3>User Control & Freedom</H3>
+    {H3: 키보드 네비게이션 (tabIndex, onKeyDown), 포커스 상태 스타일, 명확한 CTA}
+    <H4>Consistency & Standards</H4>
+    {H4: 일관된 레이아웃 패턴 (12-column grid), 재사용 컴포넌트, 통일된 스타일}
+    <H8>Aesthetic & Minimalist Design</H8>
+    {H8: 깔끔한 레이아웃, 적절한 여백, 불필요한 요소 제거}
+  </NielsenHeuristics>
+</DesignPrinciples>
+
+<!-- Code Reuse Statistics -->
+<CodeReuse>
+  <ReusedComponents>
+    <Component name="JourneyMilestoneSection" reuse="100%" />
+    <Component name="SectionBridge" reuse="100%" />
+    <Component name="SectionPurpose" reuse="100%" />
+    <Component name="Card" reuse="BackgroundCard, ValueCard" />
+    <Component name="Container" reuse="100%" />
+    <Component name="ScrollIndicator" reuse="HomePage.styles" />
+  </ReusedComponents>
+  <ReusedStyles>
+    <Style name="JourneyGrid" source="JourneyMilestoneSection" />
+    <Style name="TextColumn" source="JourneyMilestoneSection" />
+    <Style name="SectionTitle" pattern="HomePage.styles" />
+    <Style name="SectionSubtitle" pattern="HomePage.styles" />
+    <Style name="FeaturedSection" pattern="StorySection, BackgroundSection, MissionVisionSection" />
+    <Style name="FeaturedGrid" pattern="BackgroundGrid, ValuesGrid" />
+  </ReusedStyles>
+  <EstimatedReuse>93%</EstimatedReuse>
+  {코드 재사용률: 약 93% - 기존 컴포넌트와 스타일 패턴을 최대한 재사용}
+</CodeReuse>
+
+<!-- Animation Strategy -->
+<Animations>
+  <ScrollTriggered>
+    {스크롤 트리거 애니메이션: IntersectionObserver 사용, threshold 0.2, rootMargin -100px}
+    <Element ref="heroRef" animation="fadeInUp" />
+    <Element ref="storyRef" animation="fadeInUp" />
+    <Element ref="backgroundRef" animation="fadeInUp" />
+    <Element ref="missionRef" animation="fadeInUp" />
+  </ScrollTriggered>
+  <Accessibility>
+    {접근성: prefers-reduced-motion 지원, 애니메이션 비활성화 옵션}
+    <MediaQuery query="prefers-reduced-motion: reduce">
+      {애니메이션 비활성화 또는 단순화}
+    </MediaQuery>
+  </Accessibility>
+</Animations>
+
+<!-- Responsive Breakpoints -->
+<Responsive>
+  <Desktop minWidth="1024px">
+    {데스크톱: 12-column grid, 2-column Hero 레이아웃, 전체 기능}
+  </Desktop>
+  <Tablet minWidth="768px" maxWidth="1023px">
+    {태블릿: 6-column grid, 1-column Hero 레이아웃, 일부 기능 조정}
+  </Tablet>
+  <Mobile maxWidth="767px">
+    {모바일: 1-column grid, 스택 레이아웃, 터치 최적화}
+  </Mobile>
+</Responsive>
+

@@ -272,11 +272,21 @@ export const BackgroundGrid = styled.div`
 `
 
 // BackgroundCard - Card 컴포넌트 재사용 + ContactItem 호버 효과
-export const BackgroundCard = styled(Card)`
+export const BackgroundCard = styled(Card).withConfig({
+  shouldForwardProp: (prop) => prop !== '$isHighlighted'
+})<{ $isHighlighted?: boolean }>`
   grid-column: span 4; /* 3-column grid */
   padding: ${props => props.theme.spacing[8]};
   transition: all 0.2s ease;
   font-family: ${props => props.theme.typography.fontFamily.primary};
+  text-align: center;
+  
+  /* Highlighted state */
+  ${props => props.$isHighlighted && `
+    background: ${props.theme.colors.primary[50]};
+    border-color: ${props.theme.colors.primary[500]};
+    box-shadow: 0 0 0 ${props.theme.spacing[0.5]} ${props.theme.colors.primary[200]};
+  `}
   
   /* ContactItem 호버 효과 정확히 재사용 */
   &:hover {
@@ -297,6 +307,20 @@ export const BackgroundCard = styled(Card)`
   @media (max-width: 768px) {
     grid-column: 1;
   }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    &:hover {
+      transform: none;
+    }
+  }
+`
+
+export const CardIcon = styled.div`
+  font-size: ${props => props.theme.spacing[8]}; /* 32px */
+  margin-bottom: ${props => props.theme.spacing[2]}; /* 8px */
+  text-align: center;
+  line-height: 1;
 `
 
 export const CardTitle = styled.h3`
@@ -305,6 +329,7 @@ export const CardTitle = styled.h3`
   font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.text};
   margin-bottom: ${props => props.theme.spacing[4]};
+  text-align: center;
 `
 
 export const CardContent = styled.div`
@@ -312,6 +337,91 @@ export const CardContent = styled.div`
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.textSecondary};
+  text-align: center;
+  margin-bottom: ${props => props.theme.spacing[4]};
+`
+
+export const DetailLabel = styled.span`
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.neutral[500]};
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: ${props => props.theme.spacing[0.5]}; /* 4px */
+`
+
+export const DetailValue = styled.span`
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.textSecondary};
+  display: block;
+  margin-bottom: ${props => props.theme.spacing[2]}; /* 8px */
+`
+
+export const TechStackTags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${props => props.theme.spacing[2]}; /* 8px */
+  justify-content: center;
+  margin-bottom: ${props => props.theme.spacing[4]}; /* 16px */
+`
+
+export const TechStackTag = styled.a`
+  display: inline-block;
+  padding: ${props => props.theme.spacing[1.5]} ${props => props.theme.spacing[3]}; /* 8px 12px */
+  border-radius: ${props => props.theme.radius.sm};
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  background: ${props => props.theme.colors.primary[100]};
+  color: ${props => props.theme.colors.primary[700]};
+  border: 1px solid ${props => props.theme.colors.primary[200]};
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* -2px */
+    box-shadow: ${props => props.theme.shadows.sm};
+    background: ${props => props.theme.colors.primary[200]};
+  }
+  
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[0.5]};
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+    &:hover {
+      transform: none;
+    }
+  }
+`
+
+export const TechStackCTA = styled.a`
+  display: inline-block;
+  margin-top: ${props => props.theme.spacing[4]}; /* 16px */
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[4]}; /* 8px 16px */
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.primary[600]};
+  text-decoration: none;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: ${props => props.theme.colors.primary[700]};
+    text-decoration: underline;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[0.5]};
+    border-radius: ${props => props.theme.radius.sm};
+  }
 `
 
 // MissionVisionSection - FeaturedSection 스타일 패턴 재사용
@@ -355,12 +465,29 @@ export const ValuesGrid = styled.div`
 `
 
 // ValueCard - BackgroundCard와 동일한 패턴
-export const ValueCard = styled(Card)`
+export const ValueCard = styled(Card).withConfig({
+  shouldForwardProp: (prop) => !['$isHighlighted', '$isExpanded'].includes(prop)
+})<{ $isHighlighted?: boolean; $isExpanded?: boolean }>`
   grid-column: span 4;
   padding: ${props => props.theme.spacing[8]};
   text-align: center;
   transition: all 0.2s ease;
   font-family: ${props => props.theme.typography.fontFamily.primary};
+  position: relative;
+  
+  /* Highlighted state */
+  ${props => props.$isHighlighted && `
+    background: ${props.theme.colors.primary[50]};
+    border-color: ${props.theme.colors.primary[500]};
+    box-shadow: 0 0 0 ${props.theme.spacing[0.5]} ${props.theme.colors.primary[200]};
+  `}
+  
+  /* Expanded state */
+  ${props => props.$isExpanded && `
+    background: ${props.theme.colors.primary[50]};
+    border-color: ${props.theme.colors.primary[500]};
+    box-shadow: ${props.theme.shadows.lg};
+  `}
   
   &:hover {
     border-color: ${props => props.theme.colors.primary[500]};
@@ -380,6 +507,13 @@ export const ValueCard = styled(Card)`
   @media (max-width: 768px) {
     grid-column: 1;
   }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    &:hover {
+      transform: none;
+    }
+  }
 `
 
 export const ValueIcon = styled.div`
@@ -387,40 +521,189 @@ export const ValueIcon = styled.div`
   margin-bottom: ${props => props.theme.spacing[4]};
   color: ${props => props.theme.colors.primary[500]};
   line-height: 1;
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  width: ${props => props.theme.spacing[16]}; /* 64px */
+  height: ${props => props.theme.spacing[16]}; /* 64px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: ${props => props.theme.radius.full};
+  background: ${props => props.theme.colors.primary[50]};
+  margin: 0 auto ${props => props.theme.spacing[4]};
+  position: relative;
+  
+  /* Pulse animation ring on hover */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: ${props => props.theme.spacing[16]}; /* 64px */
+    height: ${props => props.theme.spacing[16]}; /* 64px */
+    border-radius: ${props => props.theme.radius.full};
+    border: 1px solid ${props => props.theme.colors.primary[300]};
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  ${ValueCard}:hover &::after {
+    animation: pulse 500ms ease-out;
+  }
+  
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.5);
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    &::after {
+      display: none;
+    }
+  }
 `
 
-export const MissionText = styled.div`
+export const ValueExpandedContent = styled.div`
+  margin-top: ${props => props.theme.spacing[4]};
+  padding-top: ${props => props.theme.spacing[4]};
+  border-top: 1px solid ${props => props.theme.colors.border};
+  font-size: ${props => props.theme.typography.fontSize.base};
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  color: ${props => props.theme.colors.textSecondary};
+  text-align: left;
+  animation: fadeIn 0.3s ease;
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-${props => props.theme.spacing[2]});
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+`
+
+export const MissionVisionTextContainer = styled.div<{ $isVisible: boolean }>`
   max-width: ${props => props.theme.spacing[200]}; /* 800px */
-  margin: 0 auto ${props => props.theme.spacing[8]};
+  margin: ${props => props.theme.spacing[12]} auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[8]};
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  animation: ${props => props.$isVisible ? 'fadeInUp' : 'none'} 0.6s ease-out 0.3s forwards;
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(${props => props.theme.spacing[8]});
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+  }
+`
+
+export const MissionText = styled.div<{ $isVisible: boolean }>`
   text-align: center;
-  font-size: ${props => props.theme.typography.fontSize.lg};
+  font-size: ${props => props.theme.spacing[5]}; /* 20px - minimum as per requirements */
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.textSecondary};
+  padding: ${props => props.theme.spacing[6]};
+  background: ${props => props.theme.colors.surface};
+  border-radius: ${props => props.theme.radius.xl};
+  border: 1px solid ${props => props.theme.colors.border};
+  transition: all 0.3s ease;
+  position: relative;
+  
+  /* Underline animation for first MissionText */
+  &:first-child::after {
+    content: '';
+    position: absolute;
+    bottom: ${props => props.theme.spacing[4]}; /* 16px */
+    left: 0;
+    height: ${props => props.theme.spacing[0.5]}; /* 2px */
+    background: ${props => props.theme.colors.primary[500]};
+    width: ${props => props.$isVisible ? '100%' : '0%'};
+    transition: width 0.6s ease-out 0.5s;
+  }
+  
+  &:hover {
+    border-color: ${props => props.theme.colors.primary[300]};
+    box-shadow: ${props => props.theme.shadows.sm};
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    &::after {
+      transition: none;
+      width: 100%;
+    }
+  }
 `
 
-// ContactSection - 기존 AboutPage.tsx 스타일 유지
+export const MissionLabel = styled.span`
+  display: block;
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  color: ${props => props.theme.colors.primary[600]};
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: ${props => props.theme.spacing[2]};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+`
+
+// ContactSection - Primary gradient background for maximum visual weight
 export const ContactSection = styled(Card)`
-  margin-top: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
+  margin-top: ${props => props.theme.spacing[10]};
   text-align: center;
-  background: ${props => props.theme.colors.surface};
-  border: 1px solid ${props => props.theme.colors.border};
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.primary[800]} 100%);
+  border: none;
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  padding: ${props => props.theme.spacing[12]} ${props => props.theme.spacing[6]};
+  border-radius: ${props => props.theme.radius.xl};
+  box-shadow: ${props => props.theme.shadows.lg};
 `
 
 export const ContactTitle = styled.h2`
-  font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 4-point system: 24px */
+  font-size: ${props => props.theme.typography.fontSize['3xl']};
   font-weight: ${props => props.theme.typography.fontWeight.bold};
   font-family: ${props => props.theme.typography.fontFamily.primary};
-  margin-bottom: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
-  color: ${props => props.theme.colors.text};
+  margin-bottom: ${props => props.theme.spacing[2]};
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+`
+
+export const ContactClosingMessage = styled.p`
+  font-size: ${props => props.theme.typography.fontSize.lg};
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  margin-bottom: ${props => props.theme.spacing[8]};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 export const ContactInfo = styled.div`
   display: grid;
-  gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
-  margin-bottom: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
+  gap: ${props => props.theme.spacing[4]};
+  margin-bottom: ${props => props.theme.spacing[10]};
   text-align: left;
-  max-width: ${props => props.theme.spacing[100]}; /* 4-point system: 400px */
+  max-width: ${props => props.theme.spacing[100]};
   margin-left: auto;
   margin-right: auto;
 `
@@ -429,93 +712,135 @@ export const ContactItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[5]}; /* 4-point system: 16px 20px → 16px 24px */
-  background: ${props => props.theme.colors.background};
-  border-radius: ${props => props.theme.radius.xl}; /* 4-point system: 12px */
-  border: 2px solid ${props => props.theme.colors.border};
+  padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[5]};
+  background: ${props => props.theme.colors.primary[600]}40; /* Primary[600] with opacity */
+  border-radius: ${props => props.theme.radius.xl};
+  border: 2px solid ${props => props.theme.colors.primary[500]};
   box-shadow: ${props => props.theme.shadows.sm};
   transition: all 0.2s ease;
   font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
 
-  /* H1: Visibility of System Status - Hover feedback */
+  /* H1: Visibility of System Status - Hover feedback with Primary[50] overlay */
   &:hover {
-    border-color: ${props => props.theme.colors.primary[500]};
+    background: ${props => props.theme.colors.primary[500]}60;
+    border-color: ${props => props.theme.colors.primary[400]};
     box-shadow: ${props => props.theme.shadows.md};
-    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
+    transform: translateY(-${props => props.theme.spacing[0.5]});
   }
   
   /* H3: User Control & Freedom - Focus state */
   &:focus-within {
-    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline: 2px solid ${props => props.theme.colors.primary[200]};
     outline-offset: ${props => props.theme.spacing[1]};
+    border-radius: ${props => props.theme.radius.lg};
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    &:hover { transform: none; }
   }
 `
 
 export const ContactLabel = styled.span`
   font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-size: ${props => props.theme.typography.fontSize.base};
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
   font-family: ${props => props.theme.typography.fontFamily.primary};
-  color: ${props => props.theme.colors.text};
-  font-size: ${props => props.theme.typography.fontSize.base}; /* 4-point system: 15px → 16px */
 `
 
 export const ContactValue = styled.a`
-  color: ${props => props.theme.colors.primary[500]};
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
   text-decoration: none;
-  font-size: ${props => props.theme.typography.fontSize.sm}; /* 4-point system: 14px */
-  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-size: ${props => props.theme.typography.fontSize.base};
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[1]};
+  transition: color 0.2s ease;
   font-family: ${props => props.theme.typography.fontFamily.primary};
-  ${props => props.theme.hoverTransition()};
   
   /* H1: Visibility of System Status - Hover feedback */
   &:hover {
-    text-decoration: underline;
-    color: ${props => props.theme.colors.primary[600]};
+    color: ${props => props.theme.colors.primary[200]};
+  }
+  
+  /* Arrow icon instead of underline */
+  &::after {
+    content: '➔';
+    font-size: ${props => props.theme.typography.fontSize.sm};
+    color: ${props => props.theme.colors.primary[300]};
+    margin-left: ${props => props.theme.spacing[1]};
+    transition: transform 0.2s ease;
+  }
+  
+  &:hover::after {
+    transform: translateX(${props => props.theme.spacing[0.5]});
   }
   
   /* H3: User Control & Freedom - Focus state */
   &:focus-visible {
-    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline: 2px solid ${props => props.theme.colors.primary[200]};
     outline-offset: ${props => props.theme.spacing[1]};
     border-radius: ${props => props.theme.radius.sm};
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    &::after { transition: none; }
+    &:hover::after { transform: none; }
   }
 `
 
 export const ContactButtons = styled.div`
   display: flex;
-  gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   justify-content: center;
-  flex-wrap: wrap;
+  gap: ${props => props.theme.spacing[4]};
+  margin-top: ${props => props.theme.spacing[10]};
+  
+  @media (max-width: 767px) {
+    flex-direction: column;
+    gap: ${props => props.theme.spacing[3]};
+    button, a {
+      width: 100%;
+    }
+  }
 `
 
 export const ContactButton = styled.a`
   display: inline-flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
-  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[5]}; /* 4-point system: 12px 20px → 12px 24px */
-  background: ${props => props.theme.colors.primary[500]};
-  color: ${props => props.theme.colors.hero.text};
-  text-decoration: none;
-  border-radius: ${props => props.theme.radius.lg}; /* 4-point system: 8px */
-  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  justify-content: center;
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[6]};
+  background: ${props => props.theme.colors.neutral[0]}; /* Solid White */
+  color: ${props => props.theme.colors.primary[700]};
+  border: 1px solid ${props => props.theme.colors.neutral[0]};
+  border-radius: ${props => props.theme.radius.lg};
+  font-size: ${props => props.theme.typography.fontSize.base};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
   font-family: ${props => props.theme.typography.fontFamily.primary};
+  text-decoration: none;
   transition: all 0.2s ease;
+  box-shadow: ${props => props.theme.shadows.md};
 
-  /* H1: Visibility of System Status - Hover feedback */
+  /* H1: Visibility of System Status - Hover feedback with enhanced shadow */
   &:hover {
-    background: ${props => props.theme.colors.primary[600]};
-    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
-    box-shadow: ${props => props.theme.shadows.sm};
+    box-shadow: ${props => props.theme.shadows.lg};
+    transform: translateY(-${props => props.theme.spacing[0.5]});
   }
   
   /* H3: User Control & Freedom - Focus state */
   &:focus-visible {
-    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline: 2px solid ${props => props.theme.colors.primary[200]};
     outline-offset: ${props => props.theme.spacing[1]};
   }
   
   /* H1: Visibility - Active state */
   &:active {
     transform: translateY(0);
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+    &:hover { transform: none; }
   }
 `
 

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Container } from '@components/common'
 import { ComplexityIndicator, TechStackProgression } from './journey'
 import { SectionPurpose } from './SectionPurpose'
+import { useTimelinePathAnimation } from '../../hooks/useTimelinePathAnimation'
 
 const Section = styled.section`
   padding: ${props => props.theme.spacing[20]} 0;
@@ -121,35 +122,41 @@ const TimelineContainer = styled.div`
   margin: 0;
 `
 
-const TimelineLineBackground = styled.div`
+const TimelineSVG = styled.svg`
   position: absolute;
-  left: 40px;
+  left: 0;
   top: 0;
-  bottom: 0;
-  width: 4px;
-  background: ${props => props.theme.colors.neutral[300]};
-  border-radius: 2px;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
   z-index: 1;
-
+  
   @media (max-width: 768px) {
-    left: 20px;
+    left: 0;
   }
 `
 
-const TimelineLineProgress = styled.div<{ $progress: number }>`
-  position: absolute;
-  left: 40px;
-  top: 0;
-  width: 4px;
-  height: ${props => props.$progress}%;
-  background: ${props => props.theme.colors.primary[500]};
-  border-radius: 2px;
-  transition: height 0.3s ease;
-  z-index: 2;
-  box-shadow: 0 0 8px ${props => props.theme.colors.primary[500]}40;
+const TimelinePathBackground = styled.path`
+  stroke: ${props => props.theme.colors.neutral[300]};
+  stroke-width: 4;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+`
 
-  @media (max-width: 768px) {
-    left: 20px;
+const TimelinePathProgress = styled.path<{ $dashOffset: number; $pathLength: number }>`
+  stroke: ${props => props.theme.colors.primary[500]};
+  stroke-width: 4;
+  fill: none;
+  stroke-dasharray: ${props => props.$pathLength};
+  stroke-dashoffset: ${props => props.$dashOffset};
+  transition: ${props => props.$dashOffset > 0 ? 'stroke-dashoffset 0.3s ease' : 'none'};
+  filter: drop-shadow(0 0 4px ${props => props.theme.colors.primary[500]}40);
+  vector-effect: non-scaling-stroke;
+  
+  @media (prefers-reduced-motion: reduce) {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
   }
 `
 
@@ -447,8 +454,12 @@ const milestoneData: MilestoneData[] = [
 export function JourneyMilestoneSection() {
   const { t } = useTranslation()
   const [visibleMilestones, setVisibleMilestones] = useState<string[]>([])
-  const [timelineProgress, setTimelineProgress] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
+  const milestoneRefs = useRef<Map<string, HTMLElement>>(new Map())
+  
+  // Check for prefers-reduced-motion
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -482,56 +493,68 @@ export function JourneyMilestoneSection() {
     }
   }, [])
 
-  // Timeline progress calculation based on scroll
+  // Build milestones array for path animation hook
+  const milestones = milestoneData.map(m => ({
+    id: m.id,
+    element: milestoneRefs.current.get(m.id) || null
+  }))
+
+  // Use SVG path animation hook
+  const { pathLength, dashOffset, activeMilestone } = useTimelinePathAnimation({
+    containerRef,
+    milestones,
+    prefersReducedMotion
+  })
+
+  // Calculate SVG path based on milestone positions
   useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return
+    if (!svgRef.current || !containerRef.current) return
 
-      const container = containerRef.current
-      const containerRect = container.getBoundingClientRect()
-      const containerTop = containerRect.top + window.scrollY
-      const containerHeight = container.scrollHeight
-      const viewportTop = window.scrollY
-      const viewportHeight = window.innerHeight
-
-      // Find the closest milestone to viewport top
-      const milestoneElements = container.querySelectorAll('[data-milestone-id]')
-      let closestMilestone: HTMLElement | null = null
-      let closestDistance = Infinity
-
-      Array.from(milestoneElements).forEach((milestone) => {
-        const element = milestone as HTMLElement
-        if (element && element.getBoundingClientRect) {
-          const rect = element.getBoundingClientRect()
-          const milestoneTop = rect.top + window.scrollY
-          const distance = Math.abs(milestoneTop - viewportTop)
-
-          if (distance < closestDistance && milestoneTop <= viewportTop + viewportHeight * 0.3) {
-            closestDistance = distance
-            closestMilestone = element
-          }
-        }
-      })
-
-      if (closestMilestone) {
-        const milestoneRect = (closestMilestone as HTMLElement).getBoundingClientRect()
-        const milestoneTop = milestoneRect.top + window.scrollY
-        const progress = Math.max(0, Math.min(100, ((milestoneTop - containerTop) / containerHeight) * 100))
-        setTimelineProgress(progress)
-      } else {
-        // Calculate progress based on scroll position
-        const scrollProgress = Math.max(0, Math.min(100, ((viewportTop - containerTop + viewportHeight * 0.3) / containerHeight) * 100))
-        setTimelineProgress(scrollProgress)
+    const svg = svgRef.current
+    const container = containerRef.current
+    const containerRect = container.getBoundingClientRect()
+    const lineX = window.innerWidth > 768 ? 40 : 20
+    
+    // Update SVG viewBox to match container dimensions
+    const containerHeight = container.scrollHeight
+    const containerWidth = container.offsetWidth
+    svg.setAttribute('viewBox', `0 0 ${containerWidth} ${containerHeight}`)
+    svg.setAttribute('width', `${containerWidth}`)
+    svg.setAttribute('height', `${containerHeight}`)
+    
+    // Get all milestone positions
+    const pathPoints: Array<{ x: number; y: number }> = []
+    milestoneData.forEach((milestone) => {
+      const element = milestoneRefs.current.get(milestone.id)
+      if (element) {
+        const rect = element.getBoundingClientRect()
+        const relativeY = rect.top - containerRect.top + (rect.height / 2)
+        pathPoints.push({ x: lineX, y: relativeY })
       }
-    }
+    })
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll() // Initial calculation
+    if (pathPoints.length === 0) return
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
+    // Create path from first to last milestone
+    const firstPoint = pathPoints[0]
+    const lastPoint = pathPoints[pathPoints.length - 1]
+    
+    // Simple vertical line path
+    const pathData = `M ${firstPoint.x} ${firstPoint.y} L ${lastPoint.x} ${lastPoint.y}`
+    
+    const backgroundPath = svg.querySelector('#timeline-background') as SVGPathElement
+    const progressPath = svg.querySelector('#timeline-progress') as SVGPathElement
+    
+    if (backgroundPath) backgroundPath.setAttribute('d', pathData)
+    if (progressPath) progressPath.setAttribute('d', pathData)
+    
+    // Trigger path length calculation in hook
+    if (progressPath && !prefersReducedMotion) {
+      const length = progressPath.getTotalLength()
+      progressPath.style.strokeDasharray = `${length}`
+      progressPath.style.strokeDashoffset = `${length}`
     }
-  }, [])
+  }, [visibleMilestones, prefersReducedMotion])
 
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -564,19 +587,30 @@ export function JourneyMilestoneSection() {
           {/* F-패턴: 우측 타임라인 영역 */}
           <TimelineColumn>
         <TimelineContainer ref={containerRef}>
-          <TimelineLineBackground />
-          <TimelineLineProgress $progress={timelineProgress} />
+          <TimelineSVG ref={svgRef} preserveAspectRatio="none">
+            <TimelinePathBackground id="timeline-background" />
+            <TimelinePathProgress 
+              id="timeline-progress"
+              $dashOffset={dashOffset}
+              $pathLength={pathLength}
+            />
+          </TimelineSVG>
           
           {milestoneData.map((milestone, index) => (
             <MilestoneItem
               key={milestone.id}
               id={`milestone-${milestone.id}`}
+              ref={(el) => {
+                if (el) milestoneRefs.current.set(milestone.id, el)
+              }}
               data-milestone-id={milestone.id}
               data-visible={visibleMilestones.includes(milestone.id)}
+              data-active={activeMilestone === milestone.id}
               variants={itemVariants}
               initial="hidden"
               animate={visibleMilestones.includes(milestone.id) ? "visible" : "hidden"}
               custom={index}
+              aria-live={activeMilestone === milestone.id ? "polite" : "off"}
             >
               <MilestoneNode $status={milestone.status} />
               

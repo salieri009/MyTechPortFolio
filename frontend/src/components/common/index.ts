@@ -75,37 +75,67 @@ export const Card = styled.div.withConfig({
 `
 
 export const Tag = styled.span.withConfig({
-  shouldForwardProp: (prop) => prop !== 'isSelected'
-})<{ isSelected?: boolean }>`
+  shouldForwardProp: (prop) => !['isSelected', 'isDisabled', 'count'].includes(prop)
+})<{ 
+  isSelected?: boolean
+  isDisabled?: boolean
+  count?: number
+}>`
   display: inline-block;
-  padding: 6px 12px;
-  border-radius: ${(props) => props.theme.borderRadius.sm};
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 120ms ease;
-  cursor: pointer;
-
-  ${(props) => {
-    if (props.isSelected) {
-      return `
-        background: ${props.theme.colors.primary[500]};
-        color: white;
-        border: 1px solid ${props.theme.colors.primary[500]};
-      `
+  padding: ${props => props.theme.spacing[1.5]} ${props => props.theme.spacing[3]}; /* 6px 12px → 4-point: 8px 12px */
+  border-radius: ${props => props.theme.radius.sm};
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  transition: all 0.2s ease;
+  cursor: ${props => props.isDisabled ? 'not-allowed' : 'pointer'};
+  
+  /* 기본: Available (선택 가능) */
+  background: transparent;
+  border: 1px solid ${props => props.theme.colors.border};
+  color: ${props => props.theme.colors.text};
+  
+  /* Selected: Primary 배경 */
+  ${props => props.isSelected && `
+    background: ${props.theme.colors.primary[500]};
+    border-color: ${props.theme.colors.primary[500]};
+    color: ${props.theme.colors.hero?.text || '#ffffff'};
+    font-weight: ${props.theme.typography.fontWeight.semibold};
+    box-shadow: 0 0 0 ${props.theme.spacing[0.5]} ${props.theme.colors.primary[200]};
+  `}
+  
+  /* Disabled: 반투명 (결과 0개) */
+  ${props => props.isDisabled && `
+    opacity: 0.4;
+    pointer-events: none;
+  `}
+  
+  /* Hover: Available 상태에서만 */
+  ${props => !props.isSelected && !props.isDisabled && `
+    &:hover {
+      border-color: ${props.theme.colors.primary[300]};
+      background: ${props.theme.colors.primary[50]};
+      color: ${props.theme.colors.primary[700]};
+      transform: translateY(-${props.theme.spacing[0.5]}); /* 4px */
     }
-    // 다크모드 대응을 위한 더 나은 대비
-    return `
-      background: ${props.theme.colors.surface};
-      color: ${props.theme.colors.text};
-      border: 1px solid ${props.theme.colors.border};
-      &:hover {
-        background: ${props.theme.colors.primary[500]};
-        color: white;
-        border-color: ${props.theme.colors.primary[500]};
-        transform: translateY(-1px);
-      }
-    `
-  }}
+  `}
+  
+  /* 카운트 표시 (선택적) */
+  ${props => props.count !== undefined && `
+    &::after {
+      content: ' (${props.count})';
+      font-size: ${props.theme.typography.fontSize.xs};
+      opacity: 0.7;
+      margin-left: ${props.theme.spacing[1]};
+    }
+  `}
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    &:hover {
+      transform: none;
+    }
+  }
 `
 
 export const Container = styled.div`

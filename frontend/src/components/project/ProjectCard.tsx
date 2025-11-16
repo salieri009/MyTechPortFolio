@@ -26,6 +26,7 @@ const ProjectCardWrapper = styled(Card)`
   /* H1: Visibility of System Status - Hover feedback */
   &:hover {
     transform: translateY(-${props => props.theme.spacing[1]}) translateZ(0); /* 4-point system: 4px */
+    box-shadow: ${props => props.theme.shadows.xl};
   }
   
   /* H3: User Control & Freedom - Focus state */
@@ -34,14 +35,138 @@ const ProjectCardWrapper = styled(Card)`
     outline-offset: ${props => props.theme.spacing[1]};
     border-radius: ${props => props.theme.radius.lg};
   }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: box-shadow 0.2s ease;
+    &:hover {
+      transform: none;
+    }
+  }
+`
+
+const ImageContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: ${props => props.theme.spacing[50]}; /* 4-point system: 200px */
+  margin-bottom: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
+  border-radius: ${props => props.theme.radius.lg};
+  overflow: hidden;
+  background: ${props => props.theme.colors.background};
 `
 
 const ProjectImage = styled.img`
   width: 100%;
-  height: ${props => props.theme.spacing[50]}; /* 4-point system: 200px */
+  height: 100%;
   object-fit: cover;
-  margin-bottom: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+  
+  ${ProjectCardWrapper}:hover & {
+    transform: scale(1.08); /* 미묘한 줌인 (8%) */
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    ${ProjectCardWrapper}:hover & {
+      transform: none;
+    }
+  }
+`
+
+const ImagePlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    ${props => props.theme.colors.primary[500]} 0%,
+    ${props => props.theme.colors.primary[600]} 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  font-size: ${props => props.theme.spacing[12]}; /* 48px */
+`
+
+const ImageOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    ${props => {
+      // Convert primary[500] hex to rgba with 0.85 opacity
+      const hex = props.theme.colors.primary[500].replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.85)`;
+    }} 0%,
+    ${props => {
+      // Convert primary[600] hex to rgba with 0.9 opacity
+      const hex = props.theme.colors.primary[600].replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.9)`;
+    }} 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  ${ProjectCardWrapper}:hover & {
+    opacity: 1;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.2s ease;
+  }
+`
+
+const ViewButton = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[2]}; /* 8px */
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[6]}; /* 12px 24px */
+  background: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  color: ${props => props.theme.colors.primary[600]};
   border-radius: ${props => props.theme.radius.lg};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  font-size: ${props => props.theme.typography.fontSize.base};
+  box-shadow: ${props => props.theme.shadows.lg};
+  opacity: 0;
+  transform: translateY(${props => props.theme.spacing[4]}); /* 16px */
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+  
+  &::after {
+    content: '→';
+    font-size: ${props => props.theme.typography.fontSize.lg};
+    transition: transform 0.2s ease;
+  }
+  
+  ${ProjectCardWrapper}:hover & {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  ${ProjectCardWrapper}:hover &::after {
+    transform: translateX(${props => props.theme.spacing[1]}); /* 8px */
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.2s ease;
+    transform: none;
+    ${ProjectCardWrapper}:hover & {
+      transform: none;
+    }
+  }
 `
 
 const ProjectContent = styled.div`
@@ -82,6 +207,34 @@ const TechStacks = styled.div`
   flex-wrap: wrap;
   gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   margin-top: auto;
+`
+
+const MoreTag = styled(Tag)`
+  background: transparent;
+  border: 1px solid ${props => props.theme.colors.primary[300]};
+  color: ${props => props.theme.colors.primary[600]};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: ${props => props.theme.colors.primary[50]};
+    border-color: ${props => props.theme.colors.primary[400]};
+    color: ${props => props.theme.colors.primary[700]};
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4px */
+  }
+  
+  &::before {
+    content: '+';
+    margin-right: ${props => props.theme.spacing[0.5]}; /* 4px */
+    font-weight: ${props => props.theme.typography.fontWeight.bold};
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    &:hover {
+      transform: none;
+    }
+  }
 `
 
 const StyledLink = styled(Link)`
@@ -139,14 +292,27 @@ export function ProjectCard({
       aria-label={`View project: ${t(title)}`}
     >
       <ProjectCardWrapper isHover role="article" aria-labelledby={`project-title-${id}`}>
-        {imageUrl && (
-          <ProjectImage 
-            src={imageUrl} 
-            alt={t(title)} 
-            loading="lazy"
-            aria-hidden="false"
-          />
-        )}
+        <ImageContainer>
+          {imageUrl ? (
+            <>
+              <ProjectImage 
+              src={imageUrl} 
+              alt={t(title)} 
+              loading="lazy"
+              aria-hidden="false"
+            />
+            <ImageOverlay aria-hidden="true">
+              <ViewButton aria-hidden="true">
+                {t('projects.viewProject', 'View Project')}
+              </ViewButton>
+            </ImageOverlay>
+            </>
+          ) : (
+            <ImagePlaceholder aria-hidden="true">
+              <span style={{ fontSize: '48px', lineHeight: '1' }}>P</span>
+            </ImagePlaceholder>
+          )}
+        </ImageContainer>
         <ProjectContent>
           <ProjectTitle id={`project-title-${id}`}>{t(title)}</ProjectTitle>
           <ProjectSummary>{t(summary)}</ProjectSummary>
@@ -173,9 +339,9 @@ export function ProjectCard({
               </Tag>
             ))}
             {techStacks.length > 3 && (
-              <Tag aria-label={`${techStacks.length - 3} more technologies`}>
-                +{techStacks.length - 3}
-              </Tag>
+              <MoreTag aria-label={`${techStacks.length - 3} more technologies`}>
+                {techStacks.length - 3}
+              </MoreTag>
             )}
           </TechStacks>
         </ProjectContent>

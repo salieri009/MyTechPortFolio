@@ -87,7 +87,7 @@ public class TestimonialController {
             List<TestimonialResponse> testimonials = testimonialService.getTestimonialsByType(testimonialType);
             return ResponseUtil.ok(testimonials);
         } catch (IllegalArgumentException e) {
-            ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.BAD_REQUEST, "Invalid testimonial type: " + type);
+            ApiResponse<List<TestimonialResponse>> errorResponse = ApiResponse.error(ErrorCode.BAD_REQUEST, "Invalid testimonial type: " + type);
             return ResponseEntity.badRequest()
                     .body(ResponseUtil.enrichWithMetadata(errorResponse));
         }
@@ -110,7 +110,7 @@ public class TestimonialController {
             @Parameter(description = "Minimum rating (1-5)", required = true, example = "4")
             @PathVariable Integer minRating) {
         if (minRating < 1 || minRating > 5) {
-            ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.BAD_REQUEST, "Rating must be between 1 and 5");
+            ApiResponse<List<TestimonialResponse>> errorResponse = ApiResponse.error(ErrorCode.BAD_REQUEST, "Rating must be between 1 and 5");
             return ResponseEntity.badRequest()
                     .body(ResponseUtil.enrichWithMetadata(errorResponse));
         }

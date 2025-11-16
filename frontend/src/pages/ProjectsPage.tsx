@@ -1,11 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components'
 import { Container, Card, Tag } from '../components/common'
 import { ProjectCard } from '../components/project/ProjectCard'
+import { ProjectCardSkeleton } from '../components/project/ProjectCardSkeleton'
+import { CustomSelect } from '../components/ui/CustomSelect'
 import { useFilters } from '../stores/filters'
 import { getProjects } from '../services/projects'
+import { useDebounce } from '../utils/useDebounce'
 import type { ProjectSummary } from '../types/domain'
 
 // Animation keyframes
@@ -53,25 +56,35 @@ const FilterBar = styled(Card)<{ $isVisible: boolean }>`
   animation: ${props => props.$isVisible ? fadeInUp : 'none'} 0.6s ease-out 0.1s forwards;
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
   
-  &::before {
+  /* 하단 그라데이션 라인 (정적, 더 세련됨) */
+  &::after {
     content: '';
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
-    height: ${props => props.theme.spacing[0.5]};
-    background: linear-gradient(90deg, 
-      ${props => props.theme.colors.primary[500]}, 
-      ${props => props.theme.colors.primary[400]}, 
-      ${props => props.theme.colors.primary[500]});
-    background-size: 200% 100%;
-    animation: ${props => props.$isVisible ? 'shimmer 3s ease-in-out infinite' : 'none'};
+    height: ${props => props.theme.spacing[0.5]}; /* 4px */
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${props => props.theme.colors.primary[500]},
+      transparent
+    );
+    opacity: 0.3;
   }
   
-  @keyframes shimmer {
+  /* 선택적: 미묘한 애니메이션 (원하는 경우) */
+  /* 
+  &::after {
+    background-size: 200% 100%;
+    animation: ${props => props.$isVisible ? 'subtleShimmer 4s ease-in-out infinite' : 'none'};
+  }
+  
+  @keyframes subtleShimmer {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
   }
+  */
   
   &:hover {
     box-shadow: ${props => props.theme.shadows.lg};
@@ -220,8 +233,6 @@ const ProjectsPage: React.FC = () => {
   const { t } = useTranslation()
   const [searchParams] = useSearchParams()
   const [projects, setProjects] = useState<ProjectSummary[]>([])
-  const [filteredProjects, setFilteredProjects] = useState<ProjectSummary[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const [isTitleVisible, setIsTitleVisible] = useState(false)
   const [isFilterBarVisible, setIsFilterBarVisible] = useState(false)
   const [isGridVisible, setIsGridVisible] = useState(false)
@@ -234,10 +245,30 @@ const ProjectsPage: React.FC = () => {
     techStacks,
     year,
     sort,
+    isLoading,
+    isFiltering,
+    isInitialLoad,
+    currentPage,
+    pageSize,
+    pagination,
+    filterCounts,
     setTechStacks,
     setYear,
-    setSort
+    setSort,
+    setLoading,
+    setFiltering,
+    setInitialLoad,
+    setPagination,
+    setCurrentPage,
+    setFilterCounts,
+    resetFilters
   } = useFilters()
+  
+  // Debounce filters for server-side filtering
+  const debouncedFilters = useDebounce(
+    { techStacks, year, sort },
+    300
+  )
 
   // Handle category from URL params
   useEffect(() => {
@@ -261,7 +292,10 @@ const ProjectsPage: React.FC = () => {
           if (entry.isIntersecting) {
             if (entry.target === titleRef.current) setIsTitleVisible(true)
             if (entry.target === filterBarRef.current) setIsFilterBarVisible(true)
-            if (entry.target === gridRef.current) setIsGridVisible(true)
+            if (entry.target === gridRef.current && !isFiltering) {
+              // Only set grid visible if not filtering to prevent flickering
+              setIsGridVisible(true)
+            }
           }
         })
       },
@@ -277,21 +311,45 @@ const ProjectsPage: React.FC = () => {
       if (filterBarRef.current) observer.unobserve(filterBarRef.current)
       if (gridRef.current) observer.unobserve(gridRef.current)
     }
-  }, [filteredProjects])
+  }, [isFiltering])
+  
+  // Reset grid visibility when projects change (but not when filtering)
+  useEffect(() => {
+    if (!isFiltering && projects.length > 0) {
+      setIsGridVisible(true)
+    }
+  }, [projects, isFiltering])
 
+  // Server-side filtering with debounced filters
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        setIsLoading(true)
-        // 실제 GitHub 기반 프로젝트 데이터 로드
+        if (isInitialLoad) {
+          setLoading(true)
+        } else {
+          setFiltering(true)
+        }
+        
         const response = await getProjects({
-          page: 0,
-          size: 50,
-          sort: 'endDate,desc'
+          page: currentPage - 1, // Backend uses 0-based indexing
+          size: pageSize,
+          sort: debouncedFilters.sort,
+          techStacks: debouncedFilters.techStacks,
+          year: debouncedFilters.year
         })
         
         if (response.success && response.data) {
           setProjects(response.data.items)
+          
+          // Update pagination metadata
+          if (response.data.pagination) {
+            setPagination({
+              totalItems: response.data.pagination.total || 0,
+              totalPages: response.data.pagination.totalPages || 0,
+              hasNext: response.data.pagination.hasNext || false,
+              hasPrevious: response.data.pagination.hasPrevious || false
+            })
+          }
         } else {
           console.error('Failed to load projects:', response.error)
           setProjects([])
@@ -300,49 +358,66 @@ const ProjectsPage: React.FC = () => {
         console.error('Failed to load projects:', error)
         setProjects([])
       } finally {
-        setIsLoading(false)
+        setLoading(false)
+        setFiltering(false)
+        setInitialLoad(false)
       }
     }
 
     loadProjects()
-  }, [])
-
-  useEffect(() => {
-    let filtered = [...projects]
-
-    // Filter by tech stack
-    if (techStacks.length > 0) {
-      filtered = filtered.filter(project =>
-        techStacks.some((tech: string) => project.techStacks.includes(tech))
-      )
-    }
-
-    // Filter by year
-    if (year !== null) {
-      filtered = filtered.filter(project => {
-        const endYear = new Date(project.endDate).getFullYear()
-        return endYear === year
-      })
-    }
-
-    // Sort projects
-    switch (sort) {
-      case 'endDate,desc':
-        filtered.sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime())
-        break
-      case 'endDate,asc':
-        filtered.sort((a, b) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime())
-        break
-    }
-
-    setFilteredProjects(filtered)
-  }, [projects, techStacks, year, sort])
-
-  // Get unique tech stacks for filter options
-  const allTechStacks = [...new Set(projects.flatMap(p => p.techStacks))].sort()
+  }, [debouncedFilters, currentPage, pageSize, isInitialLoad, setLoading, setFiltering, setInitialLoad, setPagination])
   
-  // Get unique years for filter options
-  const allYears = [...new Set(projects.map(p => new Date(p.endDate).getFullYear()))].sort((a, b) => b - a)
+  // Load filter counts (optional, for UX improvement) - only once on mount
+  useEffect(() => {
+    // Only load if filterCounts is empty to prevent unnecessary API calls
+    if (Object.keys(filterCounts).length > 0) return
+    
+    const loadFilterCounts = async () => {
+      try {
+        // Get all projects to calculate counts
+        const response = await getProjects({
+          page: 0,
+          size: 1000, // Get all for counting
+          sort: 'endDate,desc'
+        })
+        
+        if (response.success && response.data) {
+          const allProjects = response.data.items
+          const counts: Record<string, number> = {}
+          
+          // Count projects by tech stack
+          allProjects.forEach(project => {
+            project.techStacks.forEach(tech => {
+              counts[tech] = (counts[tech] || 0) + 1
+            })
+          })
+          
+          setFilterCounts(counts)
+        }
+      } catch (error) {
+        console.error('Failed to load filter counts:', error)
+      }
+    }
+    
+    loadFilterCounts()
+  }, [filterCounts, setFilterCounts])
+
+  // Get unique tech stacks for filter options (memoized to prevent flickering)
+  // Use filterCounts if available, otherwise derive from current projects
+  const allTechStacks = useMemo(() => {
+    if (Object.keys(filterCounts).length > 0) {
+      return Object.keys(filterCounts).sort()
+    }
+    // Fallback: derive from current projects if filterCounts not loaded yet
+    const techSet = new Set<string>()
+    projects.forEach(p => p.techStacks.forEach(tech => techSet.add(tech)))
+    return Array.from(techSet).sort()
+  }, [filterCounts, projects])
+  
+  // Get unique years for filter options (memoized to prevent flickering)
+  const allYears = useMemo(() => {
+    return [...new Set(projects.map(p => new Date(p.endDate).getFullYear()))].sort((a, b) => b - a)
+  }, [projects])
 
   const handleTechStackToggle = (tech: string) => {
     if (techStacks.includes(tech)) {
@@ -352,7 +427,8 @@ const ProjectsPage: React.FC = () => {
     }
   }
 
-  if (isLoading) {
+  // Don't show loading state if we're just filtering (use skeleton instead)
+  if (isLoading && isInitialLoad) {
     return (
       <Container>
         <LoadingText>{t('projects.loading', 'Loading projects...')}</LoadingText>
@@ -379,15 +455,21 @@ const ProjectsPage: React.FC = () => {
                 role="button"
                 tabIndex={0}
                 aria-pressed={techStacks.includes(tech)}
-                aria-label={`${techStacks.includes(tech) ? 'Remove' : 'Add'} filter: ${tech}`}
+                aria-label={`${techStacks.includes(tech) ? 'Remove' : 'Add'} filter: ${tech} (${filterCounts[tech] || 0} projects)`}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault()
                     handleTechStackToggle(tech)
                   }
                 }}
+                count={filterCounts[tech]}
               >
                 {tech}
+                {filterCounts[tech] !== undefined && (
+                  <span style={{ marginLeft: '4px', opacity: 0.8, fontSize: '0.875em' }}>
+                    ({filterCounts[tech]})
+                  </span>
+                )}
               </Tag>
             ))}
           </TechStackFilters>
@@ -395,18 +477,15 @@ const ProjectsPage: React.FC = () => {
 
         <FilterSection>
           <span className="filter-label">{t('projects.filters.year', 'Year:')}</span>
-          <SelectWrapper>
-            <select
-              value={year ?? 'all'}
-              onChange={(e) => setYear(e.target.value === 'all' ? null : parseInt(e.target.value))}
-              aria-label="Filter by year"
-            >
-              <option value="all">{t('projects.filters.allYears', 'All Years')}</option>
-              {allYears.map(y => (
-                <option key={y} value={y.toString()}>{y}</option>
-              ))}
-            </select>
-          </SelectWrapper>
+          <CustomSelect
+            value={year?.toString() ?? 'all'}
+            options={[
+              { value: 'all', label: t('projects.filters.allYears', 'All Years') },
+              ...allYears.map(y => ({ value: y.toString(), label: y.toString() }))
+            ]}
+            onChange={(value) => setYear(value === 'all' ? null : parseInt(value))}
+            ariaLabel="Filter by year"
+          />
         </FilterSection>
 
         <FilterSection>
@@ -439,14 +518,75 @@ const ProjectsPage: React.FC = () => {
         </FilterSection>
       </FilterBar>
 
-      {filteredProjects.length === 0 ? (
+      {/* Status announcer for screen readers */}
+      <div 
+        role="status" 
+        aria-live="polite" 
+        aria-atomic="true"
+        style={{ 
+          position: 'absolute',
+          left: '-10000px',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden'
+        }}
+      >
+        {isFiltering && (
+          <span>{t('projects.filtering', 'Filtering projects...')}</span>
+        )}
+        {!isFiltering && projects.length > 0 && pagination && (
+          <span>
+            {t('projects.results', `Showing ${projects.length} of ${pagination.totalItems} projects`)}
+          </span>
+        )}
+      </div>
+
+      {/* Show skeleton UI while filtering */}
+      {isFiltering ? (
+        <ProjectGrid ref={gridRef} $isVisible={true} role="list" aria-label={t('projects.list', 'Projects list')}>
+          {[...Array(6)].map((_, i) => (
+            <ProjectCardSkeleton key={`skeleton-${i}`} />
+          ))}
+        </ProjectGrid>
+      ) : projects.length === 0 ? (
         <EmptyState role="status" aria-live="polite">
-          <h3>{t('projects.empty.title', 'No projects found')}</h3>
-          <p>{t('projects.empty.description', 'Try adjusting your filters to see more projects.')}</p>
+          {isInitialLoad ? (
+            <>
+              <h3>{t('projects.empty.initial.title', 'No projects available')}</h3>
+              <p>{t('projects.empty.initial.description', 'Projects will appear here once they are added.')}</p>
+            </>
+          ) : (techStacks.length > 0 || year !== null) ? (
+            <>
+              <h3>{t('projects.empty.filtered.title', 'No projects match your filters')}</h3>
+              <p>
+                {t('projects.empty.filtered.description', 
+                  `No projects found with ${techStacks.length > 0 ? techStacks.join(', ') : ''} ${year ? `in ${year}` : ''}. Try adjusting your filters.`)}
+              </p>
+              <button
+                onClick={resetFilters}
+                style={{
+                  marginTop: '16px',
+                  padding: '8px 16px',
+                  background: 'transparent',
+                  border: '1px solid',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit'
+                }}
+              >
+                {t('projects.empty.filtered.clearFilters', 'Clear All Filters')}
+              </button>
+            </>
+          ) : (
+            <>
+              <h3>{t('projects.empty.title', 'No projects found')}</h3>
+              <p>{t('projects.empty.description', 'Try adjusting your filters to see more projects.')}</p>
+            </>
+          )}
         </EmptyState>
       ) : (
         <ProjectGrid ref={gridRef} $isVisible={isGridVisible} role="list" aria-label={t('projects.list', 'Projects list')}>
-          {filteredProjects.map((project, index) => (
+          {projects.map((project, index) => (
             <AnimatedProjectCard 
               key={project.id} 
               $index={index} 
@@ -460,6 +600,7 @@ const ProjectsPage: React.FC = () => {
                 startDate={project.startDate}
                 endDate={project.endDate}
                 techStacks={project.techStacks}
+                imageUrl={project.imageUrl}
               />
             </AnimatedProjectCard>
           ))}
