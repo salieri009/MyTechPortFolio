@@ -22,6 +22,20 @@ const LoginPage = lazy(() => import('./pages/LoginPage').then(module => ({ defau
 const AdminLayout = lazy(() => import('@components/admin/AdminLayout').then(module => ({ default: module.AdminLayout })))
 const AdminDashboard = lazy(() => import('@pages/admin/AdminDashboard').then(module => ({ default: module.AdminDashboard })))
 const AdminRoute = lazy(() => import('@components/admin/AdminRoute').then(module => ({ default: module.AdminRoute })))
+const ProjectsAdminPage = lazy(() => import('@pages/admin/ProjectsAdminPage').then(module => ({ default: module.ProjectsAdminPage })))
+const ProjectForm = lazy(() => import('@components/admin/forms/ProjectForm').then(module => ({ default: module.ProjectForm })))
+const AcademicsAdminPage = lazy(() => import('@pages/admin/AcademicsAdminPage').then(module => ({ default: module.AcademicsAdminPage })))
+const AcademicForm = lazy(() => import('@components/admin/forms/AcademicForm').then(module => ({ default: module.AcademicForm })))
+const JourneyMilestonesAdminPage = lazy(() => import('@pages/admin/JourneyMilestonesAdminPage').then(module => ({ default: module.JourneyMilestonesAdminPage })))
+
+// Wrapper components for lazy-loaded forms with props
+function ProjectFormWrapper({ mode }: { mode: 'create' | 'edit' }) {
+  return <ProjectForm mode={mode} />
+}
+
+function AcademicFormWrapper({ mode }: { mode: 'create' | 'edit' }) {
+  return <AcademicForm mode={mode} />
+}
 
 function App() {
   const { isDark } = useThemeStore()
@@ -52,11 +66,11 @@ function App() {
           }>
             <Route index element={<AdminDashboard />} />
             <Route path="projects" element={<ProjectsAdminPage />} />
-            <Route path="projects/new" element={<ProjectForm mode="create" />} />
-            <Route path="projects/:id/edit" element={<ProjectForm mode="edit" />} />
+            <Route path="projects/new" element={<ProjectFormWrapper mode="create" />} />
+            <Route path="projects/:id/edit" element={<ProjectFormWrapper mode="edit" />} />
             <Route path="academics" element={<AcademicsAdminPage />} />
-            <Route path="academics/new" element={<AcademicForm mode="create" />} />
-            <Route path="academics/:id/edit" element={<AcademicForm mode="edit" />} />
+            <Route path="academics/new" element={<AcademicFormWrapper mode="create" />} />
+            <Route path="academics/:id/edit" element={<AcademicFormWrapper mode="edit" />} />
             <Route path="milestones" element={<JourneyMilestonesAdminPage />} />
             {/* Additional milestone routes:
                 <Route path="milestones/new" element={<MilestoneForm mode="create" />} />
