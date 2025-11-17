@@ -272,3 +272,4 @@ az consumption usage list --billing-period-name 202401
 
 - GitHub Issues: [?„ë¡œ?íŠ¸ ?´ìŠˆ ?˜ì´ì§€]
 - ?´ë©”?? [your-email@example.com]
+

@@ -6,7 +6,7 @@ This directory contains all testing-related documentation, including test plans,
 
 ---
 
-## 📚 Available Documents
+## ?�� Available Documents
 
 | # | Document | Description | Type | Test Cases |
 |---|----------|-------------|------|------------|
@@ -21,7 +21,7 @@ This directory contains all testing-related documentation, including test plans,
 
 ---
 
-## 🧪 Test Case Files
+## ?�� Test Case Files
 
 ### YAML Test Cases
 - **Backend Test Cases**: `../../backend/src/test/resources/test-cases.yaml`
@@ -29,7 +29,7 @@ This directory contains all testing-related documentation, including test plans,
 
 ---
 
-## 🎯 Quick Reference
+## ?�� Quick Reference
 
 ### Running Tests
 
@@ -57,20 +57,20 @@ npm run test:e2e
 
 ---
 
-## 📊 Test Results Summary
+## ?�� Test Results Summary
 
-### Test Case Results (Latest: November 15, 2025)
+### Test Case Results (Latest: November 17, 2025)
 
 For detailed test case results, see the `test-case-results/` directory:
 
 | Test Group | Test Cases | Results File | Status |
 |------------|-----------|--------------|--------|
-| **API Endpoints** | TC-001 ~ TC-015 | [TC-001-API-Endpoints.md](../../test-case-results/TC-001-API-Endpoints.md) | ✅ 93% Pass |
-| **Database CRUD** | TC-016 ~ TC-033 | [TC-016-Database-CRUD.md](../../test-case-results/TC-016-Database-CRUD.md) | ✅ 94% Pass |
-| **Integration** | TC-034 ~ TC-045 | [TC-034-Integration.md](../../test-case-results/TC-034-Integration.md) | ✅ 92% Pass |
-| **User Scenarios** | TC-046 ~ TC-053 | [TC-046-User-Scenarios.md](../../test-case-results/TC-046-User-Scenarios.md) | ✅ 100% Pass |
-| **Error Handling** | TC-054 ~ TC-059 | [TC-054-Error-Handling.md](../../test-case-results/TC-054-Error-Handling.md) | ✅ 100% Pass |
-| **Performance** | TC-060 ~ TC-064 | [TC-060-Performance.md](../../test-case-results/TC-060-Performance.md) | ✅ 80% Pass |
+| **API Endpoints** | TC-001 ~ TC-015 | [TC-001-API-Endpoints.md](../../test-case-results/TC-001-API-Endpoints.md) | ??93% Pass |
+| **Database CRUD** | TC-016 ~ TC-033 | [TC-016-Database-CRUD.md](../../test-case-results/TC-016-Database-CRUD.md) | ??94% Pass |
+| **Integration** | TC-034 ~ TC-045 | [TC-034-Integration.md](../../test-case-results/TC-034-Integration.md) | ??92% Pass |
+| **User Scenarios** | TC-046 ~ TC-053 | [TC-046-User-Scenarios.md](../../test-case-results/TC-046-User-Scenarios.md) | ??100% Pass |
+| **Error Handling** | TC-054 ~ TC-059 | [TC-054-Error-Handling.md](../../test-case-results/TC-054-Error-Handling.md) | ??100% Pass |
+| **Performance** | TC-060 ~ TC-064 | [TC-060-Performance.md](../../test-case-results/TC-060-Performance.md) | ??80% Pass |
 
 **Overall Test Summary**: [TEST-SUMMARY.md](../../test-case-results/TEST-SUMMARY.md)  
 **Final Integration Report**: [FINAL-INTEGRATION-REPORT.md](../../test-case-results/FINAL-INTEGRATION-REPORT.md)
@@ -82,13 +82,14 @@ For detailed test case results, see the `test-case-results/` directory:
 
 ---
 
-## 🔗 Related Documentation
+## ?�� Related Documentation
 
 - **Getting Started**: [../Getting-Started.md](../Getting-Started.md)
-- **API Specification**: [../Specifications/API-Spec.md](../Specifications/API-Spec.md)
+- **API Specification**: [../Specifications/API-Specification.md](../Specifications/API-Specification.md)
 - **Architecture**: [../Design-Plan/Architecture-Design.md](../Design-Plan/Architecture-Design.md)
 
 ---
 
-**Last Updated**: November 15, 2025
+**Last Updated**: November 17, 2025
+
 

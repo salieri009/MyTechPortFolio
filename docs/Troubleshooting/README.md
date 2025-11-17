@@ -22,15 +22,15 @@ This directory contains troubleshooting guides, common issues, and solutions for
 
 ---
 
-## ğŸ“š Available Documents
+## ?“š Available Documents
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Common Issues](./Common-Issues.md) | Common problems and step-by-step solutions | âœ… Complete |
+| [Common Issues](./Common-Issues.md) | Common problems and step-by-step solutions | ??Complete |
 
 ---
 
-## ğŸš¨ Quick Troubleshooting
+## ?š¨ Quick Troubleshooting
 
 ### Frontend Issues
 
@@ -51,7 +51,7 @@ This directory contains troubleshooting guides, common issues, and solutions for
 
 ---
 
-## ğŸ” Diagnostic Steps
+## ?” Diagnostic Steps
 
 ### General Troubleshooting Process
 
@@ -77,7 +77,7 @@ This directory contains troubleshooting guides, common issues, and solutions for
 
 ---
 
-## ğŸ“– Common Issues Guide
+## ?“– Common Issues Guide
 
 See [Common Issues](./Common-Issues.md) for:
 - Frontend troubleshooting
@@ -90,7 +90,7 @@ See [Common Issues](./Common-Issues.md) for:
 
 ---
 
-## ğŸ”— Related Documentation
+## ?”— Related Documentation
 
 - [Getting Started Guide](../Getting-Started.md)
 - [Frontend Setup](../Guides/Development/Frontend-Setup.md)
@@ -99,7 +99,7 @@ See [Common Issues](./Common-Issues.md) for:
 
 ---
 
-## ğŸ’¡ Getting Help
+## ?’¡ Getting Help
 
 ### Before Asking for Help
 
@@ -119,7 +119,7 @@ When reporting issues, include:
 
 ---
 
-## ğŸ“ Maintenance
+## ?“ Maintenance
 
 ### Update Frequency
 
@@ -131,4 +131,5 @@ When reporting issues, include:
 
 **Last Updated**: 2025-11-17  
 **Maintained By**: Development Team
+
 

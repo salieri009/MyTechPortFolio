@@ -1,4 +1,4 @@
-# Important Concepts — 5-minute overview
+# Important Concepts ??5-minute overview
 
 This page highlights the most important concepts for this portfolio project. Read this first.
 
@@ -39,4 +39,5 @@ Why it matters: deployment mistakes (wrong output path or navigationFallback) ca
 Where to go next:
 
 - Read `docs/design-plan/README.md` for the full design-plan index.
-- If you saw MIME errors in the browser console, check `docs/important-concepts.md` section 2–3 and the `staticwebapp.config.json` files.
+- If you saw MIME errors in the browser console, check `docs/important-concepts.md` section 2?? and the `staticwebapp.config.json` files.
+

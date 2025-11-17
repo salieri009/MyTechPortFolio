@@ -321,7 +321,7 @@ server.port=8081
 
 **Solutions**:
 1. **Restart TypeScript server** in IDE
-2. **Reload window** (VS Code: Ctrl+Shift+P → "Reload Window")
+2. **Reload window** (VS Code: Ctrl+Shift+P ??"Reload Window")
 3. **Check tsconfig.json** configuration
 4. **Clear TypeScript cache**
 
@@ -384,4 +384,5 @@ When reporting issues, include:
 
 **Last Updated**: 2025-11-17  
 **Maintained By**: Development Team
+
 

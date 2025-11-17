@@ -6,18 +6,18 @@ This directory contains comprehensive specifications for API, database, frontend
 
 ---
 
-## ðŸ“‹ Available Specifications
+## ?“‹ Available Specifications
 
 | Specification | Description | Status |
 |---------------|-------------|--------|
-| [API Specification](./API-Specification.md) | REST API endpoints, contracts, and data models | âœ… Complete |
-| [Database Specification](./Database-Specification.md) | Database schema, relationships, and migrations | âœ… Complete |
-| [Frontend Specification](./Frontend-Specification.md) | Component contracts and UI expectations | âœ… Complete |
-| [UI/UX Specification](./UI-UX-Specification.md) | Design guidelines and user experience patterns | âœ… Complete |
+| [API Specification](./API-Specification.md) | REST API endpoints, contracts, and data models | ??Complete |
+| [Database Specification](./Database-Specification.md) | Database schema, relationships, and migrations | ??Complete |
+| [Frontend Specification](./Frontend-Specification.md) | Component contracts and UI expectations | ??Complete |
+| [UI/UX Specification](./UI-UX-Specification.md) | Design guidelines and user experience patterns | ??Complete |
 
 ---
 
-## ðŸŽ¯ Quick Reference
+## ?Ž¯ Quick Reference
 
 ### API Specifications
 - **Base URL**: `http://localhost:8080/api`
@@ -45,7 +45,7 @@ This directory contains comprehensive specifications for API, database, frontend
 
 ---
 
-## ðŸ“– Usage Guidelines
+## ?“– Usage Guidelines
 
 ### For API Integration
 1. Read [API Specification](./API-Specification.md) for endpoint details
@@ -67,7 +67,7 @@ This directory contains comprehensive specifications for API, database, frontend
 
 ---
 
-## ðŸ”— Related Documentation
+## ?”— Related Documentation
 
 - **Design Documents**: [../Design-Plan/README.md](../Design-Plan/README.md)
 - **API Design**: [../Design-Plan/API-Design.md](../Design-Plan/API-Design.md)
@@ -78,4 +78,5 @@ This directory contains comprehensive specifications for API, database, frontend
 
 **Last Updated**: November 17, 2025  
 **Maintained By**: Development Team
+
 

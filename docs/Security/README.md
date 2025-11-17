@@ -22,7 +22,7 @@ This directory contains security documentation, guidelines, and best practices f
 
 ---
 
-## ğŸ“š Available Documents
+## ?“š Available Documents
 
 Security documentation is currently being organized. Check the following locations for security-related content:
 
@@ -32,7 +32,7 @@ Security documentation is currently being organized. Check the following locatio
 
 ---
 
-## ğŸ”’ Security Overview
+## ?”’ Security Overview
 
 ### Authentication
 
@@ -55,7 +55,7 @@ Security documentation is currently being organized. Check the following locatio
 
 ---
 
-## ğŸ›¡ï¸ Security Best Practices
+## ?›¡ï¸?Security Best Practices
 
 ### Backend
 
@@ -77,7 +77,7 @@ Security documentation is currently being organized. Check the following locatio
 
 ---
 
-## ğŸ” Security Checklist
+## ?” Security Checklist
 
 ### Development
 
@@ -99,7 +99,7 @@ Security documentation is currently being organized. Check the following locatio
 
 ---
 
-## ğŸ”— Related Documentation
+## ?”— Related Documentation
 
 - [API Specification](../Specifications/API-Specification.md)
 - [Architecture Documentation](../Architecture/README.md)
@@ -107,7 +107,7 @@ Security documentation is currently being organized. Check the following locatio
 
 ---
 
-## ğŸ“ Maintenance
+## ?“ Maintenance
 
 ### Update Frequency
 
@@ -126,4 +126,5 @@ Security documentation is currently being organized. Check the following locatio
 
 **Last Updated**: 2025-11-17  
 **Maintained By**: Development Team
+
 

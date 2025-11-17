@@ -22,21 +22,21 @@ This directory contains best practices, guidelines, and standards for developmen
 
 ---
 
-## ğŸ“š Available Documents
+## ?“š Available Documents
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Heuristics Implementation](./Heuristics-Implementation.md) | Nielsen's 10 Usability Heuristics implementation | âœ… Complete |
-| [Accessibility](./Accessibility.md) | WCAG 2.1 Level AA accessibility guidelines | âœ… Complete |
-| [Performance](./Performance.md) | Performance optimization guide | âœ… Complete |
-| [Naming Conventions](./Naming-Conventions.md) | Code naming conventions and standards | âœ… Complete |
-| [Component Guidelines](./Component-Guidelines.md) | Component development best practices | âœ… Complete |
-| [UI Improvements](./UI-Improvements.md) | UI improvement documentation | âœ… Complete |
-| [Portfolio Enhancements](./Portfolio-Enhancements.md) | Portfolio-specific enhancements | âœ… Complete |
+| [Heuristics Implementation](./Heuristics-Implementation.md) | Nielsen's 10 Usability Heuristics implementation | ??Complete |
+| [Accessibility](./Accessibility.md) | WCAG 2.1 Level AA accessibility guidelines | ??Complete |
+| [Performance](./Performance.md) | Performance optimization guide | ??Complete |
+| [Naming Conventions](./Naming-Conventions.md) | Code naming conventions and standards | ??Complete |
+| [Component Guidelines](./Component-Guidelines.md) | Component development best practices | ??Complete |
+| [UI Improvements](./UI-Improvements.md) | UI improvement documentation | ??Complete |
+| [Portfolio Enhancements](./Portfolio-Enhancements.md) | Portfolio-specific enhancements | ??Complete |
 
 ---
 
-## ğŸ¯ Quick Reference
+## ?¯ Quick Reference
 
 ### For Frontend Developers
 
@@ -59,7 +59,7 @@ This directory contains best practices, guidelines, and standards for developmen
 
 ---
 
-## ğŸ“‹ Best Practices Summary
+## ?“‹ Best Practices Summary
 
 ### Code Quality
 
@@ -95,7 +95,7 @@ This directory contains best practices, guidelines, and standards for developmen
 
 ---
 
-## ğŸ”— Related Documentation
+## ?”— Related Documentation
 
 - [Contributing Guide](../Contributing/Contributing-Guide.md)
 - [Documentation Standards](../Contributing/Documentation-Standards.md)
@@ -104,7 +104,7 @@ This directory contains best practices, guidelines, and standards for developmen
 
 ---
 
-## ğŸ“ Maintenance
+## ?“ Maintenance
 
 ### Update Frequency
 
@@ -124,4 +124,5 @@ When adding or updating best practices:
 
 **Last Updated**: 2025-11-17  
 **Maintained By**: Development Team
+
 

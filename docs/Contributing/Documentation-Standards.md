@@ -27,18 +27,18 @@ This document defines the standards, guidelines, and best practices for writing 
 ### Markdown Files
 
 - **Title Case**: Use Title Case for all markdown files
-  - ✅ `API-Specification.md`
-  - ✅ `Getting-Started.md`
-  - ❌ `api-specification.md`
-  - ❌ `getting_started.md`
+  - ??`API-Specification.md`
+  - ??`Getting-Started.md`
+  - ??`api-specification.md`
+  - ??`getting_started.md`
 
 ### Directories
 
 - **Title Case**: Use Title Case for directories
-  - ✅ `Best-Practices/`
-  - ✅ `Architecture/`
-  - ❌ `best-practices/`
-  - ❌ `architecture/`
+  - ??`Best-Practices/`
+  - ??`Architecture/`
+  - ??`best-practices/`
+  - ??`architecture/`
 
 ### README Files
 
@@ -105,8 +105,8 @@ maintainer: "Development Team"
 ### Voice and Tone
 
 - **Active Voice**: Prefer active voice over passive
-  - ✅ "The system processes requests"
-  - ❌ "Requests are processed by the system"
+  - ??"The system processes requests"
+  - ??"Requests are processed by the system"
 
 - **Clear and Concise**: Get to the point quickly
 - **Professional**: Maintain professional tone
@@ -189,8 +189,8 @@ For documents longer than 500 lines, include a table of contents:
   ```
 
 - **Link Text**: Use descriptive link text
-  - ✅ "See the Getting Started guide"
-  - ❌ "Click here"
+  - ??"See the Getting Started guide"
+  - ??"Click here"
 
 ### Tables
 
@@ -395,4 +395,5 @@ send request to /api/v1/auth/login
 
 **Last Updated**: 2025-11-17  
 **Maintained By**: Development Team
+
 

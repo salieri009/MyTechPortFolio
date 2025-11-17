@@ -270,7 +270,7 @@ interface JourneyMilestone {
 
 - Mobile: < 768px
 - Tablet: 768px - 1023px
-- Desktop: ≥ 1024px
+- Desktop: ??1024px
 
 ---
 
@@ -347,4 +347,5 @@ interface JourneyMilestone {
 
 **Last Updated**: 2025-11-17  
 **Maintained By**: Development Team
+
 

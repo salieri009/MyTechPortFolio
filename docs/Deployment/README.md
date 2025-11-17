@@ -6,7 +6,7 @@ This directory contains all deployment-related documentation for various environ
 
 ---
 
-## 📚 Available Guides
+## ?�� Available Guides
 
 | Document | Description | Environment |
 |----------|-------------|-------------|
@@ -15,7 +15,7 @@ This directory contains all deployment-related documentation for various environ
 
 ---
 
-## 🎯 Quick Reference
+## ?�� Quick Reference
 
 ### Local Development
 - **Frontend**: http://localhost:5173
@@ -29,7 +29,7 @@ This directory contains all deployment-related documentation for various environ
 
 ---
 
-## 🚀 Deployment Options
+## ?? Deployment Options
 
 ### Option 1: Azure (Recommended)
 See [Azure Deployment Guide](./Azure-Deployment-Guide.md) for step-by-step instructions.
@@ -42,7 +42,7 @@ Follow the manual setup instructions in [Deployment Guide](./Deployment-Guide.md
 
 ---
 
-## 📋 Pre-Deployment Checklist
+## ?�� Pre-Deployment Checklist
 
 - [ ] Environment variables configured
 - [ ] Database migrations completed
@@ -55,13 +55,14 @@ Follow the manual setup instructions in [Deployment Guide](./Deployment-Guide.md
 
 ---
 
-## 🔗 Related Documentation
+## ?�� Related Documentation
 
 - **Architecture**: [../Design-Plan/Architecture-Design.md](../Design-Plan/Architecture-Design.md)
 - **Getting Started**: [../Getting-Started.md](../Getting-Started.md)
-- **API Spec**: [../Specifications/API-Spec.md](../Specifications/API-Spec.md)
+- **API Spec**: [../Specifications/API-Specification.md](../Specifications/API-Specification.md)
 
 ---
 
-**Last Updated**: November 15, 2025
+**Last Updated**: November 17, 2025
+
 

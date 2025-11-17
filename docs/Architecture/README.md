@@ -22,38 +22,38 @@ This directory contains comprehensive architecture documentation for the MyTechP
 
 ---
 
-## ğŸ“š Available Documents
+## ?“š Available Documents
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Frontend Architecture](./Frontend-Architecture.md) | Frontend architecture and component structure | âœ… Complete |
-| [Backend Refactoring](./Backend-Refactoring.md) | Backend refactoring summary and improvements | âœ… Complete |
-| [Refactoring Status](./Refactoring-Status.md) | Current refactoring status and progress | âœ… Complete |
-| [Reiteration Summary](./Reiteration-Summary.md) | Comprehensive backend and frontend improvements | âœ… Complete |
-| [Implementation Status](./Implementation-Status.md) | Current implementation status and features | âœ… Complete |
+| [Frontend Architecture](./Frontend-Architecture.md) | Frontend architecture and component structure | ??Complete |
+| [Backend Refactoring](./Backend-Refactoring.md) | Backend refactoring summary and improvements | ??Complete |
+| [Refactoring Status](./Refactoring-Status.md) | Current refactoring status and progress | ??Complete |
+| [Reiteration Summary](./Reiteration-Summary.md) | Comprehensive backend and frontend improvements | ??Complete |
+| [Implementation Status](./Implementation-Status.md) | Current implementation status and features | ??Complete |
 
 ---
 
-## ğŸ—ï¸ System Architecture
+## ?—ï¸?System Architecture
 
 ### High-Level Overview
 
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚   Frontend      â”‚
-â”‚  (React + TS)   â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-         â”‚ HTTP/REST
-         â”‚
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚    Backend      â”‚
-â”‚ (Spring Boot)   â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-         â”‚
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚    MongoDB      â”‚
-â”‚   (Database)    â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€??
+??  Frontend      ??
+?? (React + TS)   ??
+?”â??€?€?€?€?€?€?€?¬â??€?€?€?€?€?€?€??
+         ??HTTP/REST
+         ??
+?Œâ??€?€?€?€?€?€?€?¼â??€?€?€?€?€?€?€??
+??   Backend      ??
+??(Spring Boot)   ??
+?”â??€?€?€?€?€?€?€?¬â??€?€?€?€?€?€?€??
+         ??
+?Œâ??€?€?€?€?€?€?€?¼â??€?€?€?€?€?€?€??
+??   MongoDB      ??
+??  (Database)    ??
+?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€??
 ```
 
 ### Technology Stack
@@ -80,7 +80,7 @@ This directory contains comprehensive architecture documentation for the MyTechP
 
 ---
 
-## ğŸ“– Document Guide
+## ?“– Document Guide
 
 ### For Understanding System Design
 
@@ -98,7 +98,7 @@ This directory contains comprehensive architecture documentation for the MyTechP
 
 ---
 
-## ğŸ”— Related Documentation
+## ?”— Related Documentation
 
 - [API Specification](../Specifications/API-Specification.md)
 - [Database Specification](../Specifications/Database-Specification.md)
@@ -108,7 +108,7 @@ This directory contains comprehensive architecture documentation for the MyTechP
 
 ---
 
-## ğŸ“ Maintenance
+## ?“ Maintenance
 
 ### Update Frequency
 
@@ -128,4 +128,5 @@ When updating architecture documentation:
 
 **Last Updated**: 2025-11-17  
 **Maintained By**: Development Team
+
 

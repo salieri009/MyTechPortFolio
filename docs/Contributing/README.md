@@ -22,16 +22,16 @@ This directory contains guidelines and standards for contributing to the MyTechP
 
 ---
 
-## ğŸ“š Available Documents
+## ?“š Available Documents
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Contributing Guide](./Contributing-Guide.md) | How to contribute, code of conduct, PR process | âœ… Complete |
-| [Documentation Standards](./Documentation-Standards.md) | Writing guidelines, style guide, templates | âœ… Complete |
+| [Contributing Guide](./Contributing-Guide.md) | How to contribute, code of conduct, PR process | ??Complete |
+| [Documentation Standards](./Documentation-Standards.md) | Writing guidelines, style guide, templates | ??Complete |
 
 ---
 
-## ğŸš€ Quick Start
+## ?? Quick Start
 
 ### New Contributors
 
@@ -43,7 +43,7 @@ This directory contains guidelines and standards for contributing to the MyTechP
 
 ---
 
-## ğŸ“‹ Contribution Process
+## ?“‹ Contribution Process
 
 ### 1. Find Something to Work On
 
@@ -74,7 +74,7 @@ git checkout -b feature/your-feature-name
 
 ---
 
-## ğŸ“– Documentation
+## ?“– Documentation
 
 ### Writing Documentation
 
@@ -93,7 +93,7 @@ git checkout -b feature/your-feature-name
 
 ---
 
-## âœ… Code Review Checklist
+## ??Code Review Checklist
 
 Before submitting a PR:
 
@@ -106,7 +106,7 @@ Before submitting a PR:
 
 ---
 
-## ğŸ”— Related Documentation
+## ?”— Related Documentation
 
 - [Contributing Guide](./Contributing-Guide.md)
 - [Documentation Standards](./Documentation-Standards.md)
@@ -115,7 +115,7 @@ Before submitting a PR:
 
 ---
 
-## ğŸ“ Maintenance
+## ?“ Maintenance
 
 ### Update Frequency
 
@@ -127,4 +127,5 @@ Before submitting a PR:
 
 **Last Updated**: 2025-11-17  
 **Maintained By**: Development Team
+
 

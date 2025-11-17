@@ -231,15 +231,15 @@ MyTechPortfolio uses **MongoDB 7.0** as the NoSQL database. This document descri
 
 ## Data Relationships
 
-### Projects ↔ Tech Stacks
+### Projects ??Tech Stacks
 - **Relationship**: Many-to-Many (via `techStackIds` array)
 - **Implementation**: Array of TechStack IDs stored in Project document
 
-### Projects ↔ Academics
+### Projects ??Academics
 - **Relationship**: Many-to-Many (via `relatedAcademicIds` array)
 - **Implementation**: Array of Academic IDs stored in Project document
 
-### Projects ↔ Project Media
+### Projects ??Project Media
 - **Relationship**: One-to-Many
 - **Implementation**: Separate collection with `projectId` reference
 
@@ -350,4 +350,5 @@ MyTechPortfolio uses **MongoDB 7.0** as the NoSQL database. This document descri
 
 **Last Updated**: 2025-11-17  
 **Maintained By**: Development Team
+
 

@@ -6,7 +6,7 @@ This guide will help you set up the development environment and get the project 
 
 ---
 
-## ðŸ“‹ Prerequisites
+## ?“‹ Prerequisites
 
 Before you begin, ensure you have the following installed:
 
@@ -20,7 +20,7 @@ Before you begin, ensure you have the following installed:
 
 ---
 
-## ðŸš€ Quick Start
+## ?? Quick Start
 
 ### 1. Clone the Repository
 
@@ -81,7 +81,7 @@ mongod --dbpath /data/db
 
 ---
 
-## ðŸ”§ Development Workflow
+## ?”§ Development Workflow
 
 ### Running Tests
 
@@ -109,7 +109,7 @@ npm run build
 
 ---
 
-## ðŸ“š Next Steps
+## ?“š Next Steps
 
 - Read [Important Concepts](./Important-Concepts.md) for project overview
 - Review [Architecture Design](./Design-Plan/Architecture-Design.md) for system architecture
@@ -118,7 +118,7 @@ npm run build
 
 ---
 
-## ðŸ†˜ Troubleshooting
+## ?†˜ Troubleshooting
 
 ### Common Issues
 
@@ -145,5 +145,6 @@ lsof -ti:8080 | xargs kill
 
 ---
 
-**Last Updated**: November 15, 2025
+**Last Updated**: November 17, 2025
+
 

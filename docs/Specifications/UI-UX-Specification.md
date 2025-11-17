@@ -162,7 +162,7 @@ This document defines the UI/UX design guidelines, patterns, and user experience
 
 - **Mobile**: < 768px
 - **Tablet**: 768px - 1023px
-- **Desktop**: ≥ 1024px
+- **Desktop**: ??1024px
 
 ### Mobile Considerations
 
@@ -191,9 +191,9 @@ This document defines the UI/UX design guidelines, patterns, and user experience
 ### WCAG 2.1 Level AA Compliance
 
 **Color Contrast**:
-- Normal text: ≥ 4.5:1
-- Large text: ≥ 3:1
-- Interactive elements: ≥ 3:1
+- Normal text: ??4.5:1
+- Large text: ??3:1
+- Interactive elements: ??3:1
 
 **Keyboard Navigation**:
 - All interactive elements accessible
@@ -316,4 +316,5 @@ This document defines the UI/UX design guidelines, patterns, and user experience
 
 **Last Updated**: 2025-11-17  
 **Maintained By**: Development Team
+
 
