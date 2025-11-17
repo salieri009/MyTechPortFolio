@@ -57,6 +57,7 @@ stages:
                 - 'MONGODB_URI_PROD'
 
   # Stage 1: Build
+  # Parallel builds for backend and frontend (implements matrix strategy concept)
   - stage: Build
     displayName: 'Build Stage'
     dependsOn: RetrieveSecrets
