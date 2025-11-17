@@ -1,4 +1,4 @@
-import api from '../apiClient'
+import { api } from '../apiClient'
 
 /**
  * Upload API service for file uploads

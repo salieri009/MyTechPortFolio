@@ -1,4 +1,4 @@
-import api from '../apiClient'
+import { api } from '../apiClient'
 
 const API_BASE = '/api/v1/journey-milestones'
 

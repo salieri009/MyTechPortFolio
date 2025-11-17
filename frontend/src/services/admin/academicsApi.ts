@@ -1,4 +1,4 @@
-import api from '../apiClient'
+import { api } from '../apiClient'
 
 export interface PageResponse<T> {
   page: number

@@ -1,4 +1,4 @@
-import api from '../apiClient'
+import { api } from '../apiClient'
 import type { Page } from '../../types/api'
 
 export interface PageResponse<T> {

@@ -1,4 +1,4 @@
-import api from '../apiClient'
+import { api } from '../apiClient'
 import type { AdminUser, AdminRole } from '../../store/adminStore'
 
 const API_BASE = '/api/v1/auth/admin'
