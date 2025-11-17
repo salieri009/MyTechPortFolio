@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdminAcademicsPage>
+  {AcademicsAdminPage는 학업/교육 기록을 테이블 형태로 관리합니다. Projects 페이지와 동일한 패턴을 따르되 컬럼 구성이 다릅니다.}
+
+  <PageContainer role="main" aria-label="Academics Admin">
+    <PageHeader>
+      <PageTitle>Academics</PageTitle>
+      <PrimaryActionLink to="/admin/academics/new">
+        <Button variant="primary">Create New Academic</Button>
+      </PrimaryActionLink>
+    </PageHeader>
+
+    <StateBoundary>
+      <LoadingState when="isLoading && academics.length === 0">
+        <CenteredSpinner>
+          <LoadingSpinner />
+        </CenteredSpinner>
+      </LoadingState>
+
+      <ErrorState when="error && academics.length === 0">
+        <EmptyState>
+          <p>{`Error: ${error}`}</p>
+          <Button onClick="loadAcademics">Retry</Button>
+        </EmptyState>
+      </ErrorState>
+
+      <EmptyDataState when="academics.length === 0 && !isLoading">
+        <EmptyState>
+          <p>No academic records found. Create your first record!</p>
+          <LinkButton to="/admin/academics/new">Create Academic</LinkButton>
+        </EmptyState>
+      </EmptyDataState>
+
+      <DataTable when="academics.length > 0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell>Name</TableHeaderCell>
+              <TableHeaderCell>Semester</TableHeaderCell>
+              <TableHeaderCell>Grade</TableHeaderCell>
+              <TableHeaderCell>Description</TableHeaderCell>
+              <TableHeaderCell>Actions</TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {academics.map(record => (
+              <TableRow key={record.id}>
+                <TableCell>{record.name}</TableCell>
+                <TableCell>{record.semester}</TableCell>
+                <TableCell>{record.grade ?? '-'}</TableCell>
+                <TableCell>{truncate(record.description, 50)}</TableCell>
+                <TableCell>
+                  <ActionButtons>
+                    <Link to={`/admin/academics/${record.id}/edit`}>
+                      <Button variant="secondary" size="sm">Edit</Button>
+                    </Link>
+                    <Button variant="danger" size="sm" onClick={() => handleDelete(record.id)}>
+                      Delete
+                    </Button>
+                  </ActionButtons>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        <PaginationControls when="totalPages > 1">
+          <Button variant="secondary" disabled={page === 1} onClick="setPage(p => Math.max(1, p - 1))">
+            Previous
+          </Button>
+          <PaginationInfo>{`Page ${page} of ${totalPages}`}</PaginationInfo>
+          <Button variant="secondary" disabled={page === totalPages} onClick="setPage(p => Math.min(totalPages, p + 1))">
+            Next
+          </Button>
+        </PaginationControls>
+      </DataTable>
+    </StateBoundary>
+  </PageContainer>
+</AdminAcademicsPage>
+

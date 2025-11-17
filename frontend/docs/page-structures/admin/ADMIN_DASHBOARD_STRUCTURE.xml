@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdminDashboardPage>
+  {관리자 대시보드는 전체 포트폴리오 현황을 요약하고 빠른 액션을 제공하는 홈 화면입니다. 데이터는 projectsApi, academicsApi, milestonesApi에서 수집됩니다.}
+
+  <DashboardContainer role="main" aria-label="Admin Dashboard">
+    {1200px max-width, 중앙 정렬, 모든 Section을 래핑하는 컨테이너}
+
+    <WelcomeCard role="banner">
+      {그래디언트 배경 카드: Admin 사용자 인사 메시지}
+      <WelcomeTitle>{`Welcome back, ${user?.fullName ?? user?.username ?? 'Admin'}!`}</WelcomeTitle>
+      <WelcomeText>Manage projects, academics, and journey milestones from a single place.</WelcomeText>
+    </WelcomeCard>
+
+    <Section id="stats" aria-labelledby="stats-title">
+      <SectionTitle id="stats-title">Statistics</SectionTitle>
+      <StatsGrid columns="repeat(auto-fit, minmax(250px, 1fr))" gap="spacing[6]">
+        <StatCard role="article">
+          <StatLabel>Total Projects</StatLabel>
+          <StatValue>{stats.totalProjects}</StatValue>
+        </StatCard>
+        <StatCard role="article">
+          <StatLabel>Featured Projects</StatLabel>
+          <StatValue>{stats.featuredProjects}</StatValue>
+        </StatCard>
+        <StatCard role="article">
+          <StatLabel>Academic Records</StatLabel>
+          <StatValue>{stats.totalAcademics}</StatValue>
+        </StatCard>
+        <StatCard role="article">
+          <StatLabel>Journey Milestones</StatLabel>
+          <StatValue>{stats.totalMilestones}</StatValue>
+        </StatCard>
+      </StatsGrid>
+    </Section>
+
+    <Section id="quick-actions" aria-labelledby="quick-actions-title">
+      <SectionTitle id="quick-actions-title">Quick Actions</SectionTitle>
+      <StatsGrid columns="repeat(auto-fit, minmax(250px, 1fr))">
+        <StatCard as="button" onClick="navigate('/admin/projects/new')">
+          <StatLabel>Create New Project</StatLabel>
+          <StatValue>+</StatValue>
+        </StatCard>
+        <StatCard as="button" onClick="navigate('/admin/academics/new')">
+          <StatLabel>Add Academic Record</StatLabel>
+          <StatValue>+</StatValue>
+        </StatCard>
+        <StatCard as="button" onClick="navigate('/admin/milestones/new')">
+          <StatLabel>Add Milestone</StatLabel>
+          <StatValue>+</StatValue>
+        </StatCard>
+      </StatsGrid>
+    </Section>
+  </DashboardContainer>
+</AdminDashboardPage>
+

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdminProjectsPage>
+  {ProjectsAdminPage는 포트폴리오 프로젝트 데이터를 CRUD로 관리하는 테이블 중심 화면입니다.}
+
+  <PageContainer role="main" aria-label="Projects Admin">
+    <PageHeader>
+      <PageTitle>Projects</PageTitle>
+      <PrimaryActionLink to="/admin/projects/new">
+        <Button variant="primary">Create New Project</Button>
+      </PrimaryActionLink>
+    </PageHeader>
+
+    <StateBoundary>
+      <LoadingState when="isLoading && projects.length === 0">
+        <CenteredSpinner>
+          <LoadingSpinner />
+        </CenteredSpinner>
+      </LoadingState>
+
+      <ErrorState when="error && projects.length === 0">
+        <EmptyState>
+          <p>{`Error: ${error}`}</p>
+          <Button onClick="loadProjects">Retry</Button>
+        </EmptyState>
+      </ErrorState>
+
+      <EmptyDataState when="projects.length === 0 && !isLoading">
+        <EmptyState>
+          <p>No projects found. Create your first project!</p>
+          <LinkButton to="/admin/projects/new">Create Project</LinkButton>
+        </EmptyState>
+      </EmptyDataState>
+
+      <DataTable when="projects.length > 0">
+        <Table role="table">
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell>Title</TableHeaderCell>
+              <TableHeaderCell>Status</TableHeaderCell>
+              <TableHeaderCell>Featured</TableHeaderCell>
+              <TableHeaderCell>Start Date</TableHeaderCell>
+              <TableHeaderCell>End Date</TableHeaderCell>
+              <TableHeaderCell>Actions</TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {projects.map(project => (
+              <TableRow key={project.id}>
+                <TableCell>{project.title}</TableCell>
+                <TableCell>
+                  <StatusBadge $status={project.status}>{project.status}</StatusBadge>
+                </TableCell>
+                <TableCell>{project.isFeatured ? '⭐' : '-'}</TableCell>
+                <TableCell>{formatDate(project.startDate)}</TableCell>
+                <TableCell>{formatDate(project.endDate)}</TableCell>
+                <TableCell>
+                  <ActionButtons>
+                    <Link to={`/admin/projects/${project.id}/edit`}>
+                      <Button variant="secondary" size="sm">Edit</Button>
+                    </Link>
+                    <Button variant="danger" size="sm" onClick={() => handleDelete(project.id)}>
+                      Delete
+                    </Button>
+                  </ActionButtons>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        <PaginationControls when="totalPages > 1">
+          <Button variant="secondary" disabled={page === 1} onClick="setPage(p => Math.max(1, p - 1))">
+            Previous
+          </Button>
+          <PaginationInfo>{`Page ${page} of ${totalPages}`}</PaginationInfo>
+          <Button variant="secondary" disabled={page === totalPages} onClick="setPage(p => Math.min(totalPages, p + 1))">
+            Next
+          </Button>
+        </PaginationControls>
+      </DataTable>
+    </StateBoundary>
+  </PageContainer>
+</AdminProjectsPage>
+
