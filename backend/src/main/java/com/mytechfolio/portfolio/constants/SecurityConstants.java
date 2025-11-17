@@ -39,6 +39,7 @@ public final class SecurityConstants {
         "/api/v1/projects/**",
         "/api/v1/academics/**",
         "/api/v1/techstacks/**",
+        "/api/v1/journey-milestones/**",
         "/api/v1/seo/**",
         "/api/v1/testimonials/**",
         "/uploads/**",

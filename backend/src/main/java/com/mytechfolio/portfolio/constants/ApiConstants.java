@@ -21,6 +21,7 @@ public final class ApiConstants {
     public static final String PROJECTS_ENDPOINT = API_BASE_PATH + "/projects";
     public static final String ACADEMICS_ENDPOINT = API_BASE_PATH + "/academics";
     public static final String TECH_STACKS_ENDPOINT = API_BASE_PATH + "/techstacks";
+    public static final String JOURNEY_MILESTONES_ENDPOINT = API_BASE_PATH + "/journey-milestones";
     public static final String AUTH_ENDPOINT = API_BASE_PATH + "/auth";
     public static final String HEALTH_ENDPOINT = "/actuator/health";
     

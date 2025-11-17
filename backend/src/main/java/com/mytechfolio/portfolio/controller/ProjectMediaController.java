@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,11 +44,13 @@ public class ProjectMediaController {
      * @return Created media response
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('CONTENT_MANAGER') or hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "Upload project media", 
-               description = "Uploads an image, video, or document for a project")
+               description = "Uploads an image, video, or document for a project. Admin authorization required.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Media uploaded successfully"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid file or request"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Unauthorized"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Project not found")
     })
     public ResponseEntity<ApiResponse<ProjectMediaResponse>> uploadMedia(
@@ -148,10 +151,12 @@ public class ProjectMediaController {
      * @return Updated media
      */
     @PutMapping("/{mediaId}")
+    @PreAuthorize("hasRole('CONTENT_MANAGER') or hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "Update media metadata", 
-               description = "Updates media metadata (alt text, caption, order, etc.)")
+               description = "Updates media metadata (alt text, caption, order, etc.). Admin authorization required.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Unauthorized"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Media not found")
     })
     public ResponseEntity<ApiResponse<ProjectMediaResponse>> updateMedia(
@@ -179,10 +184,12 @@ public class ProjectMediaController {
      * @return No content
      */
     @DeleteMapping("/{mediaId}")
+    @PreAuthorize("hasRole('CONTENT_MANAGER') or hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "Delete media", 
-               description = "Deletes a media file from project")
+               description = "Deletes a media file from project. Admin authorization required.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Deleted"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Unauthorized"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Media not found")
     })
     public ResponseEntity<ApiResponse<Void>> deleteMedia(

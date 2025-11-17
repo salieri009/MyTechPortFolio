@@ -55,9 +55,13 @@ function generateRequestId(): string {
  */
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Add JWT token if available
+    // Add JWT token if available (check both regular token and admin token)
     if (AUTH_MODE === 'jwt') {
-      const token = localStorage.getItem('token')
+      // Check for admin token first (for admin routes)
+      const adminToken = localStorage.getItem('adminToken')
+      const regularToken = localStorage.getItem('token')
+      const token = adminToken || regularToken
+      
       if (token) {
         config.headers = config.headers ?? {}
         config.headers.Authorization = `Bearer ${token}`

@@ -1,398 +1,460 @@
-<!-- 8f5ea8bd-2d86-4155-81dc-f7b85a2f7acc 8a8a4e70-c770-43ed-9814-8ca5c53fbe54 -->
-# Azure Pipelines CI/CD Implementation Plan
+<!-- 8f5ea8bd-2d86-4155-81dc-f7b85a2f7acc 0ee0f27f-59fd-4bd6-b8a5-9d0e62955c20 -->
+# Documentation Directory Enhancement Plan
+
+## Executive Summary
+
+This plan addresses critical documentation issues including structural inconsistencies, broken references, content gaps, and maintenance challenges. The goal is to transform the docs directory into a professional, maintainable, and user-friendly documentation system.
+
+## Current State Analysis
+
+### Critical Issues Identified
+
+1. **Structural Inconsistencies**
+
+   - README.md references `Design-Plan/` but actual directory is `design-plan/` (case mismatch)
+   - Multiple files in root that should be organized (e.g., `Footer-Improvements.md`, `Portfolio-Improvements.md`)
+   - Duplicate/similar files (`Nielsen-Heuristics-Implementation-Guide.md` vs `Nielsens-Heuristics-Implementation.md`)
+   - Empty or minimal README files in subdirectories
+
+2. **Content Quality Issues**
+
+   - Outdated dates (November 15, 2025 - future date, should be current)
+   - Broken cross-references to non-existent files
+   - Inconsistent formatting and style
+   - Missing frontmatter/metadata in many files
+   - No versioning strategy
+
+3. **Missing Documentation**
+
+   - API reference files mentioned but don't exist
+   - Architecture diagrams
+   - Contributing guidelines
+   - Changelog/Release notes
+   - Comprehensive troubleshooting guides
+   - Code examples and snippets
+
+4. **Organization Problems**
+
+   - No clear information architecture
+   - Missing search/index mechanism
+   - Inconsistent audience targeting
+   - No user journey mapping
+
+## Implementation Plan
+
+### Phase 1: Information Architecture Redesign
+
+#### 1.1 Directory Structure Standardization
+
+**Actions:**
+
+- Rename `design-plan/` to `Design-Plan/` to match README references (or update README to match actual structure)
+- Create consistent directory structure:
+  ```
+  docs/
+  ├── README.md (main index)
+  ├── Getting-Started.md
+  ├── Important-Concepts.md
+  ├── Architecture/
+  │   ├── README.md
+  │   ├── System-Architecture.md
+  │   ├── API-Design.md
+  │   ├── Backend-Architecture.md
+  │   ├── Frontend-Architecture.md
+  │   └── Deployment-Architecture.md
+  ├── Specifications/
+  │   ├── README.md
+  │   ├── API-Specification.md (create if missing)
+  │   ├── Database-Specification.md (create if missing)
+  │   ├── Frontend-Specification.md (create if missing)
+  │   └── UI-UX-Specification.md (create if missing)
+  ├── Guides/
+  │   ├── README.md
+  │   ├── Development/
+  │   │   ├── Frontend-Setup.md
+  │   │   ├── Backend-Setup.md
+  │   │   └── Local-Development.md
+  │   ├── Deployment/
+  │   │   ├── Azure-Deployment.md
+  │   │   ├── Docker-Deployment.md
+  │   │   └── CI-CD-Setup.md
+  │   └── Integration/
+  │       ├── EmailJS-Setup.md
+  │       └── OAuth-Setup.md
+  ├── Testing/
+  │   ├── README.md
+  │   ├── Test-Strategy.md
+  │   ├── Test-Execution-Plan.md
+  │   └── Test-Results/
+  ├── Security/
+  │   ├── README.md
+  │   ├── Security-Overview.md
+  │   ├── Backend-Security.md
+  │   └── Frontend-Security.md
+  ├── ADR/
+  │   ├── README.md
+  │   └── [ADR-001-*.md files]
+  ├── Best-Practices/
+  │   ├── README.md
+  │   ├── Code-Style.md
+  │   ├── Naming-Conventions.md
+  │   └── Component-Guidelines.md
+  ├── Troubleshooting/
+  │   ├── README.md
+  │   ├── Common-Issues.md
+  │   ├── Build-Errors.md
+  │   └── Deployment-Issues.md
+  └── Contributing/
+      ├── README.md
+      ├── Contributing-Guide.md
+      └── Documentation-Standards.md
+  ```
+
+
+**Files to Move/Consolidate:**
+
+- Move `Footer-Improvements.md` → `Best-Practices/UI-Improvements.md` (consolidate with other improvement docs)
+- Move `Portfolio-Improvements.md` → `Best-Practices/Portfolio-Enhancements.md`
+- Consolidate `Nielsen-Heuristics-Implementation-Guide.md` and `Nielsens-Heuristics-Implementation.md` → `Best-Practices/Heuristics-Implementation.md`
+- Move `Accessibility-Guide.md` → `Best-Practices/Accessibility.md`
+- Move `Performance-Optimization-Guide.md` → `Best-Practices/Performance.md`
+- Move `Naming-Convention-Guide.md` → `Best-Practices/Naming-Conventions.md`
+- Move `Frontend-Atomic-Design-Refactoring.md` → `Architecture/Frontend-Architecture.md` (merge with existing)
+- Move `Frontend-Component-Review.md` → `Best-Practices/Component-Guidelines.md`
+- Move `Component-Refactoring-Status.md` → `Architecture/Refactoring-Status.md`
+- Move `Backend-Refactoring-Summary.md` → `Architecture/Backend-Refactoring.md`
+- Move `Reiteration-Summary.md` → `Architecture/Reiteration-Summary.md`
+- Move `Implementation.md` → `Architecture/Implementation-Status.md`
+
+#### 1.2 File Naming Standardization
+
+**Standard:**
+
+- Use Title-Case for all markdown files: `API-Design.md`
+- Use kebab-case for directories: `design-plan/` or `Design-Plan/` (choose one and be consistent)
+- README files always capitalized: `README.md`
+- Versioned files: `CHANGELOG.md`, `VERSION.md`
+
+### Phase 2: Content Audit and Consolidation
+
+#### 2.1 Content Audit
+
+**Actions:**
+
+- Audit all existing files for:
+  - Accuracy (check dates, versions, code examples)
+  - Completeness (missing sections, broken links)
+  - Consistency (terminology, formatting)
+  - Relevance (outdated content, duplicate information)
+
+**Files Requiring Immediate Attention:**
+
+- `docs/README.md` - Fix broken references, update structure
+- `docs/Important-Concepts.md` - Update dates, verify links
+- `docs/Getting-Started.md` - Update dates, verify commands
+- All README files in subdirectories - Ensure they're comprehensive indexes
+
+#### 2.2 Content Consolidation
+
+**Actions:**
+
+- Merge duplicate files (Nielsen heuristics files)
+- Consolidate improvement/enhancement documents
+- Create single source of truth for each topic
+- Remove redundant information
+
+#### 2.3 Missing Content Creation
+
+**Priority 1 (Critical):**
+
+- `Specifications/API-Specification.md` - Complete API reference
+- `Specifications/Database-Specification.md` - Database schema documentation
+- `Specifications/Frontend-Specification.md` - Frontend component contracts
+- `Specifications/UI-UX-Specification.md` - Design system documentation
+- `Contributing/Contributing-Guide.md` - How to contribute
+- `Troubleshooting/Common-Issues.md` - Common problems and solutions
+
+**Priority 2 (Important):**
+
+- `Architecture/System-Architecture.md` - High-level system overview with diagrams
+- `CHANGELOG.md` - Version history and release notes
+- `Contributing/Documentation-Standards.md` - Writing guidelines
+- `Best-Practices/Code-Style.md` - Coding standards
+
+**Priority 3 (Enhancement):**
+
+- Architecture diagrams (Mermaid or PlantUML)
+- Code examples and snippets
+- Video tutorials (links)
+- Interactive examples
+
+### Phase 3: Writing Standards and Templates
+
+#### 3.1 Documentation Template
+
+**Create standard template:**
+
+```markdown
+---
+title: "Document Title"
+version: "1.0.0"
+last_updated: "YYYY-MM-DD"
+status: "active|deprecated|draft"
+category: "Guide|Reference|Tutorial|Specification"
+audience: ["Developers", "DevOps Engineers"]
+prerequisites: ["Getting-Started.md"]
+related_docs: ["Related-Doc.md"]
+maintainer: "Team Name"
+---
+
+# Document Title
+
+> **Brief description**  
+> **Version**: 1.0.0  
+> **Last Updated**: YYYY-MM-DD
 
 ## Overview
 
-This plan implements enterprise-grade Azure Pipelines CI/CD for MyPortFolio, following 20-year DevOps and Software Engineer best practices. The pipeline will support multi-environment deployments, automated testing, security scanning, and comprehensive monitoring.
+[Purpose and scope]
 
-## Architecture Decisions
+## Table of Contents
 
-### Deployment Target
+1. [Section 1](#section-1)
+2. [Section 2](#section-2)
 
-- **Backend**: Azure Container Apps (matches existing azure-deploy.sh)
-- **Frontend**: Azure Container Apps (matches existing azure-deploy.sh)
-- **Database**: Azure Cosmos DB for MongoDB (production) or Azure Container Instance (dev/staging)
-- **Container Registry**: Azure Container Registry (ACR)
+## Section 1
 
-### Pipeline Structure
+[Content]
 
-```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Trigger   │───►│   Build     │───►│   Test      │───►│   Deploy    │
-│   (Git)     │    │   (Docker)  │    │   (Unit/    │    │   (ACR +    │
-│             │    │             │    │    E2E)     │    │    CA)      │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
-```
+## Related Documentation
 
-## Implementation Files
+- [Related Doc](./Related-Doc.md)
 
-### 1. Main Pipeline: `azure-pipelines.yml`
+---
 
-**Location**: Root directory
-
-**Key Features**:
-
-- Multi-stage pipeline (Build → Test → Deploy)
-- Path-based triggers (backend/ **or frontend/**)
-- Matrix strategy for parallel builds
-- Environment-based deployments (dev, staging, production)
-- Approval gates for production
-- Rollback capabilities
-
-**Stages**:
-
-1. **Build Stage**
-
-                                                                                                - Build backend Docker image
-                                                                                                - Build frontend Docker image
-                                                                                                - Push to ACR with tags (commit SHA, branch, latest)
-                                                                                                - Generate build artifacts
-
-2. **Test Stage**
-
-                                                                                                - Backend unit tests (Gradle)
-                                                                                                - Frontend unit tests (npm)
-                                                                                                - Integration tests
-                                                                                                - Code coverage reporting
-                                                                                                - Security scanning (Trivy, Snyk)
-
-3. **Deploy Stage** (Environment-specific)
-
-                                                                                                - Deploy to dev (auto)
-                                                                                                - Deploy to staging (auto, after dev success)
-                                                                                                - Deploy to production (manual approval)
-
-### 2. Backend Pipeline: `azure-pipelines-backend.yml`
-
-**Location**: `backend/azure-pipelines-backend.yml`
-
-**Responsibilities**:
-
-- Java 21 setup
-- Gradle build with caching
-- Unit test execution
-- Integration test execution
-- Docker image build
-- ACR push
-- Test coverage reporting
-
-### 3. Frontend Pipeline: `azure-pipelines-frontend.yml`
-
-**Location**: `frontend/azure-pipelines-frontend.yml`
-
-**Responsibilities**:
-
-- Node.js 18 setup
-- npm ci with caching
-- Linting (ESLint)
-- Unit test execution
-- Build with environment variables
-- Docker image build
-- ACR push
-- Bundle size analysis
-
-### 4. Infrastructure as Code: `infra/pipeline-variables.yml`
-
-**Location**: `infra/pipeline-variables.yml`
-
-**Contains**:
-
-- Environment-specific variables
-- Resource group names
-- ACR names
-- Container App names
-- MongoDB connection strings (Key Vault references)
-
-### 5. Pipeline Templates
-
-**Location**: `.azure/pipelines/templates/`
-
-**Templates**:
-
-- `build-docker-image.yml`: Reusable Docker build template
-- `run-tests.yml`: Reusable test execution template
-- `deploy-container-app.yml`: Reusable deployment template
-- `security-scan.yml`: Security scanning template
-- `notify.yml`: Notification template (Slack/Teams/Email)
-
-## Detailed Implementation
-
-### Stage 1: Build
-
-#### Backend Build
-
-```yaml
-- task: Gradle@3
-  inputs:
-    workingDirectory: 'backend'
-    gradleWrapperFile: 'backend/gradlew'
-    gradleOptions: '-Xmx3072m'
-    tasks: 'clean build'
-    publishJUnitResults: true
-    testResultsFiles: '**/TEST-*.xml'
-    codeCoverageToolOption: 'JaCoCo'
+**Last Updated**: YYYY-MM-DD  
+**Maintained By**: Team Name
 ```
 
-#### Frontend Build
+#### 3.2 Style Guide
 
-```yaml
-- task: NodeTool@0
-  inputs:
-    versionSpec: '18.x'
-- script: |
-    cd frontend
-    npm ci
-    npm run lint
-    npm run build
-  displayName: 'Build Frontend'
-```
+**Standards:**
 
-#### Docker Build & Push
+- Use active voice
+- Write for the target audience
+- Include code examples with syntax highlighting
+- Use consistent terminology (create glossary)
+- Include "Why it matters" sections for important concepts
+- Add cross-references liberally
+- Use tables for structured data
+- Include diagrams for complex concepts
 
-```yaml
-- task: Docker@2
-  inputs:
-    containerRegistry: 'ACR_Connection'
-    repository: 'portfolio-backend'
-    command: 'buildAndPush'
-    Dockerfile: 'backend/Dockerfile'
-    tags: |
-      $(Build.BuildId)
-      $(Build.SourceBranchName)
-      latest
-```
+#### 3.3 Metadata Standards
 
-### Stage 2: Test
+**Required Frontmatter:**
 
-#### Test Cases Structure
+- title
+- version
+- last_updated (ISO 8601 format: YYYY-MM-DD)
+- status
+- category
+- audience
+- related_docs
 
-**Test Cases Location**: `.azure/pipelines/test-cases/`
+**Optional Frontmatter:**
 
-**Test Case Files**:
+- prerequisites
+- maintainer
+- reviewer
+- tags
 
-- `backend-unit-tests.yml`: Backend unit test execution
-- `backend-integration-tests.yml`: Backend integration test execution
-- `frontend-unit-tests.yml`: Frontend unit test execution
-- `frontend-integration-tests.yml`: Frontend integration test execution
-- `api-contract-tests.yml`: API contract testing
-- `e2e-tests.yml`: End-to-end test execution
-- `security-tests.yml`: Security test execution
-- `performance-tests.yml`: Performance test execution
+### Phase 4: Quality Assurance
 
-**Test Case Template Structure**:
+#### 4.1 Link Validation
 
-```yaml
-# Example: .azure/pipelines/test-cases/backend-unit-tests.yml
-parameters:
- - name: workingDirectory
-    type: string
- - name: testResultsPattern
-    type: string
-    default: '**/TEST-*.xml'
+**Actions:**
 
-steps:
- - task: Gradle@3
-    displayName: 'Run Unit Tests'
-    inputs:
-      workingDirectory: ${{ parameters.workingDirectory }}
-      tasks: 'test'
-      publishJUnitResults: true
-      testResultsFiles: ${{ parameters.testResultsPattern }}
-      codeCoverageToolOption: 'JaCoCo'
-      codeCoverageClassFiles: '**/build/classes/java/main/**/*.class'
-```
+- Create script to validate all internal links
+- Fix broken references
+- Update relative paths after restructuring
+- Verify external links are accessible
 
-#### Unit Tests
+#### 4.2 Content Review
 
-- **Backend**: Gradle test with JaCoCo coverage
-                                                                - Test location: `backend/src/test/java`
-                                                                - Coverage report: `backend/build/reports/jacoco/test/html/index.html`
-                                                                - Coverage threshold: 80%+ (configurable per module)
+**Checklist:**
 
-- **Frontend**: Jest/Vitest with coverage
-                                                                - Test location: `frontend/src/**/*.test.tsx`, `frontend/src/**/*.test.ts`
-                                                                - Coverage report: `frontend/coverage/`
-                                                                - Coverage threshold: 80%+ (configurable per component)
+- [ ] All dates are current (not future dates)
+- [ ] Code examples are tested and working
+- [ ] All referenced files exist
+- [ ] Terminology is consistent
+- [ ] Formatting is consistent
+- [ ] Diagrams render correctly
+- [ ] Tables are properly formatted
 
-#### Integration Tests
+#### 4.3 Cross-Reference Audit
 
-- **API Integration Tests**
-                                                                - Location: `backend/src/test/java/**/*IntegrationTest.java`
-                                                                - Uses: Spring Boot Test, MockMvc
-                                                                - Test cases: All API endpoints, request/response validation
+**Actions:**
 
-- **Database Integration Tests**
-                                                                - Location: `backend/src/test/java/**/*RepositoryTest.java`
-                                                                - Uses: Testcontainers with MongoDB
-                                                                - Test cases: CRUD operations, query validation
+- Ensure bidirectional links where appropriate
+- Add "See also" sections
+- Create topic-based navigation
+- Implement breadcrumbs in README files
 
-- **E2E Tests**
-                                                                - Location: `e2e/tests/`
-                                                                - Uses: Playwright
-                                                                - Test cases: User flows, cross-browser testing
+### Phase 5: Maintenance Procedures
 
-#### Security Scanning
+#### 5.1 Update Procedures
 
-- **Container Scanning**: Trivy
-                                                                - Scans: Docker images for vulnerabilities
-                                                                - Output: SARIF format for Azure Security Center
+**Create maintenance guide:**
 
-- **Dependency Scanning**: Snyk
-                                                                - Scans: npm packages, Gradle dependencies
-                                                                - Output: JSON report with vulnerability details
+- When to update documentation
+- Who is responsible for each section
+- Review process
+- Version control practices
 
-- **API Security Testing**: OWASP ZAP
-                                                                - Scans: API endpoints for security vulnerabilities
-                                                                - Output: HTML report
+#### 5.2 Version Control
 
-### Stage 3: Deploy
+**Strategy:**
 
-#### Environment Strategy
+- Tag major documentation versions
+- Maintain CHANGELOG.md
+- Use git for documentation history
+- Create release notes for major updates
 
-- **dev**: Auto-deploy on push to `develop`
-- **staging**: Auto-deploy after dev success
-- **production**: Manual approval required
+#### 5.3 Review Schedule
 
-#### Deployment Steps
+**Regular Reviews:**
 
-1. Update Container App with new image
-2. Health check validation
-3. Smoke tests
-4. Rollback on failure
+- Monthly: Check for outdated content
+- Quarterly: Full content audit
+- On major releases: Update all related docs
+- On architecture changes: Update ADRs and architecture docs
 
-## Security & Best Practices
+### Phase 6: User Experience Improvements
 
-### Secrets Management
+#### 6.1 Navigation Enhancement
 
-- Azure Key Vault integration
-- Pipeline variables for non-sensitive config
-- Service connections for ACR, Azure subscriptions
+**Actions:**
 
-### Compliance
+- Create comprehensive index in main README
+- Add "Quick Links" sections
+- Implement topic-based navigation
+- Create user journey maps for different audiences
 
-- SBOM (Software Bill of Materials) generation
-- Vulnerability scanning
-- License compliance checking
+#### 6.2 Search and Discovery
 
-### Performance
+**Options:**
 
-- Build caching (Gradle, npm)
-- Parallel job execution
-- Artifact retention policies
+- Add search functionality (if using docs site generator)
+- Create topic index
+- Add tags to documents
+- Create FAQ section
 
-### Monitoring
+#### 6.3 Visual Improvements
 
-- Pipeline analytics
-- Deployment success rates
-- Build time tracking
-- Cost optimization
+**Actions:**
 
-## File Structure
+- Add diagrams using Mermaid
+- Use consistent code block styling
+- Add icons/emojis consistently (or remove if unprofessional)
+- Improve table formatting
+- Add visual hierarchy
 
-```
-.
-├── azure-pipelines.yml (main pipeline)
-├── backend/
-│   └── azure-pipelines-backend.yml
-├── frontend/
-│   └── azure-pipelines-frontend.yml
-├── infra/
-│   ├── pipeline-variables.yml
-│   └── main.bicep (existing)
-└── .azure/
-    └── pipelines/
-        └── templates/
-            ├── build-docker-image.yml
-            ├── run-tests.yml
-            ├── deploy-container-app.yml
-            ├── security-scan.yml
-            └── notify.yml
-```
+## Implementation Order
 
-## Implementation Phases
+### Week 1: Foundation
 
-### Phase 1: Core Pipeline (Week 1)
+1. Fix directory structure and naming
+2. Update main README.md with accurate structure
+3. Fix broken links and references
+4. Update all dates to current date
 
-1. Create main azure-pipelines.yml
-2. Implement build stages for backend and frontend
-3. Set up ACR integration
-4. Basic deployment to dev environment
+### Week 2: Consolidation
 
-### Phase 2: Testing Integration (Week 2)
+1. Merge duplicate files
+2. Move files to proper directories
+3. Create missing README files in subdirectories
+4. Consolidate improvement/enhancement docs
 
-1. Add unit test execution
-2. Add integration test execution
-3. Set up code coverage reporting
-4. Configure test result publishing
+### Week 3: Content Creation
 
-### Phase 3: Security & Quality (Week 3)
+1. Create missing specification files
+2. Create Contributing guide
+3. Create Troubleshooting guide
+4. Create CHANGELOG.md
 
-1. Implement security scanning
-2. Add dependency vulnerability scanning
-3. Set up code quality gates
-4. Configure approval workflows
+### Week 4: Quality and Polish
 
-### Phase 4: Advanced Features (Week 4)
+1. Apply templates to all documents
+2. Add frontmatter metadata
+3. Validate all links
+4. Review and improve content quality
+5. Add diagrams where needed
 
-1. Multi-environment deployments
-2. Blue-green deployment strategy
-3. Rollback mechanisms
-4. Monitoring and alerting integration
+### Week 5: Maintenance Setup
+
+1. Create maintenance procedures document
+2. Set up review schedule
+3. Create documentation standards guide
+4. Final audit and testing
 
 ## Success Criteria
 
-- [ ] All builds complete in < 15 minutes
-- [ ] Test coverage > 80%
-- [ ] Zero critical security vulnerabilities
-- [ ] Automated deployments to dev/staging
-- [ ] Manual approval gates for production
-- [ ] Rollback capability within 5 minutes
-- [ ] Complete audit trail of all deployments
+- [ ] All files follow consistent naming convention
+- [ ] All internal links work correctly
+- [ ] All dates are current and accurate
+- [ ] No duplicate content exists
+- [ ] All referenced files exist
+- [ ] Every directory has a comprehensive README
+- [ ] All documents have proper frontmatter
+- [ ] Contributing guide exists
+- [ ] Troubleshooting guide exists
+- [ ] CHANGELOG is maintained
+- [ ] Documentation standards are documented
 
-## Dependencies
+## Risk Mitigation
 
-### Azure Resources Required
+**Risk**: Breaking existing links during restructuring
 
-- Azure DevOps Organization & Project
-- Azure Container Registry (ACR)
-- Azure Container Apps Environment
-- Azure Key Vault (for secrets)
-- Azure Cosmos DB for MongoDB (production)
-- Service Connections (ACR, Azure subscription)
+**Mitigation**: Create redirect mapping, update links in phases
 
-### Pipeline Variables to Configure
+**Risk**: Losing content during consolidation
 
-- `ACR_NAME`: Azure Container Registry name
-- `RESOURCE_GROUP`: Azure resource group
-- `CONTAINER_APP_ENV`: Container Apps environment name
-- `BACKEND_APP_NAME`: Backend container app name
-- `FRONTEND_APP_NAME`: Frontend container app name
+**Mitigation**: Use version control, create backup before changes
 
-### Service Connections
+**Risk**: Inconsistent application of standards
 
-- ACR connection (Docker registry)
-- Azure subscription connection
-- Key Vault connection (for secrets)
+**Mitigation**: Create checklists, peer review process
+
+## Tools and Resources
+
+- Markdown linter (markdownlint)
+- Link checker (markdown-link-check)
+- Diagram tools (Mermaid, PlantUML)
+- Documentation generators (if needed: MkDocs, Docusaurus)
+- Version control (Git)
 
 ## Notes
 
-- Pipeline follows Azure DevOps YAML schema v1.0
-- Compatible with Azure Container Apps (matches existing deployment)
-- Supports both GitHub and Azure Repos
-- Includes comprehensive error handling and retry logic
-- Implements industry-standard CI/CD patterns
+- Maintain backward compatibility where possible
+- Document all changes in CHANGELOG
+- Get stakeholder approval before major restructuring
+- Test all links after restructuring
+- Keep git history for traceability
 
 ### To-dos
 
-- [ ] Create main azure-pipelines.yml with multi-stage structure (Build, Test, Deploy)
-- [ ] Create backend-specific pipeline template with Gradle build and Docker image creation
-- [ ] Create frontend-specific pipeline template with npm build and Docker image creation
-- [ ] Create reusable pipeline templates in .azure/pipelines/templates/ directory
-- [ ] Configure Azure Container Registry service connection and integration in pipelines
-- [ ] Add unit test, integration test, and E2E test stages with coverage reporting
-- [ ] Add security scanning stages (Trivy, Snyk, dependency scanning)
-- [ ] Configure dev, staging, and production environment deployments with approval gates
-- [ ] Add rollback mechanism for failed deployments
-- [ ] Create infra/pipeline-variables.yml with environment-specific configuration
-- [ ] Configure Azure Key Vault integration for secrets management
-- [ ] Add pipeline monitoring, analytics, and alerting configuration
+- [ ] Complete content audit: identify broken links, outdated dates, missing files, duplicate content, and structural inconsistencies
+- [ ] Standardize directory structure: rename directories to match README references, create missing directories, establish consistent naming convention
+- [ ] Merge duplicate files (Nielsen heuristics, improvement docs), consolidate scattered files into appropriate directories
+- [ ] Fix docs/README.md: update structure references, fix broken links, ensure all referenced files exist, update dates to current
+- [ ] Create missing specification files: API-Specification.md, Database-Specification.md, Frontend-Specification.md, UI-UX-Specification.md
+- [ ] Create Contributing/Contributing-Guide.md with contribution process, code of conduct, and pull request guidelines
+- [ ] Create Troubleshooting/Common-Issues.md with common problems, solutions, and diagnostic steps
+- [ ] Apply standard frontmatter template to all documents: add title, version, last_updated, status, category, audience, related_docs
+- [ ] Update all dates to current date (November 17, 2024), remove future dates, ensure last_updated fields are accurate
+- [ ] Validate all internal and external links: fix broken references, update relative paths after restructuring, verify external links
+- [ ] Create comprehensive README.md files for all subdirectories: Architecture, Specifications, Guides, Testing, Security, ADR, Best-Practices, Troubleshooting, Contributing
+- [ ] Create CHANGELOG.md with version history, release notes, and documentation change log
+- [ ] Create Contributing/Documentation-Standards.md with writing guidelines, style guide, template usage, and review process
+- [ ] Create maintenance guide with update procedures, review schedule, version control practices, and responsibility matrix
+- [ ] Conduct final quality audit: verify all links work, check formatting consistency, validate code examples, review cross-references, test navigation
