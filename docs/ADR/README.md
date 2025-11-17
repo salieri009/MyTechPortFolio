@@ -72,23 +72,35 @@ Each ADR follows this structure:
 
 The following architectural decisions should be documented as ADRs:
 
-1. **Technology Stack Selection** ✅ (Complete)
+1. **Frontend Technology Stack** ✅ (Complete)
    - ✅ React + TypeScript choice (ADR-001)
    - ✅ Zustand for state management (ADR-002)
    - ✅ Styled Components for styling (ADR-003)
    - ✅ React Router v6 for routing (ADR-005)
 
-2. **Architecture Patterns** ✅ (Partially Complete)
+2. **Backend Technology Stack** ✅ (Complete)
+   - ✅ Spring Boot framework (ADR-006)
+   - ✅ MongoDB database (ADR-007)
+   - ✅ Layered architecture pattern (ADR-008)
+
+3. **Architecture Patterns** ✅ (Partially Complete)
    - ✅ Atomic Design Pattern adoption (ADR-004)
-   - ⏳ Service layer pattern for API calls
+   - ✅ Layered Architecture Pattern (ADR-008)
+   - ⏳ Service layer pattern details
    - ⏳ Component composition strategy
 
-3. **Performance Decisions**
+4. **Security & Authentication**
+   - ⏳ JWT authentication strategy
+   - ⏳ Role-based access control
+   - ⏳ Admin authentication approach
+
+5. **Performance Decisions**
    - ⏳ Code splitting strategy (covered in ADR-005)
    - ⏳ Lazy loading implementation (covered in ADR-005)
+   - ⏳ Caching strategy
    - ⏳ Image optimization approach
 
-4. **State Management** ✅ (Complete)
+6. **State Management** ✅ (Complete)
    - ✅ Zustand over Redux decision (ADR-002)
    - ⏳ Store organization pattern
    - ⏳ Admin vs regular user state separation
