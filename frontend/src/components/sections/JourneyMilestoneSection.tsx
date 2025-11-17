@@ -6,6 +6,8 @@ import { Container } from '@components/common'
 import { ComplexityIndicator, TechStackProgression } from './journey'
 import { SectionPurpose } from './SectionPurpose'
 import { useTimelinePathAnimation } from '../../hooks/useTimelinePathAnimation'
+import { milestonesApi, type JourneyMilestone } from '../../services/admin/milestonesApi'
+import { LoadingSpinner } from '../ui/LoadingSpinner'
 
 const Section = styled.section`
   padding: ${props => props.theme.spacing[20]} 0;
@@ -327,7 +329,8 @@ interface MilestoneData {
   skillProgression?: SkillLevel[]
 }
 
-const milestoneData: MilestoneData[] = [
+// Legacy hardcoded data - kept as fallback
+const legacyMilestoneData: MilestoneData[] = [
   {
     id: 'high-school',
     year: '2015',
@@ -454,8 +457,43 @@ const milestoneData: MilestoneData[] = [
   }
 ]
 
+/**
+ * Convert API milestone to component format
+ */
+function convertMilestoneToData(milestone: JourneyMilestone): MilestoneData {
+  return {
+    id: milestone.id,
+    year: milestone.year,
+    title: milestone.title,
+    description: milestone.description,
+    icon: milestone.icon || '',
+    techStack: milestone.techStack || [],
+    status: milestone.status.toLowerCase() as 'completed' | 'current' | 'planned',
+    technicalComplexity: milestone.technicalComplexity || 1,
+    projectCount: milestone.projectCount || 0,
+    codeMetrics: milestone.codeMetrics ? {
+      linesOfCode: milestone.codeMetrics.linesOfCode || 0,
+      commits: milestone.codeMetrics.commits || 0,
+      repositories: milestone.codeMetrics.repositories || 0
+    } : undefined,
+    keyAchievements: milestone.keyAchievements?.map(achievement => ({
+      title: achievement.title,
+      description: achievement.description,
+      impact: achievement.impact || ''
+    })),
+    skillProgression: milestone.skillProgression?.map(skill => ({
+      name: skill.name,
+      level: skill.level,
+      category: skill.category as 'Frontend' | 'Backend' | 'Database' | 'DevOps' | 'Other'
+    }))
+  }
+}
+
 export function JourneyMilestoneSection() {
   const { t } = useTranslation()
+  const [milestoneData, setMilestoneData] = useState<MilestoneData[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [visibleMilestones, setVisibleMilestones] = useState<string[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -463,6 +501,32 @@ export function JourneyMilestoneSection() {
   
   // Check for prefers-reduced-motion
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  // Load milestones from API
+  useEffect(() => {
+    const loadMilestones = async () => {
+      try {
+        setIsLoading(true)
+        const milestones = await milestonesApi.getAll()
+        if (milestones.length > 0) {
+          const converted = milestones.map(convertMilestoneToData)
+          setMilestoneData(converted)
+        } else {
+          // Fallback to legacy data if API returns empty
+          setMilestoneData(legacyMilestoneData)
+        }
+      } catch (err) {
+        console.error('Failed to load milestones from API, using fallback:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load milestones')
+        // Fallback to legacy data on error
+        setMilestoneData(legacyMilestoneData)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    loadMilestones()
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -494,7 +558,7 @@ export function JourneyMilestoneSection() {
     return () => {
       observer.disconnect()
     }
-  }, [])
+  }, [milestoneData]) // Re-run when milestoneData changes
 
   // Build milestones array for path animation hook
   const milestones = milestoneData.map(m => ({
@@ -570,6 +634,30 @@ export function JourneyMilestoneSection() {
         ease: 'easeOut' as const
       }
     })
+  }
+
+  if (isLoading) {
+    return (
+      <Section id="journey">
+        <Container>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
+            <LoadingSpinner />
+          </div>
+        </Container>
+      </Section>
+    )
+  }
+
+  if (error && milestoneData.length === 0) {
+    return (
+      <Section id="journey">
+        <Container>
+          <div style={{ textAlign: 'center', padding: '4rem', color: '#6b7280' }}>
+            <p>Unable to load journey milestones. Please try again later.</p>
+          </div>
+        </Container>
+      </Section>
+    )
   }
 
   return (
