@@ -99,7 +99,7 @@ export const Tag = styled.span.withConfig({
   ${props => props.isSelected && `
     background: ${props.theme.colors.primary[500]};
     border-color: ${props.theme.colors.primary[500]};
-    color: ${props.theme.colors.hero?.text || '#ffffff'};
+    color: ${props.theme.colors.hero?.text || props.theme.colors.neutral[0]};
     font-weight: ${props.theme.typography.fontWeight.semibold};
     box-shadow: 0 0 0 ${props.theme.spacing[0.5]} ${props.theme.colors.primary[200]};
   `}

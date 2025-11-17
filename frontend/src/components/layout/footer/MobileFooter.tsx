@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { CONTACT_INFO } from '../../../constants/contact'
 import { SocialIcon } from '@components/common/FooterComponents'
+import { useFeedbackModalStore } from '../../../stores/feedbackModalStore'
+import { EmailIcon, GithubIcon } from '@components/icons/SocialIcons'
 
 const MobileFooterWrapper = styled.footer`
   display: none;
@@ -131,13 +133,34 @@ export function MobileFooter() {
         <MobileNav>
           <Link to="/projects">{t('navigation.projects')}</Link>
           <Link to="/about">{t('navigation.about')}</Link>
-          <Link to="/feedback">{t('navigation.feedback')}</Link>
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              const triggerElement = e.currentTarget
+              useFeedbackModalStore.getState().openModal(triggerElement)
+            }}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'inherit',
+              font: 'inherit',
+              cursor: 'pointer',
+              padding: 0,
+              textDecoration: 'none'
+            }}
+          >
+            {t('navigation.feedback')}
+          </button>
         </MobileNav>
 
         <SocialRow>
-          <SocialIcon href={`mailto:${CONTACT_INFO.email.student}`}>✉️</SocialIcon>
-          <SocialIcon href={CONTACT_INFO.linkedin.url} target="_blank" rel="noopener noreferrer">in</SocialIcon>
-          <SocialIcon href={CONTACT_INFO.github.url} target="_blank" rel="noopener noreferrer">🐙</SocialIcon>
+          <SocialIcon href={`mailto:${CONTACT_INFO.email.student}`} aria-label="Email">
+            <EmailIcon size={20} />
+          </SocialIcon>
+          <SocialIcon href={CONTACT_INFO.linkedin.url} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</SocialIcon>
+          <SocialIcon href={CONTACT_INFO.github.url} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <GithubIcon size={20} />
+          </SocialIcon>
         </SocialRow>
 
         <Copyright>

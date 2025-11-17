@@ -1,5 +1,5 @@
 import React, { useEffect, Suspense, lazy } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Outlet } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { Layout } from '@components/layout/Layout'
 import { LoadingSpinner } from '@components/ui/LoadingSpinner'
@@ -7,11 +7,13 @@ import { lightTheme, darkTheme } from '@styles/theme'
 import { useThemeStore } from './stores/themeStore'
 import { analytics } from './services/analytics'
 import { useAnalytics } from './hooks/useAnalytics'
+import { FeedbackOverlay } from '@components/feedback/FeedbackOverlay'
 import './i18n/config'
 
 // Route-based code splitting for better performance
 const HomePage = lazy(() => import('@pages/HomePage').then(module => ({ default: module.HomePage })))
 const ProjectsPage = lazy(() => import('@pages/ProjectsPage'))
+const ProjectDetailOverlay = lazy(() => import('@components/project/ProjectDetailOverlay').then(module => ({ default: module.ProjectDetailOverlay })))
 const ProjectDetailPage = lazy(() => import('@pages/ProjectDetailPage').then(module => ({ default: module.ProjectDetailPage })))
 const AcademicsPage = lazy(() => import('@pages/AcademicsPage').then(module => ({ default: module.AcademicsPage })))
 const AboutPage = lazy(() => import('@pages/AboutPage').then(module => ({ default: module.AboutPage })))
@@ -34,6 +36,8 @@ function App() {
 
   return (
     <ThemeProvider theme={currentTheme}>
+      <FeedbackOverlay />
+      {/* ProjectDetailOverlay is now rendered as a child route of /projects, not a global component */}
       <Suspense fallback={<LoadingSpinner fullScreen message="Loading page..." />}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
@@ -42,11 +46,16 @@ function App() {
               <Suspense fallback={<LoadingSpinner message="Loading page..." />}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
-                  <Route path="/projects" element={<ProjectsPage />} />
+                  {/* Hybrid Routing: /projects is parent route with <Outlet />, /projects/:id is child route rendering ProjectDetailOverlay */}
+                  <Route path="/projects" element={<ProjectsPage />}>
+                    <Route path=":id" element={<ProjectDetailOverlay />} />
+                  </Route>
+                  {/* Legacy route for direct URL access - kept for backward compatibility and SEO */}
                   <Route path="/projects/:id" element={<ProjectDetailPage />} />
                   <Route path="/academics" element={<AcademicsPage />} />
                   <Route path="/about" element={<AboutPage />} />
-                  <Route path="/feedback" element={<FeedbackPage />} />
+                  {/* LEGACY ROUTE: /feedback - 이 경로는 레거시입니다. 모든 링크는 모달 트리거를 사용해야 합니다. FeedbackOverlay를 사용하세요. */}
+                  {/* <Route path="/feedback" element={<FeedbackPage />} /> */}
                 </Routes>
               </Suspense>
             </Layout>

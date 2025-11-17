@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FeedbackPage>
+  {FeedbackPage는 사용자 피드백을 수집하는 모달 오버레이입니다. 페이지 이동 없이 컨텍스트를 유지하면서 피드백을 제출할 수 있습니다.}
+  {리팩토링: 독립 페이지에서 모달 오버레이로 전환 (T1: Refactor to Modal)}
+  
+  <FeedbackOverlay>
+    {FeedbackOverlay: 전역 모달 컴포넌트, App.tsx에 포함되어 항상 렌더링되지만 isOpen 상태에 따라 표시/숨김}
+    {스타일: position fixed, 전체 화면, z-index 9999, 고대비 배경 (rgba(neutral[950/900], 0.9))}
+    
+    {isOpen ? (
+      <FeedbackModalOverlay
+        onClick={handleClose}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="feedback-modal-title"
+      >
+        {모달 오버레이: 전체 화면, 고대비 배경, fadeIn 300ms ease 애니메이션 (T1, Constraints)}
+        {스크롤 위치 보존: sessionStorage에 저장, 모달 닫힐 때 복원}
+        {body overflow hidden: 모달 열릴 때 설정, 닫힐 때 해제}
+        
+        <FeedbackModalContent
+          ref="modalContentRef"
+          onClick={(e) => e.stopPropagation()}
+          role="document"
+        >
+          {모달 콘텐츠: 중앙 정렬, max-width 600px, max-height 90vh, slideUp 300ms ease}
+          {스타일: surface/background 배경, borderRadius 2xl, padding spacing[12], overflow-y auto}
+          {포커스 트랩: 모달 열릴 때 첫 번째 입력 필드에 자동 포커스}
+          
+          <FeedbackModalCloseButton
+            onClick={handleClose}
+            aria-label={t('feedback.modal.close', 'Close feedback modal')}
+          >
+            {닫기 버튼: 우측 상단, absolute position, 호버 시 배경 변경}
+            <CloseIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </CloseIcon>
+          </FeedbackModalCloseButton>
+          
+          {isSubmitted ? (
+            <SuccessCard>
+              {성공 카드: 피드백 제출 성공 후 표시, max-width 500px, 중앙 정렬, padding spacing[12]}
+              <SuccessIconContainer>
+                {성공 아이콘 컨테이너: flex center, spacing[8] margin-bottom}
+                <CheckMarkIcon size={64} />
+                {CheckMarkIcon: SVG 아이콘 컴포넌트 (T3: Force Align SVG Icons)}
+                {스타일: stroke-based SVG, success/primary[500] 색상, stroke-width 3, 64px 크기}
+                {개선: 텍스트 아이콘(✓) → SVG로 교체 (전문성 향상, T3 규칙)}
+              </SuccessIconContainer>
+              <SuccessTitle>
+                {성공 제목: fontSize['2xl'], fontWeight.bold, spacing[6] margin-bottom, color text}
+                {t('feedback.success.title')}
+              </SuccessTitle>
+              <SuccessMessage>
+                {성공 메시지: fontSize.base, color textSecondary, spacing[8] margin-bottom, lineHeight relaxed}
+                {t('feedback.success.message')}
+              </SuccessMessage>
+              <SuccessButtonGroup>
+                {성공 버튼 그룹: flex layout, gap spacing[4], justify-content center, flex-wrap (R3: Modal Success State)}
+                <Button onClick={handleNewFeedback} variant="outline">
+                  {새 피드백 버튼: 폼으로 돌아가기 (R3)}
+                  {t('feedback.success.newFeedback')}
+                </Button>
+                <Button onClick={handleClose} variant="primary">
+                  {닫기 버튼: 모달 닫기 (R3)}
+                  {t('feedback.success.close', 'Close')}
+                </Button>
+              </SuccessButtonGroup>
+            </SuccessCard>
+          ) : (
+            <>
+              <FeedbackHeader>
+                {피드백 헤더: 중앙 정렬, spacing[8] margin-bottom}
+                <Title id="feedback-modal-title">
+                  {제목: fontSize['3xl'], fontWeight.bold, primary[500] 색상, spacing[4] margin-bottom}
+                  {t('feedback.title')}
+                </Title>
+                <Subtitle>
+                  {부제목: fontSize.lg, color textSecondary, max-width 600px, 중앙 정렬, lineHeight relaxed}
+                  {t('feedback.subtitle')}
+                </Subtitle>
+              </FeedbackHeader>
+              
+              <FeedbackForm onSubmit={handleSubmit}>
+                {피드백 폼: max-width 600px, 중앙 정렬}
+                
+                <FormGroup>
+                  {폼 그룹: spacing[8] margin-bottom}
+                  <Label htmlFor="feedback-name">
+                    {라벨: display block, fontWeight.semibold, spacing[2] margin-bottom, color text}
+                    {t('feedback.form.name')} *
+                  </Label>
+                  <Input
+                    type="text"
+                    id="feedback-name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    placeholder={t('feedback.form.placeholder.name')}
+                  />
+                  {입력 필드: width 100%, padding spacing[3] spacing[4], border 2px solid border, borderRadius md}
+                  {스타일: background surface, color text, fontSize base, focus 시 primary[500] border + box-shadow}
+                </FormGroup>
+                
+                <FormGroup>
+                  <Label htmlFor="feedback-email">
+                    {t('feedback.form.email')} *
+                  </Label>
+                  <Input
+                    type="email"
+                    id="feedback-email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    placeholder={t('feedback.form.placeholder.email')}
+                  />
+                </FormGroup>
+                
+                <FormGroup>
+                  <Label htmlFor="feedback-category">
+                    {t('feedback.form.category')}
+                  </Label>
+                  <Select
+                    id="feedback-category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                  >
+                    {선택 필드: width 100%, padding spacing[3] spacing[4], border 2px solid border, borderRadius md}
+                    {스타일: background surface, color text, fontSize base, focus 시 primary[500] border + box-shadow}
+                    <option value="">{t('feedback.form.placeholder.category')}</option>
+                    {categories.map(category => (
+                      <option key={category} value={category}>
+                        {t(`feedback.form.categories.${category}`)}
+                      </option>
+                    ))}
+                  </Select>
+                </FormGroup>
+                
+                <FormGroup>
+                  <Label htmlFor="feedback-subject">
+                    {t('feedback.form.subject')} *
+                  </Label>
+                  <Input
+                    type="text"
+                    id="feedback-subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                    placeholder={t('feedback.form.placeholder.subject')}
+                  />
+                </FormGroup>
+                
+                <FormGroup>
+                  <Label htmlFor="feedback-message">
+                    {t('feedback.form.message')} *
+                  </Label>
+                  <TextArea
+                    id="feedback-message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    placeholder={t('feedback.form.placeholder.message')}
+                    min-height={spacing[30]} /* 120px */
+                  />
+                  {텍스트 영역: width 100%, min-height spacing[30], padding spacing[3] spacing[4], resize vertical}
+                  {스타일: border 2px solid border, borderRadius md, background surface, color text, fontSize base}
+                  {focus 시 primary[500] border + box-shadow}
+                </FormGroup>
+                
+                <SubmitButton type="submit" disabled={isSubmitting}>
+                  {제출 버튼: width 100%, primary[500] 배경, hero.text 색상, padding spacing[4]}
+                  {스타일: fontSize base, fontWeight.semibold, 호버 시 translateY(-4px) + box-shadow.lg + primary[600]}
+                  {활성 상태: translateY(0), focus-visible: outline 2px solid primary[500]}
+                  {isSubmitting ? t('feedback.form.submitting') : t('feedback.form.submit')}
+                </SubmitButton>
+              </FeedbackForm>
+            </>
+          )}
+        </FeedbackModalContent>
+      </FeedbackModalOverlay>
+    ) : null}
+  </FeedbackOverlay>
+</FeedbackPage>
+
+<!-- State Management -->
+<StateManagement>
+  <LocalState>
+    <State name="formData" type="FeedbackData" />
+    {폼 데이터: name, email, category, subject, message}
+    <State name="isSubmitting" type="boolean" />
+    {제출 중 상태: 버튼 비활성화 및 로딩 표시용}
+    <State name="isSubmitted" type="boolean" />
+    {제출 완료 상태: 성공 카드 표시용}
+  </LocalState>
+  
+  <GlobalState>
+    <Store name="useFeedbackModalStore" source="stores/feedbackModalStore">
+      {피드백 모달 상태: 전역 상태 관리 (Zustand)}
+      <State name="isOpen" type="boolean" />
+      {모달 열림 상태: 모달 표시/숨김 제어}
+      <State name="triggerElementRef" type="HTMLElement | null" />
+      {트리거 요소 ref: 모달 닫힌 후 포커스 복귀용 (R2: A11y Focus Return)}
+      <State name="openModal" type="function" />
+      {모달 열기 함수: triggerElement를 받아서 모달 열기, 스크롤 위치 저장, body overflow hidden}
+      <State name="closeModal" type="function" />
+      {모달 닫기 함수: 스크롤 위치 복원, body overflow 복원, 포커스 복귀 (R2)}
+    </Store>
+  </GlobalState>
+  
+  <Refs>
+    <Ref name="modalContentRef" type="HTMLDivElement | null" />
+    {모달 콘텐츠 ref: 포커스 트랩용 (첫 번째 입력 필드에 자동 포커스)}
+  </Refs>
+</StateManagement>
+
+<!-- Data Flow -->
+<DataFlow>
+  <ModalOpen>
+    {모달 열기: 전역 상태를 통한 모달 트리거 (T2: Trigger From CTAs)}
+    <Step>1. CTA 버튼 클릭 (AboutPage, Footer 등)</Step>
+    <Step>2. useFeedbackModalStore.getState().openModal(triggerElement) 호출</Step>
+    <Step>3. sessionStorage에 현재 스크롤 위치 저장</Step>
+    <Step>4. document.body.style.overflow = 'hidden' (스크롤 잠금)</Step>
+    <Step>5. isOpen = true, triggerElementRef = triggerElement 설정</Step>
+    <Step>6. 모달 렌더링, 첫 번째 입력 필드에 자동 포커스</Step>
+  </ModalOpen>
+  
+  <ModalClose>
+    {모달 닫기: R1 (Esc 키), R2 (포커스 복귀)}
+    <Step>1. Esc 키 누름 또는 닫기 버튼 클릭 또는 오버레이 클릭 (R1)</Step>
+    <Step>2. useFeedbackModalStore.getState().closeModal() 호출</Step>
+    <Step>3. sessionStorage에서 스크롤 위치 복원</Step>
+    <Step>4. window.scrollTo(0, savedScrollPosition) (스크롤 위치 복원)</Step>
+    <Step>5. document.body.style.overflow = '' (스크롤 복원)</Step>
+    <Step>6. setTimeout으로 triggerElementRef.focus() (포커스 복귀, R2)</Step>
+    <Step>7. isOpen = false, triggerElementRef = null 설정</Step>
+  </ModalClose>
+  
+  <FormSubmission>
+    {폼 제출: 피드백 이메일 전송}
+    <Step>1. handleSubmit(e) 호출, e.preventDefault()</Step>
+    <Step>2. setIsSubmitting(true) (제출 중 상태 설정)</Step>
+    <Step>3. sendFeedbackEmail(formData) API 호출</Step>
+    <Step>4. response.success 확인</Step>
+    <Step>5. setIsSubmitted(true) (성공 상태 설정)</Step>
+    <Step>6. setFormData({ ...empty }) (폼 리셋)</Step>
+    <Step>7. setIsSubmitting(false) (제출 완료)</Step>
+    <Step>8. 에러 발생 시 alert 표시, analytics.error() 호출</Step>
+  </FormSubmission>
+  
+  <SuccessState>
+    {성공 상태: R3 (Modal Success State)}
+    <Step>1. "새 피드백" 버튼 클릭 → setIsSubmitted(false) (폼으로 돌아가기)</Step>
+    <Step>2. "닫기" 버튼 클릭 → handleClose() → closeModal() (모달 닫기)</Step>
+  </SuccessState>
+</DataFlow>
+
+<!-- Esc Key Handler (R1: A11y Dismissal) -->
+<EscKeyHandler>
+  {Esc 키 처리: R1 규칙}
+  <Step>1. useEffect로 키보드 이벤트 리스너 등록 (isOpen이 true일 때만)</Step>
+  <Step>2. e.key === 'Escape' 조건 확인</Step>
+  <Step>3. closeModal() 호출</Step>
+  <Step>4. cleanup에서 이벤트 리스너 제거</Step>
+</EscKeyHandler>
+
+<!-- Animation Strategy -->
+<Animations>
+  <Keyframes>
+    <Keyframe name="fadeIn">
+      {fadeIn: opacity 0→1}
+      {사용: FeedbackModalOverlay}
+    </Keyframe>
+    <Keyframe name="slideUp">
+      {slideUp: opacity 0→1, translateY(spacing[8])→0}
+      {사용: FeedbackModalContent}
+    </Keyframe>
+  </Keyframes>
+  
+  <ModalAnimations>
+    {모달 애니메이션: 300ms ease (Constraints 규칙)}
+    <Overlay animation="fadeIn 300ms ease" />
+    {오버레이: opacity 0→1, 300ms ease}
+    <Content animation="slideUp 300ms ease" />
+    {콘텐츠: opacity 0→1, translateY(spacing[8])→0, 300ms ease}
+  </ModalAnimations>
+  
+  <Accessibility>
+    {접근성: prefers-reduced-motion 지원, 애니메이션 비활성화 옵션}
+    <MediaQuery query="prefers-reduced-motion: reduce">
+      {애니메이션 비활성화: animation: none}
+    </MediaQuery>
+  </Accessibility>
+</Animations>
+
+<!-- Design Principles Applied -->
+<DesignPrinciples>
+  <KickoffLabs>
+    {KickoffLabs 원칙: Primary + Neutral 색상, Inter 폰트, 일관된 폼 스타일}
+    <ColorPalette>Primary + Neutral only</ColorPalette>
+    <FontFamily>Inter (typography.fontFamily.primary)</FontFamily>
+    <Consistency>일관된 spacing, border-radius, input styles</Consistency>
+  </KickoffLabs>
+  
+  <FourPointSpacing>
+    {4-point spacing 시스템: 모든 spacing 값이 4px의 배수}
+    <Spacing>
+      <Value token="spacing[0.5]" pixels="4px" usage="Outline offset, hover translateY" />
+      <Value token="spacing[0.75]" pixels="12px" usage="Focus box-shadow offset" />
+      <Value token="spacing[2]" pixels="8px" usage="Label margin-bottom, gap" />
+      <Value token="spacing[3]" pixels="12px" usage="Input padding vertical" />
+      <Value token="spacing[4]" pixels="16px" usage="Input padding horizontal, Button padding, margin-bottom, gap" />
+      <Value token="spacing[6]" pixels="24px" usage="Title margin-bottom, CloseButton position" />
+      <Value token="spacing[8]" pixels="32px" usage="FormGroup margin-bottom, SuccessIcon margin-bottom, Header margin-bottom, translateY" />
+      <Value token="spacing[12]" pixels="48px" usage="Card padding, ModalContent padding" />
+      <Value token="spacing[30]" pixels="120px" usage="TextArea min-height" />
+      <Value token="spacing[125]" pixels="500px" usage="SuccessCard max-width" />
+      <Value token="spacing[150]" pixels="600px" usage="Form max-width, Subtitle max-width" />
+    </Spacing>
+  </FourPointSpacing>
+  
+  <NielsenHeuristics>
+    <H1>Visibility of System Status</H1>
+    {H1: 제출 중 상태 표시 (버튼 disabled), 성공 메시지, 호버 효과, 포커스 상태, 모달 상태}
+    <H3>User Control & Freedom</H3>
+    {H3: Esc 키로 모달 닫기 (R1), 폼 리셋 가능, 명확한 필수 필드 표시 (*), 키보드 접근 가능, 포커스 복귀 (R2)}
+    <H4>Consistency & Standards</H4>
+    {H4: 일관된 모달 UI 패턴 (ProjectsPage, AboutPage와 동일), 통일된 입력 필드 스타일, 표준 HTML 폼 요소}
+    <H8>Aesthetic & Minimalist Design</H8>
+    {H8: 깔끔한 모달 레이아웃, 적절한 여백, 불필요한 요소 제거}
+  </NielsenHeuristics>
+  
+  <ImmersiveStrategy>
+    {몰입형 전략: 컨텍스트 손실 방지}
+    <ModalStrategy>
+      {모달 전략: 전체 화면 오버레이, 고대비 배경, 포커스 격리, 스크롤 위치 보존}
+      <Background>rgba(neutral[950/900], 0.9)</Background>
+      {고대비 배경: 테마 모드에 따라 neutral[950] (다크) 또는 neutral[900] (라이트)}
+      <FocusIsolation>100%</FocusIsolation>
+      {포커스 격리: 모달 외부 클릭 불가, Esc 키로 닫기, 포커스 트랩}
+      <ContextPreservation>100%</ContextPreservation>
+      {컨텍스트 보존: 스크롤 위치, 포커스 위치 모두 보존}
+    </ModalStrategy>
+  </ImmersiveStrategy>
+</DesignPrinciples>
+
+<!-- Accessibility Features -->
+<Accessibility>
+  <ARIA>
+    <Attribute element="FeedbackModalOverlay" role="dialog" aria-modal="true" aria-labelledby="feedback-modal-title" />
+    <Attribute element="FeedbackModalContent" role="document" />
+    <Attribute element="FeedbackModalCloseButton" aria-label="Close feedback modal" />
+    <Attribute element="FeedbackForm" role="form" />
+    <Attribute element="Label" htmlFor="input-id" />
+    <Attribute element="Input" id="input-id" aria-required="true" />
+    <Attribute element="TextArea" id="textarea-id" aria-required="true" />
+    <Attribute element="Select" id="select-id" />
+    <Attribute element="CheckMarkIcon" aria-hidden="true" />
+  </ARIA>
+  
+  <Keyboard>
+    <Navigation>
+      {키보드 네비게이션: Tab으로 필드 이동, Enter로 폼 제출, Esc로 모달 닫기 (R1)}
+      <Input native="true" />
+      <TextArea native="true" />
+      <Select native="true" />
+      <SubmitButton native="true" />
+      <ModalEscKey handler="closeModal" />
+    </Navigation>
+  </Keyboard>
+  
+  <FocusManagement>
+    {포커스 관리: 명확한 포커스 스타일, outline 표시, 모달 열릴 때 첫 번째 필드에 자동 포커스, 모달 닫힌 후 포커스 복귀 (R2)}
+    <Input focus="border-color primary[500] + box-shadow" />
+    <TextArea focus="border-color primary[500] + box-shadow" />
+    <Select focus="border-color primary[500] + box-shadow" />
+    <SubmitButton focus="outline 2px solid primary[500]" />
+    <ModalOpen focusReturn="firstInput.focus()" />
+    <ModalClose focusReturn="triggerElementRef.focus()" />
+    {모달 닫힌 후: 100ms 지연 후 원래 트리거 요소로 포커스 복귀}
+  </FocusManagement>
+  
+  <FormValidation>
+    {폼 검증: HTML5 required 속성, 이메일 형식 검증 (type="email")}
+    <RequiredField name="name" required="true" />
+    <RequiredField name="email" required="true" type="email" />
+    <RequiredField name="subject" required="true" />
+    <RequiredField name="message" required="true" />
+  </FormValidation>
+</Accessibility>
+
+<!-- Responsive Breakpoints -->
+<Responsive>
+  <Desktop minWidth="1024px">
+    {데스크톱: 전체 기능, 최적 레이아웃, max-width 600px, padding spacing[12]}
+  </Desktop>
+  <Tablet minWidth="768px" maxWidth="1023px">
+    {태블릿: 일부 간격 조정}
+  </Tablet>
+  <Mobile maxWidth="767px">
+    {모바일: Title fontSize['2xl'], ModalContent padding spacing[8], max-height 95vh, 터치 최적화}
+  </Mobile>
+</Responsive>
+
+<!-- Component Dependencies -->
+<Dependencies>
+  <Internal>
+    <Component name="Button" source="@components/common" />
+    <Component name="Card" source="@components/common" />
+    <Component name="CheckMarkIcon" source="@components/icons/CheckMarkIcon" />
+    {CheckMarkIcon: SVG 아이콘 컴포넌트 (T3: Force Align SVG Icons)}
+  </Internal>
+  
+  <External>
+    <Library name="react-i18next" usage="useTranslation for i18n" />
+    <Library name="styled-components" usage="Styled components, keyframes" />
+  </External>
+  
+  <Services>
+    <Service name="sendFeedbackEmail" source="services/email" />
+    {피드백 이메일 전송: EmailJS 서비스 사용}
+    <Service name="initEmailService" source="services/email" />
+    {EmailJS 초기화: 서비스 설정}
+    <Service name="analytics" source="services/analytics" />
+    {분석: 에러 추적용}
+  </Services>
+  
+  <Stores>
+    <Store name="useFeedbackModalStore" source="stores/feedbackModalStore" />
+    {피드백 모달 상태 관리: Zustand store}
+  </Stores>
+</Dependencies>
+
+<!-- Form Categories -->
+<Categories>
+  <Category value="general" label={t('feedback.form.categories.general')} />
+  <Category value="technical" label={t('feedback.form.categories.technical')} />
+  <Category value="design" label={t('feedback.form.categories.design')} />
+  <Category value="collaboration" label={t('feedback.form.categories.collaboration')} />
+  <Category value="bug" label={t('feedback.form.categories.bug')} />
+  <Category value="other" label={t('feedback.form.categories.other')} />
+</Categories>
+
+<!-- Modal Trigger Locations (T2: Trigger From CTAs) -->
+<ModalTriggers>
+  <Trigger location="AboutPage.AboutHeroSecondaryCTA" type="button" onClick="openModal(triggerElement)" />
+  {AboutPage Hero 섹션: "Contact Me" 버튼}
+  <Trigger location="MobileFooter.MobileNav" type="button" onClick="openModal(triggerElement)" />
+  {모바일 푸터 네비게이션: "Feedback" 링크}
+  <Trigger location="FooterContact.FeedbackButton" type="button" onClick="openModal(triggerElement)" />
+  {Footer Contact 섹션: "Send Feedback" 버튼}
+  <Trigger location="FooterCTA.StyledOutlineButton" type="button" onClick="openModal(triggerElement)" />
+  {Footer CTA 섹션: "Get in Touch" 버튼}
+</ModalTriggers>
+
+<!-- Recent Improvements -->
+<RecentImprovements>
+  <Improvement date="2024" type="Immersive Modal Strategy">
+    {몰입형 모달 전략 적용: 페이지 이동 없이 피드백 제출}
+    <Feature>T1: FeedbackPage를 FeedbackOverlay 모달 컴포넌트로 리팩토링</Feature>
+    <Feature>T2: 모든 /feedback 링크를 모달 트리거로 변경 (AboutPage, Footer 등)</Feature>
+    <Feature>T3: 텍스트 아이콘(✓) → CheckMarkIcon SVG 컴포넌트로 교체</Feature>
+    <Feature>R1: Esc 키로 모달 닫기 (A11y Dismissal)</Feature>
+    <Feature>R2: 모달 닫힌 후 트리거 요소로 포커스 복귀 (A11y Focus Return)</Feature>
+    <Feature>R3: 성공 상태에서 "새 피드백" 및 "닫기" 버튼 제공</Feature>
+    <Feature>Context Preservation: 스크롤 위치 보존, 포커스 위치 보존</Feature>
+    <Feature>Animation: 300ms ease fade-in/out 애니메이션 (Constraints 규칙)</Feature>
+  </Improvement>
+</RecentImprovements>

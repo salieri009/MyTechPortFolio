@@ -44,6 +44,7 @@
     }
   },
   "projects": {
+    "title": "내 프로젝트",
     "portfolioWebsite": {
       "title": "포트폴리오 웹사이트",
       "summary": "반응형 개인 포트폴리오 웹사이트 - HTML5, CSS3, JavaScript"
@@ -57,16 +58,34 @@
       "summary": "IoT 디바이스 전자상거래 플랫폼 - Java, JSP, Maven"
     },
     "loading": "프로젝트를 불러오는 중...",
+    "viewProject": "프로젝트 보기",
+    "list": "프로젝트 목록",
+    "filtering": "프로젝트 필터링 중...",
+    "results": "총 {{total}}개 중 {{count}}개 표시",
     "filters": {
-      "allYears": "모든 연도",
-      "sort": {
-        "newest": "최신순",
-        "oldest": "오래된순"
-      }
+      "title": "프로젝트 필터",
+      "techStack": "기술 스택:",
+      "year": "연도:",
+      "sort": "정렬:",
+      "sortLabel": "정렬 옵션",
+      "allYears": "모든 연도"
+    },
+    "sort": {
+      "newest": "최신순",
+      "oldest": "오래된순"
     },
     "empty": {
       "title": "프로젝트를 찾을 수 없습니다",
-      "description": "선택한 필터에 맞는 프로젝트가 없습니다."
+      "description": "필터를 조정하여 더 많은 프로젝트를 확인하세요.",
+      "initial": {
+        "title": "사용 가능한 프로젝트가 없습니다",
+        "description": "프로젝트가 추가되면 여기에 표시됩니다."
+      },
+      "filtered": {
+        "title": "필터와 일치하는 프로젝트가 없습니다",
+        "description": "프로젝트를 찾을 수 없습니다. 필터를 조정해보세요.",
+        "clearFilters": "모든 필터 지우기"
+      }
     }
   },
   "academics": {
@@ -396,6 +415,10 @@
     "english": "English",
     "japanese": "日本語"
   },
+  "journey": {
+    "title": "경력 타임라인",
+    "subtitle": "개발자로 성장해온 여정과 앞으로의 목표를 소개합니다"
+  },
   "storytelling": {
     "heroToJourney": "문제 해결을 즐기는 개발자로 성장해온 여정을 소개합니다",
     "journeyToProjects": "이러한 성장 과정에서 탄생한 프로젝트들을 만나보세요",
@@ -404,12 +427,13 @@
     "showcaseToTestimonials": "실제로 함께 일한 사람들의 평가를 들어보세요",
     "journeyPurpose": "개발자로서의 성장 과정과 각 단계에서의 학습과 성과를 타임라인으로 보여줍니다",
     "projectsPurpose": "가장 의미있고 다양한 기술을 활용한 프로젝트들을 선별하여 소개합니다",
+    "featuredPurpose": "다양한 분야에서의 역량을 보여주는 큐레이션된 프로젝트 컬렉션",
     "showcasePurpose": "Three.js, Software Development, Game Development 등 다양한 영역에서의 기술 스택을 탐색할 수 있습니다",
     "testimonialsPurpose": "실제 프로젝트에서 함께 일한 동료와 클라이언트들의 솔직한 피드백입니다"
   },
   "featured": {
     "title": "주요 프로젝트",
-    "subtitle": "다양한 분야에서의 역량을 보여주는 가장 의미있는 프로젝트들을 선별했습니다",
+    "purpose": "다양한 분야에서의 역량을 보여주는 큐레이션된 프로젝트 컬렉션",
     "viewAll": "모든 프로젝트 보기"
   },
   "testimonials": {

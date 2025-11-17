@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { Container } from '@components/common'
@@ -6,7 +6,10 @@ import { JourneyMilestoneSection } from '@components/sections/JourneyMilestoneSe
 import { SectionBridge } from '@components/sections/SectionBridge'
 import { SectionPurpose } from '@components/sections/SectionPurpose'
 import { TechStackModal } from '@components/modals/TechStackModal'
+import { InnovationIcon, CollaborationIcon, GrowthIcon } from '@components/icons/ValueIcons'
+import { GraduationCapIcon, BriefcaseIcon, SettingsIcon } from '@components/icons/BackgroundIcons'
 import { useThemeStore } from '../stores/themeStore'
+import { useFeedbackModalStore } from '../stores/feedbackModalStore'
 import { CONTACT_INFO } from '../constants/contact'
 import * as S from './AboutPage.styles'
 import * as HomePageStyles from './HomePage.styles'
@@ -47,6 +50,11 @@ export function AboutPage() {
   const [highlightedTech, setHighlightedTech] = useState<string | null>(null)
   const [highlightedValue, setHighlightedValue] = useState<string | null>(null)
   const [expandedValue, setExpandedValue] = useState<string | null>(null)
+  const [selectedValue, setSelectedValue] = useState<string | null>(null)
+  
+  // Scroll position preservation for modal
+  const scrollPositionRef = useRef<number>(0)
+  const valueCardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
   
   // Tech stacks for the Tech Stack card
   const techStacks = ['React', 'TypeScript', 'Spring Boot', 'Node.js', 'MongoDB', 'PostgreSQL', 'Docker', 'Azure']
@@ -56,6 +64,46 @@ export function AboutPage() {
     e.preventDefault()
     navigate(`/projects?techStacks=${encodeURIComponent(tech)}`)
   }
+  
+  // Handle value card click - open modal
+  const handleValueCardClick = (valueId: string, e: React.MouseEvent) => {
+    e.preventDefault()
+    scrollPositionRef.current = window.scrollY
+    setSelectedValue(valueId)
+    document.body.style.overflow = 'hidden'
+  }
+  
+  // Handle modal close
+  const handleModalClose = useCallback(() => {
+    const currentValue = selectedValue
+    setSelectedValue(null)
+    document.body.style.overflow = ''
+    // Restore scroll position
+    window.scrollTo(0, scrollPositionRef.current)
+    // Return focus to the card that triggered the modal
+    setTimeout(() => {
+      const cardElement = valueCardRefs.current[currentValue || '']
+      if (cardElement) {
+        cardElement.focus()
+      }
+    }, 100)
+  }, [selectedValue])
+  
+  // Handle Esc key to close modal
+  useEffect(() => {
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedValue) {
+        handleModalClose()
+      }
+    }
+    
+    if (selectedValue) {
+      document.addEventListener('keydown', handleEscKey)
+      return () => {
+        document.removeEventListener('keydown', handleEscKey)
+      }
+    }
+  }, [selectedValue, handleModalClose])
   
   // Refs for IntersectionObserver
   const heroRef = useRef<HTMLElement>(null)
@@ -127,7 +175,17 @@ export function AboutPage() {
               <S.AboutHeroSubtitle>{t('about.hero.subtitle', 'I enjoy solving problems and creating value through efficient and creative solutions. Specialized in web application development using React, TypeScript, and Spring Boot.')}</S.AboutHeroSubtitle>
               <S.AboutHeroCTAButtons>
                 <S.AboutHeroPrimaryCTA to="/projects">{t('about.hero.cta.primary', 'View Projects')}</S.AboutHeroPrimaryCTA>
-                <S.AboutHeroSecondaryCTA to="/feedback">{t('about.hero.cta.secondary', 'Contact Me')}</S.AboutHeroSecondaryCTA>
+                <S.AboutHeroSecondaryCTA 
+                  as="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    const triggerElement = e.currentTarget
+                    useFeedbackModalStore.getState().openModal(triggerElement)
+                  }}
+                  aria-label={t('about.hero.cta.secondary', 'Contact Me')}
+                >
+                  {t('about.hero.cta.secondary', 'Contact Me')}
+                </S.AboutHeroSecondaryCTA>
               </S.AboutHeroCTAButtons>
               <S.AboutHeroSocialLinks>
                 <S.AboutHeroSocialLink 
@@ -213,7 +271,9 @@ export function AboutPage() {
           </S.SectionSubtitle>
           <S.BackgroundGrid>
             <S.BackgroundCard tabIndex={0} role="article" aria-labelledby="education-title">
-              <S.CardIcon aria-hidden="true">🎓</S.CardIcon>
+              <S.CardIcon aria-hidden="true">
+                <GraduationCapIcon />
+              </S.CardIcon>
               <S.CardTitle id="education-title">{t('about.background.education.title', 'Education')}</S.CardTitle>
               <S.CardContent>{t('about.background.education.content', 'Computer Engineering at Jeonbuk National University, currently studying in Australia at UTS.')}</S.CardContent>
               <S.DetailLabel>{t('about.background.education.period', 'Period')}</S.DetailLabel>
@@ -222,7 +282,9 @@ export function AboutPage() {
               <S.DetailValue>{t('about.background.education.locationValue', 'Jeonbuk National University, UTS (Australia)')}</S.DetailValue>
             </S.BackgroundCard>
             <S.BackgroundCard tabIndex={0} role="article" aria-labelledby="experience-title">
-              <S.CardIcon aria-hidden="true">💼</S.CardIcon>
+              <S.CardIcon aria-hidden="true">
+                <BriefcaseIcon />
+              </S.CardIcon>
               <S.CardTitle id="experience-title">{t('about.background.experience.title', 'Experience')}</S.CardTitle>
               <S.CardContent>{t('about.background.experience.content', 'Served as an interpreter in the military, worked on various projects using React, TypeScript, and Spring Boot.')}</S.CardContent>
               <S.DetailLabel>{t('about.background.experience.period', 'Period')}</S.DetailLabel>
@@ -236,7 +298,9 @@ export function AboutPage() {
               aria-labelledby="techStack-title"
               $isHighlighted={highlightedTech !== null}
             >
-              <S.CardIcon aria-hidden="true">⚙️</S.CardIcon>
+              <S.CardIcon aria-hidden="true">
+                <SettingsIcon />
+              </S.CardIcon>
               <S.CardTitle id="techStack-title">{t('about.background.techStack.title', 'Tech Stack')}</S.CardTitle>
               <S.CardContent>{t('about.background.techStack.content', 'Core technologies and frameworks I use in my projects.')}</S.CardContent>
               <S.TechStackTags>
@@ -275,8 +339,8 @@ export function AboutPage() {
         diagonal={true}
       />
 
-      {/* JourneyMilestoneSection (100% reuse) */}
-      <div id="journey" role="region" aria-label={t('journey.title', 'My Journey')}>
+      {/* JourneyMilestoneSection (100% reuse) - Career Timeline */}
+      <div id="journey" role="region" aria-label={t('journey.title', 'Career Timeline')}>
         <JourneyMilestoneSection />
       </div>
 
@@ -299,81 +363,132 @@ export function AboutPage() {
           </S.SectionSubtitle>
           <S.ValuesGrid>
             <S.ValueCard 
+              ref={(el) => { valueCardRefs.current['innovation'] = el }}
               tabIndex={0} 
-              role="article" 
+              role="button"
               aria-labelledby="innovation-title"
-              aria-expanded={expandedValue === 'innovation'}
+              aria-describedby="innovation-description"
               $isHighlighted={highlightedValue === 'innovation'}
-              $isExpanded={expandedValue === 'innovation'}
-              onClick={() => setExpandedValue(expandedValue === 'innovation' ? null : 'innovation')}
+              onClick={(e) => handleValueCardClick('innovation', e)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault()
-                  setExpandedValue(expandedValue === 'innovation' ? null : 'innovation')
+                  handleValueCardClick('innovation', e)
                 }
               }}
-              style={{ cursor: 'pointer' }}
             >
-              <S.ValueIcon aria-hidden="true">I</S.ValueIcon>
+              <S.ValueIconContainer>
+                <InnovationIcon size={48} />
+              </S.ValueIconContainer>
               <S.CardTitle id="innovation-title">{t('about.mission.values.innovation.title', 'Innovation')}</S.CardTitle>
-              <S.CardContent>{t('about.mission.values.innovation.description', 'Creating innovative solutions using the latest technologies.')}</S.CardContent>
-              {expandedValue === 'innovation' && (
-                <S.ValueExpandedContent>
-                  {t('about.mission.values.innovation.detail', 'I actively explore cutting-edge technologies and frameworks to solve complex problems. This includes experimenting with new patterns, optimizing performance, and building scalable architectures that stand the test of time.')}
-                </S.ValueExpandedContent>
-              )}
+              <S.CardContent id="innovation-description">{t('about.mission.values.innovation.description', 'Creating innovative solutions using the latest technologies.')}</S.CardContent>
+              <S.ValueCardHoverIndicator aria-hidden="true">
+                <S.HoverIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                </S.HoverIcon>
+              </S.ValueCardHoverIndicator>
             </S.ValueCard>
             <S.ValueCard 
+              ref={(el) => { valueCardRefs.current['collaboration'] = el }}
               tabIndex={0} 
-              role="article" 
+              role="button"
               aria-labelledby="collaboration-title"
-              aria-expanded={expandedValue === 'collaboration'}
+              aria-describedby="collaboration-description"
               $isHighlighted={highlightedValue === 'collaboration'}
-              $isExpanded={expandedValue === 'collaboration'}
-              onClick={() => setExpandedValue(expandedValue === 'collaboration' ? null : 'collaboration')}
+              onClick={(e) => handleValueCardClick('collaboration', e)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault()
-                  setExpandedValue(expandedValue === 'collaboration' ? null : 'collaboration')
+                  handleValueCardClick('collaboration', e)
                 }
               }}
-              style={{ cursor: 'pointer' }}
             >
-              <S.ValueIcon aria-hidden="true">C</S.ValueIcon>
+              <S.ValueIconContainer>
+                <CollaborationIcon size={48} />
+              </S.ValueIconContainer>
               <S.CardTitle id="collaboration-title">{t('about.mission.values.collaboration.title', 'Collaboration')}</S.CardTitle>
-              <S.CardContent>{t('about.mission.values.collaboration.description', 'Working with teams to create better results.')}</S.CardContent>
-              {expandedValue === 'collaboration' && (
-                <S.ValueExpandedContent>
-                  {t('about.mission.values.collaboration.detail', 'I believe that the best solutions emerge from diverse perspectives. Through effective communication, code reviews, pair programming, and knowledge sharing, I contribute to building stronger teams and better products.')}
-                </S.ValueExpandedContent>
-              )}
+              <S.CardContent id="collaboration-description">{t('about.mission.values.collaboration.description', 'Working with teams to create better results.')}</S.CardContent>
+              <S.ValueCardHoverIndicator aria-hidden="true">
+                <S.HoverIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                </S.HoverIcon>
+              </S.ValueCardHoverIndicator>
             </S.ValueCard>
             <S.ValueCard 
+              ref={(el) => { valueCardRefs.current['growth'] = el }}
               tabIndex={0} 
-              role="article" 
+              role="button"
               aria-labelledby="growth-title"
-              aria-expanded={expandedValue === 'growth'}
+              aria-describedby="growth-description"
               $isHighlighted={highlightedValue === 'growth'}
-              $isExpanded={expandedValue === 'growth'}
-              onClick={() => setExpandedValue(expandedValue === 'growth' ? null : 'growth')}
+              onClick={(e) => handleValueCardClick('growth', e)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault()
-                  setExpandedValue(expandedValue === 'growth' ? null : 'growth')
+                  handleValueCardClick('growth', e)
                 }
               }}
-              style={{ cursor: 'pointer' }}
             >
-              <S.ValueIcon aria-hidden="true">G</S.ValueIcon>
+              <S.ValueIconContainer>
+                <GrowthIcon size={48} />
+              </S.ValueIconContainer>
               <S.CardTitle id="growth-title">{t('about.mission.values.growth.title', 'Continuous Growth')}</S.CardTitle>
-              <S.CardContent>{t('about.mission.values.growth.description', 'Continuously learning and growing to improve expertise.')}</S.CardContent>
-              {expandedValue === 'growth' && (
-                <S.ValueExpandedContent>
-                  {t('about.mission.values.growth.detail', 'Learning is a lifelong journey. I regularly engage with technical communities, contribute to open-source projects, attend conferences, and take on challenging projects that push me beyond my comfort zone.')}
-                </S.ValueExpandedContent>
-              )}
+              <S.CardContent id="growth-description">{t('about.mission.values.growth.description', 'Continuously learning and growing to improve expertise.')}</S.CardContent>
+              <S.ValueCardHoverIndicator aria-hidden="true">
+                <S.HoverIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                </S.HoverIcon>
+              </S.ValueCardHoverIndicator>
             </S.ValueCard>
           </S.ValuesGrid>
+          
+          {/* Value Modal Overlay */}
+          {selectedValue && (
+            <S.ValueModalOverlay
+              onClick={handleModalClose}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={`${selectedValue}-modal-title`}
+            >
+              <S.ValueModalContent
+                onClick={(e) => e.stopPropagation()}
+                role="document"
+              >
+                <S.ValueModalCloseButton
+                  onClick={handleModalClose}
+                  aria-label={t('about.mission.modal.close', 'Close modal')}
+                >
+                  <S.CloseIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </S.CloseIcon>
+                </S.ValueModalCloseButton>
+                <S.ValueModalIconContainer>
+                  {selectedValue === 'innovation' && <InnovationIcon size={80} highlighted />}
+                  {selectedValue === 'collaboration' && <CollaborationIcon size={80} highlighted />}
+                  {selectedValue === 'growth' && <GrowthIcon size={80} highlighted />}
+                </S.ValueModalIconContainer>
+                <S.ValueModalTitle id={`${selectedValue}-modal-title`}>
+                  {selectedValue === 'innovation' && t('about.mission.values.innovation.title', 'Innovation')}
+                  {selectedValue === 'collaboration' && t('about.mission.values.collaboration.title', 'Collaboration')}
+                  {selectedValue === 'growth' && t('about.mission.values.growth.title', 'Continuous Growth')}
+                </S.ValueModalTitle>
+                <S.ValueModalDescription>
+                  {selectedValue === 'innovation' && t('about.mission.values.innovation.description', 'Creating innovative solutions using the latest technologies.')}
+                  {selectedValue === 'collaboration' && t('about.mission.values.collaboration.description', 'Working with teams to create better results.')}
+                  {selectedValue === 'growth' && t('about.mission.values.growth.description', 'Continuously learning and growing to improve expertise.')}
+                </S.ValueModalDescription>
+                <S.ValueModalDetail>
+                  {selectedValue === 'innovation' && t('about.mission.values.innovation.detail', 'I actively explore cutting-edge technologies and frameworks to solve complex problems. This includes experimenting with new patterns, optimizing performance, and building scalable architectures that stand the test of time.')}
+                  {selectedValue === 'collaboration' && t('about.mission.values.collaboration.detail', 'I believe that the best solutions emerge from diverse perspectives. Through effective communication, code reviews, pair programming, and knowledge sharing, I contribute to building stronger teams and better products.')}
+                  {selectedValue === 'growth' && t('about.mission.values.growth.detail', 'Learning is a lifelong journey. I regularly engage with technical communities, contribute to open-source projects, attend conferences, and take on challenging projects that push me beyond my comfort zone.')}
+                </S.ValueModalDetail>
+              </S.ValueModalContent>
+            </S.ValueModalOverlay>
+          )}
           <S.MissionVisionTextContainer $isVisible={isMissionVisible}>
             <S.MissionText $isVisible={isMissionVisible}>
               <S.MissionLabel>{t('about.mission.missionLabel', 'Mission')}</S.MissionLabel>

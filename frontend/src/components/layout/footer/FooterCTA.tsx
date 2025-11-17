@@ -7,6 +7,7 @@ import {
   FooterSection,
   FooterSectionTitle
 } from '@components/common/FooterComponents'
+import { useFeedbackModalStore } from '../../../stores/feedbackModalStore'
 
 /**
  * Footer CTA Component (Molecule)
@@ -129,11 +130,19 @@ export function FooterCTA() {
             {t('footer.cta.downloadResume', 'Download Resume')}
           </DownloadButton>
         </Link>
-        <Link to="/feedback" aria-label="Get in touch via contact form">
-          <StyledOutlineButton variant="outline" size="md">
-            {t('footer.cta.contact', 'Get in Touch')}
-          </StyledOutlineButton>
-        </Link>
+        <StyledOutlineButton 
+          variant="outline" 
+          size="md"
+          as="button"
+          onClick={(e) => {
+            e.preventDefault()
+            const triggerElement = e.currentTarget
+            useFeedbackModalStore.getState().openModal(triggerElement)
+          }}
+          aria-label="Get in touch via contact form"
+        >
+          {t('footer.cta.contact', 'Get in Touch')}
+        </StyledOutlineButton>
       </CTAButtons>
     </CTAContainer>
   )

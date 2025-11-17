@@ -5,6 +5,7 @@ import { PERSONAL_INFO, CAREER_SUMMARY } from '../../constants/contact'
 import { useThemeStore } from '../../stores/themeStore'
 import { StatCard } from '@components/molecules/StatCard'
 import { ContactButton } from '@components/molecules/ContactButton'
+import { EmailIcon, LinkedInIcon, GithubIcon } from '@components/icons/SocialIcons'
 
 /**
  * PersonalInfoHeader Component (Organism)
@@ -249,7 +250,7 @@ export const PersonalInfoHeader: React.FC = () => {
         <ContactSection role="region" aria-label="Contact information">
           <ContactButton
             href={`mailto:${PERSONAL_INFO.email}`}
-            icon={<span>📧</span>}
+            icon={<EmailIcon size={20} />}
             label={t('recruiter.personalInfo.contact.email', 'Email')}
             variant={isDark ? 'glass' : 'outline'}
             size="sm"
@@ -257,7 +258,7 @@ export const PersonalInfoHeader: React.FC = () => {
           />
           <ContactButton
             href={PERSONAL_INFO.linkedin}
-            icon={<span>💼</span>}
+            icon={<LinkedInIcon size={20} />}
             label={t('recruiter.personalInfo.contact.linkedin', 'LinkedIn')}
             variant={isDark ? 'glass' : 'outline'}
             size="sm"
@@ -266,7 +267,7 @@ export const PersonalInfoHeader: React.FC = () => {
           />
           <ContactButton
             href={PERSONAL_INFO.github}
-            icon={<span>💻</span>}
+            icon={<GithubIcon size={20} />}
             label={t('recruiter.personalInfo.contact.github', 'GitHub')}
             variant={isDark ? 'glass' : 'outline'}
             size="sm"

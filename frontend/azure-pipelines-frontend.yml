@@ -1,0 +1,135 @@
+# Frontend-Specific Pipeline
+# Can be used as standalone pipeline or referenced from main pipeline
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    include:
+      - frontend/**
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    include:
+      - frontend/**
+
+variables:
+  - group: 'Portfolio-Pipeline-Variables'
+  - name: buildConfiguration
+    value: 'Release'
+  - name: vmImage
+    value: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    displayName: 'Build Frontend'
+    jobs:
+      - job: Build
+        displayName: 'Build and Package'
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - task: NodeTool@0
+            displayName: 'Install Node.js 18'
+            inputs:
+              versionSpec: '18.x'
+
+          - task: Cache@2
+            displayName: 'Cache npm Dependencies'
+            inputs:
+              key: 'npm | "$(Agent.OS)" | frontend/package-lock.json'
+              restoreKeys: |
+                npm | "$(Agent.OS)"
+              path: 'frontend/node_modules'
+
+          - script: |
+              cd frontend
+              npm ci
+            displayName: 'Install Dependencies'
+
+          - script: |
+              cd frontend
+              npm run lint
+            displayName: 'Run ESLint'
+            continueOnError: false
+
+          - script: |
+              cd frontend
+              npm run build
+            displayName: 'Build Frontend'
+            env:
+              VITE_API_BASE_URL: $(VITE_API_BASE_URL)
+              VITE_GOOGLE_CLIENT_ID: $(VITE_GOOGLE_CLIENT_ID)
+              VITE_GA_MEASUREMENT_ID: $(VITE_GA_MEASUREMENT_ID)
+              VITE_USE_BACKEND_API: 'true'
+
+          - task: Docker@2
+            displayName: 'Build Docker Image'
+            inputs:
+              containerRegistry: 'ACR_Connection'
+              repository: 'portfolio-frontend'
+              command: 'buildAndPush'
+              Dockerfile: 'frontend/Dockerfile'
+              buildContext: 'frontend'
+              tags: |
+                $(Build.BuildId)
+                $(Build.SourceBranchName)
+                latest
+              arguments: |
+                --build-arg VITE_API_BASE_URL=$(VITE_API_BASE_URL)
+                --build-arg VITE_GOOGLE_CLIENT_ID=$(VITE_GOOGLE_CLIENT_ID)
+                --build-arg VITE_GA_MEASUREMENT_ID=$(VITE_GA_MEASUREMENT_ID)
+                --build-arg VITE_USE_BACKEND_API=true
+
+          - script: |
+              cd frontend
+              du -sh dist/ || echo "Bundle size analysis not available"
+            displayName: 'Bundle Size Analysis'
+            continueOnError: true
+
+  - stage: Test
+    displayName: 'Test Frontend'
+    dependsOn: Build
+    jobs:
+      - job: UnitTests
+        displayName: 'Unit Tests'
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - template: ../.azure/pipelines/test-cases/frontend-unit-tests.yml
+            parameters:
+              workingDirectory: 'frontend'
+
+      - job: IntegrationTests
+        displayName: 'Integration Tests'
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - template: ../.azure/pipelines/test-cases/frontend-integration-tests.yml
+            parameters:
+              workingDirectory: 'frontend'
+
+  - stage: Security
+    displayName: 'Security Scanning'
+    dependsOn: Build
+    jobs:
+      - job: SecurityScan
+        displayName: 'Security Scan'
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - template: ../.azure/pipelines/templates/security-scan.yml
+            parameters:
+              backendImage: 'dummy'  # Not used for frontend-only pipeline
+              frontendImage: '$(ACR_NAME).azurecr.io/portfolio-frontend:$(Build.BuildId)'
+              containerRegistry: 'ACR_Connection'
+

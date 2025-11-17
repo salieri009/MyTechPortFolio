@@ -146,7 +146,7 @@ export const StorySection = styled.section`
     top: 0;
     left: 0;
     right: 0;
-    height: 1px;
+    height: ${props => props.theme.spacing[0.5]}; /* 4px (1px → 4px 배수로 조정) */
     background: linear-gradient(
       90deg,
       transparent,
@@ -188,7 +188,7 @@ export const SectionSubtitle = styled.p<{ $isVisible?: boolean }>`
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
-  max-width: 704px; /* 4-point system */
+  max-width: ${props => props.theme.spacing[176] || '44rem'}; /* 704px (4-point system: 176 * 4px) */
   opacity: ${props => props.$isVisible ? 1 : 0};
   transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s,
@@ -245,7 +245,7 @@ export const BackgroundSection = styled.section`
     top: 0;
     left: 0;
     right: 0;
-    height: 1px;
+    height: ${props => props.theme.spacing[0.5]}; /* 4px (1px → 4px 배수로 조정) */
     background: linear-gradient(
       90deg,
       transparent,
@@ -317,10 +317,17 @@ export const BackgroundCard = styled(Card).withConfig({
 `
 
 export const CardIcon = styled.div`
-  font-size: ${props => props.theme.spacing[8]}; /* 32px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: ${props => props.theme.spacing[2]}; /* 8px */
   text-align: center;
   line-height: 1;
+  
+  svg {
+    width: ${props => props.theme.spacing[8]}; /* 32px */
+    height: ${props => props.theme.spacing[8]}; /* 32px */
+  }
 `
 
 export const CardTitle = styled.h3`
@@ -437,7 +444,7 @@ export const MissionVisionSection = styled.section`
     top: 0;
     left: 0;
     right: 0;
-    height: 1px;
+    height: ${props => props.theme.spacing[0.5]}; /* 4px (1px → 4px 배수로 조정) */
     background: linear-gradient(
       90deg,
       transparent,
@@ -466,14 +473,15 @@ export const ValuesGrid = styled.div`
 
 // ValueCard - BackgroundCard와 동일한 패턴
 export const ValueCard = styled(Card).withConfig({
-  shouldForwardProp: (prop) => !['$isHighlighted', '$isExpanded'].includes(prop)
-})<{ $isHighlighted?: boolean; $isExpanded?: boolean }>`
+  shouldForwardProp: (prop) => prop !== '$isHighlighted'
+})<{ $isHighlighted?: boolean }>`
   grid-column: span 4;
   padding: ${props => props.theme.spacing[8]};
   text-align: center;
   transition: all 0.2s ease;
   font-family: ${props => props.theme.typography.fontFamily.primary};
   position: relative;
+  cursor: pointer;
   
   /* Highlighted state */
   ${props => props.$isHighlighted && `
@@ -482,20 +490,21 @@ export const ValueCard = styled(Card).withConfig({
     box-shadow: 0 0 0 ${props.theme.spacing[0.5]} ${props.theme.colors.primary[200]};
   `}
   
-  /* Expanded state */
-  ${props => props.$isExpanded && `
-    background: ${props.theme.colors.primary[50]};
-    border-color: ${props.theme.colors.primary[500]};
-    box-shadow: ${props.theme.shadows.lg};
-  `}
-  
   &:hover {
+    background: ${props => props.theme.colors.primary[100]};
     border-color: ${props => props.theme.colors.primary[500]};
     box-shadow: ${props => props.theme.shadows.md};
     transform: translateY(-${props => props.theme.spacing[0.5]});
+    
+    ${props => `
+      ${ValueCardHoverIndicator} {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    `}
   }
   
-  &:focus-within {
+  &:focus-visible {
     outline: 2px solid ${props => props.theme.colors.primary[500]};
     outline-offset: ${props => props.theme.spacing[1]};
   }
@@ -516,73 +525,91 @@ export const ValueCard = styled(Card).withConfig({
   }
 `
 
-export const ValueIcon = styled.div`
-  font-size: ${props => props.theme.spacing[12]}; /* 48px */
-  margin-bottom: ${props => props.theme.spacing[4]};
-  color: ${props => props.theme.colors.primary[500]};
-  line-height: 1;
-  font-weight: ${props => props.theme.typography.fontWeight.bold};
-  width: ${props => props.theme.spacing[16]}; /* 64px */
-  height: ${props => props.theme.spacing[16]}; /* 64px */
+export const ValueIconContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: ${props => props.theme.radius.full};
-  background: ${props => props.theme.colors.primary[50]};
   margin: 0 auto ${props => props.theme.spacing[4]};
-  position: relative;
-  
-  /* Pulse animation ring on hover */
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: ${props => props.theme.spacing[16]}; /* 64px */
-    height: ${props => props.theme.spacing[16]}; /* 64px */
-    border-radius: ${props => props.theme.radius.full};
-    border: 1px solid ${props => props.theme.colors.primary[300]};
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  ${ValueCard}:hover &::after {
-    animation: pulse 500ms ease-out;
-  }
-  
-  @keyframes pulse {
-    0% {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-    100% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(1.5);
-    }
-  }
+  width: ${props => props.theme.spacing[16]}; /* 64px */
+  height: ${props => props.theme.spacing[16]}; /* 64px */
+`
+
+export const ValueCardHoverIndicator = styled.div`
+  position: absolute;
+  bottom: ${props => props.theme.spacing[4]};
+  right: ${props => props.theme.spacing[4]};
+  opacity: 0;
+  transform: translateY(${props => props.theme.spacing[2]});
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
   
   @media (prefers-reduced-motion: reduce) {
-    &::after {
-      display: none;
-    }
+    transition: opacity 0.2s ease;
+    transform: none;
   }
 `
 
-export const ValueExpandedContent = styled.div`
-  margin-top: ${props => props.theme.spacing[4]};
-  padding-top: ${props => props.theme.spacing[4]};
-  border-top: 1px solid ${props => props.theme.colors.border};
-  font-size: ${props => props.theme.typography.fontSize.base};
-  line-height: ${props => props.theme.typography.lineHeight.relaxed};
-  color: ${props => props.theme.colors.textSecondary};
-  text-align: left;
-  animation: fadeIn 0.3s ease;
+export const HoverIcon = styled.svg`
+  width: ${props => props.theme.spacing[5]}; /* 20px */
+  height: ${props => props.theme.spacing[5]}; /* 20px */
+  color: ${props => props.theme.colors.primary[500]};
+  stroke: currentColor;
+`
+
+// Value Modal Overlay - Full screen immersive experience
+export const ValueModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: ${props => {
+    // Use theme-aware background color with 0.9 opacity
+    const overlayColor = props.theme.mode === 'dark' 
+      ? props.theme.colors.neutral[950] 
+      : props.theme.colors.neutral[900]
+    const hex = overlayColor.replace('#', '')
+    const r = parseInt(hex.substring(0, 2), 16)
+    const g = parseInt(hex.substring(2, 4), 16)
+    const b = parseInt(hex.substring(4, 6), 16)
+    return `rgba(${r}, ${g}, ${b}, 0.9)`
+  }};
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${props => props.theme.spacing[6]};
+  animation: fadeIn 300ms ease;
   
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(-${props => props.theme.spacing[2]});
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+`
+
+export const ValueModalContent = styled.div`
+  background: ${props => props.theme.colors.surface || props.theme.colors.background};
+  border-radius: ${props => props.theme.radius['2xl']};
+  padding: ${props => props.theme.spacing[12]};
+  max-width: ${props => props.theme.spacing[150] || '37.5rem'}; /* 600px */
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 300ms ease;
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(${props => props.theme.spacing[8]});
     }
     to {
       opacity: 1;
@@ -593,6 +620,102 @@ export const ValueExpandedContent = styled.div`
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
+  
+  @media (max-width: 768px) {
+    padding: ${props => props.theme.spacing[8]};
+    max-height: 95vh;
+  }
+`
+
+export const ValueModalCloseButton = styled.button`
+  position: absolute;
+  top: ${props => props.theme.spacing[6]};
+  right: ${props => props.theme.spacing[6]};
+  width: ${props => props.theme.spacing[10]}; /* 40px */
+  height: ${props => props.theme.spacing[10]}; /* 40px */
+  border-radius: ${props => props.theme.radius.full};
+  border: none;
+  background: ${props => props.theme.mode === 'dark' 
+    ? props.theme.colors.neutral[800] 
+    : props.theme.colors.neutral[100]};
+  color: ${props => props.theme.colors.text};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: ${props => props.theme.mode === 'dark' 
+      ? props.theme.colors.neutral[700] 
+      : props.theme.colors.neutral[200]};
+    transform: scale(1.1);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[0.5]};
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.2s ease;
+    &:hover {
+      transform: none;
+    }
+  }
+`
+
+export const CloseIcon = styled.svg`
+  width: ${props => props.theme.spacing[5]}; /* 20px */
+  height: ${props => props.theme.spacing[5]}; /* 20px */
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+`
+
+export const ValueModalIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto ${props => props.theme.spacing[8]};
+  width: ${props => props.theme.spacing[20]}; /* 80px (30% larger than 48px) */
+  height: ${props => props.theme.spacing[20]}; /* 80px */
+  padding: ${props => props.theme.spacing[4]};
+  border-radius: ${props => props.theme.radius.full};
+  background: ${props => props.theme.colors.primary[50]};
+  border: ${props => props.theme.spacing[1]} solid ${props => props.theme.colors.primary[500]};
+  box-shadow: 0 0 0 ${props => props.theme.spacing[0.5]} ${props => props.theme.colors.primary[200]};
+`
+
+export const ValueModalTitle = styled.h2`
+  font-size: ${props => props.theme.typography.fontSize['3xl']};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.text};
+  text-align: center;
+  margin-bottom: ${props => props.theme.spacing[4]};
+`
+
+export const ValueModalDescription = styled.p`
+  font-size: ${props => props.theme.typography.fontSize.lg};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.textSecondary};
+  text-align: center;
+  margin-bottom: ${props => props.theme.spacing[8]};
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+`
+
+export const ValueModalDetail = styled.div`
+  font-size: ${props => `calc(${props.theme.typography.fontSize.base} * 1.2)`}; /* 20% larger */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.text};
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  text-align: left;
+  padding: ${props => props.theme.spacing[6]};
+  background: ${props => props.theme.colors.surface};
+  border-radius: ${props => props.theme.radius.lg};
+  border: 1px solid ${props => props.theme.colors.border};
 `
 
 export const MissionVisionTextContainer = styled.div<{ $isVisible: boolean }>`
@@ -677,7 +800,7 @@ export const ContactSection = styled(Card)`
   text-align: center;
   background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.primary[800]} 100%);
   border: none;
-  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  color: ${props => props.theme.colors.hero?.text || props.theme.colors.neutral[0]};
   padding: ${props => props.theme.spacing[12]} ${props => props.theme.spacing[6]};
   border-radius: ${props => props.theme.radius.xl};
   box-shadow: ${props => props.theme.shadows.lg};
@@ -688,12 +811,12 @@ export const ContactTitle = styled.h2`
   font-weight: ${props => props.theme.typography.fontWeight.bold};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   margin-bottom: ${props => props.theme.spacing[2]};
-  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  color: ${props => props.theme.colors.hero?.text || props.theme.colors.neutral[0]};
 `
 
 export const ContactClosingMessage = styled.p`
   font-size: ${props => props.theme.typography.fontSize.lg};
-  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  color: ${props => props.theme.colors.hero?.text || props.theme.colors.neutral[0]};
   margin-bottom: ${props => props.theme.spacing[8]};
   font-family: ${props => props.theme.typography.fontFamily.primary};
 `
@@ -719,7 +842,7 @@ export const ContactItem = styled.div`
   box-shadow: ${props => props.theme.shadows.sm};
   transition: all 0.2s ease;
   font-family: ${props => props.theme.typography.fontFamily.primary};
-  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  color: ${props => props.theme.colors.hero?.text || props.theme.colors.neutral[0]};
 
   /* H1: Visibility of System Status - Hover feedback with Primary[50] overlay */
   &:hover {
@@ -745,12 +868,12 @@ export const ContactItem = styled.div`
 export const ContactLabel = styled.span`
   font-weight: ${props => props.theme.typography.fontWeight.semibold};
   font-size: ${props => props.theme.typography.fontSize.base};
-  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  color: ${props => props.theme.colors.hero?.text || props.theme.colors.neutral[0]};
   font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 export const ContactValue = styled.a`
-  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  color: ${props => props.theme.colors.hero?.text || props.theme.colors.neutral[0]};
   text-decoration: none;
   font-size: ${props => props.theme.typography.fontSize.base};
   display: flex;
@@ -886,7 +1009,7 @@ export const AboutHeroSubtitle = styled.p`
   margin-bottom: ${props => props.theme.spacing[8]};
   color: ${props => props.theme.colors.textSecondary};
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
-  max-width: 600px;
+  max-width: ${props => props.theme.spacing[150] || '37.5rem'}; /* 600px (4-point system: 150 * 4px) */
   font-weight: ${props => props.theme.typography.fontWeight.normal};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
@@ -928,7 +1051,7 @@ export const AboutHeroPrimaryCTA = styled(Link)`
   
   &:hover {
     background: ${props => props.theme.colors.primary[500]};
-    color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+    color: ${props => props.theme.colors.hero?.text || props.theme.colors.neutral[0]};
     transform: translateY(-${props => props.theme.spacing[0.5]});
     box-shadow: ${props => props.theme.shadows.md};
   }

@@ -3,53 +3,85 @@
   {AcademicsPage는 학업 기록 및 성적을 표시하는 페이지입니다. 통계 대시보드와 학기별 타임라인으로 구성됩니다.}
   
   <PageWrapper role="main" aria-label="Academic Record">
-    {페이지 래퍼: 전체 페이지 컨테이너, 패딩 및 반응형 스타일 적용}
+    {페이지 래퍼: 전체 페이지 컨테이너, 패딩 spacing[20] (80px), 반응형 스타일 적용}
     
     <Container>
       {Container: 중앙 정렬된 최대 너비 컨테이너}
       
       <PageTitle>
-        {페이지 제목: "Academic Record", 중앙 정렬, 큰 폰트 크기 (3xl)}
+        {페이지 제목: "Academics", 중앙 정렬, 큰 폰트 크기 (3xl), spacing[8] margin-bottom}
       </PageTitle>
       
-      <SummaryStats ref="statsRef" role="region" aria-label="Academic Statistics">
+      <QuickNavBar role="navigation" aria-label="Quick navigation to semesters">
+        {빠른 네비게이션 바: 학기별 빠른 이동, 가로 스크롤 가능, spacing[4] padding, spacing[8] margin-bottom}
+        {스타일: flex layout, gap spacing[2], overflow-x auto, scrollbar 숨김 (thin), 스크롤 기능 유지}
+        {activeSemester state로 활성 학기 표시}
+        {sortedGroups.map(([semester]) => (
+          <QuickNavButton
+            key={semester}
+            $isActive={activeSemester === semester}
+            onClick={() => handleSemesterClick(semester)}
+            aria-label={`Navigate to ${semester} semester`}
+          >
+            {빠른 네비게이션 버튼: 학기명 표시, 활성 상태 스타일 (primary[500] 배경), 호버 효과}
+            {semester}
+          </QuickNavButton>
+        ))}
+      </QuickNavBar>
+      
+      <SummaryStats ref="statsRef" role="region" aria-label="Academic Statistics" $isVisible={isStatsVisible}>
         {통계 요약 섹션: 4개의 StatCard를 그리드 레이아웃으로 표시, scroll-triggered 애니메이션}
+        {레이아웃: 4-column grid (데스크톱), 2-column grid (태블릿), 1-column grid (모바일)}
+        {스타일: gap spacing[4], margin-bottom spacing[8], scroll-triggered fadeInUp}
         
-        <StatCard role="article" aria-label="Total Credit Points" tabIndex="0">
-          {통계 카드: Card 컴포넌트 재사용, 중앙 정렬, 호버 효과}
+        <StatCard role="article" aria-label="Total Credit Points" tabIndex="0" $isVisible={isStatsVisible}>
+          {통계 카드: Card 컴포넌트 재사용, 중앙 정렬, 호버 효과, scroll-triggered 애니메이션}
+          {스타일: padding spacing[6] (24px), text-align center, transition all 0.3s ease}
           <h3>{totalCreditPoints}</h3>
-          {숫자: 큰 폰트 (2xl), primary[500] 색상}
+          {숫자: 큰 폰트 (2xl), primary[500] 색상, spacing[2] margin-bottom}
           <p>Total Credit Points</p>
           {라벨: 작은 폰트 (sm), textSecondary 색상}
         </StatCard>
         
-        <StatCard role="article" aria-label="Completed Credit Points" tabIndex="0">
+        <StatCard role="article" aria-label="Completed Credit Points" tabIndex="0" $isVisible={isStatsVisible}>
           <h3>{completedCreditPoints}</h3>
           <p>Completed Credit Points</p>
         </StatCard>
         
-        <StatCard role="article" aria-label="GPA" tabIndex="0">
+        <StatCard role="article" aria-label="GPA" tabIndex="0" $isVisible={isStatsVisible} $isHighlighted={true}>
+          {GPA 카드: 강조 표시 ($isHighlighted), grid-column span 2 (데스크톱), primary[50] 배경, primary[500] 테두리}
+          {스타일: padding spacing[8] (32px), fontSize['3xl'] (40px), primary[700] 색상}
           <h3>5.88</h3>
-          {GPA: 고정값 또는 계산된 값}
+          {GPA: 고정값 또는 계산된 값, 강조된 스타일}
           <p>GPA</p>
         </StatCard>
         
-        <StatCard role="article" aria-label="WAM" tabIndex="0">
+        <StatCard role="article" aria-label="WAM" tabIndex="0" $isVisible={isStatsVisible} $isHighlighted={true}>
+          {WAM 카드: 강조 표시 ($isHighlighted), grid-column span 2 (데스크톱)}
           <h3>{averageMark.toFixed(1)}</h3>
-          {WAM: 완료된 과목의 평균 점수}
+          {WAM: 완료된 과목의 평균 점수, 강조된 스타일}
           <p>WAM (Weighted Average Mark)</p>
         </StatCard>
       </SummaryStats>
       
-      <TimelineContainer ref="timelineRef" role="region" aria-label="Academic Timeline">
+      <TimelineContainer ref="timelineRef" role="region" aria-label="Academic Timeline" $isVisible={isTimelineVisible}>
         {타임라인 컨테이너: 학기별로 그룹화된 학업 기록, max-width 800px, 중앙 정렬}
+        {스타일: position relative, 수직 타임라인 라인 (::before) - primary[500] 그라데이션, opacity 0.3}
+        {타임라인 라인: left spacing[2] (8px), width spacing[0.5] (4px), top 0, bottom 0}
         
         {sortedGroups.map(([semester, academicGroup]) => (
           <div key={semester}>
             {학기 그룹: 각 학기별로 분리된 섹션}
             
-            <SemesterTitle $isVisible={isTimelineVisible}>
-              {학기 제목: "2025 SPR", "2025 AUT", "2024 SPR", "Exemptions" 등, scroll-triggered 애니메이션, 하단 경계선}
+            <SemesterTitle 
+              $isVisible={isTimelineVisible}
+              ref={(el) => { semesterRefs.current.set(semester, el) }}
+            >
+              {학기 제목: "2025 SPR", "2025 AUT", "2024 SPR", "Exemptions" 등}
+              {스타일: fontSize['2xl'] (24px), fontWeight.bold, border-bottom spacing[0.5], padding-bottom spacing[2]}
+              {레이아웃: padding-left spacing[6] (24px) - 타임라인과 겹침, position relative, z-index 1, background 배경}
+              {애니메이션: scroll-triggered fadeInUp, opacity, transform translateY}
+              {semester}
             </SemesterTitle>
             
             {academicGroup.map((academic, index) => (
@@ -58,30 +90,43 @@
                 status={academic.status}
                 $isVisible={visibleCards.has(academic.id)}
                 $index={index}
+                $isExpanded={expandedCards.has(academic.id)}
                 data-card-id={academic.id}
                 tabIndex="0"
                 role="article"
                 aria-labelledby={`academic-${academic.id}-title`}
+                onClick={() => handleCardClick(academic.id)}
+                onKeyDown="Enter or Space to expand"
               >
                 {학업 카드: Card 컴포넌트 재사용, 상태별 왼쪽 테두리 색상, scroll-triggered stagger 애니메이션}
+                {스타일: border-left spacing[1] (4px) solid (상태별 색상), margin-bottom spacing[4], cursor pointer}
+                {확장 가능: $isExpanded prop으로 확장 상태 관리, 클릭/키보드로 토글}
+                {애니메이션: fadeInUp, animation-delay index * 0.1s (stagger 효과)}
                 
                 <AcademicTitle id={`academic-${academic.id}-title`}>
-                  {과목 제목: 과목명과 배지 그룹을 flex로 배치}
+                  {과목 제목: 과목명과 배지 그룹을 flex로 배치, justify-content space-between}
                   <span>{academic.name}</span>
-                  {과목명: semibold, xl 폰트}
+                  {과목명: semibold, xl 폰트, color text}
                   
                   <GradeContainer>
-                    {배지 컨테이너: GradeBadge와 StatusBadge를 flex로 배치}
+                    {배지 컨테이너: GradeBadge와 StatusBadge를 flex로 배치, gap spacing[2]}
                     
                     {academic.grade && (
                       <GradeBadge grade={academic.grade} aria-label="Grade: {grade}">
-                        {성적 배지: "HIGH DISTINCTION", "DISTINCTION", "CREDIT", "PASS", 상태별 색상 (error, warning, success, primary[500])}
+                        {성적 배지: "HIGH DISTINCTION", "DISTINCTION", "CREDIT", "PASS"}
+                        {스타일: padding spacing[1] spacing[2], borderRadius sm, fontSize xs, fontWeight bold}
+                        {색상: 상태별 배경색 (error, warning, success, primary[600]) + opacity E6, hero.text 색상}
+                        {테두리: 상태별 색상 (error, warning, success, primary[700])}
                         {academic.grade}
                       </GradeBadge>
                     )}
                     
                     <StatusBadge status={academic.status} aria-label="Status: {status}">
-                      {상태 배지: "COMPLETED", "ENROLLED", "EXEMPTION", 상태별 배경색 및 텍스트 색상}
+                      {상태 배지: "COMPLETED", "ENROLLED", "EXEMPTION"}
+                      {스타일: padding spacing[1] spacing[2], borderRadius sm, fontSize xs, fontWeight medium}
+                      {배경색: 상태별 색상 + opacity 20 (completed=success, enrolled=primary[500], exemption=warning)}
+                      {텍스트 색상: 상태별 색상 (completed=success, enrolled=primary[700], exemption=warning)}
+                      {다크 모드: opacity 30으로 조정}
                       {t(`academics.status.${academic.status}`, academic.status.toUpperCase())}
                     </StatusBadge>
                   </GradeContainer>
@@ -89,6 +134,7 @@
                 
                 <AcademicMeta>
                   {메타 정보: 학기, 점수, 학점을 flex로 배치, 작은 폰트 (sm), textSecondary 색상}
+                  {스타일: display flex, gap spacing[4], margin-bottom spacing[3], flex-wrap, align-items center}
                   <span>{t('academics.semester', { semester: academic.semester }, academic.semester)}</span>
                   {학기: "2025 SPR", "2025 AUT" 등}
                   
@@ -109,9 +155,22 @@
                 
                 {academic.description && (
                   <AcademicDescription>
-                    {과목 설명: base 폰트, textSecondary 색상, relaxed line-height}
+                    {과목 설명: base 폰트, textSecondary 색상, relaxed line-height, margin-top spacing[2]}
                     {academic.description}
                   </AcademicDescription>
+                )}
+                
+                {expandedCards.has(academic.id) && (
+                  <ExpandedContent $isExpanded={true}>
+                    {확장 콘텐츠: max-height 500px (확장 시), padding-top spacing[4], margin-top spacing[4]}
+                    {스타일: border-top 1px solid border, transition max-height/padding/margin 0.3s ease}
+                    {DetailRow 컴포넌트로 상세 정보 표시}
+                    <DetailRow>
+                      <strong>Subject Code:</strong>
+                      <span>{academic.subjectCode || 'N/A'}</span>
+                    </DetailRow>
+                    {추가 상세 정보: 과목 코드, 관련 프로젝트 등}
+                  </ExpandedContent>
                 )}
               </AcademicCard>
             ))}
@@ -122,81 +181,210 @@
   </PageWrapper>
 </AcademicsPage>
 
-<!-- Design Principles Applied -->
-<DesignPrinciples>
-  <KickoffLabs>
-    {KickoffLabs 원칙: Primary + Neutral 색상만 사용, Inter 폰트, 일관된 카드 스타일}
-  </KickoffLabs>
-  <FourPointSpacing>
-    {4-point spacing 시스템: 모든 spacing 값이 4px의 배수 (spacing[0.5]=4px, spacing[1]=8px, spacing[2]=16px 등)}
-  </FourPointSpacing>
-  <NielsenHeuristics>
-    <H1>Visibility of System Status</H1>
-    {H1: 상태 배지 색상 (completed=enrolled=exemption), 호버 피드백, 스크롤 애니메이션, 로딩 상태}
-    <H3>User Control & Freedom</H3>
-    {H3: 키보드 접근성 (tabIndex, focus-within), 명확한 상태 표시}
-    <H4>Consistency & Standards</H4>
-    {H4: 일관된 카드 레이아웃, 통일된 배지 스타일, 재사용 컴포넌트 (Card)}
-    <H8>Aesthetic & Minimalist Design</H8>
-    {H8: 깔끔한 타임라인 레이아웃, 적절한 여백, 불필요한 요소 제거}
-  </NielsenHeuristics>
-</DesignPrinciples>
-
-<!-- Code Reuse Statistics -->
-<CodeReuse>
-  <ReusedComponents>
-    <Component name="Card" reuse="AcademicCard, StatCard" />
-    <Component name="Container" reuse="100%" />
-  </ReusedComponents>
-  <ReusedStyles>
-    <Style name="Card" pattern="AcademicCard, StatCard" />
-    <Style name="fadeInUp" animation="scroll-triggered animations" />
-  </ReusedStyles>
-  <EstimatedReuse>85%</EstimatedReuse>
-  {코드 재사용률: 약 85% - Card 컴포넌트와 애니메이션 패턴 재사용}
-</CodeReuse>
-
-<!-- Animation Strategy -->
-<Animations>
-  <ScrollTriggered>
-    {스크롤 트리거 애니메이션: IntersectionObserver 사용, threshold 0.2, rootMargin -100px}
-    <Element ref="statsRef" animation="fadeInUp" />
-    <Element ref="timelineRef" animation="fadeInUp" />
-    <Element data-card-id="academic.id" animation="fadeInUp with stagger (index * 0.1s)" />
-  </ScrollTriggered>
-  <Accessibility>
-    {접근성: prefers-reduced-motion 지원, 애니메이션 비활성화 옵션}
-    <MediaQuery query="prefers-reduced-motion: reduce">
-      {애니메이션 비활성화 또는 단순화}
-    </MediaQuery>
-  </Accessibility>
-</Animations>
-
-<!-- Responsive Breakpoints -->
-<Responsive>
-  <Desktop minWidth="1024px">
-    {데스크톱: SummaryStats 4-column grid, 전체 기능}
-  </Desktop>
-  <Tablet minWidth="768px" maxWidth="1023px">
-    {태블릿: SummaryStats auto-fit grid (minmax 200px), 일부 간격 조정}
-  </Tablet>
-  <Mobile maxWidth="767px">
-    {모바일: SummaryStats auto-fit grid (minmax 160px), AcademicTitle flex-direction column, 터치 최적화}
-  </Mobile>
-</Responsive>
+<!-- State Management -->
+<StateManagement>
+  <LocalState>
+    <State name="academics" type="Academic[]" />
+    {학업 데이터: 서버에서 가져온 학업 기록 배열}
+    <State name="loading" type="boolean" />
+    {로딩 상태: 초기 데이터 로딩 중}
+    <State name="isStatsVisible" type="boolean" />
+    {통계 가시성: IntersectionObserver로 감지}
+    <State name="isTimelineVisible" type="boolean" />
+    {타임라인 가시성: IntersectionObserver로 감지}
+    <State name="visibleCards" type="Set<number>" />
+    {가시성 카드: IntersectionObserver로 감지된 카드 ID Set}
+    <State name="expandedCards" type="Set<number>" />
+    {확장된 카드: 클릭/키보드로 확장된 카드 ID Set}
+    <State name="hoveredStat" type="string | null" />
+    {호버된 통계: 통계 카드 호버 상태 (툴팁 표시용)}
+    <State name="activeSemester" type="string | null" />
+    {활성 학기: QuickNavBar에서 선택된 학기}
+  </LocalState>
+  
+  <Refs>
+    <Ref name="statsRef" type="HTMLDivElement | null" />
+    {통계 섹션 ref: IntersectionObserver용}
+    <Ref name="timelineRef" type="HTMLDivElement | null" />
+    {타임라인 컨테이너 ref: IntersectionObserver용}
+    <Ref name="semesterRefs" type="Map<string, HTMLDivElement>" />
+    {학기 제목 refs: QuickNavBar 스크롤 이동용}
+  </Refs>
+</StateManagement>
 
 <!-- Data Flow -->
 <DataFlow>
   <InitialLoad>
     {초기 로드: useEffect에서 getAcademics() 호출, 로딩 상태 관리}
+    <Step>1. getAcademics API 호출 (page: 0, size: 1000 또는 모든 데이터)</Step>
+    <Step>2. response.data.items를 academics state에 저장</Step>
+    <Step>3. setLoading(false) (로딩 완료)</Step>
   </InitialLoad>
+  
   <DataProcessing>
-    {데이터 처리: 학기별 그룹화, 상태별 정렬, 통계 계산 (totalCreditPoints, completedCreditPoints, averageMark)}
+    {데이터 처리: 학기별 그룹화, 상태별 정렬, 통계 계산}
+    <Step>1. 학기별 그룹화: Object.entries(groupBy(academics, 'semester'))</Step>
+    <Step>2. 정렬: 학기명 기준 내림차순 (최신 학기 우선)</Step>
+    <Step>3. 통계 계산: totalCreditPoints, completedCreditPoints, averageMark</Step>
+    <Step>4. GPA 계산: 고정값 5.88 또는 계산된 값</Step>
   </DataProcessing>
-  <StateManagement>
-    {상태 관리: useState로 academics, loading, isStatsVisible, isTimelineVisible, visibleCards 관리}
-  </StateManagement>
+  
+  <CardExpansion>
+    {카드 확장: 클릭/키보드로 상세 정보 표시}
+    <Step>1. handleCardClick(academicId) 호출</Step>
+    <Step>2. expandedCards.has(academicId) 확인</Step>
+    <Step>3. 있으면 제거 (접기), 없으면 추가 (확장)</Step>
+    <Step>4. ExpandedContent max-height 애니메이션 (0.3s ease)</Step>
+  </CardExpansion>
+  
+  <QuickNavigation>
+    {빠른 네비게이션: 학기별 스크롤 이동}
+    <Step>1. handleSemesterClick(semester) 호출</Step>
+    <Step>2. setActiveSemester(semester) (활성 상태 업데이트)</Step>
+    <Step>3. semesterRefs.current.get(semester)로 해당 학기 제목 찾기</Step>
+    <Step>4. scrollIntoView({ behavior: 'smooth', block: 'start' }) (부드러운 스크롤)</Step>
+  </QuickNavigation>
 </DataFlow>
+
+<!-- Animation Strategy -->
+<Animations>
+  <Keyframes>
+    <Keyframe name="fadeInUp">
+      {fadeInUp: opacity 0→1, translateY(spacing[8])→0}
+      {사용: SummaryStats, SemesterTitle, AcademicCard}
+    </Keyframe>
+  </Keyframes>
+  
+  <ScrollTriggered>
+    {스크롤 트리거 애니메이션: IntersectionObserver 사용, threshold 0.2, rootMargin -100px}
+    <Observer 
+      threshold="0.2"
+      rootMargin="0px 0px -100px 0px"
+    >
+      <Target ref="statsRef" setState="setIsStatsVisible" />
+      <Target ref="timelineRef" setState="setIsTimelineVisible" />
+      <Target data-card-id="academic.id" setState="visibleCards.add(academic.id)" />
+      {카드별 개별 감지: data-card-id 속성으로 각 카드 감지, Set에 추가}
+    </Observer>
+  </ScrollTriggered>
+  
+  <StaggerEffect>
+    {Stagger 효과: 각 학업 카드에 순차적 애니메이션 지연}
+    <Delay formula="index * 0.1s" />
+    {공식: index * 0.1초 (첫 번째: 0s, 두 번째: 0.1s, 세 번째: 0.2s, ...)}
+  </StaggerEffect>
+  
+  <CardExpansion>
+    {카드 확장 애니메이션: max-height transition}
+    <Transition property="max-height" duration="0.3s" easing="ease" />
+    {max-height: 0 → 500px (확장 시), padding-top: 0 → spacing[4], margin-top: 0 → spacing[4]}
+  </CardExpansion>
+  
+  <Accessibility>
+    {접근성: prefers-reduced-motion 지원, 애니메이션 비활성화 옵션}
+    <MediaQuery query="prefers-reduced-motion: reduce">
+      {애니메이션 비활성화: animation: none !important, transition: none !important}
+    </MediaQuery>
+  </Accessibility>
+</Animations>
+
+<!-- Design Principles Applied -->
+<DesignPrinciples>
+  <KickoffLabs>
+    {KickoffLabs 원칙: Primary + Neutral 색상만 사용, Inter 폰트, 일관된 카드 스타일}
+    <ColorPalette>Primary + Neutral only</ColorPalette>
+    <FontFamily>Inter (typography.fontFamily.primary)</FontFamily>
+    <Consistency>일관된 spacing, border-radius, card styles</Consistency>
+  </KickoffLabs>
+  
+  <FourPointSpacing>
+    {4-point spacing 시스템: 모든 spacing 값이 4px의 배수}
+    <Spacing>
+      <Value token="spacing[0.5]" pixels="4px" usage="Border width, timeline line width" />
+      <Value token="spacing[1]" pixels="4px" usage="Border-left width, margin-bottom" />
+      <Value token="spacing[2]" pixels="8px" usage="Gap, padding, margin-bottom" />
+      <Value token="spacing[3]" pixels="12px" usage="Gap, padding, margin-bottom" />
+      <Value token="spacing[4]" pixels="16px" usage="Gap, margin-bottom, padding" />
+      <Value token="spacing[6]" pixels="24px" usage="Padding, margin-bottom" />
+      <Value token="spacing[8]" pixels="32px" usage="Margin-bottom, translateY, animation" />
+      <Value token="spacing[10]" pixels="40px" usage="Padding" />
+      <Value token="spacing[20]" pixels="80px" usage="PageWrapper padding" />
+      <Value token="spacing[200]" pixels="800px" usage="TimelineContainer max-width" />
+    </Spacing>
+  </FourPointSpacing>
+  
+  <NielsenHeuristics>
+    <H1>Visibility of System Status</H1>
+    {H1: 상태 배지 색상 (completed/enrolled/exemption), 호버 피드백, 스크롤 애니메이션, 로딩 상태, 확장 상태}
+    <H3>User Control & Freedom</H3>
+    {H3: 키보드 접근성 (tabIndex, focus-within), 카드 확장/접기, 빠른 네비게이션, 명확한 상태 표시}
+    <H4>Consistency & Standards</H4>
+    {H4: 일관된 카드 레이아웃, 통일된 배지 스타일, 재사용 컴포넌트 (Card), 타임라인 패턴}
+    <H8>Aesthetic & Minimalist Design</H8>
+    {H8: 깔끔한 타임라인 레이아웃, 적절한 여백, 불필요한 요소 제거, 통계 대시보드 간결성}
+  </NielsenHeuristics>
+</DesignPrinciples>
+
+<!-- Accessibility Features -->
+<Accessibility>
+  <ARIA>
+    <Attribute element="PageWrapper" role="main" aria-label="Academic Record" />
+    <Attribute element="QuickNavBar" role="navigation" aria-label="Quick navigation to semesters" />
+    <Attribute element="SummaryStats" role="region" aria-label="Academic Statistics" />
+    <Attribute element="StatCard" role="article" aria-label="descriptive" tabIndex="0" />
+    <Attribute element="TimelineContainer" role="region" aria-label="Academic Timeline" />
+    <Attribute element="AcademicCard" role="article" aria-labelledby="academic-{id}-title" tabIndex="0" />
+    <Attribute element="GradeBadge" aria-label="Grade: {grade}" />
+    <Attribute element="StatusBadge" aria-label="Status: {status}" />
+    <Attribute element="QuickNavButton" aria-label="Navigate to {semester} semester" />
+  </ARIA>
+  
+  <Keyboard>
+    <Navigation>
+      {키보드 네비게이션: Tab으로 카드 이동, Enter/Space로 카드 확장, QuickNavButton 이동}
+      <AcademicCard tabIndex="0" onKeyDown="Enter or Space to expand" />
+      <StatCard tabIndex="0" />
+      <QuickNavButton onClick="handleSemesterClick" />
+    </Navigation>
+  </Keyboard>
+  
+  <FocusManagement>
+    {포커스 관리: 명확한 포커스 스타일, outline 표시, 카드 확장 시 포커스 유지}
+    <AcademicCard focus="outline 2px solid primary[500], outline-offset spacing[1]" />
+    <StatCard focus="outline 2px solid primary[500], outline-offset spacing[1]" />
+  </FocusManagement>
+</Accessibility>
+
+<!-- Responsive Breakpoints -->
+<Responsive>
+  <Desktop minWidth="1024px">
+    {데스크톱: SummaryStats 4-column grid (GPA/WAM span 2), TimelineContainer max-width 800px, 전체 기능}
+  </Desktop>
+  <Tablet minWidth="768px" maxWidth="1023px">
+    {태블릿: SummaryStats 2-column grid, TimelineContainer 조정, 일부 간격 조정}
+  </Tablet>
+  <Mobile maxWidth="767px">
+    {모바일: SummaryStats 1-column grid, AcademicTitle flex-direction column, QuickNavBar 가로 스크롤, 터치 최적화}
+  </Mobile>
+</Responsive>
+
+<!-- Component Dependencies -->
+<Dependencies>
+  <Internal>
+    <Component name="Container" source="@components/common" />
+    <Component name="Card" source="@components/common" />
+  </Internal>
+  
+  <External>
+    <Library name="react-i18next" usage="useTranslation for i18n" />
+    <Library name="styled-components" usage="Styled components, keyframes" />
+  </External>
+  
+  <Services>
+    <Service name="getAcademics" source="services/academics" />
+    {학업 데이터 가져오기: API 호출 또는 mock 데이터}
+  </Services>
+</Dependencies>
 
 <!-- Status Color Mapping -->
 <StatusColors>
@@ -207,9 +395,26 @@
 
 <!-- Grade Color Mapping -->
 <GradeColors>
-  <Grade value="HIGH DISTINCTION" color="error" />
-  <Grade value="DISTINCTION" color="warning" />
-  <Grade value="CREDIT" color="success" />
-  <Grade value="PASS" color="primary[500]" />
+  <Grade value="HIGH DISTINCTION" color="error" background="error + E6" border="error" />
+  <Grade value="DISTINCTION" color="warning" background="warning + E6" border="warning" />
+  <Grade value="CREDIT" color="success" background="success + E6" border="success" />
+  <Grade value="PASS" color="primary[500]" background="primary[600] + E6" border="primary[700]" />
 </GradeColors>
 
+<!-- Quick Navigation Feature -->
+<QuickNavigation>
+  {빠른 네비게이션: 학기별 빠른 이동 기능}
+  <Feature>가로 스크롤 가능한 버튼 그룹</Feature>
+  <Feature>활성 학기 강조 표시 (primary[500] 배경)</Feature>
+  <Feature>클릭 시 해당 학기로 부드러운 스크롤 이동</Feature>
+  <Feature>스크롤바 숨김 (thin, 기능 유지)</Feature>
+</QuickNavigation>
+
+<!-- Card Expansion Feature -->
+<CardExpansion>
+  {카드 확장: 클릭/키보드로 상세 정보 표시}
+  <Feature>클릭 또는 Enter/Space 키로 확장/접기</Feature>
+  <Feature>max-height transition 애니메이션 (0.3s ease)</Feature>
+  <Feature>확장 시 ExpandedContent 표시 (과목 코드, 추가 정보)</Feature>
+  <Feature>expandedCards Set으로 상태 관리</Feature>
+</CardExpansion>

@@ -114,3 +114,4 @@ export const getColor = (path: string, theme: Theme): string => {
   return value
 }
 
+

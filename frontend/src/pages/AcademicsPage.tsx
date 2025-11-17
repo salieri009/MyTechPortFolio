@@ -180,7 +180,7 @@ const GradeBadge = styled.span<{ grade: string }>`
       default: return props.theme.colors.neutral[600] + 'E6'
     }
   }};
-  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  color: ${props => props.theme.colors.hero?.text || props.theme.colors.neutral[0]};
   border: 1px solid ${props => {
     switch (props.grade) {
       case 'HIGH DISTINCTION': return props.theme.colors.error
@@ -305,7 +305,7 @@ const Tooltip = styled.div<{ $isVisible: boolean }>`
   margin-bottom: ${props => props.theme.spacing[2]}; /* 8px */
   padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]}; /* 8px 12px */
   background: ${props => props.theme.colors.primary[700]};
-  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  color: ${props => props.theme.colors.hero?.text || props.theme.colors.neutral[0]};
   border-radius: ${props => props.theme.radius.md};
   font-size: ${props => props.theme.typography.fontSize.xs};
   font-family: ${props => props.theme.typography.fontFamily.primary};

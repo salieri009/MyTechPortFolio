@@ -11,11 +11,18 @@ import {
   FooterIcon,
   FooterButton
 } from '@components/common/FooterComponents'
+import { useFeedbackModalStore } from '../../../stores/feedbackModalStore'
 
-const FeedbackLink = styled(Link)`
+const FeedbackButton = styled.button`
   display: inline-block;
   margin-top: ${props => props.theme.spacing[2]};
   text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  color: inherit;
   
   /* H1: Visibility of System Status - Hover feedback */
   &:hover {
@@ -94,15 +101,17 @@ export function FooterContact() {
         ))}
       </FooterList>
       
-      <FeedbackLink 
-        to="/feedback" 
+      <FeedbackButton
+        onClick={(e) => {
+          e.preventDefault()
+          const triggerElement = e.currentTarget
+          useFeedbackModalStore.getState().openModal(triggerElement)
+        }}
         aria-label="Send feedback or contact via form"
       >
-        <FooterButton type="button">
-          <span aria-hidden="true">💌</span>{' '}
-          {t('footer.contact.feedbackButton', 'Send Feedback')}
-        </FooterButton>
-      </FeedbackLink>
+        <span aria-hidden="true">💌</span>{' '}
+        {t('footer.contact.feedbackButton', 'Send Feedback')}
+      </FeedbackButton>
     </FooterSection>
   )
 }

@@ -47,7 +47,7 @@ public final class ApiConstants {
     };
     
     public static final String[] DEFAULT_ALLOWED_HEADERS = {
-        "Content-Type", "Authorization", "X-Requested-With"
+        "Content-Type", "Authorization", "X-Requested-With", "X-Request-ID"
     };
     
     public static final long CORS_MAX_AGE = 3600L; // 1 hour

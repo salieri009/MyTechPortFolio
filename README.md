@@ -36,6 +36,7 @@
 - [빠른 시작](#-빠른-시작)
 - [핵심 기능](#-핵심-기능)
 - [배포 아키텍처](#-배포-아키텍처)
+- [CI/CD 파이프라인](#-cicd-파이프라인)
 - [개발 가이드](#-개발-가이드)
 - [기여하기](#-기여하기)
 - [문서](#-문서)
@@ -56,6 +57,10 @@ MyTechPortfolio는 개인의 기술적 역량과 학업 성과를 효과적으�
 - 🔍 **채용자 최적화**: 채용담당자가 빠르게 핵심 정보를 파악할 수 있는 구조
 - 🌍 **다국어 지원**: 한국어, 영어, 일본어 지원
 - 📧 **이메일 연동**: EmailJS를 통한 연락처 기능
+- 🔄 **Azure Pipelines CI/CD**: 자동 빌드, 테스트, 배포 파이프라인
+- 🛡️ **보안 스캔**: Trivy, Snyk를 통한 취약점 검사
+- ✅ **자동 테스트**: 단위/통합/E2E 테스트 자동 실행
+- 🚀 **다중 환경 배포**: Dev/Staging/Production 자동 배포
 
 ---
 
@@ -90,12 +95,24 @@ MyTechPortfolio는 개인의 기술적 역량과 학업 성과를 효과적으�
 - **Azure Container Apps**: 백엔드 API 서버
 - **Azure Database for MongoDB**: 프로덕션 데이터베이스
 - **Azure Key Vault**: 시크릿 관리
+- **Azure Container Registry (ACR)**: Docker 이미지 저장소
+- **Azure DevOps**: CI/CD 파이프라인 관리
 - **Docker**: 컨테이너화
+
+### 🔄 CI/CD & DevOps
+
+| 기술 | 목적 |
+|------|------|
+| **Azure Pipelines** | CI/CD 자동화 |
+| **Trivy** | 컨테이너 보안 스캔 |
+| **Snyk** | 의존성 취약점 검사 |
+| **Playwright** | E2E 테스트 |
+| **JaCoCo** | 코드 커버리지 (Backend) |
 
 ### 🧪 테스트 & 품질
 
 - **Jest**: 단위 테스트
-- **Cypress**: E2E 테스트
+- **Playwright**: E2E 테스트
 - **ESLint + Prettier**: 코드 품질 및 포맷팅
 - **Swagger**: API 문서화
 
@@ -146,6 +163,19 @@ MyTechPortfolio/
 │   ├── ADR/                    # 아키텍처 결정 기록
 │   └── test-run/               # 테스트 결과
 │
+├── .azure/                      # Azure Pipelines 설정
+│   └── pipelines/
+│       ├── templates/          # 재사용 가능한 파이프라인 템플릿
+│       └── test-cases/         # 테스트 실행 템플릿
+│
+├── infra/                       # 인프라 설정
+│   └── pipeline-variables.yml  # 파이프라인 변수 문서
+│
+├── azure-pipelines.yml          # 메인 CI/CD 파이프라인
+├── backend/
+│   └── azure-pipelines-backend.yml  # 백엔드 전용 파이프라인
+├── frontend/
+│   └── azure-pipelines-frontend.yml # 프론트엔드 전용 파이프라인
 ├── design-plan/                 # 설계 계획
 ├── docker-compose.dev.yml       # 개발 환경 Docker 설정
 └── README.md                    # 프로젝트 문서
@@ -259,6 +289,14 @@ graph TB
         Google[Google OAuth]
     end
 
+    subgraph "CI/CD Pipeline"
+        Git[Git Repository]
+        ADO[Azure DevOps<br/>Pipelines]
+        Build[Build Stage<br/>Docker Images]
+        Test[Test Stage<br/>Unit/Integration/E2E]
+        Deploy[Deploy Stage<br/>Multi-Environment]
+    end
+
     subgraph "Azure Cloud"
         subgraph "Frontend Layer"
             SWA[Azure Static Web Apps<br/>React 앱]
@@ -275,6 +313,14 @@ graph TB
         end
     end
 
+    Git -->|Push| ADO
+    ADO -->|Build| Build
+    Build -->|Push Images| ACR
+    Build -->|Test| Test
+    Test -->|Deploy| Deploy
+    Deploy -->|Update| SWA
+    Deploy -->|Update| ACA
+
     User -->|HTTPS| SWA
     SWA -->|API 요청| ACA
     ACA -->|데이터 조회/저장| ADB
@@ -287,11 +333,118 @@ graph TB
 
 | 구성 요소 | 설명 | 용도 |
 |-----------|------|------|
+| **Azure DevOps** | CI/CD 파이프라인 관리 | 자동 빌드, 테스트, 배포 |
 | **Azure Static Web Apps** | React 앱 호스팅 | 프론트엔드 배포, 자동 빌드/배포 |
 | **Azure Container Apps** | Spring Boot API 서버 | 백엔드 실행, 자동 스케일링 |
-| **Azure Container Registry** | Docker 이미지 저장소 | 이미지 버전 관리 및 배포 |
+| **Azure Container Registry** | Docker 이미지 저장소 | 이미지 버전 관리 및 자동 배포 |
 | **Azure Key Vault** | 시크릿 관리 | 환경변수, API 키 보안 저장 |
 | **Azure Database for MongoDB** | NoSQL 데이터베이스 | 사용자 데이터, 포트폴리오 정보 |
+
+---
+
+## 🔄 CI/CD 파이프라인
+
+### 📋 파이프라인 개요
+
+MyTechPortfolio는 Azure Pipelines를 사용한 엔터프라이즈급 CI/CD 파이프라인을 구축했습니다. 20년 경력의 DevOps 및 소프트웨어 엔지니어 모범 사례를 따르며, 다중 환경 배포, 자동화된 테스트, 보안 스캔, 포괄적인 모니터링을 지원합니다.
+
+**파이프라인 구조**: Build → Test → Deploy (3단계)
+
+### 🏗️ 파이프라인 단계
+
+#### 1️⃣ Build Stage (빌드 단계)
+
+- **Docker 이미지 빌드**: Backend 및 Frontend 컨테이너 이미지 생성
+- **ACR 푸시**: Azure Container Registry에 이미지 업로드
+- **이미지 태깅**: Build ID, Branch Name, Latest 태그 자동 생성
+- **빌드 아티팩트**: 빌드 결과물 저장 및 관리
+
+#### 2️⃣ Test Stage (테스트 단계)
+
+- **Backend Unit Tests**: Gradle 기반 단위 테스트 (JaCoCo 커버리지)
+- **Backend Integration Tests**: Spring Boot 통합 테스트 (Testcontainers)
+- **Frontend Unit Tests**: npm 기반 단위 테스트 (커버리지 리포트)
+- **Frontend Integration Tests**: 컴포넌트 통합 테스트
+- **Security Scanning**: 
+  - Trivy: 컨테이너 이미지 취약점 스캔
+  - Snyk: 의존성 취약점 검사
+- **E2E Tests**: Playwright 기반 End-to-End 테스트 (main 브랜치)
+- **Code Coverage**: 코드 커버리지 리포트 자동 생성
+
+#### 3️⃣ Deploy Stage (배포 단계)
+
+- **Dev Environment**: 
+  - 자동 배포 (develop 브랜치)
+  - Health Check 및 Smoke Tests 자동 실행
+  
+- **Staging Environment**: 
+  - 자동 배포 (dev 성공 후)
+  - 프로덕션 전 최종 검증
+  
+- **Production Environment**: 
+  - 수동 승인 필요 (main 브랜치)
+  - 롤백 메커니즘 자동 활성화
+
+### ✨ 주요 기능
+
+- ✅ **자동 빌드 및 테스트**: 코드 푸시 시 자동 실행
+- ✅ **보안 스캔 자동화**: 취약점 검사 및 리포트
+- ✅ **코드 커버리지 리포트**: 테스트 커버리지 추적
+- ✅ **다중 환경 배포**: Dev/Staging/Production 지원
+- ✅ **자동 롤백**: 배포 실패 시 이전 버전으로 자동 복구
+- ✅ **Health Check**: 배포 후 자동 헬스 체크
+- ✅ **Smoke Tests**: 프로덕션 배포 후 기본 기능 검증
+
+### 📁 파이프라인 파일 구조
+
+```
+MyTechPortfolio/
+├── azure-pipelines.yml              # 메인 파이프라인
+├── backend/
+│   └── azure-pipelines-backend.yml  # 백엔드 전용 파이프라인
+├── frontend/
+│   └── azure-pipelines-frontend.yml # 프론트엔드 전용 파이프라인
+├── .azure/
+│   └── pipelines/
+│       ├── templates/               # 재사용 가능한 템플릿
+│       │   ├── build-docker-image.yml
+│       │   ├── run-tests.yml
+│       │   ├── deploy-container-app.yml
+│       │   ├── security-scan.yml
+│       │   ├── key-vault-integration.yml
+│       │   └── monitoring-alerts.yml
+│       └── test-cases/              # 테스트 실행 템플릿
+│           ├── backend-unit-tests.yml
+│           ├── backend-integration-tests.yml
+│           ├── frontend-unit-tests.yml
+│           ├── frontend-integration-tests.yml
+│           ├── api-contract-tests.yml
+│           ├── e2e-tests.yml
+│           ├── security-tests.yml
+│           └── performance-tests.yml
+└── infra/
+    └── pipeline-variables.yml       # 환경 변수 문서
+```
+
+### 🚀 파이프라인 실행
+
+#### 자동 트리거
+
+- **Push to `main`**: 프로덕션 배포 파이프라인 실행
+- **Push to `develop`**: 개발 환경 배포 파이프라인 실행
+- **Pull Request**: 빌드 및 테스트만 실행 (배포 제외)
+
+#### 수동 실행
+
+Azure DevOps 포털에서 파이프라인을 수동으로 실행할 수 있습니다.
+
+### 📚 상세 문서
+
+파이프라인에 대한 상세한 문서는 다음을 참조하세요:
+
+- **파이프라인 문서**: [`.azure/pipelines/README.md`](.azure/pipelines/README.md)
+- **파이프라인 변수**: [`infra/pipeline-variables.yml`](infra/pipeline-variables.yml)
+- **구현 계획**: [`.cursor/plans/portfolio-design-enhancement-8f5ea8bd.plan.md`](.cursor/plans/portfolio-design-enhancement-8f5ea8bd.plan.md)
 
 ---
 
@@ -304,6 +457,8 @@ graph TB
 - **🎨 프론트엔드 문서**: `docs/design-plan/frontend-design.md`
 - **🏗️ 백엔드 문서**: `docs/design-plan/backend-design.md`
 - **🏛️ 아키텍처 설계**: `docs/design-plan/architecture-design.md`
+- **🔄 CI/CD 파이프라인**: [`.azure/pipelines/README.md`](.azure/pipelines/README.md)
+- **⚙️ 파이프라인 변수**: [`infra/pipeline-variables.yml`](infra/pipeline-variables.yml)
 - **🧪 테스트 가이드**: `docs/test-run/`
 - **📋 스펙 문서**: `docs/specs/`
 
@@ -347,17 +502,20 @@ chore: 빌드 설정 변경
 - [x] **다크/라이트 모드**: 테마 전환 기능
 - [x] **MongoDB 연동**: NoSQL 데이터베이스 통합
 - [x] **방문자 분석**: 페이지 뷰 및 사용자 행동 추적
+- [x] **백엔드 API 통합**: 프론트엔드-백엔드 연동 완료
+- [x] **Azure Pipelines CI/CD**: 자동 빌드, 테스트, 배포 파이프라인
+- [x] **보안 스캔 자동화**: Trivy, Snyk 통합
+- [x] **다중 환경 배포**: Dev/Staging/Production 지원
+- [x] **자동 롤백**: 배포 실패 시 자동 복구
 
 ### 🔄 진행 중
 
-- [x] **백엔드 API 통합**: 프론트엔드-백엔드 연동 완료
 - [ ] **성능 최적화**: Core Web Vitals 개선
 - [ ] **SEO 최적화**: 메타 태그 및 구조화된 데이터
 
 ### 📅 계획 중
 
-- [ ] **CI/CD 파이프라인**: GitHub Actions 자동 배포
-- [ ] **Azure 배포**: Container Apps + Static Web Apps
+- [ ] **Azure 배포**: Container Apps + Static Web Apps (CI/CD 통합 완료)
 - [ ] **모니터링 시스템**: Azure Monitor 연동
 
 ---

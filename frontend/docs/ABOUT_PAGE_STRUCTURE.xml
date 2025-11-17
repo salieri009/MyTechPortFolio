@@ -119,8 +119,11 @@
         {12-column 그리드: 각 카드 4컬럼 (3-column grid)}
         <BackgroundCard span="4" role="article" aria-labelledby="education-title">
           {Background 카드: Card 컴포넌트 재사용 + ContactItem 호버 효과, 중앙 정렬}
-          <CardIcon aria-hidden="true">🎓</CardIcon>
-          {아이콘: 이모지 아이콘 (32px), 중앙 정렬, spacing[2] margin-bottom}
+          <CardIcon aria-hidden="true">
+            <GraduationCapIcon />
+          </CardIcon>
+          {아이콘: SVG 아이콘 (GraduationCapIcon), 32px, 중앙 정렬, spacing[2] margin-bottom}
+          {개선: 이모지(🎓) → SVG로 교체 (전문성 향상, T2 규칙)}
           <CardTitle id="education-title">Education</CardTitle>
           {카드 제목: 중앙 정렬, xl 폰트, spacing[4] margin-bottom}
           <CardContent>전북대학교 컴퓨터공학, 호주 UTS 유학 중</CardContent>
@@ -133,7 +136,11 @@
           <DetailValue>Jeonbuk National University, UTS (Australia)</DetailValue>
         </BackgroundCard>
         <BackgroundCard span="4" role="article" aria-labelledby="experience-title">
-          <CardIcon aria-hidden="true">💼</CardIcon>
+          <CardIcon aria-hidden="true">
+            <BriefcaseIcon />
+          </CardIcon>
+          {아이콘: SVG 아이콘 (BriefcaseIcon), 32px, 중앙 정렬, spacing[2] margin-bottom}
+          {개선: 이모지(💼) → SVG로 교체 (전문성 향상, T2 규칙)}
           <CardTitle id="experience-title">Experience</CardTitle>
           <CardContent>군 통역병, React/TypeScript/Spring Boot 프로젝트</CardContent>
           <DetailLabel>Period</DetailLabel>
@@ -142,7 +149,11 @@
           <DetailValue>Military Service, Various Projects</DetailValue>
         </BackgroundCard>
         <BackgroundCard span="4" role="article" aria-labelledby="techStack-title" $isHighlighted={highlightedTech !== null}>
-          <CardIcon aria-hidden="true">⚙️</CardIcon>
+          <CardIcon aria-hidden="true">
+            <SettingsIcon />
+          </CardIcon>
+          {아이콘: SVG 아이콘 (SettingsIcon), 32px, 중앙 정렬, spacing[2] margin-bottom}
+          {개선: 이모지(⚙️) → SVG로 교체 (전문성 향상, T2 규칙)}
           <CardTitle id="techStack-title">Tech Stack</CardTitle>
           <CardContent>Core technologies and frameworks I use in my projects.</CardContent>
           <TechStackTags>
@@ -175,8 +186,10 @@
     diagonal="true"
   />
   
-  <JourneyMilestoneSection id="journey" role="region">
+  <JourneyMilestoneSection id="journey" role="region" aria-label="Career Timeline">
     {JourneyMilestoneSection: 100% 재사용 컴포넌트, F-pattern 레이아웃, 타임라인 표시}
+    {제목 변경: "My Journey" → "Career Timeline" (T3 규칙: 서사 중복 해결)}
+    {섹션 제목: t('journey.title') || 'Career Timeline'}
   </JourneyMilestoneSection>
   
   <SectionBridge 
@@ -197,36 +210,140 @@
       </SectionSubtitle>
       <ValuesGrid layout="12-column">
         {12-column 그리드: 각 카드 4컬럼}
-        <ValueCard span="4" role="article" aria-labelledby="innovation-title" $isHighlighted={highlightedValue === 'innovation'} $isExpanded={expandedValue === 'innovation'}>
-          {Value 카드: BackgroundCard와 동일한 패턴, 중앙 정렬, 호버 시 primary[100] 배경 전환 (300ms ease-out), 확장 가능}
-          <ValueIcon aria-hidden="true">I</ValueIcon>
-          {Value 아이콘: 텍스트 라벨 ("I", "C", "G"), 원형 배경 (64px), primary[50] 배경, primary[500] 색상, 호버 시 Pulse 애니메이션 (500ms)}
+        <ValueCard 
+          span="4" 
+          role="button"
+          aria-labelledby="innovation-title"
+          aria-describedby="innovation-description"
+          $isHighlighted={highlightedValue === 'innovation'}
+          onClick={handleValueCardClick('innovation', e)}
+          onKeyDown="Enter or Space to open modal"
+          ref={(el) => { valueCardRefs.current['innovation'] = el }}
+          tabIndex="0"
+        >
+          {Value 카드: BackgroundCard와 동일한 패턴, 중앙 정렬, 호버 시 primary[100] 배경 전환, 클릭 시 모달 트리거}
+          {개선: 인라인 확장($isExpanded) 제거, 전체 화면 모달로 변경 (T1 규칙)}
+          <ValueIconContainer>
+            <InnovationIcon size={48} />
+          </ValueIconContainer>
+          {Value 아이콘: SVG 아이콘 (InnovationIcon), 48px, ValueIconContainer로 감싸짐}
+          {개선: 텍스트 라벨("I") → SVG 아이콘으로 교체 (전문성 향상, T2 규칙)}
           <CardTitle id="innovation-title">Innovation</CardTitle>
-          <CardContent>최신 기술을 활용한 혁신적인 솔루션</CardContent>
-          {expandedValue === 'innovation' && (
-            <ValueExpandedContent>
-              {확장 콘텐츠: fadeIn 애니메이션 (0.3s), 상세 설명 표시}
-              상세 설명 텍스트...
-            </ValueExpandedContent>
-          )}
+          <CardContent id="innovation-description">최신 기술을 활용한 혁신적인 솔루션</CardContent>
+          <ValueCardHoverIndicator aria-hidden="true">
+            {호버 인디케이터: 우측 하단, 돋보기 아이콘, 호버 시 opacity 1, translateY(0)}
+            <HoverIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </HoverIcon>
+          </ValueCardHoverIndicator>
         </ValueCard>
-        <ValueCard span="4" role="article" aria-labelledby="collaboration-title" $isHighlighted={highlightedValue === 'collaboration'} $isExpanded={expandedValue === 'collaboration'}>
-          <ValueIcon aria-hidden="true">C</ValueIcon>
+        <ValueCard 
+          span="4" 
+          role="button"
+          aria-labelledby="collaboration-title"
+          aria-describedby="collaboration-description"
+          $isHighlighted={highlightedValue === 'collaboration'}
+          onClick={handleValueCardClick('collaboration', e)}
+          onKeyDown="Enter or Space to open modal"
+          ref={(el) => { valueCardRefs.current['collaboration'] = el }}
+          tabIndex="0"
+        >
+          <ValueIconContainer>
+            <CollaborationIcon size={48} />
+          </ValueIconContainer>
           <CardTitle id="collaboration-title">Collaboration</CardTitle>
-          <CardContent>팀 협업을 통한 더 나은 결과</CardContent>
-          {expandedValue === 'collaboration' && (
-            <ValueExpandedContent>상세 설명 텍스트...</ValueExpandedContent>
-          )}
+          <CardContent id="collaboration-description">팀 협업을 통한 더 나은 결과</CardContent>
+          <ValueCardHoverIndicator aria-hidden="true">
+            <HoverIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </HoverIcon>
+          </ValueCardHoverIndicator>
         </ValueCard>
-        <ValueCard span="4" role="article" aria-labelledby="growth-title" $isHighlighted={highlightedValue === 'growth'} $isExpanded={expandedValue === 'growth'}>
-          <ValueIcon aria-hidden="true">G</ValueIcon>
+        <ValueCard 
+          span="4" 
+          role="button"
+          aria-labelledby="growth-title"
+          aria-describedby="growth-description"
+          $isHighlighted={highlightedValue === 'growth'}
+          onClick={handleValueCardClick('growth', e)}
+          onKeyDown="Enter or Space to open modal"
+          ref={(el) => { valueCardRefs.current['growth'] = el }}
+          tabIndex="0"
+        >
+          <ValueIconContainer>
+            <GrowthIcon size={48} />
+          </ValueIconContainer>
           <CardTitle id="growth-title">Continuous Growth</CardTitle>
-          <CardContent>지속적인 학습과 성장</CardContent>
-          {expandedValue === 'growth' && (
-            <ValueExpandedContent>상세 설명 텍스트...</ValueExpandedContent>
-          )}
+          <CardContent id="growth-description">지속적인 학습과 성장</CardContent>
+          <ValueCardHoverIndicator aria-hidden="true">
+            <HoverIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </HoverIcon>
+          </ValueCardHoverIndicator>
         </ValueCard>
       </ValuesGrid>
+      
+      {/* Value Modal Overlay (T1: 전체 화면 모달 전략) */}
+      {selectedValue && (
+        <ValueModalOverlay
+          onClick={handleModalClose}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`${selectedValue}-modal-title`}
+        >
+          {전체 화면 모달 오버레이: 고대비 배경 (rgba(neutral[950], 0.9)), z-index 9999, fadeIn 300ms ease}
+          {스크롤 위치 보존: scrollPositionRef에 저장, 모달 닫힐 때 복원}
+          {body overflow hidden: 모달 열릴 때 설정, 닫힐 때 해제}
+          
+          <ValueModalContent
+            onClick={(e) => e.stopPropagation()}
+            role="document"
+          >
+            {모달 콘텐츠: 중앙 정렬, max-width 600px, max-height 90vh, slideUp 300ms ease}
+            {스타일: white 배경, borderRadius 2xl, padding spacing[12], overflow-y auto}
+            
+            <ValueModalCloseButton
+              onClick={handleModalClose}
+              aria-label={t('about.mission.modal.close', 'Close modal')}
+            >
+              {닫기 버튼: 우측 상단, absolute position, 호버 시 배경 변경}
+              <CloseIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </CloseIcon>
+            </ValueModalCloseButton>
+            
+            <ValueModalIconContainer>
+              {아이콘 컨테이너: 80px (30% 확대), primary[50] 배경, primary[500] 테두리, box-shadow}
+              {selectedValue === 'innovation' && <InnovationIcon size={80} highlighted />}
+              {selectedValue === 'collaboration' && <CollaborationIcon size={80} highlighted />}
+              {selectedValue === 'growth' && <GrowthIcon size={80} highlighted />}
+              {아이콘: 30% 확대 (48px → 80px), highlighted prop으로 강조 효과}
+            </ValueModalIconContainer>
+            
+            <ValueModalTitle id={`${selectedValue}-modal-title`}>
+              {모달 제목: fontSize['3xl'], fontWeight.bold, text-align center, margin-bottom spacing[4]}
+              {selectedValue에 따른 제목 표시}
+            </ValueModalTitle>
+            
+            <ValueModalDescription>
+              {모달 설명: fontSize.lg, text-align center, margin-bottom spacing[8], lineHeight relaxed}
+              {selectedValue에 따른 설명 표시}
+            </ValueModalDescription>
+            
+            <ValueModalDetail>
+              {모달 상세: R3 규칙 - 20% 더 큰 텍스트 (calc(fontSize.base * 1.2))}
+              {스타일: fontSize calc(base * 1.2), lineHeight relaxed, text-align left, padding spacing[6]}
+              {배경: surface 색상, borderRadius lg, border}
+              {selectedValue에 따른 상세 설명 표시}
+            </ValueModalDetail>
+          </ValueModalContent>
+        </ValueModalOverlay>
+      )}
+      
       <MissionVisionTextContainer $isVisible={isMissionVisible}>
         {Mission/Vision 텍스트 컨테이너: max-width 800px, 중앙 정렬, scroll-triggered fadeInUp 애니메이션}
         <MissionText $isVisible={isMissionVisible}>
@@ -253,33 +370,52 @@
   />
   
   <ContactSection role="region" aria-labelledby="contact-title">
-    {Contact 섹션: 연락처 정보 및 CTA 버튼, Card 컴포넌트 기반}
+    {Contact 섹션: Primary 그라데이션 배경 (primary[500]-primary[800]), 모든 텍스트 Neutral White, 최종 CTA 허브}
+    {스타일: linear-gradient(135deg, primary[500] 0%, primary[800] 100%), border none, padding spacing[12] spacing[6], box-shadow.lg}
     <Container>
       <ContactTitle id="contact-title">Contact</ContactTitle>
+      {제목: fontSize['3xl'], fontWeight.bold, color hero.text (white), spacing[2] margin-bottom}
+      
+      <ContactClosingMessage>
+        {마지막 메시지: "Ready to build something great?", fontSize.lg, color hero.text, spacing[8] margin-bottom}
+        {감성적 연결을 유도하는 클로징 문구}
+      </ContactClosingMessage>
+      
       <ContactInfo layout="grid" gap="spacing[4]">
-        {연락처 정보: 그리드 레이아웃, max-width 400px, 중앙 정렬}
+        {연락처 정보: 그리드 레이아웃, max-width 400px, 중앙 정렬, spacing[10] margin-bottom}
         <ContactItem tabIndex="0">
-          {Contact 아이템: 키보드 접근 가능, 호버/포커스 효과}
+          {Contact 아이템: 키보드 접근 가능, primary[600] 배경 (opacity 40%), primary[500] 테두리, 호버 시 primary[50] 오버레이 + translateY(-2px)}
           <ContactLabel>Email:</ContactLabel>
+          {라벨: fontWeight.semibold, fontSize.base, color hero.text}
           <ContactValue href="mailto:..." target="_blank">
-            {이메일 링크: primary[500] 색상, 호버 시 밑줄}
+            {연락처 값: color hero.text, fontSize.base, display flex, align-items center, gap spacing[1]}
+            {이메일 주소}
+            {화살표 아이콘: ::after content '➔', fontSize.sm, color primary[300], 호버 시 translateX(spacing[0.5])}
+            {밑줄 대신 화살표 아이콘 사용, 호버 시 primary[200] 색상}
           </ContactValue>
         </ContactItem>
         <ContactItem tabIndex="0">
           <ContactLabel>LinkedIn:</ContactLabel>
           <ContactValue href="linkedin-url" target="_blank">
             {LinkedIn 링크}
+            {화살표 아이콘: ::after content '➔'}
           </ContactValue>
         </ContactItem>
       </ContactInfo>
-      <ContactButtons layout="flex" gap="spacing[4]">
-        {CTA 버튼 그룹: 중앙 정렬, flex-wrap}
+      
+      <ContactButtons layout="flex" gap="spacing[4]" margin-top="spacing[10]">
+        {CTA 버튼 그룹: 중앙 정렬, 모바일에서 100% 너비 수직 스택}
+        {스타일: Solid White 배경 (neutral[0]), Primary[700] 텍스트, box-shadow.md, 호버 시 box-shadow.lg + translateY(-2px)}
+        {유일무이한 디자인: 페이지 내 다른 모든 CTA 스타일과 구분되는 고의적 디자인 패턴 파괴}
         <ContactButton href="mailto:..." target="_blank">
+          {CTA 버튼: padding spacing[3] spacing[6], borderRadius.lg, fontSize.base, fontWeight.semibold}
+          {호버: box-shadow.lg, translateY(-2px), focus-visible: outline primary[200]}
           Send Email
         </ContactButton>
         <ContactButton href="linkedin-url" target="_blank">
           Connect on LinkedIn
         </ContactButton>
+        {모바일 (max-width: 767px): flex-direction column, gap spacing[3], button width 100%}
       </ContactButtons>
     </Container>
   </ContactSection>
@@ -314,6 +450,12 @@
     <Component name="Card" reuse="BackgroundCard, ValueCard" />
     <Component name="Container" reuse="100%" />
     <Component name="ScrollIndicator" reuse="HomePage.styles" />
+    <Component name="InnovationIcon" source="@components/icons/ValueIcons" />
+    <Component name="CollaborationIcon" source="@components/icons/ValueIcons" />
+    <Component name="GrowthIcon" source="@components/icons/ValueIcons" />
+    <Component name="GraduationCapIcon" source="@components/icons/BackgroundIcons" />
+    <Component name="BriefcaseIcon" source="@components/icons/BackgroundIcons" />
+    <Component name="SettingsIcon" source="@components/icons/BackgroundIcons" />
   </ReusedComponents>
   <ReusedStyles>
     <Style name="JourneyGrid" source="JourneyMilestoneSection" />
@@ -322,10 +464,27 @@
     <Style name="SectionSubtitle" pattern="HomePage.styles" />
     <Style name="FeaturedSection" pattern="StorySection, BackgroundSection, MissionVisionSection" />
     <Style name="FeaturedGrid" pattern="BackgroundGrid, ValuesGrid" />
+    <Style name="ValueModalOverlay" pattern="ProjectsPage ProjectModalOverlay" />
+    <Style name="ValueModalContent" pattern="ProjectsPage ProjectModalContent" />
   </ReusedStyles>
-  <EstimatedReuse>93%</EstimatedReuse>
-  {코드 재사용률: 약 93% - 기존 컴포넌트와 스타일 패턴을 최대한 재사용}
+  <EstimatedReuse>95%</EstimatedReuse>
+  {코드 재사용률: 약 95% - 기존 컴포넌트와 스타일 패턴을 최대한 재사용, SVG 아이콘 컴포넌트 추가}
 </CodeReuse>
+
+<!-- Recent Improvements -->
+<RecentImprovements>
+  <Improvement date="2024" type="Immersive Modal Strategy & Professional Icons">
+    {몰입형 모달 전략 및 전문 아이콘 적용}
+    <Feature>T1: ValueCard 클릭 시 전체 화면 모달 트리거 (인라인 확장 제거)</Feature>
+    <Feature>T2: BackgroundCard 이모지 → SVG 아이콘 교체 (전문성 향상)</Feature>
+    <Feature>T3: JourneyMilestoneSection 제목 변경 ("My Journey" → "Career Timeline")</Feature>
+    <Feature>R1: ValueIcon 텍스트 라벨("I", "C", "G") → SVG 아이콘 교체</Feature>
+    <Feature>R2: 모달 내 텍스트 20% 확대 (가독성 향상)</Feature>
+    <Feature>R3: 모달 아이콘 30% 확대 (48px → 80px)</Feature>
+    <Feature>R4: Esc 키로 모달 닫기, 스크롤 위치 보존, 포커스 복귀</Feature>
+    <Feature>SVG Icons: GraduationCapIcon, BriefcaseIcon, SettingsIcon 추가</Feature>
+  </Improvement>
+</RecentImprovements>
 
 <!-- Animation Strategy -->
 <Animations>
@@ -336,6 +495,15 @@
     <Element ref="backgroundRef" animation="fadeInUp" />
     <Element ref="missionRef" animation="fadeInUp" />
   </ScrollTriggered>
+  
+  <ModalAnimations>
+    {모달 애니메이션: 300ms ease (Constraints 규칙)}
+    <Overlay animation="fadeIn 300ms ease" />
+    {오버레이: opacity 0→1, 300ms ease}
+    <Content animation="slideUp 300ms ease" />
+    {콘텐츠: opacity 0→1, translateY(spacing[8])→0, 300ms ease}
+  </ModalAnimations>
+  
   <Accessibility>
     {접근성: prefers-reduced-motion 지원, 애니메이션 비활성화 옵션}
     <MediaQuery query="prefers-reduced-motion: reduce">
@@ -343,6 +511,39 @@
     </MediaQuery>
   </Accessibility>
 </Animations>
+
+<!-- Modal State Management -->
+<ModalState>
+  <State name="selectedValue" type="string | null" />
+  {선택된 Value ID: 'innovation', 'collaboration', 'growth' 또는 null}
+  <State name="scrollPositionRef" type="number" />
+  {스크롤 위치 보존: 모달 열릴 때 저장, 닫힐 때 복원}
+  <State name="valueCardRefs" type="Record<string, HTMLDivElement | null>" />
+  {Value 카드 refs: 모달 닫힌 후 포커스 복귀용}
+  
+  <Handlers>
+    <Handler name="handleValueCardClick">
+      {Value 카드 클릭 핸들러: 모달 트리거}
+      <Step>1. e.preventDefault() (필요 시)</Step>
+      <Step>2. scrollPositionRef.current = window.scrollY (스크롤 위치 저장)</Step>
+      <Step>3. setSelectedValue(valueId) (모달 열기)</Step>
+      <Step>4. document.body.style.overflow = 'hidden' (스크롤 잠금)</Step>
+    </Handler>
+    <Handler name="handleModalClose">
+      {모달 닫기 핸들러: R4 규칙 (A11y Dismissal)}
+      <Step>1. setSelectedValue(null) (모달 닫기)</Step>
+      <Step>2. document.body.style.overflow = '' (스크롤 복원)</Step>
+      <Step>3. window.scrollTo(0, scrollPositionRef.current) (스크롤 위치 복원)</Step>
+      <Step>4. setTimeout으로 포커스 복귀 (valueCardRefs.current[valueId].focus())</Step>
+    </Handler>
+    <Handler name="handleEscKey">
+      {Esc 키 핸들러: R4 규칙}
+      <Step>1. useEffect로 키보드 이벤트 리스너 등록</Step>
+      <Step>2. e.key === 'Escape' && selectedValue 조건 확인</Step>
+      <Step>3. handleModalClose() 호출</Step>
+    </Handler>
+  </Handlers>
+</ModalState>
 
 <!-- Responsive Breakpoints -->
 <Responsive>

@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProjectDetailPage>
+  {ProjectDetailPage는 개별 프로젝트의 상세 정보를 표시하는 페이지입니다. 프로젝트 이미지, 설명, 기술 스택, 링크 등으로 구성됩니다.}
+  
+  <Container>
+    {Container: 중앙 정렬된 최대 너비 컨테이너}
+    
+    {loading ? (
+      <LoadingText>
+        {로딩 상태: 중앙 정렬, fontSize.base, color textSecondary, padding spacing[10]}
+        {t('common.loading')}
+      </LoadingText>
+    ) : error || !project ? (
+      <>
+        <BackLink to="/projects">
+          {뒤로 가기 링크: primary[500] 색상, text-decoration none, spacing[6] margin-bottom}
+          {스타일: display inline-block, fontWeight.medium, transition all 0.3s ease}
+          {호버 시 underline + translateX(-4px) + primary[600] 색상}
+          {focus-visible: outline 2px solid primary[500], outline-offset spacing[1], borderRadius sm}
+          ← {t('projects.backToProjects')}
+        </BackLink>
+        <ErrorMessage>
+          {에러 메시지: fontSize.base, color error}
+          {t('projects.notFound')}
+        </ErrorMessage>
+      </>
+    ) : (
+      <>
+        <BackLink to="/projects">
+          ← {t('projects.backToProjects')}
+        </BackLink>
+        
+        <ProjectHeader>
+          {프로젝트 헤더: spacing[12] margin-bottom, spacing[8] padding-bottom, border-bottom spacing[0.5] solid border}
+          <ProjectTitle>
+            {프로젝트 제목: fontSize['3xl'] (40px), fontWeight.bold, spacing[4] margin-bottom, color text}
+            {스타일: lineHeight tight, 모바일: fontSize['2xl'] (28px)}
+            {project.title}
+          </ProjectTitle>
+          
+          <ProjectMeta>
+            {메타 정보: flex layout, gap spacing[6], spacing[6] margin-bottom, flex-wrap}
+            {스타일: fontSize base, color textSecondary}
+            <span>
+              {날짜 범위: formatDate 함수로 포맷팅}
+              {formatDate(project.startDate)} - {formatDate(project.endDate)}
+            </span>
+            {project.status && (
+              <span>
+                Status: {project.status}
+              </span>
+            )}
+          </ProjectMeta>
+          
+          {project.githubUrl || project.demoUrl ? (
+            <ProjectLinks>
+              {프로젝트 링크: flex layout, gap spacing[3], flex-wrap}
+              {project.githubUrl && (
+                <Button 
+                  as="a" 
+                  href={project.githubUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  variant="outline"
+                >
+                  GitHub
+                </Button>
+              )}
+              {project.demoUrl && (
+                <Button 
+                  as="a" 
+                  href={project.demoUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  variant="primary"
+                >
+                  Live Demo
+                </Button>
+              )}
+            </ProjectLinks>
+          ) : null}
+        </ProjectHeader>
+        
+        {project.imageUrl && (
+          <ProjectImage 
+            src={project.imageUrl} 
+            alt={project.title} 
+          />
+          {프로젝트 이미지: width 100%, max-height 400px, object-fit cover, borderRadius xl, spacing[12] margin-bottom}
+        )}
+        
+        <ContentWrapper>
+          {콘텐츠 래퍼: grid layout, 1fr + 320px (데스크톱), 1fr (태블릿 이하), gap spacing[12]}
+          {스타일: spacing[12] margin-bottom}
+          
+          <MainContent order="1" orderTablet="0">
+            {메인 콘텐츠: 프로젝트 설명 및 상세 정보}
+            
+            {project.description && (
+              <Section>
+                {섹션: spacing[12] margin-bottom, fontFamily primary}
+                <SectionTitle>
+                  {섹션 제목: fontSize['2xl'] (24px), fontWeight.bold, spacing[4] margin-bottom, color text}
+                  {스타일: display flex, align-items center, gap spacing[3]}
+                  <span>📝</span>
+                  Description
+                </SectionTitle>
+                <SectionDescription>
+                  {섹션 설명: fontSize base, lineHeight relaxed, color textSecondary, spacing[4] margin-bottom}
+                  {project.description}
+                </SectionDescription>
+              </Section>
+            )}
+            
+            {project.problem && (
+              <Section>
+                <SectionTitle>
+                  <span>🎯</span>
+                  Problem
+                </SectionTitle>
+                <SectionDescription>
+                  {project.problem}
+                </SectionDescription>
+              </Section>
+            )}
+            
+            {project.solution && (
+              <Section>
+                <SectionTitle>
+                  <span>💡</span>
+                  Solution
+                </SectionTitle>
+                <SectionDescription>
+                  {project.solution}
+                </SectionDescription>
+                {project.solutionList && (
+                  <SolutionList>
+                    {해결책 목록: list-style none, padding 0, margin 0}
+                    {project.solutionList.map((item, index) => (
+                      <li key={index}>
+                        {리스트 아이템: padding spacing[3] 0, padding-left spacing[7] (28px), position relative}
+                        {스타일: color textSecondary, lineHeight relaxed}
+                        {::before: content '✓', position absolute, left 0, color primary[500], fontWeight bold, fontSize lg}
+                        {item}
+                      </li>
+                    ))}
+                  </SolutionList>
+                )}
+              </Section>
+            )}
+            
+            {project.outcomes && (
+              <Section>
+                <SectionTitle>
+                  <span>📊</span>
+                  Outcomes
+                </SectionTitle>
+                {project.outcomesList && (
+                  <OutcomeList>
+                    {결과 목록: SolutionList와 동일한 스타일}
+                    {project.outcomesList.map((item, index) => (
+                      <li key={index}>
+                        {item}
+                      </li>
+                    ))}
+                  </OutcomeList>
+                )}
+              </Section>
+            )}
+            
+            {project.originalDescription && (
+              <Section>
+                <SectionTitle>
+                  <span>📄</span>
+                  Full Description
+                </SectionTitle>
+                <OriginalDescription>
+                  {원본 설명: fontSize base, lineHeight relaxed, color textSecondary}
+                  {스타일: h1/h2/h3는 color text, margin-top spacing[6], margin-bottom spacing[3]}
+                  {스타일: p는 margin-bottom spacing[4], ul/ol는 margin-bottom spacing[4], padding-left spacing[6]}
+                  {project.originalDescription}
+                </OriginalDescription>
+              </Section>
+            )}
+          </MainContent>
+          
+          <SideContent order="2" orderTablet="1">
+            {사이드 콘텐츠: 프로젝트 메타 정보 및 기술 스택}
+            
+            <SideCard>
+              {사이드 카드: card/surface 배경, border spacing[0.25] solid border, borderRadius xl, padding spacing[6]}
+              {스타일: position sticky, top spacing[25] (100px), fontFamily primary}
+              
+              <SideCardTitle>
+                {사이드 카드 제목: fontSize base, fontWeight.bold, spacing[4] margin-bottom, color text}
+                {스타일: text-transform uppercase, letter-spacing 0.5px, opacity 0.7}
+                Tech Stack
+              </SideCardTitle>
+              
+              {project.techStacks && project.techStacks.length > 0 && (
+                <TechTags>
+                  {기술 태그: flex layout, gap spacing[2], flex-wrap}
+                  {project.techStacks.map((tech) => (
+                    <Tag key={tech}>
+                      {Tag 컴포넌트: primary[100] 배경, primary[700] 텍스트, 호버 효과}
+                      {tech}
+                    </Tag>
+                  ))}
+                </TechTags>
+              )}
+              
+              {project.relatedProjects && project.relatedProjects.length > 0 && (
+                <>
+                  <SideCardTitle>
+                    Related Projects
+                  </SideCardTitle>
+                  <RelatedProjectsList>
+                    {관련 프로젝트 목록: flex column, gap spacing[2]}
+                    {project.relatedProjects.map((relatedProject) => (
+                      <Link key={relatedProject.id} to={`/projects/${relatedProject.id}`}>
+                        {relatedProject.title}
+                      </Link>
+                    ))}
+                  </RelatedProjectsList>
+                </>
+              )}
+            </SideCard>
+          </SideContent>
+        </ContentWrapper>
+      </>
+    )}
+  </Container>
+</ProjectDetailPage>
+
+<!-- State Management -->
+<StateManagement>
+  <LocalState>
+    <State name="project" type="ProjectDetail | null" />
+    {프로젝트 상세 정보: 서버에서 가져온 프로젝트 데이터}
+    <State name="loading" type="boolean" />
+    {로딩 상태: 프로젝트 데이터 로딩 중}
+    <State name="error" type="string | null" />
+    {에러 메시지: 프로젝트 로드 실패 시}
+  </LocalState>
+  
+  <URLParams>
+    <Param name="id" source="useParams" />
+    {URL 파라미터: 프로젝트 ID, /projects/:id 경로에서 추출}
+  </URLParams>
+</StateManagement>
+
+<!-- Data Flow -->
+<DataFlow>
+  <InitialLoad>
+    {초기 로드: URL 파라미터에서 프로젝트 ID 추출 및 데이터 로드}
+    <Step>1. useParams()로 id 추출</Step>
+    <Step>2. id가 없으면 return (조기 종료)</Step>
+    <Step>3. setLoading(true) (로딩 상태 설정)</Step>
+    <Step>4. getProject(parseInt(id)) API 호출</Step>
+    <Step>5. response.success 확인</Step>
+    <Step>6. setProject(response.data) (프로젝트 데이터 저장)</Step>
+    <Step>7. setError(response.error) 또는 'Project not found' (에러 처리)</Step>
+    <Step>8. setLoading(false) (로딩 완료)</Step>
+  </InitialLoad>
+  
+  <DateFormatting>
+    {날짜 포맷팅: formatDate 함수 사용}
+    <Step>1. new Date(dateString) 생성</Step>
+    <Step>2. toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })</Step>
+    <Step>3. 예: "2024년 1월 15일" 형식으로 반환</Step>
+  </DateFormatting>
+</DataFlow>
+
+<!-- Design Principles Applied -->
+<DesignPrinciples>
+  <KickoffLabs>
+    {KickoffLabs 원칙: Primary + Neutral 색상, Inter 폰트, 일관된 스타일}
+    <ColorPalette>Primary + Neutral only</ColorPalette>
+    <FontFamily>Inter (typography.fontFamily.primary)</FontFamily>
+    <Consistency>일관된 spacing, border-radius, button styles</Consistency>
+  </KickoffLabs>
+  
+  <FourPointSpacing>
+    {4-point spacing 시스템: 모든 spacing 값이 4px의 배수}
+    <Spacing>
+      <Value token="spacing[0.25]" pixels="1px" usage="Border width" />
+      <Value token="spacing[0.5]" pixels="4px" usage="Border-bottom height" />
+      <Value token="spacing[1]" pixels="4px" usage="Outline offset" />
+      <Value token="spacing[2]" pixels="8px" usage="Gap" />
+      <Value token="spacing[3]" pixels="12px" usage="Gap, padding, margin" />
+      <Value token="spacing[4]" pixels="16px" usage="Margin-bottom, padding" />
+      <Value token="spacing[6]" pixels="24px" usage="Gap, padding, margin-bottom" />
+      <Value token="spacing[7]" pixels="28px" usage="List padding-left" />
+      <Value token="spacing[8]" pixels="32px" usage="Padding-bottom, margin-bottom" />
+      <Value token="spacing[10]" pixels="40px" usage="LoadingText padding" />
+      <Value token="spacing[12]" pixels="48px" usage="Margin-bottom, gap" />
+      <Value token="spacing[25]" pixels="100px" usage="Sticky top position" />
+      <Value token="spacing[80]" pixels="320px" usage="SideContent width" />
+      <Value token="spacing[100]" pixels="400px" usage="ProjectImage max-height" />
+    </Spacing>
+  </FourPointSpacing>
+  
+  <NielsenHeuristics>
+    <H1>Visibility of System Status</H1>
+    {H1: 로딩 상태 표시, 에러 메시지, 호버 효과, 링크 상태}
+    <H3>User Control & Freedom</H3>
+    {H3: 뒤로 가기 링크, 외부 링크 새 탭 열기, 키보드 접근 가능}
+    <H4>Consistency & Standards</H4>
+    {H4: 일관된 프로젝트 상세 레이아웃, 재사용 컴포넌트, 통일된 스타일}
+    <H8>Aesthetic & Minimalist Design</H8>
+    {H8: 깔끔한 레이아웃, 적절한 여백, 불필요한 요소 제거}
+  </NielsenHeuristics>
+</DesignPrinciples>
+
+<!-- Accessibility Features -->
+<Accessibility>
+  <ARIA>
+    <Attribute element="BackLink" aria-label="Back to projects list" />
+    <Attribute element="ProjectImage" alt={project.title} />
+    <Attribute element="Button" as="a" target="_blank" rel="noopener noreferrer" />
+  </ARIA>
+  
+  <Keyboard>
+    <Navigation>
+      {키보드 네비게이션: Tab으로 링크/버튼 이동, Enter로 활성화}
+      <BackLink native="true" />
+      <Button native="true" />
+    </Navigation>
+  </Keyboard>
+  
+  <FocusManagement>
+    {포커스 관리: 명확한 포커스 스타일, outline 표시}
+    <BackLink focus="outline 2px solid primary[500], outline-offset spacing[1]" />
+    <Button focus="outline visible" />
+  </FocusManagement>
+</Accessibility>
+
+<!-- Responsive Breakpoints -->
+<Responsive>
+  <Desktop minWidth="1024px">
+    {데스크톱: ContentWrapper 1fr + 320px grid, SideCard sticky, 전체 기능}
+  </Desktop>
+  <Tablet minWidth="768px" maxWidth="1023px">
+    {태블릿: ContentWrapper 1fr grid, MainContent order 0, SideContent order 1}
+  </Tablet>
+  <Mobile maxWidth="767px">
+    {모바일: ProjectTitle fontSize['2xl'], ContentWrapper 1fr, SideCard static, 터치 최적화}
+  </Mobile>
+</Responsive>
+
+<!-- Component Dependencies -->
+<Dependencies>
+  <Internal>
+    <Component name="Container" source="@components/common" />
+    <Component name="Tag" source="@components/common" />
+    <Component name="Button" source="@components/common" />
+  </Internal>
+  
+  <External>
+    <Library name="react-i18next" usage="useTranslation for i18n" />
+    <Library name="react-router-dom" usage="useParams, Link, useNavigate" />
+    <Library name="styled-components" usage="Styled components" />
+  </External>
+  
+  <Services>
+    <Service name="getProject" source="services/projects" />
+    {프로젝트 상세 데이터 가져오기: API 호출 또는 mock 데이터}
+  </Services>
+</Dependencies>
+
+<!-- Project Detail Structure -->
+<ProjectDetailStructure>
+  <RequiredFields>
+    <Field name="id" type="number" />
+    <Field name="title" type="string" />
+    <Field name="startDate" type="string" />
+    <Field name="endDate" type="string" />
+  </RequiredFields>
+  
+  <OptionalFields>
+    <Field name="description" type="string" />
+    <Field name="imageUrl" type="string" />
+    <Field name="techStacks" type="string[]" />
+    <Field name="githubUrl" type="string" />
+    <Field name="demoUrl" type="string" />
+    <Field name="status" type="string" />
+    <Field name="problem" type="string" />
+    <Field name="solution" type="string" />
+    <Field name="solutionList" type="string[]" />
+    <Field name="outcomes" type="string" />
+    <Field name="outcomesList" type="string[]" />
+    <Field name="originalDescription" type="string" />
+    <Field name="relatedProjects" type="RelatedProject[]" />
+  </OptionalFields>
+</ProjectDetailStructure>
+

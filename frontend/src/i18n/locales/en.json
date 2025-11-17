@@ -43,6 +43,7 @@
     }
   },
   "projects": {
+    "title": "My Projects",
     "portfolioWebsite": {
       "title": "Portfolio Website",
       "summary": "Responsive personal portfolio website - HTML5, CSS3, JavaScript"
@@ -56,16 +57,34 @@
       "summary": "IoT devices e-commerce platform - Java, JSP, Maven"
     },
     "loading": "Loading projects...",
+    "viewProject": "View Project",
+    "list": "Projects list",
+    "filtering": "Filtering projects...",
+    "results": "Showing {{count}} of {{total}} projects",
     "filters": {
-      "allYears": "All Years",
-      "sort": {
-        "newest": "Newest",
-        "oldest": "Oldest"
-      }
+      "title": "Project filters",
+      "techStack": "Tech Stack:",
+      "year": "Year:",
+      "sort": "Sort:",
+      "sortLabel": "Sort options",
+      "allYears": "All Years"
+    },
+    "sort": {
+      "newest": "Newest First",
+      "oldest": "Oldest First"
     },
     "empty": {
       "title": "No projects found",
-      "description": "No projects match the selected filters."
+      "description": "Try adjusting your filters to see more projects.",
+      "initial": {
+        "title": "No projects available",
+        "description": "Projects will appear here once they are added."
+      },
+      "filtered": {
+        "title": "No projects match your filters",
+        "description": "No projects found. Try adjusting your filters.",
+        "clearFilters": "Clear All Filters"
+      }
     }
   },
   "academics": {
@@ -395,6 +414,10 @@
     "english": "English", 
     "japanese": "日本語"
   },
+  "journey": {
+    "title": "Career Timeline",
+    "subtitle": "개발자로 성장해온 여정과 앞으로의 목표를 소개합니다"
+  },
   "storytelling": {
     "heroToJourney": "Discover the journey of growth as a developer who enjoys solving problems",
     "journeyToProjects": "Explore the projects born from this growth journey",
@@ -403,12 +426,13 @@
     "showcaseToTestimonials": "Hear what people who have actually worked with me have to say",
     "journeyPurpose": "Shows the growth journey as a developer and the learning and achievements at each stage through a timeline",
     "projectsPurpose": "Carefully selected projects that showcase meaningful and diverse technologies",
+    "featuredPurpose": "A curated collection of projects demonstrating capabilities across diverse domains",
     "showcasePurpose": "Explore technology stacks across various domains including Three.js, Software Development, and Game Development",
     "testimonialsPurpose": "Honest feedback from colleagues and clients who have worked together on actual projects"
   },
   "featured": {
     "title": "Featured Projects",
-    "subtitle": "Carefully selected projects that showcase capabilities across diverse domains",
+    "purpose": "A curated collection of projects demonstrating capabilities across diverse domains",
     "viewAll": "View All Projects"
   },
   "testimonials": {

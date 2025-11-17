@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { useProjectAnalytics } from '../../hooks/useAnalytics'
 import { use3DTilt } from '../../hooks/use3DTilt'
 
-const FeaturedCardWrapper = styled(Link)`
+const FeaturedCardLink = styled(Link)`
   text-decoration: none;
   color: inherit;
   display: block;
@@ -82,9 +82,62 @@ const ImageContainer = styled.div`
   border-radius: ${props => props.theme.radius.lg};
   overflow: hidden;
   background: ${props => props.theme.colors.neutral[props.theme.mode === 'dark' ? 800 : 200]};
+  position: relative;
 
   @media (max-width: 768px) {
     height: 200px;
+  }
+`
+
+const ImageOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    ${props => {
+      const hex = props.theme.colors.primary[500].replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.85)`;
+    }} 0%,
+    ${props => {
+      const hex = props.theme.colors.primary[600].replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.9)`;
+    }} 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  ${FeaturedCardLink}:hover & {
+    opacity: 1;
+  }
+`
+
+const HoverIcon = styled.svg`
+  width: ${props => props.theme.spacing[12]}; /* 48px */
+  height: ${props => props.theme.spacing[12]}; /* 48px */
+  color: ${props => props.theme.colors.primary[500]};
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  
+  ${FeaturedCardLink}:hover & {
+    opacity: 1;
+    transform: scale(1);
   }
 `
 
@@ -98,7 +151,7 @@ const ProjectImage = styled.img`
   position: relative;
   z-index: 1;
 
-  ${FeaturedCardWrapper}:hover & {
+  ${FeaturedCardLink}:hover & {
     transform: scale(1.05) translateZ(0);
   }
 `
@@ -177,7 +230,7 @@ const TechTag = styled.span`
   border: 1px solid ${props => props.theme.colors.border};
 `
 
-const CTA = styled.button`
+const CTA = styled.div`
   margin-top: ${props => props.theme.spacing[4]};
   padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[6]};
   background: ${props => props.theme.colors.primary[500]};
@@ -187,18 +240,13 @@ const CTA = styled.button`
   font-weight: ${props => props.theme.typography.fontWeight.semibold};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   font-size: ${props => props.theme.typography.fontSize.sm};
-  cursor: pointer;
+  text-align: center;
   transition: all 0.3s ease;
 
-  &:hover {
+  ${FeaturedCardLink}:hover & {
     background: ${props => props.theme.colors.primary[600]};
     transform: translateX(4px);
     box-shadow: ${props => props.theme.shadows.md};
-  }
-  
-  &:focus-visible {
-    outline: 2px solid ${props => props.theme.colors.primary[500]};
-    outline-offset: 2px;
   }
 `
 
@@ -259,12 +307,16 @@ export function FeaturedProjectCard({
     })
   }
 
-  const handleProjectClick = () => {
+  const handleLinkClick = () => {
     trackView(id, title, techStacks)
   }
 
   return (
-    <FeaturedCardWrapper to={`/projects/${id}`} onClick={handleProjectClick}>
+    <FeaturedCardLink 
+      to={`/projects/${id}`}
+      onClick={handleLinkClick}
+      aria-label={`View project: ${t(title)}`}
+    >
       <CardContainer
         ref={(node) => {
           cardRef.current = node
@@ -277,6 +329,12 @@ export function FeaturedProjectCard({
         {imageUrl && (
           <ImageContainer>
             <ProjectImage src={imageUrl} alt={t(title)} loading="lazy" />
+            <ImageOverlay>
+              <HoverIcon viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </HoverIcon>
+            </ImageOverlay>
           </ImageContainer>
         )}
         <ContentContainer>
@@ -296,9 +354,9 @@ export function FeaturedProjectCard({
               </TechTag>
             )}
           </TechStacks>
-          <CTA type="button">View Project</CTA>
+          <CTA>View Project</CTA>
         </ContentContainer>
       </CardContainer>
-    </FeaturedCardWrapper>
+    </FeaturedCardLink>
   )
 }

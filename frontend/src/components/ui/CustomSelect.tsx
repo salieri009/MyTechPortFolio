@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
+import { CheckMarkIcon } from '@components/icons/CheckMarkIcon'
 
 /**
  * CustomSelect Component
@@ -131,15 +132,7 @@ const SelectOption = styled.button.withConfig({
     outline-offset: -2px;
   }
   
-  /* Selected indicator */
-  ${props => props.$isSelected && `
-    &::before {
-      content: '✓';
-      margin-right: ${props.theme.spacing[2]};
-      color: ${props.theme.colors.primary[600]};
-      font-weight: ${props.theme.typography.fontWeight.bold};
-    }
-  `}
+  /* Selected indicator - removed, using CheckMarkIcon component instead */
   
   @media (prefers-reduced-motion: reduce) {
     transition: background 0.15s ease;
@@ -273,6 +266,9 @@ export function CustomSelect({
             aria-selected={option.value === value}
             id={`option-${option.value}`}
           >
+            {option.value === value && (
+              <CheckMarkIcon size={16} style={{ marginRight: '8px', flexShrink: 0 }} />
+            )}
             {option.label}
           </SelectOption>
         ))}

@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { Container, Tag, Button } from '@components/common'
 import { getProject } from '@services/projects'
 import type { ProjectDetail } from '@model/domain'
+import { CheckMarkIcon } from '@components/icons/CheckMarkIcon'
 
 const BackLink = styled(Link)`
   color: ${props => props.theme.colors.primary[500]};
@@ -33,7 +34,7 @@ const BackLink = styled(Link)`
 const ProjectHeader = styled.div`
   margin-bottom: ${props => props.theme.spacing[12]}; /* 4-point system: 48px */
   padding-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
-  border-bottom: 2px solid ${props => props.theme.colors.border || '#E5E7EB'};
+  border-bottom: ${props => props.theme.spacing[0.5]} solid ${props => props.theme.colors.border || props.theme.colors.neutral[200]};
 `
 
 const ProjectTitle = styled.h1`
@@ -146,20 +147,21 @@ const SolutionList = styled.ul`
 
   li {
     padding: ${props => props.theme.spacing[3]} 0; /* 4-point system: 12px */
-    padding-left: ${props => props.theme.spacing[7]}; /* 4-point system: 28px */
+    padding-left: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
     position: relative;
     color: ${props => props.theme.colors.textSecondary};
     line-height: ${props => props.theme.typography.lineHeight.relaxed};
-
-    &:before {
-      content: '✓';
-      position: absolute;
-      left: 0;
-      color: ${props => props.theme.colors.primary[500]};
-      font-weight: ${props => props.theme.typography.fontWeight.bold};
-      font-size: ${props => props.theme.typography.fontSize.lg}; /* 4-point system: 18px */
-    }
+    display: flex;
+    align-items: flex-start;
+    gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   }
+`
+
+const CheckMarkWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  top: ${props => props.theme.spacing[3]}; /* 4-point system: 12px */
+  flex-shrink: 0;
 `
 
 const OutcomeList = styled.ul`
@@ -170,25 +172,19 @@ const OutcomeList = styled.ul`
 
   li {
     padding: ${props => props.theme.spacing[3]} 0; /* 4-point system: 12px */
-    padding-left: ${props => props.theme.spacing[7]}; /* 4-point system: 28px */
+    padding-left: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
     position: relative;
     color: ${props => props.theme.colors.textSecondary};
     line-height: ${props => props.theme.typography.lineHeight.relaxed};
-
-    &:before {
-      content: '✓';
-      position: absolute;
-      left: 0;
-      color: ${props => props.theme.colors.primary[500]};
-      font-weight: ${props => props.theme.typography.fontWeight.bold};
-      font-size: ${props => props.theme.typography.fontSize.lg}; /* 4-point system: 18px */
-    }
+    display: flex;
+    align-items: flex-start;
+    gap: ${props => props.theme.spacing[2]}; /* 4-point system: 8px */
   }
 `
 
 const SideCard = styled.div`
-  background: ${props => props.theme.colors.card || '#FFFFFF'};
-  border: 1px solid ${props => props.theme.colors.border || '#E5E7EB'};
+  background: ${props => props.theme.colors.card || props.theme.colors.surface || props.theme.colors.neutral[0]};
+  border: ${props => props.theme.spacing[0.25]} solid ${props => props.theme.colors.border || props.theme.colors.neutral[200]};
   border-radius: ${props => props.theme.radius.xl}; /* 4-point system: 12px */
   padding: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   position: sticky;
@@ -336,7 +332,12 @@ export function ProjectDetailPage() {
               <SectionTitle>My Solution</SectionTitle>
               <SolutionList>
                 {project.solution.map((item, index) => (
-                  <li key={index}>{item}</li>
+                  <li key={index}>
+                    <CheckMarkWrapper>
+                      <CheckMarkIcon size={20} />
+                    </CheckMarkWrapper>
+                    <span>{item}</span>
+                  </li>
                 ))}
               </SolutionList>
             </Section>
@@ -347,7 +348,12 @@ export function ProjectDetailPage() {
               <SectionTitle>Key Outcomes</SectionTitle>
               <OutcomeList>
                 {project.keyOutcomes.map((outcome, index) => (
-                  <li key={index}>{outcome}</li>
+                  <li key={index}>
+                    <CheckMarkWrapper>
+                      <CheckMarkIcon size={20} />
+                    </CheckMarkWrapper>
+                    <span>{outcome}</span>
+                  </li>
                 ))}
               </OutcomeList>
             </Section>

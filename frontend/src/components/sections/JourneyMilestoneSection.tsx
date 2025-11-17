@@ -163,22 +163,22 @@ const TimelinePathProgress = styled.path<{ $dashOffset: number; $pathLength: num
 const MilestoneItem = styled(motion.div)`
   display: flex;
   align-items: flex-start;
-  margin-bottom: 48px;
+  margin-bottom: ${props => props.theme.spacing[12]}; /* 48px */
   position: relative;
   flex-direction: row;
 
   @media (max-width: 768px) {
-    margin-bottom: 48px;
-    padding-left: 60px;
+    margin-bottom: ${props => props.theme.spacing[12]}; /* 48px */
+    padding-left: ${props => props.theme.spacing[14]}; /* 56px (60px → 56px, 4px 배수로 조정) */
   }
 `
 
 const MilestoneNode = styled.div<{ $status: 'completed' | 'current' | 'planned' }>`
-  width: 16px;
-  height: 16px;
+  width: ${props => props.theme.spacing[4]}; /* 16px */
+  height: ${props => props.theme.spacing[4]}; /* 16px */
   border-radius: 50%;
   position: absolute;
-  left: 42px; /* Bar 중심에 맞춤: 40px (bar left) + 2px (bar width/2) */
+  left: ${props => props.theme.spacing[11]}; /* 44px: 40px (bar left) + 4px (bar width/2, 4px 배수로 조정) */
   transform: translateX(-50%);
   z-index: 3;
   
@@ -195,8 +195,8 @@ const MilestoneNode = styled.div<{ $status: 'completed' | 'current' | 'planned' 
     }
   }};
   
-  border: 3px solid ${props => props.theme.colors.background};
-  box-shadow: 0 0 0 2px ${props => {
+  border: ${props => props.theme.spacing[1]} solid ${props => props.theme.colors.background}; /* 4px (3px → 4px 배수로 조정) */
+  box-shadow: 0 0 0 ${props => props.theme.spacing[0.5]} ${props => { /* 2px */
     switch (props.$status) {
       case 'completed':
         return props.theme.colors.primary[500]
@@ -210,20 +210,20 @@ const MilestoneNode = styled.div<{ $status: 'completed' | 'current' | 'planned' 
   }};
 
   @media (max-width: 768px) {
-    left: 22px; /* Bar 중심에 맞춤: 20px (bar left) + 2px (bar width/2) */
+    left: ${props => props.theme.spacing[6]}; /* 24px: 20px (bar left) + 4px (bar width/2, 4px 배수로 조정) */
     transform: translateX(-50%);
-    width: 14px;
-    height: 14px;
-    border-width: 2px;
+    width: ${props => props.theme.spacing[3.5]}; /* 16px (14px → 16px, 4px 배수로 조정) */
+    height: ${props => props.theme.spacing[3.5]}; /* 16px (14px → 16px, 4px 배수로 조정) */
+    border-width: ${props => props.theme.spacing[0.5]}; /* 2px */
   }
 `
 
 const MilestoneContent = styled(motion.div)<{ $isLast?: boolean }>`
   background: transparent;
-  padding: 20px 0;
-  border-bottom: ${props => props.$isLast ? 'none' : `1px solid ${props.theme.colors.border}`};
-  max-width: 600px;
-  margin-left: 80px;
+  padding: ${props => props.theme.spacing[5]} 0; /* 20px */
+  border-bottom: ${props => props.$isLast ? 'none' : `${props.theme.spacing[0.5]} solid ${props.theme.colors.border}`}; /* 4px (1px → 4px 배수로 조정) */
+  max-width: 37.5rem; /* 600px (테마에 spacing[150] 없음, 직접 계산) */
+  margin-left: ${props => props.theme.spacing[20]}; /* 80px */
   flex: 1;
   position: relative;
   z-index: 1;
@@ -231,60 +231,63 @@ const MilestoneContent = styled(motion.div)<{ $isLast?: boolean }>`
   @media (max-width: 768px) {
     margin-left: 0;
     max-width: none;
-    width: calc(100% - 40px);
-    padding: 16px 0;
+    width: calc(100% - ${props => props.theme.spacing[10]}); /* 40px */
+    padding: ${props => props.theme.spacing[4]} 0; /* 16px */
   }
 `
 
 const MilestoneYear = styled.div`
-  font-size: 14px;
-  font-weight: 600;
+  font-size: ${props => props.theme.typography.fontSize.sm}; /* 14px */
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
   color: ${props => props.theme.colors.primary[500]};
-  margin-bottom: 8px;
+  margin-bottom: ${props => props.theme.spacing[2]}; /* 8px */
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
   
   @media (max-width: 768px) {
-    font-size: 13px;
+    font-size: ${props => props.theme.typography.fontSize.xs}; /* 13px → 12px (가장 가까운 값) */
   }
 `
 
 const MilestoneTitle = styled.h3`
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 12px;
+  font-size: ${props => props.theme.typography.fontSize['2xl']}; /* 24px */
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  margin-bottom: ${props => props.theme.spacing[3]}; /* 12px */
   color: ${props => props.theme.colors.text};
   line-height: 1.3;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const MilestoneDescription = styled.p`
-  font-size: 16px;
+  font-size: ${props => props.theme.typography.fontSize.base}; /* 16px */
   color: ${props => props.theme.colors.textSecondary};
   line-height: 1.6;
-  margin-bottom: 16px;
+  margin-bottom: ${props => props.theme.spacing[4]}; /* 16px */
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
 const CardContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: ${props => props.theme.spacing[3]}; /* 12px */
 `
 
 const TechTags = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: ${props => props.theme.spacing[2]}; /* 8px */
 `
 
 const TechTag = styled.span`
   background: transparent;
   color: ${props => props.theme.colors.textSecondary};
-  padding: 4px 8px;
-  border-radius: 2px;
-  font-size: 12px;
-  font-weight: 500;
+  padding: ${props => props.theme.spacing[1]} ${props => props.theme.spacing[2]}; /* 4px 8px */
+  border-radius: ${props => props.theme.radius.sm}; /* 2px → 4px (가장 가까운 값) */
+  font-size: ${props => props.theme.typography.fontSize.xs}; /* 12px */
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
   font-family: ${props => props.theme.typography.fontFamily.primary};
-  border: 1px solid ${props => props.theme.colors.border};
+  border: ${props => props.theme.spacing[0.5]} solid ${props => props.theme.colors.border}; /* 4px (1px → 4px 배수로 조정) */
   
   ${props => props.theme.mode === 'dark' && `
     border-color: ${props.theme.colors.neutral[700]};
@@ -575,7 +578,7 @@ export function JourneyMilestoneSection() {
         <JourneyGrid>
           {/* F-패턴: 좌측 텍스트 영역 */}
           <TextColumn>
-        <SectionTitle>{t('journey.title') || 'My Journey'}</SectionTitle>
+        <SectionTitle>{t('journey.title') || 'Career Timeline'}</SectionTitle>
         <SectionPurpose 
           text={t('storytelling.journeyPurpose')}
         />

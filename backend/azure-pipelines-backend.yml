@@ -1,0 +1,115 @@
+# Backend-Specific Pipeline
+# Can be used as standalone pipeline or referenced from main pipeline
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    include:
+      - backend/**
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    include:
+      - backend/**
+
+variables:
+  - group: 'Portfolio-Pipeline-Variables'
+  - name: buildConfiguration
+    value: 'Release'
+  - name: vmImage
+    value: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    displayName: 'Build Backend'
+    jobs:
+      - job: Build
+        displayName: 'Build and Package'
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - task: JavaToolInstaller@0
+            displayName: 'Install Java 21'
+            inputs:
+              versionSpec: '21'
+              jdkArchitecture: 'x64'
+              jdkSource: 'PreInstalled'
+
+          - task: Cache@2
+            displayName: 'Cache Gradle Dependencies'
+            inputs:
+              key: 'gradle | "$(Agent.OS)" | backend/build.gradle'
+              restoreKeys: |
+                gradle | "$(Agent.OS)"
+              path: 'backend/.gradle'
+
+          - task: Gradle@3
+            displayName: 'Build Backend'
+            inputs:
+              workingDirectory: 'backend'
+              gradleWrapperFile: 'backend/gradlew'
+              gradleOptions: '-Xmx3072m -Dorg.gradle.daemon=false'
+              tasks: 'clean build'
+              publishJUnitResults: true
+              testResultsFiles: '**/TEST-*.xml'
+              codeCoverageToolOption: 'JaCoCo'
+
+          - task: Docker@2
+            displayName: 'Build Docker Image'
+            inputs:
+              containerRegistry: 'ACR_Connection'
+              repository: 'portfolio-backend'
+              command: 'buildAndPush'
+              Dockerfile: 'backend/Dockerfile'
+              tags: |
+                $(Build.BuildId)
+                $(Build.SourceBranchName)
+                latest
+
+  - stage: Test
+    displayName: 'Test Backend'
+    dependsOn: Build
+    jobs:
+      - job: UnitTests
+        displayName: 'Unit Tests'
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - template: ../.azure/pipelines/test-cases/backend-unit-tests.yml
+            parameters:
+              workingDirectory: 'backend'
+
+      - job: IntegrationTests
+        displayName: 'Integration Tests'
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - template: ../.azure/pipelines/test-cases/backend-integration-tests.yml
+            parameters:
+              workingDirectory: 'backend'
+
+  - stage: Security
+    displayName: 'Security Scanning'
+    dependsOn: Build
+    jobs:
+      - job: SecurityScan
+        displayName: 'Security Scan'
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - template: ../.azure/pipelines/templates/security-scan.yml
+            parameters:
+              backendImage: '$(ACR_NAME).azurecr.io/portfolio-backend:$(Build.BuildId)'
+              frontendImage: 'dummy'  # Not used for backend-only pipeline
+              containerRegistry: 'ACR_Connection'
+

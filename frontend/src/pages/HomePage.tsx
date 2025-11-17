@@ -28,28 +28,35 @@ const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => (
 )
 
 // Grid layout configuration for featured projects
-// This replaces hardcoded nth-child selectors with data-driven approach
+// UI-L1: First project (index 0) always spans full width (1 / -1) - The Blockbuster
+// UI-L2: Asymmetric span values for visual rhythm - The Rhythm
 const getGridLayout = (index: number, total: number) => {
-  // First project: full width (hero)
+  // UI-L1: First project: full width (The Blockbuster)
   if (index === 0) {
     return {
-      desktop: '1 / -1',
-      tablet: '1 / -1',
-      mobile: '1'
+      desktop: '1 / -1',  // 12-column full width
+      tablet: '1 / -1',   // 6-column full width
+      mobile: '1'         // Single column
     }
   }
   
-  // Define layout patterns based on position
+  // UI-L2: Asymmetric layout patterns for visual rhythm
+  // Creates intentional visual hierarchy and breaks monotony
   const patterns = [
-    { desktop: 'span 6', tablet: 'span 3', mobile: '1' },  // 2nd: medium
-    { desktop: 'span 3', tablet: 'span 3', mobile: '1' }, // 3rd: small
-    { desktop: 'span 3', tablet: 'span 3', mobile: '1' }, // 4th: small
-    { desktop: 'span 4', tablet: 'span 3', mobile: '1' }, // 5th: medium
-    { desktop: 'span 4', tablet: 'span 3', mobile: '1' }, // 6th: medium
-    { desktop: 'span 4', tablet: 'span 3', mobile: '1' }, // 7th: medium
+    { desktop: 'span 6', tablet: 'span 3', mobile: '1' },  // 2nd: Large (50%)
+    { desktop: 'span 3', tablet: 'span 3', mobile: '1' },  // 3rd: Small (25%)
+    { desktop: 'span 3', tablet: 'span 3', mobile: '1' },  // 4th: Small (25%)
+    { desktop: 'span 4', tablet: 'span 3', mobile: '1' },  // 5th: Medium (33%)
+    { desktop: 'span 5', tablet: 'span 3', mobile: '1' },  // 6th: Medium-Large (42%)
+    { desktop: 'span 3', tablet: 'span 3', mobile: '1' },  // 7th: Small (25%)
+    { desktop: 'span 4', tablet: 'span 3', mobile: '1' },  // 8th: Medium (33%)
+    { desktop: 'span 5', tablet: 'span 3', mobile: '1' },  // 9th: Medium-Large (42%)
+    { desktop: 'span 2', tablet: 'span 2', mobile: '1' },  // 10th: Extra Small (17%)
+    { desktop: 'span 4', tablet: 'span 4', mobile: '1' }, // 11th: Medium (33%)
+    { desktop: 'span 6', tablet: 'span 3', mobile: '1' },  // 12th: Large (50%)
   ]
   
-  // Use pattern based on position, or default to medium
+  // Use pattern based on position, creating intentional asymmetry
   const patternIndex = (index - 1) % patterns.length
   return patterns[patternIndex] || { desktop: 'span 4', tablet: 'span 3', mobile: '1' }
 }
@@ -236,11 +243,8 @@ export function HomePage() {
         <Container>
           <S.SectionTitle $isVisible={isFeaturedVisible}>{t('featured.title') || 'Featured Projects'}</S.SectionTitle>
           <SectionPurpose 
-            text={t('storytelling.projectsPurpose')}
+            text={t('featured.purpose')}
           />
-          <S.SectionSubtitle $isVisible={isFeaturedVisible}>
-            {t('featured.subtitle') || 'Highlighting my most impactful and diverse projects that showcase my skills across multiple domains.'}
-          </S.SectionSubtitle>
           {loading ? (
             <S.FeaturedGrid $isVisible={isFeaturedVisible}>
               <SkeletonProjectCard />

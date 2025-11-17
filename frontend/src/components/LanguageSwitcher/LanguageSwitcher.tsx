@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
+import { CheckMarkIcon } from '@components/icons/CheckMarkIcon'
 
 /**
  * Nielsen's Heuristics Compliance:
@@ -140,10 +141,10 @@ const LanguageOptionName = styled.span`
     : props.theme.colors.text};
 `
 
-const CheckIcon = styled.span`
-  font-size: 16px;
-  color: ${props => props.theme.colors.primary[600]};
+const CheckIconWrapper = styled.div`
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
 `
 
 interface Language {
@@ -306,7 +307,9 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className })
                   {language.nativeName}
                 </LanguageOptionName>
                 {language.code === i18n.language && (
-                  <CheckIcon aria-hidden="true">✓</CheckIcon>
+                  <CheckIconWrapper aria-hidden="true">
+                    <CheckMarkIcon size={16} />
+                  </CheckIconWrapper>
                 )}
               </LanguageOption>
             ))}

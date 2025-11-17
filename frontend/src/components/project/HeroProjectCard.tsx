@@ -1,10 +1,10 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { useProjectAnalytics } from '../../hooks/useAnalytics'
 
-const HeroCardWrapper = styled(Link)`
+const HeroCardLink = styled(Link)`
   text-decoration: none;
   color: inherit;
   display: block;
@@ -90,6 +90,58 @@ const HeroImageContainer = styled.div`
   }
 `
 
+const ImageOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    ${props => {
+      const hex = props.theme.colors.primary[500].replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.85)`;
+    }} 0%,
+    ${props => {
+      const hex = props.theme.colors.primary[600].replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.9)`;
+    }} 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  ${HeroCardLink}:hover & {
+    opacity: 1;
+  }
+`
+
+const HoverIcon = styled.svg`
+  width: ${props => props.theme.spacing[12]}; /* 48px */
+  height: ${props => props.theme.spacing[12]}; /* 48px */
+  color: ${props => props.theme.colors.primary[500]};
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  
+  ${HeroCardLink}:hover & {
+    opacity: 1;
+    transform: scale(1);
+  }
+`
+
 const HeroImage = styled.img`
   width: 100%;
   height: 100%;
@@ -98,7 +150,7 @@ const HeroImage = styled.img`
   will-change: transform;
   transform: translateZ(0);
 
-  ${HeroCardWrapper}:hover & {
+  ${HeroCardLink}:hover & {
     transform: scale(1.05);
   }
 `
@@ -194,15 +246,10 @@ const HeroCTA = styled.div`
   text-align: center;
   transition: all 0.2s ease;
 
-  ${HeroCardWrapper}:hover & {
+  ${HeroCardLink}:hover & {
     background: ${props => props.theme.colors.primary[500]};
     color: white;
     box-shadow: ${props => props.theme.shadows.md};
-  }
-  
-  &:focus-visible {
-    outline: 2px solid ${props => props.theme.colors.primary[500]};
-    outline-offset: 2px;
   }
 `
 
@@ -235,16 +282,26 @@ export function HeroProjectCard({
     })
   }
 
-  const handleProjectClick = () => {
+  const handleLinkClick = () => {
     trackView(id, title, techStacks)
   }
 
   return (
-    <HeroCardWrapper to={`/projects/${id}`} onClick={handleProjectClick}>
+    <HeroCardLink 
+      to={`/projects/${id}`}
+      onClick={handleLinkClick}
+      aria-label={`View project: ${t(title)}`}
+    >
       <HeroCardContainer>
         {imageUrl && (
           <HeroImageContainer>
             <HeroImage src={imageUrl} alt={t(title)} loading="lazy" />
+            <ImageOverlay>
+              <HoverIcon viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </HoverIcon>
+            </ImageOverlay>
           </HeroImageContainer>
         )}
         <HeroContent>
@@ -269,7 +326,7 @@ export function HeroProjectCard({
           <HeroCTA>View Project</HeroCTA>
         </HeroContent>
       </HeroCardContainer>
-    </HeroCardWrapper>
+    </HeroCardLink>
   )
 }
 

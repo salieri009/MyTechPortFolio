@@ -44,6 +44,7 @@
     }
   },
   "projects": {
+    "title": "私のプロジェクト",
     "portfolioWebsite": {
       "title": "ポートフォリオウェブサイト",
       "summary": "レスポンシブな個人ポートフォリオウェブサイト - HTML5, CSS3, JavaScript"
@@ -57,16 +58,34 @@
       "summary": "IoTデバイス電子商取引プラットフォーム - Java, JSP, Maven"
     },
     "loading": "プロジェクトを読み込み中...",
+    "viewProject": "プロジェクトを見る",
+    "list": "プロジェクトリスト",
+    "filtering": "プロジェクトをフィルタリング中...",
+    "results": "{{total}}件中{{count}}件を表示",
     "filters": {
-      "allYears": "すべての年",
-      "sort": {
-        "newest": "最新",
-        "oldest": "古い順"
-      }
+      "title": "プロジェクトフィルター",
+      "techStack": "技術スタック:",
+      "year": "年:",
+      "sort": "並び替え:",
+      "sortLabel": "並び替えオプション",
+      "allYears": "すべての年"
+    },
+    "sort": {
+      "newest": "最新順",
+      "oldest": "古い順"
     },
     "empty": {
       "title": "プロジェクトが見つかりません",
-      "description": "選択したフィルターに一致するプロジェクトがありません。"
+      "description": "フィルターを調整して、より多くのプロジェクトを確認してください。",
+      "initial": {
+        "title": "利用可能なプロジェクトがありません",
+        "description": "プロジェクトが追加されると、ここに表示されます。"
+      },
+      "filtered": {
+        "title": "フィルターに一致するプロジェクトがありません",
+        "description": "プロジェクトが見つかりません。フィルターを調整してみてください。",
+        "clearFilters": "すべてのフィルターをクリア"
+      }
     }
   },
   "academics": {
@@ -396,6 +415,10 @@
     "english": "English",
     "japanese": "日本語"
   },
+  "journey": {
+    "title": "キャリアタイムライン",
+    "subtitle": "開発者として成長してきた旅路と今後の目標を紹介します"
+  },
   "storytelling": {
     "heroToJourney": "問題解決を楽しむ開発者として成長してきた旅路を紹介します",
     "journeyToProjects": "この成長過程から生まれたプロジェクトをご覧ください",
@@ -404,12 +427,13 @@
     "showcaseToTestimonials": "実際に一緒に働いた人々の評価をお聞きください",
     "journeyPurpose": "開発者としての成長過程と各段階での学習と成果をタイムラインで示します",
     "projectsPurpose": "意味のある多様な技術を活用したプロジェクトを厳選して紹介します",
+    "featuredPurpose": "多様な分野での能力を示すキュレーションされたプロジェクトコレクション",
     "showcasePurpose": "Three.js、ソフトウェア開発、ゲーム開発など、さまざまな領域の技術スタックを探索できます",
     "testimonialsPurpose": "実際のプロジェクトで一緒に働いた同僚やクライアントからの率直なフィードバックです"
   },
   "featured": {
     "title": "注目のプロジェクト",
-    "subtitle": "多様な分野での能力を示す最も意味のあるプロジェクトを厳選しました",
+    "purpose": "多様な分野での能力を示すキュレーションされたプロジェクトコレクション",
     "viewAll": "すべてのプロジェクトを見る"
   },
   "testimonials": {

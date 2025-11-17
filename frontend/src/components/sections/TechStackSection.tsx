@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { TechCategory, TechIcon } from './TechIcon'
+import { SettingsIcon } from '@components/icons/BackgroundIcons'
 
 const TechStackContainer = styled.section`
   padding: 100px 0 120px 0;
@@ -212,7 +213,11 @@ export function TechStackSection({ className }: TechStackSectionProps) {
         {TECH_CATEGORIES.map((category) => (
           <CategorySection key={category.id}>
             <CategoryTitle>
-              <span>{category.icon}</span>
+              {category.id === 'backend' ? (
+                <SettingsIcon />
+              ) : (
+                <span>{category.icon}</span>
+              )}
               {t(`techStack.categories.${category.id}`, category.title)}
             </CategoryTitle>
             <TechGrid>

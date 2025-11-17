@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProjectFlowArchitecture>
+  {이 문서는 포트폴리오 프로젝트의 전체 아키텍처와 데이터 흐름을 설명합니다.}
+  
+  <ProjectOverview>
+    <Name>MyPortFolio</Name>
+    <Type>Full-Stack Portfolio Website</Type>
+    <Architecture>React (Frontend) + Spring Boot (Backend)</Architecture>
+    <DesignPhilosophy>Immersive Staging Direction - 100% Focus Isolation</DesignPhilosophy>
+    <CorePrinciple>Context Preservation - No Navigation Interruption</CorePrinciple>
+  </ProjectOverview>
+
+  <ApplicationStructure>
+    <EntryPoint>
+      <File>frontend/src/main.tsx</File>
+      <Description>React 애플리케이션 진입점, React Router 및 Theme Provider 초기화</Description>
+    </EntryPoint>
+    
+    <RootComponent>
+      <File>frontend/src/App.tsx</File>
+      <Description>전역 상태 관리, 라우팅, 전역 모달 컴포넌트 포함</Description>
+      <GlobalComponents>
+        <Component name="FeedbackOverlay" type="Modal" />
+        <Component name="ProjectDetailOverlay" type="Modal" />
+        <Component name="ThemeProvider" type="Context" />
+        <Component name="Layout" type="Wrapper" />
+      </GlobalComponents>
+    </RootComponent>
+  </ApplicationStructure>
+
+  <RoutingArchitecture>
+    <Strategy>Nested Routes with Layout Wrapper</Strategy>
+    <Router>React Router DOM v6</Router>
+    <CodeSplitting>React.lazy() for all pages</CodeSplitting>
+    
+    <RouteStructure>
+      <PublicRoutes>
+        <Route path="/" component="HomePage" description="홈 페이지 - Hero, Featured Projects, Testimonials" />
+        <Route path="/projects" component="ProjectsPage" description="프로젝트 목록 - 필터링, 정렬, 모달 상세" />
+        <Route path="/projects/:id" component="ProjectDetailPage" description="프로젝트 상세 페이지 (레거시, 모달로 대체됨)" />
+        <Route path="/academics" component="AcademicsPage" description="학업 정보 - 타임라인, 통계, 검색" />
+        <Route path="/about" component="AboutPage" description="소개 페이지 - Story, Background, Mission & Vision" />
+        <Route path="/feedback" component="FeedbackPage" description="피드백 페이지 (레거시, 모달로 대체됨)" />
+      </PublicRoutes>
+      
+      <AuthRoutes>
+        <Route path="/login" component="LoginPage" description="로그인 페이지 - Google OAuth, 2FA" />
+      </AuthRoutes>
+    </RouteStructure>
+    
+    <LayoutWrapper>
+      <Component>Layout</Component>
+      <Structure>
+        <Header>MainHeader</Header>
+        <Main>Page Content (children)</Main>
+        <Footer>Footer</Footer>
+      </Structure>
+      <Features>
+        <Feature>Skip to Content (A11y)</Feature>
+        <Feature>Auto-scroll to top at 98% scroll</Feature>
+        <Feature>Theme-aware styling</Feature>
+      </Features>
+    </LayoutWrapper>
+  </RoutingArchitecture>
+
+  <PageFlow>
+    <UserJourney>
+      <EntryPoint>
+        <Path>/</Path>
+        <Page>HomePage</Page>
+        <Sections>
+          <Section name="Hero" type="Introduction" />
+          <Section name="FeaturedProjects" type="Showcase" />
+          <Section name="Testimonials" type="SocialProof" />
+        </Sections>
+        <Interactions>
+          <Interaction type="ProjectCardClick" action="Open ProjectDetailOverlay Modal" />
+          <Interaction type="PrimaryCTAClick" action="Navigate to /projects" />
+          <Interaction type="SecondaryCTAClick" action="Open FeedbackOverlay Modal" />
+        </Interactions>
+      </EntryPoint>
+      
+      <NavigationPaths>
+        <Path from="HomePage" to="ProjectsPage" trigger="PrimaryCTA or ViewAllLink" />
+        <Path from="HomePage" to="AboutPage" trigger="Navigation Menu" />
+        <Path from="HomePage" to="AcademicsPage" trigger="Navigation Menu" />
+        <Path from="HomePage" to="FeedbackModal" trigger="SecondaryCTA or Footer Links" />
+        <Path from="ProjectsPage" to="ProjectModal" trigger="ProjectCard Click" />
+        <Path from="AboutPage" to="ValueModal" trigger="ValueCard Click" />
+        <Path from="AnyPage" to="FeedbackModal" trigger="Footer CTA or Navigation" />
+      </NavigationPaths>
+    </UserJourney>
+  </PageFlow>
+
+  <ModalSystem>
+    <Philosophy>Immersive Staging - 100% Focus Isolation</Philosophy>
+    <Strategy>Context Preservation - No Page Navigation</Strategy>
+    
+    <GlobalModals>
+      <Modal name="ProjectDetailOverlay" store="useProjectModalStore">
+        <TriggerLocations>
+          <Location>HomePage - HeroProjectCard</Location>
+          <Location>HomePage - FeaturedProjectCard</Location>
+          <Location>ProjectsPage - ProjectCard</Location>
+        </TriggerLocations>
+        <Features>
+          <Feature>Full-screen overlay (rgba(neutral[950/900], 0.9))</Feature>
+          <Feature>300ms ease fade-in/slide-up animation</Feature>
+          <Feature>Esc key to close (A11y)</Feature>
+          <Feature>Focus return to trigger element</Feature>
+          <Feature>Scroll position preservation</Feature>
+          <Feature>Body scroll lock</Feature>
+          <Feature>Related academics links</Feature>
+          <Feature>20% larger description text</Feature>
+          <Feature>Emphasized project image</Feature>
+        </Features>
+        <DataFlow>
+          <Step>1. User clicks ProjectCard</Step>
+          <Step>2. useProjectModalStore.openModal(projectId, triggerElement)</Step>
+          <Step>3. Save scroll position to sessionStorage</Step>
+          <Step>4. Lock body scroll (overflow: hidden)</Step>
+          <Step>5. ProjectDetailOverlay renders</Step>
+          <Step>6. Load project details via getProject(projectId)</Step>
+          <Step>7. Display project information in modal</Step>
+          <Step>8. User closes modal (Esc or close button)</Step>
+          <Step>9. Restore scroll position</Step>
+          <Step>10. Return focus to trigger element</Step>
+        </DataFlow>
+      </Modal>
+      
+      <Modal name="FeedbackOverlay" store="useFeedbackModalStore">
+        <TriggerLocations>
+          <Location>AboutPage - AboutHeroSecondaryCTA</Location>
+          <Location>Footer - FooterContact.FeedbackButton</Location>
+          <Location>Footer - FooterCTA.StyledOutlineButton</Location>
+          <Location>MobileFooter - MobileNav button</Location>
+        </TriggerLocations>
+        <Features>
+          <Feature>Full-screen overlay (rgba(neutral[950/900], 0.9))</Feature>
+          <Feature>300ms ease fade-in/slide-up animation</Feature>
+          <Feature>Esc key to close (A11y)</Feature>
+          <Feature>Focus return to trigger element</Feature>
+          <Feature>Scroll position preservation</Feature>
+          <Feature>Body scroll lock</Feature>
+          <Feature>Form validation</Feature>
+          <Feature>EmailJS integration</Feature>
+          <Feature>Success state with CheckMarkIcon (SVG)</Feature>
+          <Feature>New feedback and close buttons</Feature>
+        </Features>
+        <DataFlow>
+          <Step>1. User clicks feedback trigger</Step>
+          <Step>2. useFeedbackModalStore.openModal(triggerElement)</Step>
+          <Step>3. Save scroll position to sessionStorage</Step>
+          <Step>4. Lock body scroll (overflow: hidden)</Step>
+          <Step>5. FeedbackOverlay renders</Step>
+          <Step>6. User fills form and submits</Step>
+          <Step>7. sendFeedbackEmail(formData) via EmailJS</Step>
+          <Step>8. Display success state with CheckMarkIcon</Step>
+          <Step>9. User closes modal or submits new feedback</Step>
+          <Step>10. Restore scroll position and focus</Step>
+        </DataFlow>
+      </Modal>
+      
+      <Modal name="ValueModalOverlay" store="local state (AboutPage)">
+        <TriggerLocations>
+          <Location>AboutPage - ValueCard (Mission & Vision)</Location>
+        </TriggerLocations>
+        <Features>
+          <Feature>Full-screen overlay (rgba(neutral[950/900], 0.9))</Feature>
+          <Feature>300ms ease fade-in/slide-up animation</Feature>
+          <Feature>Esc key to close (A11y)</Feature>
+          <Feature>Focus return to trigger element</Feature>
+          <Feature>Scroll position preservation</Feature>
+          <Feature>Value description display</Feature>
+        </Features>
+      </Modal>
+    </GlobalModals>
+  </ModalSystem>
+
+  <StateManagement>
+    <GlobalStores>
+      <Store name="useThemeStore" library="Zustand" persistence="localStorage">
+        <State>
+          <Property name="isDark" type="boolean" />
+          <Property name="toggleTheme" type="function" />
+        </State>
+        <Usage>Theme switching (light/dark mode)</Usage>
+      </Store>
+      
+      <Store name="useProjectModalStore" library="Zustand" persistence="none">
+        <State>
+          <Property name="selectedProjectId" type="number | null" />
+          <Property name="triggerElementRef" type="HTMLElement | null" />
+          <Property name="openModal" type="function" />
+          <Property name="closeModal" type="function" />
+        </State>
+        <Usage>Global project detail modal state</Usage>
+        <Features>
+          <Feature>Scroll position preservation (sessionStorage)</Feature>
+          <Feature>Focus return to trigger element</Feature>
+          <Feature>Body scroll lock management</Feature>
+        </Features>
+      </Store>
+      
+      <Store name="useFeedbackModalStore" library="Zustand" persistence="none">
+        <State>
+          <Property name="isOpen" type="boolean" />
+          <Property name="triggerElementRef" type="HTMLElement | null" />
+          <Property name="openModal" type="function" />
+          <Property name="closeModal" type="function" />
+        </State>
+        <Usage>Global feedback modal state</Usage>
+        <Features>
+          <Feature>Scroll position preservation (sessionStorage)</Feature>
+          <Feature>Focus return to trigger element</Feature>
+          <Feature>Body scroll lock management</Feature>
+        </Features>
+      </Store>
+      
+      <Store name="useFilters" library="Zustand" persistence="URL params">
+        <State>
+          <Property name="techStacks" type="string[]" />
+          <Property name="year" type="number | null" />
+          <Property name="sort" type="string" />
+          <Property name="currentPage" type="number" />
+          <Property name="pagination" type="object" />
+          <Property name="filterCounts" type="object" />
+        </State>
+        <Usage>ProjectsPage filtering and pagination</Usage>
+      </Store>
+    </GlobalStores>
+    
+    <LocalState>
+      <Pattern>useState for component-specific state</Pattern>
+      <Pattern>useRef for DOM references and scroll positions</Pattern>
+      <Pattern>useMemo for expensive computations</Pattern>
+      <Pattern>useCallback for stable function references</Pattern>
+    </LocalState>
+  </StateManagement>
+
+  <DataFlow>
+    <APIServices>
+      <Service name="projects" path="frontend/src/services/projects.ts">
+        <Endpoints>
+          <Endpoint method="GET" path="/api/v1/projects" description="Get projects list with filters" />
+          <Endpoint method="GET" path="/api/v1/projects/:id" description="Get project details" />
+        </Endpoints>
+        <Functions>
+          <Function name="getProjects" params="filters, pagination" />
+          <Function name="getProject" params="id" />
+        </Functions>
+      </Service>
+      
+      <Service name="academics" path="frontend/src/services/academics.ts">
+        <Endpoints>
+          <Endpoint method="GET" path="/api/v1/academics" description="Get academics list" />
+          <Endpoint method="POST" path="/api/v1/academics" description="Create academic (auth required)" />
+          <Endpoint method="PUT" path="/api/v1/academics/:id" description="Update academic (auth required)" />
+          <Endpoint method="DELETE" path="/api/v1/academics/:id" description="Delete academic (auth required)" />
+        </Endpoints>
+      </Service>
+      
+      <Service name="testimonials" path="frontend/src/services/testimonials.ts">
+        <Endpoints>
+          <Endpoint method="GET" path="/api/v1/testimonials" description="Get testimonials list" />
+        </Endpoints>
+      </Service>
+      
+      <Service name="email" path="frontend/src/services/email.ts">
+        <Provider>EmailJS</Provider>
+        <Functions>
+          <Function name="sendFeedbackEmail" params="formData" />
+          <Function name="initEmailService" params="none" />
+        </Functions>
+      </Service>
+      
+      <Service name="analytics" path="frontend/src/services/analytics.ts">
+        <Provider>Google Analytics</Provider>
+        <Functions>
+          <Function name="init" params="none" />
+          <Function name="pageView" params="path" />
+          <Function name="event" params="category, action, label" />
+          <Function name="error" params="message, source" />
+        </Functions>
+      </Service>
+    </APIServices>
+    
+    <RequestFlow>
+      <Step>1. Component calls service function</Step>
+      <Step>2. Service function uses apiClient (Axios)</Step>
+      <Step>3. apiClient adds X-Request-ID header</Step>
+      <Step>4. apiClient adds Authorization header (if authenticated)</Step>
+      <Step>5. Request sent to backend via Vite proxy</Step>
+      <Step>6. Backend processes request with LoggingConfig</Step>
+      <Step>7. Response returned to service function</Step>
+      <Step>8. Service function returns formatted response</Step>
+      <Step>9. Component updates state with response data</Step>
+      <Step>10. UI re-renders with new data</Step>
+    </RequestFlow>
+  </DataFlow>
+
+  <ComponentArchitecture>
+    <AtomicDesign>
+      <Level name="Atoms" examples="Button, Input, Tag, Icon" />
+      <Level name="Molecules" examples="ProjectCard, AcademicCard, ValueCard" />
+      <Level name="Organisms" examples="FilterBar, FeaturedSection, TestimonialSection" />
+      <Level name="Templates" examples="Layout, Page Structure" />
+      <Level name="Pages" examples="HomePage, ProjectsPage, AboutPage" />
+    </AtomicDesign>
+    
+    <KeyComponents>
+      <Component name="ProjectCard" type="Molecule">
+        <Features>
+          <Feature>Hover magnifying glass icon (Primary[500])</Feature>
+          <Feature>onClick triggers ProjectDetailOverlay modal</Feature>
+          <Feature>No navigation (Link removed)</Feature>
+          <Feature>Image overlay on hover</Feature>
+        </Features>
+      </Component>
+      
+      <Component name="HeroProjectCard" type="Molecule">
+        <Features>
+          <Feature>Full-width hero layout (12-column span)</Feature>
+          <Feature>Hover magnifying glass icon</Feature>
+          <Feature>onClick triggers ProjectDetailOverlay modal</Feature>
+          <Feature>No navigation (button, not Link)</Feature>
+        </Features>
+      </Component>
+      
+      <Component name="FeaturedProjectCard" type="Molecule">
+        <Features>
+          <Feature>Asymmetric grid layout (span 6, 3, 4, 5, etc.)</Feature>
+          <Feature>3D tilt effect on hover</Feature>
+          <Feature>Hover magnifying glass icon</Feature>
+          <Feature>onClick triggers ProjectDetailOverlay modal</Feature>
+          <Feature>No navigation (button, not Link)</Feature>
+        </Features>
+      </Component>
+      
+      <Component name="FilterBar" type="Organism">
+        <Features>
+          <Feature>Hide on scroll down, show on scroll up</Feature>
+          <Feature>Tech stack filters</Feature>
+          <Feature>Year filter</Feature>
+          <Feature>Sort options</Feature>
+          <Feature>Filter count badges</Feature>
+        </Features>
+      </Component>
+    </KeyComponents>
+  </ComponentArchitecture>
+
+  <DesignSystem>
+    <Name>KickoffLabs Design System</Name>
+    
+    <Spacing>
+      <System>4-Point Spacing System</System>
+      <BaseUnit>4px</BaseUnit>
+      <Tokens>
+        <Token name="spacing[0.5]" value="4px" />
+        <Token name="spacing[1]" value="4px" />
+        <Token name="spacing[2]" value="8px" />
+        <Token name="spacing[3]" value="12px" />
+        <Token name="spacing[4]" value="16px" />
+        <Token name="spacing[6]" value="24px" />
+        <Token name="spacing[8]" value="32px" />
+        <Token name="spacing[12]" value="48px" />
+        <Token name="spacing[16]" value="64px" />
+        <Token name="spacing[20]" value="80px" />
+        <Token name="spacing[24]" value="96px" />
+        <Token name="spacing[28]" value="112px" />
+        <Token name="spacing[30]" value="120px" />
+        <Token name="spacing[50]" value="200px" />
+        <Token name="spacing[80]" value="320px" />
+        <Token name="spacing[100]" value="400px" />
+        <Token name="spacing[125]" value="500px" />
+        <Token name="spacing[150]" value="600px" />
+        <Token name="spacing[300]" value="1200px" />
+      </Tokens>
+    </Spacing>
+    
+    <ColorPalette>
+      <Primary>Primary[50-950] scale</Primary>
+      <Neutral>Neutral[0-950] scale</Neutral>
+      <Usage>Primary for accents, Neutral for backgrounds and text</Usage>
+      <ThemeAware>All colors adapt to light/dark mode</ThemeAware>
+    </ColorPalette>
+    
+    <Typography>
+      <FontFamily>Inter (primary)</FontFamily>
+      <Sizes>
+        <Size name="xs" value="12px" />
+        <Size name="sm" value="14px" />
+        <Size name="base" value="16px" />
+        <Size name="lg" value="18px" />
+        <Size name="xl" value="20px" />
+        <Size name="2xl" value="24px" />
+        <Size name="3xl" value="30px" />
+        <Size name="4xl" value="36px" />
+      </Sizes>
+      <Weights>normal, medium, semibold, bold, extrabold</Weights>
+    </Typography>
+    
+    <Icons>
+      <Rule>SVG stroke-based icons only</Rule>
+      <Rule>No emoji or text icons</Rule>
+      <Components>
+        <Component name="CheckMarkIcon" path="frontend/src/components/icons/CheckMarkIcon.tsx" />
+        <Component name="InnovationIcon" path="frontend/src/components/icons/ValueIcons.tsx" />
+        <Component name="CollaborationIcon" path="frontend/src/components/icons/ValueIcons.tsx" />
+        <Component name="GrowthIcon" path="frontend/src/components/icons/ValueIcons.tsx" />
+        <Component name="GraduationCapIcon" path="frontend/src/components/icons/BackgroundIcons.tsx" />
+        <Component name="BriefcaseIcon" path="frontend/src/components/icons/BackgroundIcons.tsx" />
+        <Component name="SettingsIcon" path="frontend/src/components/icons/BackgroundIcons.tsx" />
+      </Components>
+    </Icons>
+  </DesignSystem>
+
+  <Accessibility>
+    <Standards>WCAG 2.1 AA Compliance</Standards>
+    <NielsenHeuristics>
+      <Heuristic number="H1" name="Visibility of System Status" />
+      <Heuristic number="H3" name="User Control & Freedom" />
+      <Heuristic number="H4" name="Consistency & Standards" />
+      <Heuristic number="H6" name="Recognition Rather Than Recall" />
+      <Heuristic number="H8" name="Aesthetic & Minimalist Design" />
+    </NielsenHeuristics>
+    
+    <Features>
+      <Feature>Skip to Content link</Feature>
+      <Feature>Keyboard navigation (Tab, Enter, Esc)</Feature>
+      <Feature>Focus management (focus trap, focus return)</Feature>
+      <Feature>ARIA labels and roles</Feature>
+      <Feature>Screen reader announcements</Feature>
+      <Feature>High contrast mode support</Feature>
+      <Feature>Reduced motion support (prefers-reduced-motion)</Feature>
+    </Features>
+  </Accessibility>
+
+  <PerformanceOptimization>
+    <CodeSplitting>
+      <Strategy>Route-based code splitting with React.lazy()</Strategy>
+      <Implementation>All pages loaded on-demand</Implementation>
+    </CodeSplitting>
+    
+    <ImageOptimization>
+      <Strategy>Lazy loading with loading="lazy" attribute</Strategy>
+      <Strategy>Object-fit: cover for consistent sizing</Strategy>
+    </ImageOptimization>
+    
+    <StateOptimization>
+      <Strategy>useMemo for expensive computations</Strategy>
+      <Strategy>useCallback for stable function references</Strategy>
+      <Strategy>Debounced filters for API calls</Strategy>
+    </StateOptimization>
+    
+    <AnimationOptimization>
+      <Strategy>CSS transforms for GPU acceleration</Strategy>
+      <Strategy>will-change property for animated elements</Strategy>
+      <Strategy>Reduced motion support</Strategy>
+    </AnimationOptimization>
+  </PerformanceOptimization>
+
+  <Internationalization>
+    <Library>react-i18next</Library>
+    <Languages>
+      <Language code="en" name="English" />
+      <Language code="ko" name="Korean" />
+      <Language code="ja" name="Japanese" />
+    </Languages>
+    <TranslationFiles>
+      <File>frontend/src/i18n/locales/en.json</File>
+      <File>frontend/src/i18n/locales/ko.json</File>
+      <File>frontend/src/i18n/locales/ja.json</File>
+    </TranslationFiles>
+    <Usage>t('key', 'default') pattern throughout application</Usage>
+  </Internationalization>
+
+  <BackendIntegration>
+    <BaseURL>http://localhost:8080/api/v1</BaseURL>
+    <Proxy>Vite proxy configuration</Proxy>
+    <Authentication>
+      <Method>JWT Token</Method>
+      <Storage>localStorage</Storage>
+      <Header>Authorization: Bearer {token}</Header>
+    </Authentication>
+    
+    <RequestTracking>
+      <Header>X-Request-ID</Header>
+      <Purpose>Request tracing and logging</Purpose>
+      <Implementation>Generated in apiClient, logged in backend</Implementation>
+    </RequestTracking>
+    
+    <CORS>
+      <Configuration>WebConfig.java</Configuration>
+      <AllowedOrigins>http://localhost:5173 (dev), production domain (prod)</AllowedOrigins>
+      <ExposedHeaders>X-Request-ID</ExposedHeaders>
+    </CORS>
+  </BackendIntegration>
+
+  <KeyUserFlows>
+    <Flow name="Project Exploration">
+      <Step>1. User lands on HomePage</Step>
+      <Step>2. Views Featured Projects section</Step>
+      <Step>3. Clicks HeroProjectCard or FeaturedProjectCard</Step>
+      <Step>4. ProjectDetailOverlay modal opens (no page navigation)</Step>
+      <Step>5. Views project details, related academics</Step>
+      <Step>6. Clicks "View All Projects" or navigates to /projects</Step>
+      <Step>7. ProjectsPage loads with filters</Step>
+      <Step>8. Applies filters (tech stack, year, sort)</Step>
+      <Step>9. Clicks ProjectCard</Step>
+      <Step>10. Same ProjectDetailOverlay modal opens</Step>
+      <Step>11. Closes modal (Esc or close button)</Step>
+      <Step>12. Returns to ProjectsPage with preserved scroll position</Step>
+    </Flow>
+    
+    <Flow name="Feedback Submission">
+      <Step>1. User on any page (HomePage, AboutPage, etc.)</Step>
+      <Step>2. Clicks feedback trigger (CTA, Footer link)</Step>
+      <Step>3. FeedbackOverlay modal opens (no page navigation)</Step>
+      <Step>4. Fills feedback form</Step>
+      <Step>5. Submits form</Step>
+      <Step>6. EmailJS sends email</Step>
+      <Step>7. Success state displayed with CheckMarkIcon</Step>
+      <Step>8. Closes modal (Esc or close button)</Step>
+      <Step>9. Returns to original page with preserved scroll position</Step>
+    </Flow>
+    
+    <Flow name="Theme Switching">
+      <Step>1. User clicks theme toggle (Header)</Step>
+      <Step>2. useThemeStore.toggleTheme() called</Step>
+      <Step>3. Theme state updated in localStorage</Step>
+      <Step>4. ThemeProvider updates theme prop</Step>
+      <Step>5. All components re-render with new theme</Step>
+      <Step>6. Smooth transition (0.3s ease)</Step>
+    </Flow>
+    
+    <Flow name="Project Filtering">
+      <Step>1. User navigates to /projects</Step>
+      <Step>2. ProjectsPage loads with default filters</Step>
+      <Step>3. User selects tech stack filter</Step>
+      <Step>4. Filter debounced (300ms)</Step>
+      <Step>5. API call with filters</Step>
+      <Step>6. Projects list updated</Step>
+      <Step>7. FilterBar shows filter count badges</Step>
+      <Step>8. User can clear filters or add more</Step>
+      <Step>9. URL params updated for shareable links</Step>
+    </Flow>
+  </KeyUserFlows>
+
+  <ErrorHandling>
+    <Frontend>
+      <Strategy>Try-catch blocks in async functions</Strategy>
+      <Strategy>Error boundaries (planned)</Strategy>
+      <Strategy>User-friendly error messages</Strategy>
+      <Strategy>Analytics error tracking</Strategy>
+    </Frontend>
+    
+    <Backend>
+      <Strategy>Global exception handler</Strategy>
+      <Strategy>Structured error responses</Strategy>
+      <Strategy>Request ID tracking for debugging</Strategy>
+    </Backend>
+  </ErrorHandling>
+
+  <RecentImprovements>
+    <Improvement date="2024" type="Immersive Modal Strategy">
+      <Description>Converted page navigation to modal overlays for context preservation</Description>
+      <Changes>
+        <Change>FeedbackPage → FeedbackOverlay (modal)</Change>
+        <Change>ProjectDetailPage → ProjectDetailOverlay (modal)</Change>
+        <Change>All project cards trigger modals instead of navigation</Change>
+        <Change>Scroll position preservation</Change>
+        <Change>Focus return to trigger elements</Change>
+      </Changes>
+    </Improvement>
+    
+    <Improvement date="2024" type="UI Enhancement">
+      <Description>Improved HomePage Featured Projects layout</Description>
+      <Changes>
+        <Change>First project spans full width (The Blockbuster)</Change>
+        <Change>Asymmetric grid layout for remaining projects (The Rhythm)</Change>
+        <Change>Hover magnifying glass icons</Change>
+      </Changes>
+    </Improvement>
+    
+    <Improvement date="2024" type="Icon System">
+      <Description>Replaced emoji/text icons with SVG components</Description>
+      <Changes>
+        <Change>CheckMarkIcon for success states</Change>
+        <Change>ValueIcons for Mission & Vision</Change>
+        <Change>BackgroundIcons for education/experience</Change>
+      </Changes>
+    </Improvement>
+  </RecentImprovements>
+
+  <FutureEnhancements>
+    <Enhancement>Admin dashboard for content management</Enhancement>
+    <Enhancement>CRUD operations for all content types</Enhancement>
+    <Enhancement>Error boundaries implementation</Enhancement>
+    <Enhancement>Progressive Web App (PWA) support</Enhancement>
+    <Enhancement>Advanced analytics and user tracking</Enhancement>
+  </FutureEnhancements>
+
+</ProjectFlowArchitecture>
+

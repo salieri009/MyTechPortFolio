@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HomePage>
+  {HomePage는 포트폴리오의 랜딩 페이지입니다. Hero 섹션, Journey Milestone, Featured Projects, Testimonials로 구성됩니다.}
+  
+  <StoryProgressBar />
+  {스토리 진행 바: 페이지 상단 고정, 스크롤 위치에 따라 진행률 표시}
+  
+  <Hero ref="heroRef" id="hero" $isDark={isDark} role="banner">
+    {Hero 섹션: InteractiveBackground와 함께 전체 화면 Hero 섹션}
+    {스타일: primary[500]-primary[800] 그라데이션 배경, 다크 모드 지원}
+    
+    <InteractiveBackground 
+      isDark={isDark} 
+      particleCount={120} 
+      connectionDistance={180} 
+    />
+    {인터랙티브 배경: 파티클 애니메이션, 연결선 효과, 다크 모드에 따라 색상 변경}
+    
+    <Container>
+      <HeroContent layout="grid" columns="1fr 1fr">
+        {Hero 콘텐츠: 2-column 그리드 레이아웃 (데스크톱), 1-column (모바일)}
+        
+        <HeroLeft>
+          {좌측 컬럼: 텍스트 콘텐츠 및 CTA 버튼}
+          <Greeting>
+            {인사말: "Hello, I am", fontSize.base, color text}
+            <Name>{t('hero.name')}</Name>
+            {이름: primary[500] 색상, fontWeight.bold}
+          </Greeting>
+          <Headline>
+            {헤드라인: 큰 폰트 (clamp(48px, 6vw, 72px)), fontWeight.bold, color text, spacing[4] margin-bottom}
+            {t('hero.headline')}
+          </Headline>
+          <Subtitle>
+            {부제목: fontSize.lg, color textSecondary, spacing[8] margin-bottom, lineHeight relaxed}
+            {t('hero.subtitle')}
+          </Subtitle>
+          <CTAButtons layout="flex" gap="spacing[4]">
+            {CTA 버튼 그룹: flex layout, gap spacing[4], flex-wrap}
+            <PrimaryCTA to="/projects">
+              {Primary CTA: Solid 스타일 (primary[500] 배경), 호버 시 primary[600]}
+              {t('hero.cta.primary')}
+            </PrimaryCTA>
+            <SecondaryCTA to="/about">
+              {Secondary CTA: Outline 스타일 (투명 배경, primary[500] 테두리)}
+              {t('hero.cta.secondary')}
+            </SecondaryCTA>
+          </CTAButtons>
+        </HeroLeft>
+        
+        <HeroRight>
+          {우측 컬럼: 소셜 링크}
+          <SocialLinks layout="flex" direction="column" gap="spacing[4]">
+            {소셜 링크: flex column, gap spacing[4]}
+            <SocialLink href={CONTACT_INFO.linkedin.url} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
+              LinkedIn
+            </SocialLink>
+            <SocialLink href={`mailto:${CONTACT_INFO.email.student}`} aria-label="Send Email">
+              Email
+            </SocialLink>
+            <SocialLink href="https://github.com/salieri009" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
+              GitHub
+            </SocialLink>
+          </SocialLinks>
+        </HeroRight>
+      </HeroContent>
+    </Container>
+    <ScrollIndicator isVisible={isHeroVisible} />
+    {스크롤 인디케이터: IntersectionObserver로 Hero 가시성 감지, 하단 중앙 배치}
+  </Hero>
+  
+  <SectionBridge 
+    text={t('storytelling.heroToJourney')}
+    variant="primary"
+    diagonal={true}
+    overlap={true}
+  />
+  {섹션 브릿지: Hero에서 Journey로 전환, 대각선 구분자, 오버랩 효과}
+  
+  <div id="journey">
+    <JourneyMilestoneSection />
+    {Journey Milestone 섹션: 100% 재사용 컴포넌트, F-pattern 레이아웃, 타임라인 표시}
+  </div>
+  
+  <SectionBridge 
+    text={t('storytelling.journeyToProjects')}
+    variant="secondary"
+    diagonal={true}
+  />
+  
+  <FeaturedSection ref="featuredRef" id="projects" role="region" aria-labelledby="featured-title">
+    {Featured Projects 섹션: 주요 프로젝트 하이라이트, FeaturedSection 스타일 패턴}
+    <Container>
+      <SectionTitle id="featured-title" $isVisible={isFeaturedVisible}>
+        {섹션 제목: "Featured Projects", scroll-triggered fadeInUp 애니메이션}
+        {t('featured.title') || 'Featured Projects'}
+      </SectionTitle>
+      <SectionPurpose text={t('storytelling.projectsPurpose')} />
+      <SectionSubtitle id="featured-subtitle" $isVisible={isFeaturedVisible}>
+        {부제목: scroll-triggered 애니메이션}
+        {t('featured.subtitle') || 'Highlighting my most impactful and diverse projects...'}
+      </SectionSubtitle>
+      
+      {loading ? (
+        <FeaturedGrid $isVisible={isFeaturedVisible} role="list" aria-label="Loading featured projects">
+          {로딩 상태: 스켈레톤 UI 표시}
+          <SkeletonProjectCard />
+          <SkeletonProjectCard />
+        </FeaturedGrid>
+      ) : featuredProjects.length > 0 ? (
+        <>
+          <FeaturedGrid $isVisible={isFeaturedVisible} role="list" aria-label="Featured projects">
+            {프로젝트 그리드: 12-column grid, 동적 레이아웃 (getGridLayout 함수)}
+            {스타일: scroll-triggered fadeInUp 애니메이션}
+            
+            {featuredProjects.map((project, index) => {
+              const gridLayout = getGridLayout(index, featuredProjects.length)
+              {그리드 레이아웃: 첫 번째 프로젝트는 full width (hero), 나머지는 패턴에 따라 배치}
+              
+              {index === 0 ? (
+                <FeaturedGridItem 
+                  key={project.id}
+                  $gridColumn={gridLayout.desktop}
+                  $gridColumnTablet={gridLayout.tablet}
+                  $gridColumnMobile={gridLayout.mobile}
+                >
+                  <HeroProjectCard
+                    id={project.id}
+                    title={project.title}
+                    summary={project.summary}
+                    startDate={project.startDate}
+                    endDate={project.endDate}
+                    techStacks={project.techStacks}
+                    imageUrl={project.imageUrl}
+                  />
+                  {Hero 프로젝트 카드: 첫 번째 프로젝트 전용, 큰 크기, 강조된 스타일}
+                </FeaturedGridItem>
+              ) : (
+                <FeaturedGridItem 
+                  key={project.id}
+                  $gridColumn={gridLayout.desktop}
+                  $gridColumnTablet={gridLayout.tablet}
+                  $gridColumnMobile={gridLayout.mobile}
+                >
+                  <FeaturedProjectCard
+                    id={project.id}
+                    title={project.title}
+                    summary={project.summary}
+                    startDate={project.startDate}
+                    endDate={project.endDate}
+                    techStacks={project.techStacks}
+                    imageUrl={project.imageUrl}
+                    index={index}
+                  />
+                  {Featured 프로젝트 카드: 일반 프로젝트 카드, index prop으로 stagger 애니메이션}
+                </FeaturedGridItem>
+              )}
+            })}
+          </FeaturedGrid>
+          <ViewAllLink to="/projects">
+            {전체 보기 링크: "View All Projects", primary[600] 색상, 호버 시 밑줄}
+            {t('featured.viewAll') || 'View All Projects'}
+          </ViewAllLink>
+        </>
+      ) : null}
+    </Container>
+  </FeaturedSection>
+  
+  <SectionBridge 
+    text={t('storytelling.projectsToTestimonials')}
+    variant="secondary"
+  />
+  
+  <TestimonialSection 
+    ref="testimonialRef" 
+    id="testimonials"
+    role="region"
+    aria-labelledby="testimonials-title"
+    aria-describedby="testimonials-subtitle"
+  >
+    {Testimonials 섹션: 추천사 및 피드백 표시}
+    <Container>
+      <SectionTitle 
+        id="testimonials-title"
+        $isVisible={isTestimonialVisible}
+      >
+        {섹션 제목: "What Others Say", scroll-triggered fadeInUp 애니메이션}
+        {t('testimonials.title') || 'What Others Say'}
+      </SectionTitle>
+      <SectionPurpose text={t('storytelling.testimonialsPurpose')} />
+      <SectionSubtitle 
+        id="testimonials-subtitle"
+        $isVisible={isTestimonialVisible}
+      >
+        {부제목: scroll-triggered 애니메이션}
+        {t('testimonials.subtitle') || 'Feedback from colleagues and clients...'}
+      </SectionSubtitle>
+      
+      {loading ? (
+        <TestimonialGrid 
+          $isVisible={isTestimonialVisible}
+          role="list"
+          aria-label="Loading testimonials"
+        >
+          {로딩 상태: 스켈레톤 UI 표시}
+          <SkeletonTestimonialCard />
+          <SkeletonTestimonialCard />
+          <SkeletonTestimonialCard />
+        </TestimonialGrid>
+      ) : testimonials.length > 0 ? (
+        <TestimonialGrid 
+          $isVisible={isTestimonialVisible}
+          role="list"
+          aria-label="Testimonials from colleagues and clients"
+        >
+          {추천사 그리드: 3-column grid (데스크톱), 2-column (태블릿), 1-column (모바일)}
+          {스타일: scroll-triggered fadeInUp 애니메이션, gap spacing[6]}
+          {testimonials.map(testimonial => (
+            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+            {TestimonialCard 컴포넌트: 추천사 정보 표시, Card 컴포넌트 재사용}
+          ))}
+        </TestimonialGrid>
+      ) : (
+        <SectionSubtitle $isVisible={isTestimonialVisible}>
+          {빈 상태: 추천사 없음 메시지}
+          {t('testimonials.empty', 'No testimonials available at this time.')}
+        </SectionSubtitle>
+      )}
+    </Container>
+  </TestimonialSection>
+</HomePage>
+
+<!-- State Management -->
+<StateManagement>
+  <LocalState>
+    <State name="featuredProjects" type="ProjectSummary[]" />
+    {주요 프로젝트 목록: 서버에서 가져온 featured=true 프로젝트}
+    <State name="testimonials" type="Testimonial[]" />
+    {추천사 목록: 서버에서 가져온 추천사 데이터}
+    <State name="loading" type="boolean" />
+    {로딩 상태: 초기 데이터 로딩 중}
+    <State name="isHeroVisible" type="boolean" />
+    {Hero 가시성: IntersectionObserver로 감지 (스크롤 인디케이터 표시용)}
+    <State name="isFeaturedVisible" type="boolean" />
+    {Featured 섹션 가시성: IntersectionObserver로 감지}
+    <State name="isTestimonialVisible" type="boolean" />
+    {Testimonials 섹션 가시성: IntersectionObserver로 감지}
+  </LocalState>
+  
+  <Refs>
+    <Ref name="heroRef" type="HTMLElement | null" />
+    {Hero 섹션 ref: IntersectionObserver용}
+    <Ref name="featuredRef" type="HTMLElement | null" />
+    {Featured 섹션 ref: IntersectionObserver용}
+    <Ref name="testimonialRef" type="HTMLElement | null" />
+    {Testimonials 섹션 ref: IntersectionObserver용}
+  </Refs>
+  
+  <GlobalState>
+    <Store name="useThemeStore" source="stores/themeStore">
+      {테마 상태: 다크/라이트 모드 관리}
+      <State name="isDark" type="boolean" />
+      {다크 모드 여부: InteractiveBackground와 Hero 배경색에 영향}
+    </Store>
+  </GlobalState>
+</StateManagement>
+
+<!-- Data Flow -->
+<DataFlow>
+  <InitialLoad>
+    {초기 로드: useEffect로 프로젝트 및 추천사 데이터 가져오기}
+    <Step>1. getProjects API 호출 (size: 10, featured 필터링)</Step>
+    <Step>2. response.data.items.filter(project => project.featured)로 주요 프로젝트 필터링</Step>
+    <Step>3. setFeaturedProjects(filtered) (주요 프로젝트 저장)</Step>
+    <Step>4. getTestimonials() 호출 (추천사 데이터 가져오기)</Step>
+    <Step>5. setTestimonials(testimonialsData) (추천사 저장)</Step>
+    <Step>6. setLoading(false) (로딩 완료)</Step>
+  </InitialLoad>
+  
+  <GridLayout>
+    {그리드 레이아웃: 동적 레이아웃 패턴 (getGridLayout 함수)}
+    <Pattern index="0" desktop="1 / -1" tablet="1 / -1" mobile="1" />
+    {첫 번째 프로젝트: 전체 너비 (Hero 카드)}
+    <Pattern index="1" desktop="span 6" tablet="span 3" mobile="1" />
+    {두 번째 프로젝트: 중간 크기}
+    <Pattern index="2" desktop="span 3" tablet="span 3" mobile="1" />
+    {세 번째 프로젝트: 작은 크기}
+    <Pattern index="3" desktop="span 3" tablet="span 3" mobile="1" />
+    {네 번째 프로젝트: 작은 크기}
+    <Pattern index="4+" desktop="span 4" tablet="span 3" mobile="1" />
+    {다섯 번째 이후: 중간 크기 (패턴 반복)}
+  </GridLayout>
+</DataFlow>
+
+<!-- Animation Strategy -->
+<Animations>
+  <ScrollTriggered>
+    {스크롤 트리거 애니메이션: IntersectionObserver 사용}
+    <Observer 
+      threshold="0.5"
+      rootMargin="0px"
+    >
+      {Hero 옵션: threshold 0.5 (50% 보일 때), 스크롤 인디케이터 표시용}
+      <Target ref="heroRef" setState="setIsHeroVisible" />
+    </Observer>
+    <Observer 
+      threshold="0.1"
+      rootMargin="0px 0px -100px 0px"
+    >
+      {Featured/Testimonials 옵션: threshold 0.1 (10% 보일 때), rootMargin -100px}
+      <Target ref="featuredRef" setState="setIsFeaturedVisible" />
+      <Target ref="testimonialRef" setState="setIsTestimonialVisible" />
+    </Observer>
+  </ScrollTriggered>
+  
+  <StaggerEffect>
+    {Stagger 효과: FeaturedProjectCard에 순차적 애니메이션 지연}
+    <Delay formula="index * 0.1s" />
+    {공식: index * 0.1초 (FeaturedProjectCard의 index prop 사용)}
+  </StaggerEffect>
+  
+  <Accessibility>
+    {접근성: prefers-reduced-motion 지원, 애니메이션 비활성화 옵션}
+    <MediaQuery query="prefers-reduced-motion: reduce">
+      {애니메이션 비활성화 또는 단순화}
+    </MediaQuery>
+  </Accessibility>
+</Animations>
+
+<!-- Design Principles Applied -->
+<DesignPrinciples>
+  <KickoffLabs>
+    {KickoffLabs 원칙: Primary + Neutral 색상, Inter 폰트, 일관된 스타일}
+    <ColorPalette>Primary + Neutral only</ColorPalette>
+    <FontFamily>Inter (typography.fontFamily.primary)</FontFamily>
+    <Consistency>일관된 spacing, border-radius, button styles</Consistency>
+  </KickoffLabs>
+  
+  <FourPointSpacing>
+    {4-point spacing 시스템: 모든 spacing 값이 4px의 배수}
+    <Spacing>
+      <Value token="spacing[2]" pixels="8px" usage="Gap, margin-bottom" />
+      <Value token="spacing[3]" pixels="12px" usage="Gap, padding" />
+      <Value token="spacing[4]" pixels="16px" usage="Gap, margin-bottom, padding" />
+      <Value token="spacing[6]" pixels="24px" usage="Gap, padding, margin-bottom" />
+      <Value token="spacing[8]" pixels="32px" usage="Margin-bottom, translateY" />
+      <Value token="spacing[12]" pixels="48px" usage="Padding, margin-bottom" />
+      <Value token="spacing[25]" pixels="100px" usage="Sticky top position" />
+    </Spacing>
+  </FourPointSpacing>
+  
+  <NielsenHeuristics>
+    <H1>Visibility of System Status</H1>
+    {H1: 로딩 상태 표시, 스크롤 인디케이터, 호버 효과, 스크롤 애니메이션}
+    <H3>User Control & Freedom</H3>
+    {H3: 명확한 CTA 버튼, 키보드 접근 가능, 스크롤 제어}
+    <H4>Consistency & Standards</H4>
+    {H4: 일관된 섹션 패턴, 재사용 컴포넌트, 통일된 애니메이션}
+    <H8>Aesthetic & Minimalist Design</H8>
+    {H8: 깔끔한 레이아웃, 적절한 여백, 불필요한 요소 제거}
+  </NielsenHeuristics>
+</DesignPrinciples>
+
+<!-- Accessibility Features -->
+<Accessibility>
+  <ARIA>
+    <Attribute element="Hero" role="banner" />
+    <Attribute element="FeaturedSection" role="region" aria-labelledby="featured-title" />
+    <Attribute element="TestimonialSection" role="region" aria-labelledby="testimonials-title" aria-describedby="testimonials-subtitle" />
+    <Attribute element="FeaturedGrid" role="list" aria-label="Featured projects" />
+    <Attribute element="TestimonialGrid" role="list" aria-label="Testimonials from colleagues and clients" />
+    <Attribute element="SocialLink" aria-label="descriptive" />
+  </ARIA>
+  
+  <Keyboard>
+    <Navigation>
+      {키보드 네비게이션: Tab으로 버튼/링크 이동, Enter/Space로 활성화}
+      <CTAButtons native="true" />
+      <SocialLinks native="true" />
+    </Navigation>
+  </Keyboard>
+  
+  <FocusManagement>
+    {포커스 관리: 명확한 포커스 스타일, outline 표시}
+    <CTAButtons focus="outline visible" />
+    <SocialLinks focus="outline visible" />
+  </FocusManagement>
+</Accessibility>
+
+<!-- Responsive Breakpoints -->
+<Responsive>
+  <Desktop minWidth="1024px">
+    {데스크톱: 2-column Hero 레이아웃, 12-column Featured grid, 3-column Testimonials grid, 전체 기능}
+  </Desktop>
+  <Tablet minWidth="768px" maxWidth="1023px">
+    {태블릿: 1-column Hero 레이아웃, 6-column Featured grid, 2-column Testimonials grid, 일부 기능 조정}
+  </Tablet>
+  <Mobile maxWidth="767px">
+    {모바일: 1-column Hero 레이아웃, 1-column Featured grid, 1-column Testimonials grid, 터치 최적화}
+  </Mobile>
+</Responsive>
+
+<!-- Component Dependencies -->
+<Dependencies>
+  <Internal>
+    <Component name="Container" source="@components/common" />
+    <Component name="Card" source="@components/common" />
+    <Component name="HeroProjectCard" source="@components/project/HeroProjectCard" />
+    <Component name="FeaturedProjectCard" source="@components/project/FeaturedProjectCard" />
+    <Component name="TestimonialCard" source="@components/testimonials/TestimonialCard" />
+    <Component name="JourneyMilestoneSection" source="@components/sections/JourneyMilestoneSection" />
+    <Component name="InteractiveBackground" source="@components/organisms/InteractiveBackground" />
+    <Component name="SectionBridge" source="@components/sections/SectionBridge" />
+    <Component name="SectionPurpose" source="@components/sections/SectionPurpose" />
+    <Component name="StoryProgressBar" source="@components/common/StoryProgressBar" />
+    <Component name="SkeletonProjectCard" source="@components/common/Skeleton" />
+    <Component name="SkeletonTestimonialCard" source="@components/common/Skeleton" />
+  </Internal>
+  
+  <External>
+    <Library name="react-i18next" usage="useTranslation for i18n" />
+    <Library name="react-router-dom" usage="Link for navigation" />
+    <Library name="styled-components" usage="Styled components, keyframes" />
+  </External>
+  
+  <Services>
+    <Service name="getProjects" source="services/projects" />
+    {프로젝트 데이터 가져오기: API 호출 또는 mock 데이터}
+    <Service name="getTestimonials" source="mocks/testimonials" />
+    {추천사 데이터 가져오기: mock 데이터}
+  </Services>
+  
+  <Stores>
+    <Store name="useThemeStore" source="stores/themeStore" />
+    {테마 상태 관리: 다크/라이트 모드}
+  </Stores>
+  
+  <Constants>
+    <Constant name="CONTACT_INFO" source="constants/contact" />
+    {연락처 정보: LinkedIn, Email, GitHub URL}
+  </Constants>
+</Dependencies>
+
+<!-- Code Reuse Statistics -->
+<CodeReuse>
+  <ReusedComponents>
+    <Component name="JourneyMilestoneSection" reuse="100%" />
+    <Component name="SectionBridge" reuse="100%" />
+    <Component name="SectionPurpose" reuse="100%" />
+    <Component name="Container" reuse="100%" />
+    <Component name="Card" reuse="HeroProjectCard, FeaturedProjectCard, TestimonialCard" />
+  </ReusedComponents>
+  <ReusedStyles>
+    <Style name="SectionTitle" pattern="FeaturedSection, TestimonialSection" />
+    <Style name="SectionSubtitle" pattern="FeaturedSection, TestimonialSection" />
+    <Style name="FeaturedGrid" pattern="TestimonialGrid" />
+  </ReusedStyles>
+  <EstimatedReuse>90%</EstimatedReuse>
+  {코드 재사용률: 약 90% - 기존 컴포넌트와 스타일 패턴을 최대한 재사용}
+</CodeReuse>
+
