@@ -273,7 +273,7 @@ export function FeaturedProjectCard({
   const { t } = useTranslation()
   const { trackView } = useProjectAnalytics()
   const [isVisible, setIsVisible] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement | null>(null)
   const { ref: tiltRef, style: tiltStyle } = use3DTilt({ maxTilt: 3, scale: 1.01 })
 
   useEffect(() => {

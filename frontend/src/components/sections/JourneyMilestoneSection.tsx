@@ -621,7 +621,7 @@ export function JourneyMilestoneSection() {
       progressPath.style.strokeDasharray = `${length}`
       progressPath.style.strokeDashoffset = `${length}`
     }
-  }, [visibleMilestones, prefersReducedMotion])
+  }, [visibleMilestones, prefersReducedMotion, milestoneData])
 
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
