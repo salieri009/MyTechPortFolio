@@ -57,12 +57,50 @@ Each ADR follows this structure:
 
 ## Available ADRs
 
-ADR records are maintained in the `design-plan/ADR/` directory. Check that location for:
+| ADR | Title | Status | Description |
+|-----|-------|--------|-------------|
+| [ADR-001](./ADR-001-React-TypeScript-Stack.md) | React + TypeScript Stack Selection | Accepted | Decision to use React 18+ with TypeScript 5.5+ as the frontend framework |
+| [ADR-002](./ADR-002-Zustand-State-Management.md) | Zustand for State Management | Accepted | Decision to use Zustand instead of Redux for state management |
+| [ADR-003](./ADR-003-Styled-Components.md) | Styled Components for Styling | Accepted | Decision to use Styled Components for CSS-in-JS styling solution |
+| [ADR-004](./ADR-004-Atomic-Design-Pattern.md) | Atomic Design Pattern | Accepted | Decision to organize components using Atomic Design methodology |
+| [ADR-005](./ADR-005-React-Router-Routing.md) | React Router v6 Routing Strategy | Accepted | Decision to use React Router v6 with code splitting and lazy loading |
+| [ADR-006](./ADR-006-Spring-Boot-Framework.md) | Spring Boot Framework Selection | Accepted | Decision to use Spring Boot 3.3.4 with Java 21 as the backend framework |
+| [ADR-007](./ADR-007-MongoDB-Database.md) | MongoDB as Database | Accepted | Decision to use MongoDB instead of relational database for flexible schema |
+| [ADR-008](./ADR-008-Layered-Architecture.md) | Layered Architecture Pattern | Accepted | Decision to use Controller-Service-Repository-Domain layered architecture |
 
-- Decision records documenting major architecture choices
-- Trade-offs and rationale
-- Technology selection decisions
-- Pattern adoption decisions
+### Planned ADRs
+
+The following architectural decisions should be documented as ADRs:
+
+1. **Technology Stack Selection** ✅ (Complete)
+   - ✅ React + TypeScript choice (ADR-001)
+   - ✅ Zustand for state management (ADR-002)
+   - ✅ Styled Components for styling (ADR-003)
+   - ✅ React Router v6 for routing (ADR-005)
+
+2. **Architecture Patterns** ✅ (Partially Complete)
+   - ✅ Atomic Design Pattern adoption (ADR-004)
+   - ⏳ Service layer pattern for API calls
+   - ⏳ Component composition strategy
+
+3. **Performance Decisions**
+   - ⏳ Code splitting strategy (covered in ADR-005)
+   - ⏳ Lazy loading implementation (covered in ADR-005)
+   - ⏳ Image optimization approach
+
+4. **State Management** ✅ (Complete)
+   - ✅ Zustand over Redux decision (ADR-002)
+   - ⏳ Store organization pattern
+   - ⏳ Admin vs regular user state separation
+
+### Creating New ADRs
+
+When creating a new ADR:
+
+1. Use the format: `ADR-XXX-Title.md` (e.g., `ADR-001-React-TypeScript-Stack.md`)
+2. Follow the ADR format template below
+3. Update this README to include the new ADR
+4. Link related ADRs together
 
 ---
 
