@@ -6,29 +6,29 @@ This directory contains practical how-to guides for setting up and configuring v
 
 ---
 
-## ?“š Available Guides
+## ?ï¿½ï¿½ Available Guides
 
 | Guide | Description | Audience |
 |-------|-------------|----------|
-| [Frontend Setup](./Frontend-Setup.md) | Frontend development environment setup | Frontend Developers |
-| [Backend Setup](./Backend-Setup.md) | Backend development environment setup | Backend Developers |
+| [Frontend Setup](./Development/Frontend-Setup.md) | Frontend development environment setup | Frontend Developers |
+| [Backend Setup](./Development/Backend-Setup.md) | Backend development environment setup | Backend Developers |
 | [EmailJS Setup](./Integration/EmailJS-Setup.md) | Email service configuration | All Developers |
 
 ---
 
-## ?Ž¯ Quick Links
+## ?ï¿½ï¿½ Quick Links
 
 ### For Frontend Developers
-- [Frontend Setup Guide](./Frontend-Setup.md)
+- [Frontend Setup Guide](./Development/Frontend-Setup.md)
 - [EmailJS Configuration](./Integration/EmailJS-Setup.md)
 
 ### For Backend Developers
-- [Backend Setup Guide](./Backend-Setup.md)
+- [Backend Setup Guide](./Development/Backend-Setup.md)
 - [API Documentation](../Specifications/API-Specification.md)
 
 ---
 
-## ?“– Guide Categories
+## ?ï¿½ï¿½ Guide Categories
 
 ### Setup Guides
 Step-by-step instructions for setting up development environments.

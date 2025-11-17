@@ -86,7 +86,7 @@ For detailed test case results, see the `test-case-results/` directory:
 
 - **Getting Started**: [../Getting-Started.md](../Getting-Started.md)
 - **API Specification**: [../Specifications/API-Specification.md](../Specifications/API-Specification.md)
-- **Architecture**: [../Design-Plan/Architecture-Design.md](../Design-Plan/Architecture-Design.md)
+- **Architecture**: [../Architecture/README.md](../Architecture/README.md)
 
 ---
 

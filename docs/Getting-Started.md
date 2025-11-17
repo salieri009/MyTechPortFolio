@@ -1,12 +1,26 @@
+---
+title: "Getting Started Guide"
+version: "1.0.0"
+last_updated: "2025-11-17"
+status: "active"
+category: "Guide"
+audience: ["Developers", "DevOps Engineers"]
+prerequisites: []
+related_docs: ["Important-Concepts.md", "Architecture/README.md"]
+maintainer: "Development Team"
+---
+
 # Getting Started Guide
 
-> **Quick start guide for MyTechPortfolio development**
+> **Version**: 1.0.0  
+> **Last Updated**: 2025-11-17  
+> **Status**: Active
 
 This guide will help you set up the development environment and get the project running locally.
 
 ---
 
-## ?“‹ Prerequisites
+## ?ï¿½ï¿½ Prerequisites
 
 Before you begin, ensure you have the following installed:
 
@@ -81,7 +95,7 @@ mongod --dbpath /data/db
 
 ---
 
-## ?”§ Development Workflow
+## ?ï¿½ï¿½ Development Workflow
 
 ### Running Tests
 
@@ -109,16 +123,16 @@ npm run build
 
 ---
 
-## ?“š Next Steps
+## ?ï¿½ï¿½ Next Steps
 
 - Read [Important Concepts](./Important-Concepts.md) for project overview
-- Review [Architecture Design](./Design-Plan/Architecture-Design.md) for system architecture
-- Check [API Specification](./Specifications/API-Spec.md) for API contracts
+- Review [Architecture Overview](./Architecture/README.md) for system architecture
+- Check [API Specification](./Specifications/API-Specification.md) for API contracts
 - See [Deployment Guide](./Deployment/Deployment-Guide.md) for production deployment
 
 ---
 
-## ?†˜ Troubleshooting
+## ?ï¿½ï¿½ Troubleshooting
 
 ### Common Issues
 

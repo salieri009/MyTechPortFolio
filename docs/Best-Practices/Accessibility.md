@@ -1,7 +1,19 @@
-# Accessibility Implementation Guide
+---
+title: "Accessibility Guide"
+version: "1.0.0"
+last_updated: "2025-11-17"
+status: "active"
+category: "Best Practice"
+audience: ["Developers", "UX Designers"]
+prerequisites: []
+related_docs: ["Heuristics-Implementation.md", "Component-Guidelines.md"]
+maintainer: "Development Team"
+---
+
+# Accessibility Guide
 
 > **Version**: 1.0.0  
-> **Date**: 2025-11-17  
+> **Last Updated**: 2025-11-17  
 > **Status**: Active  
 > **WCAG Compliance**: Targeting Level AA
 
@@ -193,9 +205,9 @@ const Button = styled.button`
 
 ### Implementation Status
 
-- ?�️ Forms need review for full accessibility
+- ?�️ Forms need review for full accessibility
 - ??Error messages have proper ARIA attributes
-- ?�️ Required field indicators needed
+- ?�️ Required field indicators needed
 
 ---
 
@@ -228,7 +240,7 @@ const Button = styled.button`
 
 ### Implementation Status
 
-- ?�️ prefers-reduced-motion support needed
+- ?�️ prefers-reduced-motion support needed
 - ??Animations are subtle and non-intrusive
 - ??No auto-playing animations
 
@@ -252,7 +264,7 @@ const Button = styled.button`
 | ContactButton | ??| ??| ??| ??| ??| ??|
 | TechStackBadge | ??| ??| ??| ??| ??| ??|
 
-**Legend**: ??Fully Compliant | ?�️ Partial Compliance | ??Not Compliant
+**Legend**: ??Fully Compliant | ?�️ Partial Compliance | ??Not Compliant
 
 ---
 

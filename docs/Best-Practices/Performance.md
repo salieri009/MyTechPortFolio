@@ -1,9 +1,21 @@
+---
+title: "Performance Optimization Guide"
+version: "1.0.0"
+last_updated: "2025-11-17"
+status: "active"
+category: "Best Practice"
+audience: ["Developers", "DevOps Engineers"]
+prerequisites: []
+related_docs: ["Frontend-Specification.md"]
+maintainer: "Development Team"
+---
+
 # Performance Optimization Guide
 
 > **Version**: 1.0.0  
-> **Date**: 2025-11-17  
+> **Last Updated**: 2025-11-17  
 > **Status**: Active  
-> **Target**: Lighthouse Score ??0
+> **Target**: Lighthouse Score ≥90
 
 ## Overview
 
@@ -234,7 +246,7 @@ Utility functions for:
 - [x] Intersection Observer usage
 - [x] Performance utilities
 
-### ?�️ To Implement
+### ?�️ To Implement
 
 - [ ] Service Worker for offline support
 - [ ] Image format optimization (WebP/AVIF)

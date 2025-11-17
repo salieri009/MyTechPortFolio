@@ -2,6 +2,8 @@
 
 이 문서는 MyPortFolio Frontend 프로젝트의 포괄적인 문서화입니다. [Diátaxis 프레임워크](https://github.blog/developer-skills/documentation-done-right-a-developers-guide/)를 기반으로 구성되었습니다.
 
+> **📋 Documentation Plan**: [FRONTEND_DOCUMENTATION_PLAN.md](./FRONTEND_DOCUMENTATION_PLAN.md) - 30년 경력 기술 문서 작성자 관점의 종합 문서화 전략
+
 ## 문서 구조
 
 문서는 4가지 카테고리로 구성되어 있습니다:
@@ -57,6 +59,8 @@ API, 타입, 유틸리티 등에 대한 기술적 참조 문서입니다.
 - **Clear (명확함)**: 이해하기 쉬운 언어 사용
 - **Concise (간결함)**: 필요한 정보만 포함
 - **Structured (구조화)**: 스캔하기 쉬운 구조, 헤딩, 목차 사용
+- **Rationale-Driven (근거 중심)**: 모든 설계 결정에 대한 "왜" 설명 포함
+- **Continuity (연속성)**: 향후 개발자를 위한 지속 가능한 문서 구조
 
 ## 기여하기
 

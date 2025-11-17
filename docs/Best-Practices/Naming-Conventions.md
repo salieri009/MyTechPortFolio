@@ -1,7 +1,19 @@
-# Naming Convention Guide
+---
+title: "Naming Conventions"
+version: "1.0.0"
+last_updated: "2025-11-17"
+status: "active"
+category: "Best Practice"
+audience: ["Developers"]
+prerequisites: []
+related_docs: ["Component-Guidelines.md", "Contributing/Contributing-Guide.md"]
+maintainer: "Development Team"
+---
+
+# Naming Conventions
 
 > **Version**: 1.0.0  
-> **Date**: 2025-11-17  
+> **Last Updated**: 2025-11-17  
 > **Status**: Active
 
 ## Frontend Naming Conventions

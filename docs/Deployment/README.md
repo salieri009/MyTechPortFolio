@@ -57,7 +57,7 @@ Follow the manual setup instructions in [Deployment Guide](./Deployment-Guide.md
 
 ## ?�� Related Documentation
 
-- **Architecture**: [../Design-Plan/Architecture-Design.md](../Design-Plan/Architecture-Design.md)
+- **Architecture**: [../Architecture/README.md](../Architecture/README.md)
 - **Getting Started**: [../Getting-Started.md](../Getting-Started.md)
 - **API Spec**: [../Specifications/API-Specification.md](../Specifications/API-Specification.md)
 

@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API, Database, Frontend, and UI/UX specifications
 - Contributing guide and documentation standards
 - Troubleshooting guide with common issues and solutions
+- Frontend documentation plan (30-year technical writer perspective)
+- Maintenance guide for documentation
+- Comprehensive README files for all subdirectories
 
 ### Changed
 - Reorganized documentation directory structure
@@ -36,6 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated all documentation dates to 2025-11-17
 - Standardized file naming conventions (Title Case)
 - Improved documentation navigation and indexing
+- Fixed broken internal links (Design-Plan → Architecture)
+- Standardized frontmatter metadata across all documents
+- Updated API specification references (API-Spec → API-Specification)
 
 ### Fixed
 - Fixed broken internal links in documentation

@@ -6,7 +6,7 @@ This directory contains comprehensive specifications for API, database, frontend
 
 ---
 
-## ?“‹ Available Specifications
+## ?ï¿½ï¿½ Available Specifications
 
 | Specification | Description | Status |
 |---------------|-------------|--------|
@@ -17,7 +17,7 @@ This directory contains comprehensive specifications for API, database, frontend
 
 ---
 
-## ?Ž¯ Quick Reference
+## ?ï¿½ï¿½ Quick Reference
 
 ### API Specifications
 - **Base URL**: `http://localhost:8080/api`
@@ -45,7 +45,7 @@ This directory contains comprehensive specifications for API, database, frontend
 
 ---
 
-## ?“– Usage Guidelines
+## ?ï¿½ï¿½ Usage Guidelines
 
 ### For API Integration
 1. Read [API Specification](./API-Specification.md) for endpoint details
@@ -67,12 +67,11 @@ This directory contains comprehensive specifications for API, database, frontend
 
 ---
 
-## ?”— Related Documentation
+## ?ï¿½ï¿½ Related Documentation
 
-- **Design Documents**: [../Design-Plan/README.md](../Design-Plan/README.md)
-- **API Design**: [../Design-Plan/API-Design.md](../Design-Plan/API-Design.md)
-- **Backend Design**: [../Design-Plan/Backend-Design.md](../Design-Plan/Backend-Design.md)
-- **Frontend Design**: [../Design-Plan/Frontend-Design.md](../Design-Plan/Frontend-Design.md)
+- **Architecture**: [../Architecture/README.md](../Architecture/README.md)
+- **Backend Architecture**: [../Architecture/Backend-Refactoring.md](../Architecture/Backend-Refactoring.md)
+- **Frontend Architecture**: [../Architecture/Frontend-Architecture.md](../Architecture/Frontend-Architecture.md)
 
 ---
 
