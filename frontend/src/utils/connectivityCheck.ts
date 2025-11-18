@@ -117,6 +117,7 @@ export async function testApiConnectivity(endpoint = '/projects?page=1&size=1'):
       error: errorMessage,
       timestamp,
     }
+  }
 }
 
 /**
@@ -164,4 +165,3 @@ export async function checkConnectivity(): Promise<{
     },
   }
 }
-

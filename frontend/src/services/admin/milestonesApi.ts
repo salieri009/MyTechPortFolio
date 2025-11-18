@@ -1,6 +1,6 @@
 import { api } from '../apiClient'
 
-const API_BASE = '/api/v1/journey-milestones'
+const API_BASE = '/journey-milestones'
 
 export interface JourneyMilestone {
   id: string
@@ -67,7 +67,7 @@ export const milestonesApi = {
    * Get all milestones (ordered by year)
    */
   async getAll(): Promise<JourneyMilestone[]> {
-    const response = await api.get(`/api/v1/journey-milestones`)
+    const response = await api.get(API_BASE)
     return response.data.data
   },
 
@@ -75,7 +75,7 @@ export const milestonesApi = {
    * Get milestone by ID
    */
   async getById(id: string): Promise<JourneyMilestone> {
-    const response = await api.get(`/api/v1/journey-milestones/${id}`)
+    const response = await api.get(`${API_BASE}/${id}`)
     return response.data.data
   },
 
@@ -83,7 +83,7 @@ export const milestonesApi = {
    * Create new milestone
    */
   async create(data: JourneyMilestoneCreateRequest): Promise<JourneyMilestone> {
-    const response = await api.post(`/api/v1/journey-milestones`, data)
+    const response = await api.post(API_BASE, data)
     return response.data.data
   },
 
@@ -91,7 +91,7 @@ export const milestonesApi = {
    * Update milestone
    */
   async update(id: string, data: JourneyMilestoneUpdateRequest): Promise<JourneyMilestone> {
-    const response = await api.put(`/api/v1/journey-milestones/${id}`, data)
+    const response = await api.put(`${API_BASE}/${id}`, data)
     return response.data.data
   },
 
@@ -99,14 +99,14 @@ export const milestonesApi = {
    * Delete milestone
    */
   async delete(id: string): Promise<void> {
-    await api.delete(`/api/v1/journey-milestones/${id}`)
+    await api.delete(`${API_BASE}/${id}`)
   },
 
   /**
    * Get milestones by status
    */
   async getByStatus(status: 'COMPLETED' | 'CURRENT' | 'PLANNED'): Promise<JourneyMilestone[]> {
-    const response = await api.get(`/api/v1/journey-milestones/status/${status}`)
+    const response = await api.get(`${API_BASE}/status/${status}`)
     return response.data.data
   }
 }

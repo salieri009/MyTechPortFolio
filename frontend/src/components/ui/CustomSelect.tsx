@@ -90,7 +90,7 @@ const SelectDropdown = styled.div.withConfig({
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.radius.md};
   box-shadow: ${props => props.theme.shadows.lg};
-  z-index: 1000;
+  z-index: ${props => props.theme.zIndex?.popover || 1500}; /* theme.zIndex.popover 사용 (1500) - FilterBar(z-index: 100) 위에 표시 */
   opacity: ${props => props.$isOpen ? 1 : 0};
   visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
   transform: ${props => props.$isOpen ? 'translateY(0)' : `translateY(-${props.theme.spacing[2]})`};

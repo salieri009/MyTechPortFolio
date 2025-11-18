@@ -33,6 +33,7 @@
     "subtitle": "効率的で創造的なソリューションを通じて価値を創造します。React、TypeScript、Spring Bootを使用したWebアプリケーション開発の専門家です。",
     "greeting": "こんにちは、私は",
     "name": "ジョンウック・バン",
+    "scrollIndicator": "私の旅を探索する",
     "cta": {
       "primary": "プロジェクトを見る",
       "secondary": "もっと見る",
@@ -382,32 +383,6 @@
       "threejs": "3D開発技術",
       "software": "ソフトウェア開発スタック", 
       "gamedev": "ゲーム開発ツール"
-    }
-  },
-  "projects": {
-    "portfolioWebsite": {
-      "title": "ポートフォリオウェブサイト",
-      "summary": "レスポンシブな個人ポートフォリオウェブサイト - HTML5, CSS3, JavaScript"
-    },
-    "fiveFloors": {
-      "title": "The Five Floors",
-      "summary": "4人チームプロジェクト - ゲーム開発とレベルデザイン"
-    },
-    "iotbay": {
-      "title": "IoTBay - 電子商取引プラットフォーム",
-      "summary": "IoTデバイス電子商取引プラットフォーム - Java, JSP, Maven"
-    },
-    "loading": "プロジェクトを読み込み中...",
-    "filters": {
-      "allYears": "すべての年",
-      "sort": {
-        "newest": "最新",
-        "oldest": "古い順"
-      }
-    },
-    "empty": {
-      "title": "プロジェクトが見つかりません",
-      "description": "選択したフィルターに一致するプロジェクトがありません。"
     }
   },
   "language": {

@@ -32,6 +32,7 @@
     "subtitle": "Creating value through efficient and creative solutions. Specialized in web application development using React, TypeScript, and Spring Boot.",
     "greeting": "Hello, I'm",
     "name": "Jungwook Van",
+    "scrollIndicator": "Explore My Journey",
     "cta": {
       "primary": "View Projects",
       "secondary": "Learn More",
@@ -381,32 +382,6 @@
       "threejs": "3D Development Technologies",
       "software": "Software Development Stack", 
       "gamedev": "Game Development Tools"
-    }
-  },
-  "projects": {
-    "portfolioWebsite": {
-      "title": "Portfolio Website",
-      "summary": "Responsive personal portfolio website - HTML5, CSS3, JavaScript"
-    },
-    "fiveFloors": {
-      "title": "The Five Floors",
-      "summary": "4-member team project - Game development and level design"
-    },
-    "iotbay": {
-      "title": "IoTBay - E-commerce Platform",
-      "summary": "IoT devices e-commerce platform - Java, JSP, Maven"
-    },
-    "loading": "Loading projects...",
-    "filters": {
-      "allYears": "All Years",
-      "sort": {
-        "newest": "Newest",
-        "oldest": "Oldest"
-      }
-    },
-    "empty": {
-      "title": "No projects found",
-      "description": "No projects match the selected filters."
     }
   },
   "language": {
