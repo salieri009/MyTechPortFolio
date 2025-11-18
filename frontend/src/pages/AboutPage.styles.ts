@@ -105,14 +105,14 @@ export const ProfileImageWrapper = styled.div`
   margin-bottom: 0;
 `
 
-export const ProfileImage = styled.img`
+export const ProfileImage = styled.img<{ $isDark?: boolean }>`
   width: ${props => props.theme.spacing[80]}; /* 320px - 프로필 강조 */
   height: ${props => props.theme.spacing[80]};
   border-radius: ${props => props.theme.radius.full};
   border: ${props => props.theme.spacing[2]} solid ${props => props.theme.colors.primary[500]};
   box-shadow: ${props => props.theme.shadows['2xl']};
   object-fit: cover;
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.$isDark ? props.theme.colors.neutral[800] : props.theme.colors.neutral[100]};
   transition: all 0.3s ease;
   cursor: pointer;
   
@@ -574,7 +574,7 @@ export const ValueModalOverlay = styled.div`
     const b = parseInt(hex.substring(4, 6), 16)
     return `rgba(${r}, ${g}, ${b}, 0.9)`
   }};
-  z-index: 9999;
+  z-index: ${props => props.theme.zIndex?.modal || 1400}; /* theme.zIndex.modal 사용 (1400) */
   display: flex;
   align-items: center;
   justify-content: center;

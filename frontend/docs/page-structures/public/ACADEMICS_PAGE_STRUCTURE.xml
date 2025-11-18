@@ -49,18 +49,26 @@
         </StatCard>
         
         <StatCard role="article" aria-label="GPA" tabIndex="0" $isVisible={isStatsVisible} $isHighlighted={true}>
-          {GPA 카드: 강조 표시 ($isHighlighted), grid-column span 2 (데스크톱), primary[50] 배경, primary[500] 테두리}
-          {스타일: padding spacing[8] (32px), fontSize['3xl'] (40px), primary[700] 색상}
+          {GPA 카드: 강조 표시 ($isHighlighted), grid-column span 2 (데스크톱)}
+          {배경: 라이트 테마 primary[50], 다크 테마 primary[900] (가독성 향상)}
+          {테두리: primary[500], padding spacing[8] (32px)}
           <h3>5.88</h3>
-          {GPA: 고정값 또는 계산된 값, 강조된 스타일}
+          {GPA 숫자: fontSize['3xl'] (40px), fontWeight.bold}
+          {색상: 라이트 테마 primary[700], 다크 테마 primary[200] (가독성 향상)}
           <p>GPA</p>
+          {라벨: fontSize.sm, 라이트 테마 textSecondary, 다크 테마 primary[300] (가독성 향상)}
         </StatCard>
         
         <StatCard role="article" aria-label="WAM" tabIndex="0" $isVisible={isStatsVisible} $isHighlighted={true}>
           {WAM 카드: 강조 표시 ($isHighlighted), grid-column span 2 (데스크톱)}
+          {배경: 라이트 테마 primary[50], 다크 테마 primary[900] (가독성 향상)}
+          {테두리: primary[500], padding spacing[8] (32px)}
           <h3>{averageMark.toFixed(1)}</h3>
+          {WAM 숫자: fontSize['3xl'] (40px), fontWeight.bold}
+          {색상: 라이트 테마 primary[700], 다크 테마 primary[200] (가독성 향상)}
           {WAM: 완료된 과목의 평균 점수, 강조된 스타일}
           <p>WAM (Weighted Average Mark)</p>
+          {라벨: fontSize.sm, 라이트 테마 textSecondary, 다크 테마 primary[300] (가독성 향상)}
         </StatCard>
       </SummaryStats>
       

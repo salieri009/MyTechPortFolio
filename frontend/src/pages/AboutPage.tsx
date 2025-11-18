@@ -158,9 +158,15 @@ export function AboutPage() {
                   src="/profile.jpg" 
                   alt={t('about.hero.name', 'Jungwook Van')}
                   loading="eager"
+                  $isDark={isDark}
                   onError={(e) => {
-                    // Fallback to placeholder if image fails to load
-                    e.currentTarget.style.display = 'none'
+                    // Fallback to placeholder avatar if image fails to load
+                    const target = e.currentTarget
+                    // Theme-aware placeholder: light gray for light mode, dark gray for dark mode
+                    const bgColor = isDark ? '#1F2937' : '#F3F4F6'
+                    const iconColor = isDark ? '#6B7280' : '#9CA3AF'
+                    target.src = `data:image/svg+xml;base64,${btoa(`<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="320" fill="${bgColor}"/><path d="M160 160C173.255 160 184 149.255 184 136C184 122.745 173.255 112 160 112C146.745 112 136 122.745 136 136C136 149.255 146.745 160 160 160Z" fill="${iconColor}"/><path d="M160 176C133.431 176 112 189.431 112 208V224H208V208C208 189.431 186.569 176 160 176Z" fill="${iconColor}"/></svg>`)}`
+                    target.style.background = 'transparent'
                   }}
                 />
               </S.ProfileImageWrapper>

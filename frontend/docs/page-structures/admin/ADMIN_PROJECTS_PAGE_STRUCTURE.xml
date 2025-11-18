@@ -26,8 +26,18 @@
 
       <EmptyDataState when="projects.length === 0 && !isLoading">
         <EmptyState>
-          <p>No projects found. Create your first project!</p>
-          <LinkButton to="/admin/projects/new">Create Project</LinkButton>
+          {H9: Help Users Recognize, Diagnose, and Recover from Errors - Empty state with recovery action}
+          <p style="fontSize: 1.125rem, marginBottom: 0.5rem, color: neutral[900]">
+            No projects found.
+          </p>
+          <p style="marginBottom: 1.5rem, color: neutral[500]">
+            Create your first project to get started!
+          </p>
+          <Link to="/admin/projects/new">
+            <Button variant="primary" style="marginTop: 1rem">
+              Create Your First Project
+            </Button>
+          </Link>
         </EmptyState>
       </EmptyDataState>
 
@@ -48,7 +58,13 @@
               <TableRow key={project.id}>
                 <TableCell>{project.title}</TableCell>
                 <TableCell>
-                  <StatusBadge $status={project.status}>{project.status}</StatusBadge>
+                  {H2: Match Between System and the Real World - User-friendly text}
+                  <StatusBadge $status={project.status}>
+                    {getStatusText(project.status)}
+                    {상태 텍스트: COMPLETED → "Published", IN_PROGRESS → "In Progress", PLANNING → "Draft", ARCHIVED → "Archived"}
+                  </StatusBadge>
+                  {StatusBadge 색상: Traffic light system (H2)}
+                  {COMPLETED: success-500 light/dark, IN_PROGRESS: warning-500 light/dark, PLANNING: primary[50]/primary[800], ARCHIVED: neutral[100]/neutral[700]}
                 </TableCell>
                 <TableCell>{project.isFeatured ? '⭐' : '-'}</TableCell>
                 <TableCell>{formatDate(project.startDate)}</TableCell>
@@ -58,9 +74,16 @@
                     <Link to={`/admin/projects/${project.id}/edit`}>
                       <Button variant="secondary" size="sm">Edit</Button>
                     </Link>
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(project.id)}>
+                    {H5: Error Prevention - Delete button with error-500 color}
+                    <Button 
+                      variant="danger" 
+                      size="sm"
+                      onClick={() => handleDeleteClick(project.id, project.title)}
+                      style="background: error[500], color: white"
+                    >
                       Delete
                     </Button>
+                    {handleDeleteClick: ConfirmationModal을 열기 위한 함수}
                   </ActionButtons>
                 </TableCell>
               </TableRow>
@@ -79,6 +102,18 @@
         </PaginationControls>
       </DataTable>
     </StateBoundary>
+    
+    {H5: Error Prevention - Confirmation Modal}
+    <ConfirmationModal
+      isOpen={deleteModal.isOpen}
+      title="Delete Project"
+      message={`Are you sure you want to delete "${deleteModal.projectTitle}"? This action cannot be undone.`}
+      confirmText="Delete"
+      cancelText="Cancel"
+      onConfirm={handleDeleteConfirm}
+      onCancel={handleDeleteCancel}
+    />
+    {ConfirmationModal: 삭제 확인 다이얼로그, destructive action 방지}
   </PageContainer>
 </AdminProjectsPage>
 
