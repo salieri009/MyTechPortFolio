@@ -113,6 +113,21 @@ const AuthorPosition = styled.div`
   font-family: ${props => props.theme.typography.fontFamily.primary};
 `
 
+// R3: Contextual Trust - Relationship Context Tag
+const RelationshipContextTag = styled.span`
+  display: inline-block;
+  padding: ${props => props.theme.spacing[1]} ${props => props.theme.spacing[2]};
+  background: ${props => props.theme.colors.primary[50]};
+  color: ${props => props.theme.colors.primary[700]};
+  border: 1px solid ${props => props.theme.colors.primary[200]};
+  border-radius: ${props => props.theme.radius.sm};
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  margin-top: ${props => props.theme.spacing[2]};
+  text-transform: capitalize;
+`
+
 interface TestimonialCardProps {
   testimonial: Testimonial
 }
@@ -147,6 +162,16 @@ export function TestimonialCard({ testimonial }: TestimonialCardProps) {
             {testimonial.position}
             {testimonial.company && ` at ${testimonial.company}`}
           </AuthorPosition>
+          {/* R3: Contextual Trust - Relationship Context Tag */}
+          {(testimonial as any).type && (
+            <RelationshipContextTag>
+              {(testimonial as any).type === 'COLLEAGUE' && 'Co-worker'}
+              {(testimonial as any).type === 'CLIENT' && 'Client'}
+              {(testimonial as any).type === 'MENTOR' && 'Mentor'}
+              {(testimonial as any).type === 'PROFESSOR' && 'Professor'}
+              {(testimonial as any).type === 'OTHER' && 'Colleague'}
+            </RelationshipContextTag>
+          )}
         </AuthorInfo>
       </AuthorSection>
     </TestimonialCardWrapper>

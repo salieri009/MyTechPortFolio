@@ -249,7 +249,9 @@ const StatCard = styled(Card).withConfig({
   
   /* Highlighted state for GPA/WAM */
   ${props => props.$isHighlighted && `
-    background: ${props.theme.colors.primary[50]};
+    background: ${props.theme.mode === 'dark' 
+      ? props.theme.colors.primary[900]  /* 다크 테마: 어두운 배경 */
+      : props.theme.colors.primary[50]};  /* 라이트 테마: 밝은 배경 */
     border-color: ${props.theme.colors.primary[500]};
     grid-column: span 2;
   `}
@@ -272,12 +274,26 @@ const StatCard = styled(Card).withConfig({
     font-size: ${props => props.$isHighlighted ? props.theme.typography.fontSize['3xl'] : props.theme.typography.fontSize['2xl']}; /* 40px or 24px */
     font-weight: ${props => props.theme.typography.fontWeight.bold};
     font-family: ${props => props.theme.typography.fontFamily.primary};
-    color: ${props => props.$isHighlighted ? props.theme.colors.primary[700] : props.theme.colors.primary[500]};
+    color: ${props => {
+      if (props.$isHighlighted) {
+        /* 다크 테마에서 가독성 향상: 밝은 색상 사용 */
+        return props.theme.mode === 'dark' 
+          ? props.theme.colors.primary[200]  /* 다크 테마: 밝은 텍스트 */
+          : props.theme.colors.primary[700];  /* 라이트 테마: 어두운 텍스트 */
+      }
+      return props.theme.colors.primary[500];
+    }};
     margin: 0 0 ${props => props.theme.spacing[2]} 0; /* 4-point system: 8px */
   }
   
   p {
-    color: ${props => props.theme.colors.textSecondary};
+    color: ${props => {
+      /* 다크 테마에서 Highlighted 카드의 라벨 가독성 향상 */
+      if (props.$isHighlighted && props.theme.mode === 'dark') {
+        return props.theme.colors.primary[300]; /* 다크 테마: 더 밝은 라벨 */
+      }
+      return props.theme.colors.textSecondary;
+    }};
     margin: 0;
     font-size: ${props => props.theme.typography.fontSize.sm}; /* 4-point system: 14px */
     font-family: ${props => props.theme.typography.fontFamily.primary};

@@ -15,15 +15,16 @@ import { SkeletonProjectCard, SkeletonTestimonialCard } from '@components/common
 import { StoryProgressBar } from '@components/common/StoryProgressBar'
 import { SectionBridge } from '@components/sections/SectionBridge'
 import { SectionPurpose } from '@components/sections/SectionPurpose'
+import { GithubIcon, LinkedInIcon, EmailIcon } from '@components/icons/SocialIcons'
 import type { ProjectSummary } from '../types/domain'
 import type { Testimonial } from '../mocks/testimonials'
 import * as S from './HomePage.styles'
 
-// Scroll Indicator Component
-const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => (
+// R1: Purposeful Scroll Indicator - Action-oriented text
+const ScrollIndicator = ({ isVisible, text = 'Explore My Journey' }: { isVisible: boolean; text?: string }) => (
   <S.ScrollIndicatorContainer $isVisible={isVisible}>
     <S.ScrollArrow aria-hidden="true" />
-    <S.ScrollText>Scroll</S.ScrollText>
+    <S.ScrollText>{text}</S.ScrollText>
   </S.ScrollIndicatorContainer>
 )
 
@@ -172,16 +173,47 @@ export function HomePage() {
         <InteractiveBackground isDark={isDark} particleCount={120} connectionDistance={180} />
         <Container>
           <S.HeroContent>
-            <S.HeroLeft>
-              <S.Greeting>
-                {t('hero.greeting')} <S.Name>{t('hero.name')}</S.Name>
-              </S.Greeting>
+            {/* 그룹 A: Primary Value Block (Z1 + Z2) - 좌측 정렬 통일 */}
+            <S.HeroGroupA>
+              {/* Z1: Impact Statement */}
               <S.Headline>
-                {t('hero.headline')}
+                {t('hero.headline', 'Building Scalable Web Solutions That Drive Business Value')}
               </S.Headline>
+              {/* Z2: Authority Subtitle - Z1 바로 아래, 여백 최소화 */}
               <S.Subtitle>
-                {t('hero.subtitle')}
+                {t('hero.subtitle', 'I solve complex technical challenges by architecting robust full-stack applications. Specialized in React, TypeScript, and Spring Boot to deliver high-performance, maintainable systems.')}
               </S.Subtitle>
+            </S.HeroGroupA>
+            
+            {/* 그룹 B: Action Validation Block (Z3 + Z4) - 좌측 정렬 통일 */}
+            <S.HeroGroupB>
+              {/* Z3: Social Validation Tray - 아이콘만 사용, CTA 바로 위, 수평 배치 */}
+              {/* T3: 아이콘만 사용, 텍스트 라벨 없음, neutral-0 색상, 미세한 호버 효과 */}
+              <S.SocialLinks>
+                <S.SocialLink
+                  href="https://github.com/salieri009"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub Profile"
+                >
+                  <GithubIcon size={24} />
+                </S.SocialLink>
+                <S.SocialLink
+                  href={CONTACT_INFO.linkedin.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn Profile"
+                >
+                  <LinkedInIcon size={24} />
+                </S.SocialLink>
+                <S.SocialLink
+                  href={`mailto:${CONTACT_INFO.email.student}`}
+                  aria-label="Send Email"
+                >
+                  <EmailIcon size={24} />
+                </S.SocialLink>
+              </S.SocialLinks>
+              {/* Z4: CTA Buttons - Z3 바로 아래, 여백 최소화 */}
               <S.CTAButtons>
                 <S.PrimaryCTA to="/projects">
                   {t('hero.cta.primary')}
@@ -190,36 +222,11 @@ export function HomePage() {
                   {t('hero.cta.secondary')}
                 </S.SecondaryCTA>
               </S.CTAButtons>
-            </S.HeroLeft>
-            <S.HeroRight>
-              <S.SocialLinks>
-                <S.SocialLink
-                  href={CONTACT_INFO.linkedin.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn Profile"
-                >
-                  LinkedIn
-                </S.SocialLink>
-                <S.SocialLink
-                  href={`mailto:${CONTACT_INFO.email.student}`}
-                  aria-label="Send Email"
-                >
-                  Email
-                </S.SocialLink>
-                <S.SocialLink
-                  href="https://github.com/salieri009"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub Profile"
-                >
-                  GitHub
-                </S.SocialLink>
-              </S.SocialLinks>
-            </S.HeroRight>
+            </S.HeroGroupB>
           </S.HeroContent>
         </Container>
-        <ScrollIndicator isVisible={isHeroVisible} />
+        {/* R1: Purposeful Scroll - Action-oriented text */}
+        <ScrollIndicator isVisible={isHeroVisible} text={t('hero.scrollIndicator', 'Explore My Journey')} />
       </S.Hero>
 
       <SectionBridge 

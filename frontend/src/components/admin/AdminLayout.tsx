@@ -181,6 +181,7 @@ const navItems: NavItemConfig[] = [
   { path: '/admin', label: 'Dashboard', icon: '📊' },
   { path: '/admin/projects', label: 'Projects', icon: '💼' },
   { path: '/admin/academics', label: 'Academics', icon: '🎓' },
+  { path: '/admin/testimonials', label: 'Testimonials', icon: '💬' },
   { path: '/admin/milestones', label: 'Journey Milestones', icon: '🗺️' },
 ]
 
@@ -188,6 +189,9 @@ export function AdminLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const { user, logout, canManageProjects, canManageAcademics, canManageMilestones } = useAdminStore()
+  
+  // Testimonials can be managed by same roles as Academics
+  const canManageTestimonials = () => canManageAcademics()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -202,6 +206,7 @@ export function AdminLayout() {
   const visibleNavItems = navItems.filter(item => {
     if (item.path === '/admin/projects') return canManageProjects()
     if (item.path === '/admin/academics') return canManageAcademics()
+    if (item.path === '/admin/testimonials') return canManageTestimonials()
     if (item.path === '/admin/milestones') return canManageMilestones()
     return true // Dashboard is always visible
   })

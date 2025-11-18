@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { projectsApi, type Project, type ProjectFilters } from '../../services/admin/projectsApi'
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { Button } from '../../components/ui/Button'
+import { ConfirmationModal } from '../../components/admin/ConfirmationModal'
 import styled from 'styled-components'
 
 const PageContainer = styled.div`
@@ -20,21 +21,21 @@ const PageHeader = styled.div`
 const PageTitle = styled.h1`
   font-size: ${props => props.theme.typography.fontSize['2xl']};
   font-weight: ${props => props.theme.typography.fontWeight.bold};
-  color: ${props => props.theme.colors.text};
+  color: #111827; /* neutral-900 - H4: Consistency */
   margin: 0;
 `
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  background: ${props => props.theme.colors.surface || '#ffffff'};
+  background: #FFFFFF; /* neutral-0 - H4: Consistency */
   border-radius: ${props => props.theme.borderRadius.lg || '12px'};
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 `
 
 const TableHeader = styled.thead`
-  background: ${props => props.theme.colors.backgroundSecondary || '#f9fafb'};
+  background: #EFF6FF; /* primary-50 - H4: Consistency */
 `
 
 const TableRow = styled.tr`
@@ -53,13 +54,13 @@ const TableHeaderCell = styled.th`
   padding: ${props => props.theme.spacing[4]};
   text-align: left;
   font-weight: ${props => props.theme.typography.fontWeight.semibold || '600'};
-  color: ${props => props.theme.colors.text};
+  color: #6B7280; /* neutral-500 - H4: Consistency */
   font-size: ${props => props.theme.typography.fontSize.sm};
 `
 
 const TableCell = styled.td`
   padding: ${props => props.theme.spacing[4]};
-  color: ${props => props.theme.colors.text};
+  color: #111827; /* neutral-900 */
   font-size: ${props => props.theme.typography.fontSize.base};
 `
 
@@ -74,20 +75,23 @@ const StatusBadge = styled.span<{ $status: string }>`
   border-radius: ${props => props.theme.borderRadius.full || '9999px'};
   font-size: ${props => props.theme.typography.fontSize.xs};
   font-weight: ${props => props.theme.typography.fontWeight.medium || '500'};
+  /* H2: Match Between System and the Real World - Traffic light system */
   background: ${props => {
     switch (props.$status) {
-      case 'COMPLETED': return props.theme.colors.success?.[100] || '#d1fae5'
-      case 'IN_PROGRESS': return props.theme.colors.warning?.[100] || '#fef3c7'
-      case 'PLANNING': return props.theme.colors.info?.[100] || '#dbeafe'
-      default: return props.theme.colors.gray?.[100] || '#f3f4f6'
+      case 'COMPLETED': return '#D1FAE5' /* success-500 light */
+      case 'IN_PROGRESS': return '#FEF3C7' /* warning-500 light */
+      case 'PLANNING': return '#EFF6FF' /* primary-50 */
+      case 'ARCHIVED': return '#F3F4F6' /* neutral-100 */
+      default: return '#F3F4F6' /* neutral-100 */
     }
   }};
   color: ${props => {
     switch (props.$status) {
-      case 'COMPLETED': return props.theme.colors.success?.[700] || '#065f46'
-      case 'IN_PROGRESS': return props.theme.colors.warning?.[700] || '#92400e'
-      case 'PLANNING': return props.theme.colors.info?.[700] || '#1e40af'
-      default: return props.theme.colors.gray?.[700] || '#374151'
+      case 'COMPLETED': return '#065F46' /* success-500 dark */
+      case 'IN_PROGRESS': return '#92400E' /* warning-500 dark */
+      case 'PLANNING': return '#1E40AF' /* primary-800 */
+      case 'ARCHIVED': return '#374151' /* neutral-700 */
+      default: return '#374151' /* neutral-700 */
     }
   }};
 `
@@ -95,7 +99,10 @@ const StatusBadge = styled.span<{ $status: string }>`
 const EmptyState = styled.div`
   text-align: center;
   padding: ${props => props.theme.spacing[12]};
-  color: ${props => props.theme.colors.textSecondary || '#6b7280'};
+  color: #6B7280; /* neutral-500 */
+  background: #FFFFFF; /* neutral-0 */
+  border-radius: ${props => props.theme.borderRadius.lg || '12px'};
+  border: 1px solid #E5E7EB; /* neutral-200 */
 `
 
 export function ProjectsAdminPage() {
@@ -104,6 +111,11 @@ export function ProjectsAdminPage() {
   const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; projectId: string | null; projectTitle: string }>({
+    isOpen: false,
+    projectId: null,
+    projectTitle: ''
+  })
 
   useEffect(() => {
     loadProjects()
@@ -124,16 +136,40 @@ export function ProjectsAdminPage() {
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this project?')) {
-      return
-    }
+  // H5: Error Prevention - Show confirmation modal instead of browser confirm
+  const handleDeleteClick = (id: string, title: string) => {
+    setDeleteModal({
+      isOpen: true,
+      projectId: id,
+      projectTitle: title
+    })
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.projectId) return
 
     try {
-      await projectsApi.delete(id)
+      await projectsApi.delete(deleteModal.projectId)
+      setDeleteModal({ isOpen: false, projectId: null, projectTitle: '' })
       await loadProjects() // Reload list
     } catch (err) {
       alert('Failed to delete project: ' + (err instanceof Error ? err.message : 'Unknown error'))
+      setDeleteModal({ isOpen: false, projectId: null, projectTitle: '' })
+    }
+  }
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, projectId: null, projectTitle: '' })
+  }
+
+  // H2: Match Between System and the Real World - User-friendly status text
+  const getStatusText = (status: string): string => {
+    switch (status) {
+      case 'COMPLETED': return 'Published'
+      case 'IN_PROGRESS': return 'In Progress'
+      case 'PLANNING': return 'Draft'
+      case 'ARCHIVED': return 'Archived'
+      default: return status
     }
   }
 
@@ -167,11 +203,19 @@ export function ProjectsAdminPage() {
         </Link>
       </PageHeader>
 
+      {/* H9: Help Users Recognize, Diagnose, and Recover from Errors - Empty state with recovery action */}
       {projects.length === 0 ? (
         <EmptyState>
-          <p>No projects found. Create your first project!</p>
+          <p style={{ fontSize: '1.125rem', marginBottom: '0.5rem', color: '#111827' }}>
+            No projects found.
+          </p>
+          <p style={{ marginBottom: '1.5rem', color: '#6B7280' }}>
+            Create your first project to get started!
+          </p>
           <Link to="/admin/projects/new">
-            <Button variant="primary" style={{ marginTop: '1rem' }}>Create Project</Button>
+            <Button variant="primary" style={{ marginTop: '1rem' }}>
+              Create Your First Project
+            </Button>
           </Link>
         </EmptyState>
       ) : (
@@ -192,7 +236,10 @@ export function ProjectsAdminPage() {
                 <TableRow key={project.id}>
                   <TableCell>{project.title}</TableCell>
                   <TableCell>
-                    <StatusBadge $status={project.status}>{project.status}</StatusBadge>
+                    {/* H2: Match Between System and the Real World - User-friendly text */}
+                    <StatusBadge $status={project.status}>
+                      {getStatusText(project.status)}
+                    </StatusBadge>
                   </TableCell>
                   <TableCell>{project.isFeatured ? '⭐' : '-'}</TableCell>
                   <TableCell>{new Date(project.startDate).toLocaleDateString()}</TableCell>
@@ -202,10 +249,15 @@ export function ProjectsAdminPage() {
                       <Link to={`/admin/projects/${project.id}/edit`}>
                         <Button variant="secondary" size="sm">Edit</Button>
                       </Link>
+                      {/* H5: Error Prevention - Delete button with error-500 color */}
                       <Button 
                         variant="danger" 
                         size="sm"
-                        onClick={() => handleDelete(project.id)}
+                        onClick={() => handleDeleteClick(project.id, project.title)}
+                        style={{ 
+                          background: '#EF4444', /* error-500 */
+                          color: '#FFFFFF'
+                        }}
                       >
                         Delete
                       </Button>
@@ -248,6 +300,17 @@ export function ProjectsAdminPage() {
           )}
         </>
       )}
+
+      {/* H5: Error Prevention - Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={deleteModal.isOpen}
+        title="Delete Project"
+        message={`Are you sure you want to delete "${deleteModal.projectTitle}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </PageContainer>
   )
 }

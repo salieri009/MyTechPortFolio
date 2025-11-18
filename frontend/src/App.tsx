@@ -26,6 +26,8 @@ const ProjectsAdminPage = lazy(() => import('@pages/admin/ProjectsAdminPage').th
 const ProjectForm = lazy(() => import('@components/admin/forms/ProjectForm').then(module => ({ default: module.ProjectForm })))
 const AcademicsAdminPage = lazy(() => import('@pages/admin/AcademicsAdminPage').then(module => ({ default: module.AcademicsAdminPage })))
 const AcademicForm = lazy(() => import('@components/admin/forms/AcademicForm').then(module => ({ default: module.AcademicForm })))
+const TestimonialsAdminPage = lazy(() => import('@pages/admin/TestimonialsAdminPage').then(module => ({ default: module.TestimonialsAdminPage })))
+const TestimonialForm = lazy(() => import('@components/admin/forms/TestimonialForm').then(module => ({ default: module.TestimonialForm })))
 const JourneyMilestonesAdminPage = lazy(() => import('@pages/admin/JourneyMilestonesAdminPage').then(module => ({ default: module.JourneyMilestonesAdminPage })))
 
 // Wrapper components for lazy-loaded forms with props
@@ -35,6 +37,10 @@ function ProjectFormWrapper({ mode }: { mode: 'create' | 'edit' }) {
 
 function AcademicFormWrapper({ mode }: { mode: 'create' | 'edit' }) {
   return <AcademicForm mode={mode} />
+}
+
+function TestimonialFormWrapper({ mode }: { mode: 'create' | 'edit' }) {
+  return <TestimonialForm mode={mode} />
 }
 
 function App() {
@@ -71,6 +77,9 @@ function App() {
             <Route path="academics" element={<AcademicsAdminPage />} />
             <Route path="academics/new" element={<AcademicFormWrapper mode="create" />} />
             <Route path="academics/:id/edit" element={<AcademicFormWrapper mode="edit" />} />
+            <Route path="testimonials" element={<TestimonialsAdminPage />} />
+            <Route path="testimonials/new" element={<TestimonialFormWrapper mode="create" />} />
+            <Route path="testimonials/:id/edit" element={<TestimonialFormWrapper mode="edit" />} />
             <Route path="milestones" element={<JourneyMilestonesAdminPage />} />
             {/* Additional milestone routes:
                 <Route path="milestones/new" element={<MilestoneForm mode="create" />} />

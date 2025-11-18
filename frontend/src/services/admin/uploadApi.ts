@@ -1,33 +1,25 @@
 import { api } from '../apiClient'
+import { projectMediaApi } from './projectMediaApi'
 
 /**
  * Upload API service for file uploads
+ * @deprecated Use projectMediaApi.upload() instead for project media
  */
 export const uploadApi = {
   /**
    * Upload image for project
+   * @deprecated Use projectMediaApi.upload() instead
    */
   async uploadImage(
     projectId: string,
     file: File,
     type: 'project' | 'academic' | 'milestone' = 'project'
   ): Promise<string> {
-    const formData = new FormData()
-    formData.append('file', file)
-    
-    // Use existing project media endpoint
-    const response = await api.post(
-      `/api/v1/projects/${projectId}/media`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    )
-    
-    // Return the media URL
-    return response.data.data.url || response.data.data.fileUrl
+    // Use projectMediaApi for consistency
+    const media = await projectMediaApi.upload(projectId, file, {
+      type: 'SCREENSHOT'
+    })
+    return media.fileUrl
   },
 
   /**

@@ -9,16 +9,19 @@ import styled from 'styled-components'
  * Nielsen Heuristic #8: Aesthetic and Minimalist Design - Non-intrusive background
  */
 
+// T1: Identity-Driven Hero - Code Topology/System Architecture motif
 const CanvasContainer = styled.canvas<{ $isDark: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
-  opacity: ${props => props.$isDark ? 0.5 : 0.6};
+  z-index: 0; /* Background layer - below all content */
+  opacity: ${props => props.$isDark ? 0.4 : 0.5}; /* Reduced opacity for better text readability */
   pointer-events: none;
   transition: opacity 0.3s ease;
+  /* Ensure canvas doesn't interfere with layout */
+  isolation: isolate;
 `
 
 interface Particle {

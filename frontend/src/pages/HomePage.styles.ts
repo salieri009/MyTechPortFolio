@@ -21,7 +21,7 @@ export const Hero = styled.section<{ $isDark: boolean }>`
   background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.primary[600]} 100%);
   color: ${props => props.theme.colors.hero.text};
   transition: background 0.3s ease;
-  margin-top: -${props => props.theme.spacing[0.25]}; /* 4-point system: -1px → 0 (헤더와의 gap 제거) */
+  margin-top: 0; /* 4-point system: 0px (헤더와의 gap 제거, 4px 규칙 준수) */
   position: relative;
   overflow: hidden;
   
@@ -37,14 +37,13 @@ export const Hero = styled.section<{ $isDark: boolean }>`
     z-index: 1;
   }
   
-  > * {
-    position: relative;
-    z-index: 2;
-  }
-  
+  /* InteractiveBackground는 z-index: 0으로 배경에 위치 */
+  /* Container와 HeroContent는 z-index: 2로 콘텐츠 위에 위치 */
   ${Container} {
     max-width: ${props => props.theme.spacing[300]}; /* 4-point system: 1200px */
     width: 100%;
+    position: relative;
+    z-index: 2;
   }
   
   @media (max-width: 768px) {
@@ -77,17 +76,22 @@ export const Name = styled.span`
 export const Headline = styled.h1`
   font-size: clamp(${props => props.theme.spacing[8]}, 5vw, ${props => props.theme.spacing[16]}); /* 4-point system: 32px, 64px */
   font-weight: ${props => props.theme.typography.fontWeight.extrabold};
-  margin-bottom: ${props => props.theme.spacing[6]};
+  margin-bottom: 0; /* 그룹 내 응집력: HeroGroupA의 gap으로 여백 관리 */
+  margin-top: 0;
   line-height: 1.1;
   letter-spacing: -0.02em;
   color: ${props => props.theme.colors.hero.text};
   text-shadow: 0 ${props => props.theme.spacing[0.5]} ${props => props.theme.spacing[2]} rgba(0, 0, 0, 0.2); /* 4-point system: 0 2px 8px */
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
+  
+  /* Z-Pattern Z1: Impact Statement - 그룹 A의 시작점 */
+  /* T1: Strict Vertical Alignment - 좌측 정렬 엄격히 준수 */
+  /* T2: 그룹 내 응집력 - Subtitle과 가까이 배치하여 하나의 메시지 그룹으로 */
+  /* Visual Weight: 높은 시각적 무게로 Z-Pattern의 시작점 역할 */
 
   @media (max-width: 768px) {
     font-size: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
-    margin-bottom: ${props => props.theme.spacing[6]};
     line-height: 1.2;
   }
   
@@ -99,12 +103,17 @@ export const Headline = styled.h1`
 export const Subtitle = styled.p`
   font-size: ${props => props.theme.typography.fontSize.xl};
   margin-bottom: 0;
+  margin-top: 0;
   opacity: 0.95;
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
   max-width: 600px;
   font-weight: ${props => props.theme.typography.fontWeight.normal};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
+  
+  /* Z-Pattern Z2: Authority Subtitle - Z1 바로 아래 배치 */
+  /* T1: Strict Vertical Alignment - 좌측 정렬 엄격히 준수 */
+  /* T2: 그룹 내 응집력 - Z1과 가까이 배치하여 하나의 메시지 그룹으로 */
 
   @media (max-width: 768px) {
     font-size: ${props => props.theme.typography.fontSize.lg};
@@ -113,58 +122,57 @@ export const Subtitle = styled.p`
 `
 
 export const HeroContent = styled.div`
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto 1fr auto;
-  gap: ${props => props.theme.spacing[6]};
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[12]}; /* T2: 그룹 간 분리 - spacing[10] 이상 (spacing[12] = 48px) */
   min-height: 70vh;
+  position: relative;
+  z-index: 2;
+  max-width: 800px; /* 좌측 정렬 블록의 최대 너비 제한 */
   
-  /* Z-패턴 레이아웃 최적화 */
-  @media (min-width: 1025px) {
-    grid-template-areas:
-      "left right"
-      "left right"
-      "left right";
-  }
+  /* Cohesion-Focused Z-Pattern: 모든 요소를 좌측 정렬로 통일 */
+  /* 그룹 A와 그룹 B를 하나의 수직선을 따라 배치하여 응집력 강화 */
+  /* T1: Strict Left Alignment - 하나의 수직 기준선을 따라 좌측 정렬 */
   
+  /* R2: 모바일 환경 - 단일 컬럼, 좌측 정렬 유지, 전체 콘텐츠 블록 중앙 배치 */
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    gap: ${props => props.theme.spacing[8]};
+    gap: ${props => props.theme.spacing[10]}; /* T2: 그룹 간 분리 - spacing[10] 이상 유지 */
     min-height: auto;
+    margin: 0 auto; /* R2: 모바일에서 중앙 배치 */
   }
 `
 
-export const HeroLeft = styled.div`
+/* 그룹 A: Primary Value Block (Z1 + Z2) */
+export const HeroGroupA = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${props => props.theme.spacing[6]};
-  justify-content: center;
+  gap: ${props => props.theme.spacing[3]}; /* 그룹 내 응집력: 여백 최소화 */
+  animation: ${fadeInUp} 0.8s ease-out;
   
-  /* Z-패턴: 좌하단에 서브타이틀, 우하단에 CTA 배치를 위한 레이아웃 */
-  @media (min-width: 1025px) {
-    max-width: 600px;
+  /* T1: Strict Vertical Alignment - 좌측 정렬 엄격히 준수 */
+  /* T2: Vertical Spacing Management - 그룹 내 여백 최소화 */
+  /* 근접성의 원칙: Impact Statement와 Authority Subtitle을 하나의 메시지 그룹으로 */
+  
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 `
 
-export const HeroRight = styled.div`
+/* 그룹 B: Action Validation Block (Z3 + Z4) */
+export const HeroGroupB = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: ${props => props.theme.spacing[4]};
+  gap: ${props => props.theme.spacing[5]}; /* CohesionRule: Z3와 Z4 사이 여백 spacing[5] 이하 (20px) */
+  animation: ${fadeInUp} 0.8s ease-out 0.2s;
+  animation-fill-mode: both;
   
-  /* Z-패턴: 우상단에 시각적 요소 배치 */
-  @media (min-width: 1025px) {
-    align-self: start;
-  }
+  /* T1: Strict Left Alignment - 좌측 정렬 엄격히 준수 */
+  /* T2: Group Separation Management - 그룹 A와 그룹 B 사이 spacing[10] 이상 */
+  /* T3: Action Tray Design - 아이콘만 사용, Primary CTA 시각적 무게 압도하지 않음 */
+  /* 근접성의 원칙: Social Links와 CTA Buttons를 하나의 액션 그룹으로 */
   
-  @media (max-width: 1024px) {
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-direction: row;
-    flex-wrap: wrap;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 `
 
@@ -172,7 +180,13 @@ export const CTAButtons = styled.div`
   display: flex;
   gap: ${props => props.theme.spacing[4]};
   align-items: center;
+  justify-content: flex-start;
   margin-bottom: 0;
+  margin-top: 0;
+  
+  /* Z-Pattern Z4: CTA Buttons - Z3 바로 아래 배치 */
+  /* T1: Strict Vertical Alignment - 좌측 정렬 엄격히 준수 */
+  /* T2: 그룹 내 응집력 - Z3와 가까이 배치하여 하나의 액션 그룹으로 */
 
   @media (max-width: 640px) {
     flex-direction: column;
@@ -275,6 +289,12 @@ export const SocialLinks = styled.div`
   gap: ${props => props.theme.spacing[6]};
   align-items: center;
   margin-top: 0;
+  margin-bottom: 0;
+  
+  /* Z-Pattern Z3: Social Validation Tray - 그룹 B의 시작점 */
+  /* T1: Strict Vertical Alignment - 좌측 정렬 엄격히 준수 */
+  /* T2: 그룹 내 응집력 - CTA Buttons와 가까이 배치하여 하나의 액션 그룹으로 */
+  /* T3: Action Tray Integration - CTA 바로 위에 배치하여 논리적 액션 블록 완성 */
   
   @media (max-width: 640px) {
     gap: ${props => props.theme.spacing[4]};
@@ -285,35 +305,36 @@ export const SocialLink = styled.a`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[4]};
+  padding: ${props => props.theme.spacing[2]}; /* WCAG 최소 터치 영역: 44x44px 이상 */
+  min-width: ${props => props.theme.spacing[11]}; /* 44px = spacing[11] */
+  min-height: ${props => props.theme.spacing[11]}; /* 44px = spacing[11] */
   border-radius: ${props => props.theme.radius.md};
-  background: ${props => props.theme.colors.hero.background};
+  background: transparent; /* T3: neutral-0 색상 (투명) */
   color: ${props => props.theme.colors.hero.text};
   text-decoration: none;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  border: 1px solid ${props => props.theme.colors.hero.border};
-  font-size: ${props => props.theme.typography.fontSize.sm};
-  font-weight: ${props => props.theme.typography.fontWeight.medium};
-  font-family: ${props => props.theme.typography.fontFamily.primary};
-  white-space: nowrap;
+  transition: all 0.2s ease; /* T3: 미세한 호버 효과 */
+  border: none;
   
-  /* H1: Visibility of System Status - Hover feedback */
+  /* T3: Action Tray Design - 아이콘만 사용, 텍스트 라벨 없음 */
+  /* T3: Primary CTA 버튼의 시각적 무게를 절대 압도하지 않도록 */
+  
+  /* H1: Visibility of System Status - 미세한 호버 효과 */
   &:hover {
-    background: ${props => props.theme.colors.hero.backgroundHover};
-    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 4px */
-    box-shadow: ${props => props.theme.shadows.md};
+    background: ${props => props.theme.colors.hero.background};
+    opacity: 0.8;
+    transform: translateY(-${props => props.theme.spacing[0.5]}); /* 4-point system: 2px */
   }
   
   /* H3: User Control & Freedom - Focus state */
   &:focus-visible {
     outline: 2px solid ${props => props.theme.colors.hero.outline};
-    outline-offset: ${props => props.theme.spacing[0.5]}; /* 4-point system: 4px */
+    outline-offset: ${props => props.theme.spacing[0.5]}; /* 4-point system: 2px */
+    background: ${props => props.theme.colors.hero.background};
   }
   
   @media (max-width: 640px) {
-    padding: ${props => props.theme.spacing[1.5]} ${props => props.theme.spacing[3]};
-    font-size: ${props => props.theme.typography.fontSize.xs};
+    min-width: ${props => props.theme.spacing[11]}; /* WCAG 최소 터치 영역 유지 */
+    min-height: ${props => props.theme.spacing[11]};
   }
 `
 
@@ -507,7 +528,7 @@ export const TestimonialGrid = styled.div<{ $isVisible?: boolean }>`
   }
 `
 
-// Scroll Indicator Component for Hero Section
+// R1: Purposeful Scroll Indicator - Action-oriented text
 const ScrollIndicatorContainer = styled.div<{ $isVisible: boolean }>`
   position: absolute;
   bottom: ${props => props.theme.spacing[8]};

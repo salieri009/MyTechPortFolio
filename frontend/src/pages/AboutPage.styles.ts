@@ -595,11 +595,12 @@ export const ValueModalOverlay = styled.div`
   }
 `
 
+// T1: Immersive Value Modal - Full screen immersive reading experience
 export const ValueModalContent = styled.div`
   background: ${props => props.theme.colors.surface || props.theme.colors.background};
   border-radius: ${props => props.theme.radius['2xl']};
-  padding: ${props => props.theme.spacing[12]};
-  max-width: ${props => props.theme.spacing[150] || '37.5rem'}; /* 600px */
+  padding: ${props => props.theme.spacing[16]};
+  max-width: ${props => props.theme.spacing[200] || '50rem'}; /* 800px - wider for immersive reading */
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -706,16 +707,18 @@ export const ValueModalDescription = styled.p`
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
 `
 
+// T1: Immersive reading experience - larger text, better spacing
 export const ValueModalDetail = styled.div`
-  font-size: ${props => `calc(${props.theme.typography.fontSize.base} * 1.2)`}; /* 20% larger */
+  font-size: ${props => `calc(${props.theme.typography.fontSize.base} * 1.25)`}; /* 25% larger for immersive reading */
   font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.text};
-  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  line-height: ${props => props.theme.typography.lineHeight.relaxed || 1.75}; /* Increased line height for readability */
   text-align: left;
-  padding: ${props => props.theme.spacing[6]};
+  padding: ${props => props.theme.spacing[8]};
   background: ${props => props.theme.colors.surface};
   border-radius: ${props => props.theme.radius.lg};
   border: 1px solid ${props => props.theme.colors.border};
+  margin-top: ${props => props.theme.spacing[6]};
 `
 
 export const MissionVisionTextContainer = styled.div<{ $isVisible: boolean }>`

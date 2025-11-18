@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Tag } from '@components/common'
-import { getProject } from '@services/projects'
-import type { ProjectDetail } from '@model/domain'
+import { getProject, getProjects } from '@services/projects'
+import type { ProjectDetail, ProjectSummary } from '@model/domain'
 
 const fadeIn = keyframes`
   from {
@@ -258,6 +258,112 @@ const RelatedAcademicLink = styled.a`
   }
 `
 
+// T2: Immersive Modal Detail - Problem, Solution, Results sections
+const ProjectModalSection = styled.div`
+  margin-top: ${props => props.theme.spacing[8]};
+  padding: ${props => props.theme.spacing[6]};
+  background: ${props => props.theme.mode === 'dark' 
+    ? props.theme.colors.neutral[800] 
+    : props.theme.colors.neutral[50]};
+  border-radius: ${props => props.theme.radius.lg};
+  border-left: 4px solid ${props => props.theme.colors.primary[500]};
+`
+
+const ProjectModalSectionTitle = styled.h3`
+  font-size: ${props => props.theme.typography.fontSize.xl};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.text};
+  margin-bottom: ${props => props.theme.spacing[4]};
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[2]};
+`
+
+const ProjectModalSectionContent = styled.div`
+  font-size: ${props => props.theme.typography.fontSize.base};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.text};
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  white-space: pre-wrap;
+`
+
+const ProjectModalSectionList = styled.ul`
+  margin: 0;
+  padding-left: ${props => props.theme.spacing[6]};
+  list-style-type: disc;
+  
+  li {
+    margin-bottom: ${props => props.theme.spacing[2]};
+    color: ${props => props.theme.colors.text};
+    line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  }
+`
+
+// T3: Interconnected Discovery - Related Projects section
+const ProjectModalRelatedProjects = styled.div`
+  margin-top: ${props => props.theme.spacing[6]};
+  padding: ${props => props.theme.spacing[6]};
+  background: ${props => props.theme.colors.surface};
+  border-radius: ${props => props.theme.radius.lg};
+  border: 1px solid ${props => props.theme.colors.border};
+`
+
+const RelatedProjectsTitle = styled.h3`
+  font-size: ${props => props.theme.typography.fontSize.lg};
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.text};
+  margin-bottom: ${props => props.theme.spacing[4]};
+`
+
+const RelatedProjectsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[2]};
+`
+
+const RelatedProjectLink = styled(Link)`
+  color: ${props => props.theme.colors.primary[600]};
+  text-decoration: none;
+  font-size: ${props => props.theme.typography.fontSize.base};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[2]};
+  
+  &:hover {
+    color: ${props => props.theme.colors.primary[700]};
+    text-decoration: underline;
+  }
+  
+  &::after {
+    content: '→';
+    font-size: ${props => props.theme.typography.fontSize.sm};
+    transition: transform 0.2s ease;
+  }
+  
+  &:hover::after {
+    transform: translateX(${props => props.theme.spacing[0.5]});
+  }
+  
+  &:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.primary[500]};
+    outline-offset: ${props => props.theme.spacing[0.5]};
+    border-radius: ${props => props.theme.radius.sm};
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    &::after {
+      transition: none;
+    }
+    &:hover::after {
+      transform: none;
+    }
+  }
+`
+
 /**
  * ProjectDetailOverlay Component
  * Hybrid Routing: Route-based modal overlay for project details
@@ -270,6 +376,8 @@ export function ProjectDetailOverlay() {
   const projectId = id ? parseInt(id, 10) : null
   const [selectedProject, setSelectedProject] = useState<ProjectDetail | null>(null)
   const [isLoadingProject, setIsLoadingProject] = useState(false)
+  const [relatedProjects, setRelatedProjects] = useState<ProjectSummary[]>([])
+  const [isLoadingRelated, setIsLoadingRelated] = useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
   const scrollPositionRef = useRef<number>(0)
 
@@ -292,6 +400,7 @@ export function ProjectDetailOverlay() {
   useEffect(() => {
     if (!projectId) {
       setSelectedProject(null)
+      setRelatedProjects([])
       return
     }
 
@@ -309,6 +418,39 @@ export function ProjectDetailOverlay() {
         setIsLoadingProject(false)
       })
   }, [projectId])
+
+  // T3: Load related projects (same tech stacks) when project is loaded
+  useEffect(() => {
+    if (!selectedProject || !selectedProject.techStacks || selectedProject.techStacks.length === 0) {
+      setRelatedProjects([])
+      return
+    }
+
+    setIsLoadingRelated(true)
+    // Get projects with at least one matching tech stack, excluding current project
+    getProjects({
+      techStacks: selectedProject.techStacks.slice(0, 3), // Use top 3 tech stacks for better relevance
+      page: 0,
+      size: 5,
+      sort: 'endDate,desc'
+    })
+      .then((response) => {
+        if (response.success && response.data) {
+          // Filter out current project and limit to 3 related projects
+          const filtered = response.data.items
+            .filter(p => p.id !== selectedProject.id)
+            .slice(0, 3)
+          setRelatedProjects(filtered)
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to load related projects:', error)
+        setRelatedProjects([])
+      })
+      .finally(() => {
+        setIsLoadingRelated(false)
+      })
+  }, [selectedProject])
 
   // Close modal handler - navigate back to /projects
   const handleClose = () => {
@@ -423,6 +565,47 @@ export function ProjectDetailOverlay() {
                 )}
               </ProjectModalLinks>
             )}
+
+            {/* T2: Immersive Modal Detail - Problem, Solution, Results sections */}
+            {selectedProject.challenge && (
+              <ProjectModalSection>
+                <ProjectModalSectionTitle>
+                  <span>🎯</span>
+                  {t('projects.modal.challenge', 'Challenge')}
+                </ProjectModalSectionTitle>
+                <ProjectModalSectionContent>
+                  {t(selectedProject.challenge)}
+                </ProjectModalSectionContent>
+              </ProjectModalSection>
+            )}
+
+            {selectedProject.solution && selectedProject.solution.length > 0 && (
+              <ProjectModalSection>
+                <ProjectModalSectionTitle>
+                  <span>💡</span>
+                  {t('projects.modal.solution', 'Solution')}
+                </ProjectModalSectionTitle>
+                <ProjectModalSectionList>
+                  {selectedProject.solution.map((item, index) => (
+                    <li key={index}>{t(item)}</li>
+                  ))}
+                </ProjectModalSectionList>
+              </ProjectModalSection>
+            )}
+
+            {selectedProject.keyOutcomes && selectedProject.keyOutcomes.length > 0 && (
+              <ProjectModalSection>
+                <ProjectModalSectionTitle>
+                  <span>✨</span>
+                  {t('projects.modal.keyOutcomes', 'Key Outcomes')}
+                </ProjectModalSectionTitle>
+                <ProjectModalSectionList>
+                  {selectedProject.keyOutcomes.map((item, index) => (
+                    <li key={index}>{t(item)}</li>
+                  ))}
+                </ProjectModalSectionList>
+              </ProjectModalSection>
+            )}
             
             {/* Related Academics Section */}
             {selectedProject.relatedAcademics && selectedProject.relatedAcademics.length > 0 && (
@@ -442,6 +625,27 @@ export function ProjectDetailOverlay() {
                   ))}
                 </RelatedAcademicsList>
               </ProjectModalRelatedAcademics>
+            )}
+
+            {/* T3: Interconnected Discovery - Related Projects Section */}
+            {relatedProjects.length > 0 && (
+              <ProjectModalRelatedProjects>
+                <RelatedProjectsTitle>
+                  {t('projects.modal.relatedProjects', 'Related Projects')}
+                </RelatedProjectsTitle>
+                <RelatedProjectsList>
+                  {relatedProjects.map((project) => (
+                    <RelatedProjectLink
+                      key={project.id}
+                      to={`/projects/${project.id}`}
+                      onClick={handleClose}
+                      aria-label={`View project: ${t(project.title)}`}
+                    >
+                      {t(project.title)}
+                    </RelatedProjectLink>
+                  ))}
+                </RelatedProjectsList>
+              </ProjectModalRelatedProjects>
             )}
           </>
         ) : (

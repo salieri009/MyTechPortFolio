@@ -5,51 +5,86 @@
   <DashboardContainer role="main" aria-label="Admin Dashboard">
     {1200px max-width, 중앙 정렬, 모든 Section을 래핑하는 컨테이너}
 
-    <WelcomeCard role="banner">
-      {그래디언트 배경 카드: Admin 사용자 인사 메시지}
-      <WelcomeTitle>{`Welcome back, ${user?.fullName ?? user?.username ?? 'Admin'}!`}</WelcomeTitle>
-      <WelcomeText>Manage projects, academics, and journey milestones from a single place.</WelcomeText>
-    </WelcomeCard>
+    {로딩 상태: H1: Visibility of System Status - SkeletonCard 사용}
+    {isLoading ? (
+      <WelcomeCard role="banner">
+        <WelcomeTitle>Loading Dashboard...</WelcomeTitle>
+        <WelcomeText>Please wait while we load your statistics.</WelcomeText>
+      </WelcomeCard>
+      <Section id="stats" aria-labelledby="stats-title">
+        <SectionTitle id="stats-title">Statistics</SectionTitle>
+        <StatsGrid columns="repeat(auto-fit, minmax(250px, 1fr))" gap="spacing[6]">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </StatsGrid>
+      </Section>
+    ) : (
+      <>
+        <WelcomeCard role="banner">
+          {그래디언트 배경 카드: primary[500]-primary[600] 그라데이션, Admin 사용자 인사 메시지}
+          <WelcomeTitle>{`Welcome back, ${user?.fullName ?? user?.username ?? 'Admin'}!`}</WelcomeTitle>
+          <WelcomeText>Manage your portfolio content from this dashboard. You can create, edit, and delete projects, academics, and journey milestones.</WelcomeText>
+        </WelcomeCard>
 
-    <Section id="stats" aria-labelledby="stats-title">
-      <SectionTitle id="stats-title">Statistics</SectionTitle>
-      <StatsGrid columns="repeat(auto-fit, minmax(250px, 1fr))" gap="spacing[6]">
-        <StatCard role="article">
-          <StatLabel>Total Projects</StatLabel>
-          <StatValue>{stats.totalProjects}</StatValue>
-        </StatCard>
-        <StatCard role="article">
-          <StatLabel>Featured Projects</StatLabel>
-          <StatValue>{stats.featuredProjects}</StatValue>
-        </StatCard>
-        <StatCard role="article">
-          <StatLabel>Academic Records</StatLabel>
-          <StatValue>{stats.totalAcademics}</StatValue>
-        </StatCard>
-        <StatCard role="article">
-          <StatLabel>Journey Milestones</StatLabel>
-          <StatValue>{stats.totalMilestones}</StatValue>
-        </StatCard>
-      </StatsGrid>
-    </Section>
+        <Section id="stats" aria-labelledby="stats-title">
+          <SectionTitle id="stats-title">Statistics</SectionTitle>
+          <StatsGrid columns="repeat(auto-fit, minmax(250px, 1fr))" gap="spacing[6]">
+            <StatCard role="article">
+              <StatLabel>Total Projects</StatLabel>
+              {StatLabel: fontSize.sm, color neutral[500], margin-bottom spacing[2]}
+              <StatValue>{stats.totalProjects}</StatValue>
+              {StatValue: fontSize['3xl'], fontWeight.bold, color neutral[900], 로딩 시 pulse 애니메이션}
+            </StatCard>
+            <StatCard role="article">
+              <StatLabel>Featured Projects</StatLabel>
+              <StatValue>{stats.featuredProjects}</StatValue>
+            </StatCard>
+            <StatCard role="article">
+              <StatLabel>Academic Records</StatLabel>
+              <StatValue>{stats.totalAcademics}</StatValue>
+            </StatCard>
+            <StatCard role="article">
+              <StatLabel>Journey Milestones</StatLabel>
+              <StatValue>{stats.totalMilestones}</StatValue>
+            </StatCard>
+          </StatsGrid>
+        </Section>
 
-    <Section id="quick-actions" aria-labelledby="quick-actions-title">
-      <SectionTitle id="quick-actions-title">Quick Actions</SectionTitle>
-      <StatsGrid columns="repeat(auto-fit, minmax(250px, 1fr))">
-        <StatCard as="button" onClick="navigate('/admin/projects/new')">
-          <StatLabel>Create New Project</StatLabel>
-          <StatValue>+</StatValue>
-        </StatCard>
-        <StatCard as="button" onClick="navigate('/admin/academics/new')">
-          <StatLabel>Add Academic Record</StatLabel>
-          <StatValue>+</StatValue>
-        </StatCard>
-        <StatCard as="button" onClick="navigate('/admin/milestones/new')">
-          <StatLabel>Add Milestone</StatLabel>
-          <StatValue>+</StatValue>
-        </StatCard>
-      </StatsGrid>
-    </Section>
+        <Section id="quick-actions" aria-labelledby="quick-actions-title">
+          <SectionTitle id="quick-actions-title">Quick Actions</SectionTitle>
+          <StatsGrid columns="repeat(auto-fit, minmax(250px, 1fr))">
+            <Link to="/admin/projects/new" style="text-decoration: none">
+              <QuickActionCard role="button" tabIndex="0">
+                {QuickActionCard: StatCard 스타일 상속, cursor pointer, text-align center, 호버 시 primary[50] 배경 + primary[500] 테두리}
+                <StatLabel>Create New Project</StatLabel>
+                <StatValue style="color: primary[500]">+</StatValue>
+              </QuickActionCard>
+            </Link>
+            <Link to="/admin/academics/new" style="text-decoration: none">
+              <QuickActionCard role="button" tabIndex="0">
+                <StatLabel>Add Academic Record</StatLabel>
+                <StatValue style="color: primary[500]">+</StatValue>
+              </QuickActionCard>
+            </Link>
+            <Link to="/admin/testimonials/new" style="text-decoration: none">
+              <QuickActionCard role="button" tabIndex="0">
+                <StatLabel>Add Testimonial</StatLabel>
+                <StatValue style="color: primary[500]">+</StatValue>
+              </QuickActionCard>
+            </Link>
+          </StatsGrid>
+        </Section>
+      </>
+    )}
   </DashboardContainer>
 </AdminDashboardPage>
+
+{주요 컴포넌트 설명:
+- SkeletonCard: 로딩 상태 표시용 스켈레톤 UI (H1: Visibility of System Status)
+- QuickActionCard: 빠른 액션을 위한 클릭 가능한 카드, Link로 감싸져 있음
+- StatCard: 통계 표시용 카드, 호버 시 shadow 증가 + translateY(-2px)
+- WelcomeCard: primary[500]-primary[600] 그라데이션 배경, white 텍스트
+}
 

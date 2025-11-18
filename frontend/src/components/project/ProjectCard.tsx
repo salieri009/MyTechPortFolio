@@ -95,6 +95,7 @@ const ImagePlaceholder = styled.div`
   font-size: ${props => props.theme.spacing[12]}; /* 48px */
 `
 
+// R2: Hover Preview - Enhanced overlay with summary and tech stacks
 const ImageOverlay = styled.div`
   position: absolute;
   top: 0;
@@ -104,27 +105,30 @@ const ImageOverlay = styled.div`
   background: linear-gradient(
     135deg,
     ${props => {
-      // Convert primary[500] hex to rgba with 0.85 opacity
+      // Convert primary[500] hex to rgba with 0.9 opacity
       const hex = props.theme.colors.primary[500].replace('#', '');
       const r = parseInt(hex.substring(0, 2), 16);
       const g = parseInt(hex.substring(2, 4), 16);
       const b = parseInt(hex.substring(4, 6), 16);
-      return `rgba(${r}, ${g}, ${b}, 0.85)`;
+      return `rgba(${r}, ${g}, ${b}, 0.9)`;
     }} 0%,
     ${props => {
-      // Convert primary[600] hex to rgba with 0.9 opacity
+      // Convert primary[600] hex to rgba with 0.95 opacity
       const hex = props.theme.colors.primary[600].replace('#', '');
       const r = parseInt(hex.substring(0, 2), 16);
       const g = parseInt(hex.substring(2, 4), 16);
       const b = parseInt(hex.substring(4, 6), 16);
-      return `rgba(${r}, ${g}, ${b}, 0.9)`;
+      return `rgba(${r}, ${g}, ${b}, 0.95)`;
     }} 100%
   );
   opacity: 0;
   transition: opacity 0.3s ease;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: ${props => props.theme.spacing[4]};
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
   
   ${ProjectCardWrapper}:hover & {
     opacity: 1;
@@ -135,22 +139,20 @@ const ImageOverlay = styled.div`
   }
 `
 
-// Magnifying glass icon for hover cue
-const HoverIcon = styled.svg`
-  width: ${props => props.theme.spacing[12]}; /* 48px */
-  height: ${props => props.theme.spacing[12]}; /* 48px */
-  color: ${props => props.theme.colors.primary[500]};
-  stroke: currentColor;
-  stroke-width: 2;
-  fill: none;
+const HoverSummary = styled.p`
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  text-align: center;
+  margin: 0 0 ${props => props.theme.spacing[3]} 0;
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
   opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.3s ease;
-  pointer-events: none;
+  transform: translateY(${props => props.theme.spacing[2]});
+  transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
   
   ${ProjectCardWrapper}:hover & {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
   
   @media (prefers-reduced-motion: reduce) {
@@ -160,6 +162,41 @@ const HoverIcon = styled.svg`
       transform: none;
     }
   }
+`
+
+const HoverTechStacks = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${props => props.theme.spacing[1]};
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(${props => props.theme.spacing[2]});
+  transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s;
+  
+  ${ProjectCardWrapper}:hover & {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.2s ease;
+    transform: none;
+    ${ProjectCardWrapper}:hover & {
+      transform: none;
+    }
+  }
+`
+
+const HoverTechTag = styled.span`
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: ${props => props.theme.radius.md};
+  padding: ${props => props.theme.spacing[0.5]} ${props => props.theme.spacing[2]};
+  font-size: ${props => props.theme.typography.fontSize.xs};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  color: ${props => props.theme.colors.hero?.text || '#ffffff'};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
 `
 
 const ProjectContent = styled.div`
@@ -289,11 +326,21 @@ export function ProjectCard({
               loading="lazy"
               aria-hidden="false"
             />
+            {/* R2: Hover Preview - Show summary and tech stacks on hover */}
             <ImageOverlay aria-hidden="true">
-              <HoverIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </HoverIcon>
+              <HoverSummary>
+                {t(summary).length > 100 
+                  ? `${t(summary).substring(0, 100)}...` 
+                  : t(summary)}
+              </HoverSummary>
+              <HoverTechStacks>
+                {techStacks.slice(0, 4).map((tech) => (
+                  <HoverTechTag key={tech}>{tech}</HoverTechTag>
+                ))}
+                {techStacks.length > 4 && (
+                  <HoverTechTag>+{techStacks.length - 4}</HoverTechTag>
+                )}
+              </HoverTechStacks>
             </ImageOverlay>
           </>
         ) : (

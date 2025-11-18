@@ -49,6 +49,7 @@ frontend/docs/page-structures/
 | `ADMIN_DASHBOARD_STRUCTURE.xml` | Admin dashboard overview + stats |
 | `ADMIN_PROJECTS_PAGE_STRUCTURE.xml` | CRUD table for projects |
 | `ADMIN_ACADEMICS_PAGE_STRUCTURE.xml` | CRUD table for academics |
+| `ADMIN_TESTIMONIALS_PAGE_STRUCTURE.xml` | CRUD table for testimonials with filtering |
 
 ---
 

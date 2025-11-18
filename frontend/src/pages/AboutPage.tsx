@@ -225,7 +225,7 @@ export function AboutPage() {
           <S.JourneyGrid>
             <S.TextColumn>
               <S.SectionTitle id="story-title" $isVisible={isStoryVisible}>
-                {t('about.story.title', 'My Journey')}
+                {t('about.story.title', 'My Story')}
               </S.SectionTitle>
               <SectionPurpose text={t('about.story.purpose', 'Introducing the journey as a developer and the motivation behind creating this portfolio.')} />
               <S.SectionSubtitle id="story-subtitle" $isVisible={isStoryVisible}>

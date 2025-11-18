@@ -5,6 +5,9 @@ import { academicsApi } from '../../services/admin/academicsApi'
 import { milestonesApi } from '../../services/admin/milestonesApi'
 import styled from 'styled-components'
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
+import { SkeletonCard } from '../../components/admin/SkeletonCard'
+import { Link } from 'react-router-dom'
+import { Button } from '../../components/ui/Button'
 
 const DashboardContainer = styled.div`
   max-width: 1200px;
@@ -19,23 +22,59 @@ const StatsGrid = styled.div`
 `
 
 const StatCard = styled.div`
-  background: ${props => props.theme.colors.surface || '#ffffff'};
-  border: 1px solid ${props => props.theme.colors.border || '#e5e7eb'};
+  background: #FFFFFF; /* neutral-0 - H4: Consistency */
+  border: 1px solid #E5E7EB; /* neutral-200 */
   border-radius: ${props => props.theme.borderRadius.lg || '12px'};
   padding: ${props => props.theme.spacing[6]};
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 200ms ease; /* H1: Visibility - Immediate feedback */
+  
+  &:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
 `
 
 const StatLabel = styled.div`
   font-size: ${props => props.theme.typography.fontSize.sm};
-  color: ${props => props.theme.colors.textSecondary || '#6b7280'};
+  color: #6B7280; /* neutral-500 - H1: Visibility - Clear secondary text */
   margin-bottom: ${props => props.theme.spacing[2]};
 `
 
 const StatValue = styled.div`
   font-size: ${props => props.theme.typography.fontSize['3xl']};
   font-weight: ${props => props.theme.typography.fontWeight.bold};
-  color: ${props => props.theme.colors.text};
+  color: #111827; /* neutral-900 - H1: Visibility - Clear primary text */
+  position: relative;
+  
+  /* H1: Visibility - Loading indicator */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -20px;
+    width: 4px;
+    height: 100%;
+    background: #3B82F6; /* primary-500 */
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+`
+
+const StatValueLoading = styled(StatValue)`
+  &::after {
+    opacity: 1;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
 `
 
 const Section = styled.section`
@@ -45,16 +84,29 @@ const Section = styled.section`
 const SectionTitle = styled.h2`
   font-size: ${props => props.theme.typography.fontSize.xl};
   font-weight: ${props => props.theme.typography.fontWeight.bold};
-  color: ${props => props.theme.colors.text};
+  color: #111827; /* neutral-900 - H4: Consistency */
   margin-bottom: ${props => props.theme.spacing[4]};
 `
 
+const QuickActionCard = styled(StatCard)`
+  cursor: pointer;
+  text-align: center;
+  
+  &:hover {
+    background: #EFF6FF; /* primary-50 */
+    border-color: #3B82F6; /* primary-500 */
+  }
+  
+  transition: all 200ms ease;
+`
+
 const WelcomeCard = styled.div`
-  background: linear-gradient(135deg, ${props => props.theme.colors.primary?.[500] || '#3b82f6'} 0%, ${props => props.theme.colors.primary?.[600] || '#2563eb'} 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); /* primary-500 to primary-600 */
   border-radius: ${props => props.theme.borderRadius.lg || '12px'};
   padding: ${props => props.theme.spacing[8]};
-  color: white;
+  color: #FFFFFF; /* neutral-0 */
   margin-bottom: ${props => props.theme.spacing[8]};
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
 `
 
 const WelcomeTitle = styled.h1`
@@ -116,12 +168,23 @@ export function AdminDashboard() {
     loadStats()
   }, [])
 
+  // H1: Visibility of System Status - Show skeleton UI instead of blank screen
   if (isLoading) {
     return (
       <DashboardContainer>
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-          <LoadingSpinner />
-        </div>
+        <WelcomeCard>
+          <WelcomeTitle>Loading Dashboard...</WelcomeTitle>
+          <WelcomeText>Please wait while we load your statistics.</WelcomeText>
+        </WelcomeCard>
+        <Section>
+          <SectionTitle>Statistics</SectionTitle>
+          <StatsGrid>
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </StatsGrid>
+        </Section>
       </DashboardContainer>
     )
   }
@@ -160,18 +223,24 @@ export function AdminDashboard() {
       <Section>
         <SectionTitle>Quick Actions</SectionTitle>
         <StatsGrid>
-          <StatCard>
-            <StatLabel>Create New Project</StatLabel>
-            <StatValue>+</StatValue>
-          </StatCard>
-          <StatCard>
-            <StatLabel>Add Academic Record</StatLabel>
-            <StatValue>+</StatValue>
-          </StatCard>
-          <StatCard>
-            <StatLabel>Add Milestone</StatValue>
-            <StatValue>+</StatValue>
-          </StatCard>
+          <Link to="/admin/projects/new" style={{ textDecoration: 'none' }}>
+            <QuickActionCard>
+              <StatLabel>Create New Project</StatLabel>
+              <StatValue style={{ color: '#3B82F6' }}>+</StatValue>
+            </QuickActionCard>
+          </Link>
+          <Link to="/admin/academics/new" style={{ textDecoration: 'none' }}>
+            <QuickActionCard>
+              <StatLabel>Add Academic Record</StatLabel>
+              <StatValue style={{ color: '#3B82F6' }}>+</StatValue>
+            </QuickActionCard>
+          </Link>
+          <Link to="/admin/testimonials/new" style={{ textDecoration: 'none' }}>
+            <QuickActionCard>
+              <StatLabel>Add Testimonial</StatLabel>
+              <StatValue style={{ color: '#3B82F6' }}>+</StatValue>
+            </QuickActionCard>
+          </Link>
         </StatsGrid>
       </Section>
     </DashboardContainer>
