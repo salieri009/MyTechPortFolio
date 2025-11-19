@@ -91,23 +91,41 @@ MyTechPortfolio는 개인의 기술적 역량과 학업 성과를 효과적으�
 
 ### ☁️ 클라우드 & 배포
 
+#### Azure (현재 프로덕션)
 - **Azure Static Web Apps**: 프론트엔드 호스팅
 - **Azure Container Apps**: 백엔드 API 서버
 - **Azure Database for MongoDB**: 프로덕션 데이터베이스
 - **Azure Key Vault**: 시크릿 관리
 - **Azure Container Registry (ACR)**: Docker 이미지 저장소
 - **Azure DevOps**: CI/CD 파이프라인 관리
+
+#### AWS (지원됨)
+- **Amazon ECS Fargate**: 서버리스 컨테이너 오케스트레이션
+- **Amazon ECR**: Docker 이미지 저장소
+- **Application Load Balancer**: 로드 밸런싱
+- **Amazon DocumentDB**: MongoDB 호환 데이터베이스
+- **AWS Secrets Manager**: 시크릿 관리
+
+#### GitHub Actions (지원됨)
+- **GitHub Actions**: 네이티브 CI/CD
+- **GitHub Container Registry**: Docker 이미지 저장소
+- **Multi-Cloud 지원**: Azure, AWS, Vercel 등
+
+#### 기타
 - **Docker**: 컨테이너화
+- **Docker Compose**: 로컬 개발 환경
 
 ### 🔄 CI/CD & DevOps
 
-| 기술 | 목적 |
-|------|------|
-| **Azure Pipelines** | CI/CD 자동화 |
-| **Trivy** | 컨테이너 보안 스캔 |
-| **Snyk** | 의존성 취약점 검사 |
-| **Playwright** | E2E 테스트 |
-| **JaCoCo** | 코드 커버리지 (Backend) |
+| 기술 | 목적 | 플랫폼 |
+|------|------|--------|
+| **Azure Pipelines** | CI/CD 자동화 | Azure DevOps |
+| **GitHub Actions** | CI/CD 자동화 | GitHub |
+| **AWS CodePipeline** | CI/CD 자동화 | AWS |
+| **Trivy** | 컨테이너 보안 스캔 | 모든 플랫폼 |
+| **Snyk** | 의존성 취약점 검사 | 모든 플랫폼 |
+| **Playwright** | E2E 테스트 | 모든 플랫폼 |
+| **JaCoCo** | 코드 커버리지 (Backend) | 모든 플랫폼 |
 
 ### 🧪 테스트 & 품질
 
@@ -452,14 +470,32 @@ Azure DevOps 포털에서 파이프라인을 수동으로 실행할 수 있습�
 
 프로젝트의 상세 문서는 `docs/` 폴더에서 확인할 수 있습니다:
 
+### 📖 핵심 문서
+
 - **📖 문서 인덱스**: `docs/README.md`
 - **🎯 핵심 개념**: `docs/important-concepts.md`
 - **🎨 프론트엔드 문서**: `docs/design-plan/frontend-design.md`
 - **🏗️ 백엔드 문서**: `docs/design-plan/backend-design.md`
 - **🏛️ 아키텍처 설계**: `docs/design-plan/architecture-design.md`
+
+### 🚀 배포 가이드
+
+- **📘 배포 문서 인덱스**: [`docs/Deployment/README.md`](docs/Deployment/README.md)
+- **☁️ Azure DevOps 배포**: [`docs/Deployment/Azure-DevOps-Deployment-Guide.md`](docs/Deployment/Azure-DevOps-Deployment-Guide.md) - Azure DevOps Pipelines & Azure Boards
+- **☁️ AWS 배포**: [`docs/Deployment/AWS-Deployment-Guide.md`](docs/Deployment/AWS-Deployment-Guide.md) - Amazon ECS Fargate & ECR
+- **🔄 GitHub Actions 배포**: [`docs/Deployment/GitHub-Actions-Deployment-Guide.md`](docs/Deployment/GitHub-Actions-Deployment-Guide.md) - GitHub Actions CI/CD
+- **☁️ Azure 배포 (일반)**: [`docs/Deployment/Azure-Deployment-Guide.md`](docs/Deployment/Azure-Deployment-Guide.md) - Azure Container Apps
+- **🐳 Docker 배포**: [`docs/Deployment/Deployment-Guide.md`](docs/Deployment/Deployment-Guide.md) - Docker Compose
+
+### 🔄 CI/CD & DevOps
+
 - **🔄 CI/CD 파이프라인**: [`.azure/pipelines/README.md`](.azure/pipelines/README.md)
 - **⚙️ 파이프라인 변수**: [`infra/pipeline-variables.yml`](infra/pipeline-variables.yml)
-- **🧪 테스트 가이드**: `docs/test-run/`
+- **📊 Azure Pipeline 관리**: [`docs/test-run/AZURE_PIPELINE_MANAGEMENT.md`](docs/test-run/AZURE_PIPELINE_MANAGEMENT.md)
+
+### 🧪 테스트 & 품질
+
+- **🧪 테스트 가이드**: [`docs/test-run/TEST_CASES_INDEX.md`](docs/test-run/TEST_CASES_INDEX.md)
 - **📋 스펙 문서**: `docs/specs/`
 
 ---

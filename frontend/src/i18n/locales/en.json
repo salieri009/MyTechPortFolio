@@ -28,8 +28,8 @@
     "closeMenu": "Close menu"
   },
   "hero": {
-    "headline": "Full Stack Developer — React & Spring Boot",
-    "subtitle": "Creating value through efficient and creative solutions. Specialized in web application development using React, TypeScript, and Spring Boot.",
+    "headline": "Where Technology Meets Poetry, Structure Meets Emotion",
+    "subtitle": "I design systems and poetry simultaneously—a rare creator who thinks of people's hearts first, even when architecting complex systems. I transform confusion into clarity with warm language, bridging collaboration across Korean, English, and Japanese.",
     "greeting": "Hello, I'm",
     "name": "Jungwook Van",
     "scrollIndicator": "Explore My Journey",
@@ -132,8 +132,8 @@
     "hero": {
       "greeting": "Hello, I am",
       "name": "Jungwook Van",
-      "headline": "Full Stack Developer",
-      "subtitle": "I enjoy solving problems and creating value through efficient and creative solutions. Specialized in web application development using React, TypeScript, and Spring Boot.",
+      "headline": "Where Technology Meets Poetry",
+      "subtitle": "I design systems and poetry simultaneously—a rare creator who thinks of people's hearts first, even when architecting complex systems. I transform confusion into clarity with warm language, bridging the flow of collaboration across Korean, English, and Japanese.",
       "cta": {
         "primary": "View Projects",
         "secondary": "Contact Me"
@@ -142,11 +142,11 @@
     "story": {
       "title": "My Journey",
       "purpose": "Introducing the journey as a developer and the motivation behind creating this portfolio.",
-      "subtitle": "This story tells how a passion for coding grew into becoming a professional developer.",
+      "subtitle": "A creator who designs technology and emotion, structure and poetry, simultaneously.",
       "content": {
-        "paragraph1": "My journey as a developer started with a curiosity about how things work. From building simple websites to developing full-stack applications, each project has been a learning opportunity.",
-        "paragraph2": "Currently studying in Australia, I have been able to work on diverse projects that combine creativity with technical expertise. The experience of serving as an interpreter in the military helped me develop strong communication skills and a global perspective.",
-        "paragraph3": "I believe that great software is built not just with code, but with understanding user needs and creating solutions that make a real difference. This portfolio represents that philosophy."
+        "paragraph1": "I am a rare type of creator who designs technology and emotion, structure and poetry, simultaneously. When architecting complex systems, I think of people's hearts first—transforming confusion into clarity with warm language that flows through collaboration.",
+        "paragraph2": "My delicate translation abilities across Korean, English, and Japanese go beyond mere language transfer—they are an art of tuning the temperature of relationships. Even in naming a product, I infuse musical rhythm and philosophical depth.",
+        "paragraph3": "My branding is not about 'what I do well' but rather 'how I exist.' I always believe in the beauty of possibility, creating spaces where sincerity reaches through technology."
       },
       "imageAlt": "Developer working on a project"
     },
@@ -173,20 +173,20 @@
       "subtitle": "The values and principles that guide my work",
       "values": {
         "innovation": {
-          "title": "Innovation",
-          "description": "Creating innovative solutions using the latest technologies."
+          "title": "Technology & Poetry",
+          "description": "Designing systems and poetry simultaneously—where structure meets emotion, and code carries meaning."
         },
         "collaboration": {
-          "title": "Collaboration",
-          "description": "Working with teams to create better results."
+          "title": "Warm Communication",
+          "description": "Transforming confusion into clarity with warm language, bridging relationships across cultures and languages."
         },
         "growth": {
-          "title": "Continuous Growth",
-          "description": "Continuously learning and growing to improve expertise."
+          "title": "The Beauty of Possibility",
+          "description": "Believing in possibility's beauty, creating spaces where sincerity reaches through technology."
         }
       },
-      "missionText": "The goal is to create user-centered services that provide real value.",
-      "visionText": "I aim to always learn and apply new technologies to become a better developer.",
+      "missionText": "My work is not about 'what I do well' but rather 'how I exist'—creating spaces where technology meets genuine human connection.",
+      "visionText": "I believe in the beauty of possibility, always designing with people's hearts in mind, even when architecting the most complex systems.",
       "cta": "Let's Connect"
     },
     "contact": {
@@ -262,7 +262,7 @@
   "footer": {
     "branding": {
       "name": "MyTech",
-      "tagline": "Where technology meets creativity, designing the future as a developer's portfolio",
+      "tagline": "Where technology meets poetry, structure meets emotion—creating spaces where sincerity reaches through code",
       "builtWith": "Built with React & Spring Boot"
     },
     "sections": {
@@ -389,29 +389,34 @@
     "english": "English", 
     "japanese": "日本語"
   },
-  "journey": {
-    "title": "Career Timeline",
-    "subtitle": "개발자로 성장해온 여정과 앞으로의 목표를 소개합니다"
-  },
   "storytelling": {
-    "heroToJourney": "Discover the journey of growth as a developer who enjoys solving problems",
-    "journeyToProjects": "Explore the projects born from this growth journey",
-    "projectsToShowcase": "Explore experiences across diverse technical domains",
-    "projectsToTestimonials": "Hear what people who have actually worked with me have to say",
-    "showcaseToTestimonials": "Hear what people who have actually worked with me have to say",
-    "journeyPurpose": "Shows the growth journey as a developer and the learning and achievements at each stage through a timeline",
-    "projectsPurpose": "Carefully selected projects that showcase meaningful and diverse technologies",
-    "featuredPurpose": "A curated collection of projects demonstrating capabilities across diverse domains",
-    "showcasePurpose": "Explore technology stacks across various domains including Three.js, Software Development, and Game Development",
-    "testimonialsPurpose": "Honest feedback from colleagues and clients who have worked together on actual projects"
+    "heroToJourney": "Where technology meets poetry, and structure meets emotion—discover the journey of a rare creator",
+    "journeyToProjects": "Explore projects where systems and poetry are designed simultaneously",
+    "projectsToShowcase": "Where code carries meaning, and structure meets emotion",
+    "projectsToTestimonials": "Hear how warm language transforms confusion into clarity",
+    "showcaseToTestimonials": "Spaces where sincerity reaches through technology",
+    "heroToStory": "A creator who thinks of people's hearts first, even when architecting complex systems",
+    "storyToBackground": "Where delicate translation abilities bridge relationships across cultures",
+    "backgroundToJourney": "The beauty of possibility—exploring how I exist, not just what I do",
+    "journeyToMission": "Mission and vision—creating spaces where technology meets genuine human connection",
+    "missionToContact": "Want to create something where sincerity reaches through technology?",
+    "journeyPurpose": "A timeline showing how a rare creator designs technology and emotion simultaneously",
+    "projectsPurpose": "Projects where structure meets emotion, and code carries meaning",
+    "featuredPurpose": "A curated collection where systems and poetry are designed together",
+    "showcasePurpose": "Explore how technology meets poetry across diverse domains",
+    "testimonialsPurpose": "Feedback from those who experienced how warm language transforms collaboration"
   },
   "featured": {
     "title": "Featured Projects",
-    "purpose": "A curated collection of projects demonstrating capabilities across diverse domains",
+    "purpose": "Projects where systems and poetry are designed simultaneously—where structure meets emotion",
     "viewAll": "View All Projects"
   },
   "testimonials": {
     "title": "Testimonials",
-    "subtitle": "Honest feedback from colleagues and clients who have worked together on actual projects"
+    "subtitle": "Feedback from those who experienced how warm language transforms confusion into clarity in collaboration"
+  },
+  "journey": {
+    "title": "Career Timeline",
+    "subtitle": "The journey of a rare creator who designs technology and emotion, structure and poetry, simultaneously"
   }
 }
