@@ -71,9 +71,11 @@ All test cases are modular and reusable, located in `.azure/pipelines/test-cases
 
 ### Frontend Tests
 - **Unit Tests**: `frontend-unit-tests.yml`
-  - Runs npm unit tests
-  - Publishes test results
-  - Generates coverage reports
+  - Runs Vitest unit tests (28 test cases)
+  - Uses React Testing Library
+  - Publishes JUnit test results
+  - Generates coverage reports (v8 provider)
+  - Coverage target: 80%+
   
 - **Integration Tests**: `frontend-integration-tests.yml`
   - Runs component integration tests
@@ -229,10 +231,19 @@ All test cases are modular and reusable, located in `.azure/pipelines/test-cases
    - Check ACR image availability
    - Review rollback logs
 
+## Test Documentation
+
+Comprehensive test case documentation is available in `docs/test-run/`:
+
+- [Test Cases Index](../../docs/test-run/TEST_CASES_INDEX.md)
+- [Azure Pipeline Management](../../docs/test-run/AZURE_PIPELINE_MANAGEMENT.md)
+- [Frontend Unit Tests Documentation](../../docs/test-run/TC-FU-Frontend-Unit-Tests.md)
+
 ## Support
 
 For issues or questions:
 1. Check pipeline logs in Azure DevOps
 2. Review template documentation
 3. Consult `infra/pipeline-variables.yml` for configuration
+4. Review [Azure Pipeline Management Guide](../../docs/test-run/AZURE_PIPELINE_MANAGEMENT.md)
 
