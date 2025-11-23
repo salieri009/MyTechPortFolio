@@ -2,8 +2,7 @@ import { api } from './apiClient'
 import type { ApiResponse, Page } from '../types/api'
 import type { ProjectDetail, ProjectSummary, ProjectCreateRequest, ProjectUpdateRequest } from '../types/domain'
 import * as dataService from '../mocks/projects'
-
-const USE_BACKEND_API = (import.meta as any).env.VITE_USE_BACKEND_API === 'true'
+import { getEnv } from '../utils/env'
 
 /**
  * Get paginated list of projects
@@ -15,7 +14,9 @@ export async function getProjects(params: {
   techStacks?: string[]
   year?: number
 }): Promise<ApiResponse<Page<ProjectSummary>>> {
-  if (USE_BACKEND_API) {
+  const useBackend = getEnv('VITE_USE_BACKEND_API') === 'true'
+
+  if (useBackend) {
     const res = await api.get<ApiResponse<Page<ProjectSummary>>>('/projects', {
       params: {
         page: params.page, size: params.size, sort: params.sort,
@@ -32,7 +33,9 @@ export async function getProjects(params: {
  * Get a single project by ID
  */
 export async function getProject(id: number | string): Promise<ApiResponse<ProjectDetail>> {
-  if (USE_BACKEND_API) {
+  const useBackend = getEnv('VITE_USE_BACKEND_API') === 'true'
+
+  if (useBackend) {
     const res = await api.get<ApiResponse<ProjectDetail>>(`/projects/${id}`)
     return res.data
   }
@@ -44,7 +47,9 @@ export async function getProject(id: number | string): Promise<ApiResponse<Proje
  * Create a new project
  */
 export async function createProject(request: ProjectCreateRequest): Promise<ApiResponse<ProjectDetail>> {
-  if (USE_BACKEND_API) {
+  const useBackend = getEnv('VITE_USE_BACKEND_API') === 'true'
+
+  if (useBackend) {
     const res = await api.post<ApiResponse<ProjectDetail>>('/projects', request)
     return res.data
   }
@@ -56,7 +61,9 @@ export async function createProject(request: ProjectCreateRequest): Promise<ApiR
  * Update an existing project
  */
 export async function updateProject(id: number | string, request: ProjectUpdateRequest): Promise<ApiResponse<ProjectDetail>> {
-  if (USE_BACKEND_API) {
+  const useBackend = getEnv('VITE_USE_BACKEND_API') === 'true'
+
+  if (useBackend) {
     const res = await api.put<ApiResponse<ProjectDetail>>(`/projects/${id}`, request)
     return res.data
   }
@@ -68,7 +75,9 @@ export async function updateProject(id: number | string, request: ProjectUpdateR
  * Delete a project
  */
 export async function deleteProject(id: number | string): Promise<ApiResponse<void>> {
-  if (USE_BACKEND_API) {
+  const useBackend = getEnv('VITE_USE_BACKEND_API') === 'true'
+
+  if (useBackend) {
     const res = await api.delete<ApiResponse<void>>(`/projects/${id}`)
     return res.data
   }

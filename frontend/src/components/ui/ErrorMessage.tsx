@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { analyzeError, isRetryableError } from '@utils/errorHandler'
+import { analyzeError, isRetryableError } from '../../utils/errorHandler'
 
 /**
  * Error Message Component
@@ -71,7 +71,7 @@ const ErrorTitle = styled.div`
   margin-bottom: ${props => props.theme.spacing[1]};
 `
 
-const ErrorMessage = styled.div`
+const ErrorMessageText = styled.div`
   font-size: ${props => props.theme.typography.fontSize.sm};
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
 `
@@ -143,13 +143,13 @@ export function ErrorMessage({
   const displayTitle = title || (errorInfo ? getErrorTitle(errorInfo.type) : undefined)
   const displaySuggestion = suggestion || (errorInfo ? getErrorSuggestion(errorInfo) : undefined)
   const canRetry = errorInfo ? isRetryableError(error) : false
-  
+
   return (
     <ErrorContainer variant={variant} role="alert" aria-live={ariaLive}>
       <ErrorIcon aria-hidden="true">⚠️</ErrorIcon>
       <ErrorContent>
         {displayTitle && <ErrorTitle>{displayTitle}</ErrorTitle>}
-        <ErrorMessage>{displayMessage}</ErrorMessage>
+        <ErrorMessageText>{displayMessage}</ErrorMessageText>
         {displaySuggestion && (
           <ErrorSuggestion>
             <strong>Tip:</strong> {displaySuggestion}
@@ -162,7 +162,7 @@ export function ErrorMessage({
         )}
       </ErrorContent>
       {onClose && (
-        <CloseButton 
+        <CloseButton
           onClick={onClose}
           aria-label="Close error message"
           type="button"

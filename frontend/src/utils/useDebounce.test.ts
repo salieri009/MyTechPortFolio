@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { renderHook, waitFor } from '@testing-library/react'
+import { renderHook, act } from '@testing-library/react'
 import { useDebounce } from './useDebounce'
 
 describe('useDebounce Hook', () => {
@@ -16,7 +16,7 @@ describe('useDebounce Hook', () => {
     expect(result.current).toBe('initial')
   })
 
-  it('TC-FU-010: should debounce value updates', async () => {
+  it('TC-FU-010: should debounce value updates', () => {
     const { result, rerender } = renderHook(
       ({ value, delay }) => useDebounce(value, delay),
       {
@@ -29,14 +29,15 @@ describe('useDebounce Hook', () => {
     rerender({ value: 'updated', delay: 300 })
     expect(result.current).toBe('initial')
 
-    vi.advanceTimersByTime(300)
-    
-    await waitFor(() => {
-      expect(result.current).toBe('updated')
+    // Advance timer by delay
+    act(() => {
+      vi.advanceTimersByTime(300)
     })
+
+    expect(result.current).toBe('updated')
   })
 
-  it('TC-FU-011: should cancel previous timeout when value changes rapidly', async () => {
+  it('TC-FU-011: should cancel previous timeout when value changes rapidly', () => {
     const { result, rerender } = renderHook(
       ({ value }) => useDebounce(value, 300),
       { initialProps: { value: 'first' } }
@@ -44,16 +45,15 @@ describe('useDebounce Hook', () => {
 
     rerender({ value: 'second' })
     vi.advanceTimersByTime(100)
-    
+
     rerender({ value: 'third' })
     vi.advanceTimersByTime(100)
-    
-    rerender({ value: 'fourth' })
-    vi.advanceTimersByTime(300)
 
-    await waitFor(() => {
-      expect(result.current).toBe('fourth')
+    rerender({ value: 'fourth' })
+    act(() => {
+      vi.advanceTimersByTime(300)
     })
+
+    expect(result.current).toBe('fourth')
   })
 })
-

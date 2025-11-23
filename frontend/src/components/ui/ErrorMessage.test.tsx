@@ -14,7 +14,7 @@ const renderWithTheme = (component: React.ReactElement) => {
 
 describe('ErrorMessage Component', () => {
   it('TC-FU-037: should render error message', () => {
-    renderWithTheme(<ErrorMessage>Something went wrong</ErrorMessage>)
+    renderWithTheme(<ErrorMessage message="Something went wrong" />)
     expect(screen.getByText('Something went wrong')).toBeInTheDocument()
   })
 

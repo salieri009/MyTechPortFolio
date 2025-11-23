@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { getProjects, getProject } from './projects'
 import * as apiClient from './apiClient'
 import * as dataService from '../mocks/projects'
+import * as envUtils from '../utils/env'
 
 // Mock dependencies
 vi.mock('./apiClient', () => ({
@@ -13,6 +14,10 @@ vi.mock('./apiClient', () => ({
 vi.mock('../mocks/projects', () => ({
   getProjects: vi.fn(),
   getProject: vi.fn()
+}))
+
+vi.mock('../utils/env', () => ({
+  getEnv: vi.fn()
 }))
 
 describe('Projects Service', () => {
@@ -33,12 +38,14 @@ describe('Projects Service', () => {
     }
 
     vi.mocked(apiClient.api.get).mockResolvedValue({ data: mockResponse })
-    
+
+    vi.mocked(apiClient.api.get).mockResolvedValue({ data: mockResponse })
+
     // Mock environment variable
-    import.meta.env.VITE_USE_BACKEND_API = 'true'
-    
+    vi.mocked(envUtils.getEnv).mockReturnValue('true')
+
     const result = await getProjects({ page: 1, size: 10 })
-    
+
     expect(result.success).toBe(true)
     expect(apiClient.api.get).toHaveBeenCalledWith('/projects', expect.any(Object))
   })
@@ -56,14 +63,15 @@ describe('Projects Service', () => {
     }
 
     vi.mocked(dataService.getProjects).mockResolvedValue(mockData)
-    
+
+    vi.mocked(dataService.getProjects).mockResolvedValue(mockData)
+
     // Mock environment variable
-    import.meta.env.VITE_USE_BACKEND_API = 'false'
-    
+    vi.mocked(envUtils.getEnv).mockReturnValue('false')
+
     const result = await getProjects({ page: 1, size: 10 })
-    
+
     expect(result.success).toBe(true)
     expect(dataService.getProjects).toHaveBeenCalled()
   })
 })
-

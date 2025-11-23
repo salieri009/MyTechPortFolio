@@ -6,13 +6,14 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@components': resolve('./src/components'),
-      '@pages': resolve('./src/pages'),
-      '@services': resolve('./src/services'),
-      '@mocks': resolve('./src/mocks'),
-      '@store': resolve('./src/store'),
-      '@styles': resolve('./src/styles'),
-      '@model': resolve('./src/types'),
+      '@components': resolve(__dirname, './src/components'),
+      '@pages': resolve(__dirname, './src/pages'),
+      '@services': resolve(__dirname, './src/services'),
+      '@mocks': resolve(__dirname, './src/mocks'),
+      '@store': resolve(__dirname, './src/store'),
+      '@styles': resolve(__dirname, './src/styles'),
+      '@model': resolve(__dirname, './src/types'),
+      '@utils': resolve(__dirname, './src/utils'),
     },
   },
   build: {
