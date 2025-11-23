@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { getResponsiveValue, getResponsiveFontSize, getColor } from './styleUtils'
-import { theme } from '@styles/theme'
+import theme from '@styles/theme'
 
 describe('Style Utils', () => {
   it('TC-FU-021: should generate responsive CSS with mobile value', () => {

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { ThemeProvider } from 'styled-components'
 import { Tag } from './Tag'
-import { theme } from '@styles/theme'
+import theme from '@styles/theme'
 
 const renderWithTheme = (component: React.ReactElement) => {
   return render(
@@ -21,10 +21,10 @@ describe('Tag Component', () => {
   it('TC-FU-032: should call onClick when provided', () => {
     const handleClick = vi.fn()
     renderWithTheme(<Tag onClick={handleClick}>Clickable Tag</Tag>)
-    
+
     const tag = screen.getByText('Clickable Tag')
     fireEvent.click(tag)
-    
+
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
 

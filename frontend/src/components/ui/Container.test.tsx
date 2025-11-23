@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { ThemeProvider } from 'styled-components'
 import { Container } from './Container'
-import { theme } from '@styles/theme'
+import theme from '@styles/theme'
 
 const renderWithTheme = (component: React.ReactElement) => {
   return render(

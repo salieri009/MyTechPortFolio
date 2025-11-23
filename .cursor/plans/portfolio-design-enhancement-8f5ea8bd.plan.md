@@ -197,7 +197,7 @@ This plan addresses critical documentation issues including structural inconsist
 ```markdown
 ---
 title: "Document Title"
-version: "1.0.0"
+versiong: "1.0.0"
 last_updated: "YYYY-MM-DD"
 status: "active|deprecated|draft"
 category: "Guide|Reference|Tutorial|Specification"
