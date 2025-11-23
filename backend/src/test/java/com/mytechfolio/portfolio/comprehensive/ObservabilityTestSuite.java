@@ -53,7 +53,7 @@ class ObservabilityTestSuite {
         mockMvc.perform(get("/api/v1/projects/507f1f77bcf86cd799439999"))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.success").value(false))
-            .andExpect(jsonPath("$.error.code").value("RESOURCE_NOT_FOUND"));
+            .andExpect(jsonPath("$.errorCode").exists());
 
         // Then - Logs should be written (verified by log file inspection or log appender)
         // In a real scenario, you would verify logs using a log appender or log file

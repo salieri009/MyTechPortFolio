@@ -62,7 +62,7 @@ class PerformanceTestSuite {
         }
 
         // Wait for all requests to complete
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[numberOfRequests])).join();
 
         // Then
         List<Long> responseTimes = futures.stream()

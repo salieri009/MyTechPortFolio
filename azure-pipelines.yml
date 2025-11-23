@@ -31,43 +31,33 @@ variables:
     value: 'Release'
   - name: vmImage
     value: 'ubuntu-latest'
+  # Gradle Cache Settings
+  - name: GRADLE_USER_HOME
+    value: $(Pipeline.Workspace)/.gradle
 
-# Key Vault integration for secrets
-# Configure Key Vault service connection in Azure DevOps
-# Secrets will be available as environment variables
+# Key Vault integration is handled via the Variable Group 'Portfolio-Pipeline-Variables' linked above.
+# Secrets are automatically available as environment variables in tasks that request them.
 
 stages:
-  # Stage 0: Retrieve Secrets (if needed)
-  - stage: RetrieveSecrets
-    displayName: 'Retrieve Secrets'
-    jobs:
-      - job: GetSecrets
-        displayName: 'Get Secrets from Key Vault'
-        pool:
-          vmImage: $(vmImage)
-        steps:
-          - template: .azure/pipelines/templates/key-vault-integration.yml
-            parameters:
-              keyVaultName: '$(KEY_VAULT_NAME)'
-              secrets:
-                - 'GOOGLE_CLIENT_ID'
-                - 'GOOGLE_CLIENT_SECRET'
-                - 'JWT_SECRET'
-                - 'MONGO_ROOT_PASSWORD'
-                - 'MONGODB_URI_PROD'
-
   # Stage 1: Build
-  # Parallel builds for backend and frontend (implements matrix strategy concept)
+  # Parallel builds for backend and frontend
   - stage: Build
     displayName: 'Build Stage'
-    dependsOn: RetrieveSecrets
-    condition: succeeded()
     jobs:
       - job: BuildBackend
         displayName: 'Build Backend'
         pool:
           vmImage: $(vmImage)
         steps:
+          # Optimization: Cache Gradle dependencies
+          - task: Cache@2
+            displayName: 'Cache Gradle packages'
+            inputs:
+              key: 'gradle | "$(Agent.OS)" | backend/build.gradle'
+              restoreKeys: |
+                gradle | "$(Agent.OS)"
+              path: $(GRADLE_USER_HOME)
+          
           - template: .azure/pipelines/templates/build-docker-image.yml
             parameters:
               workingDirectory: 'backend'
@@ -84,6 +74,15 @@ stages:
         pool:
           vmImage: $(vmImage)
         steps:
+          # Optimization: Cache NPM dependencies
+          - task: Cache@2
+            displayName: 'Cache NPM packages'
+            inputs:
+              key: 'npm | "$(Agent.OS)" | frontend/package-lock.json'
+              restoreKeys: |
+                npm | "$(Agent.OS)"
+              path: $(HOME)/.npm
+
           - template: .azure/pipelines/templates/build-docker-image.yml
             parameters:
               workingDirectory: 'frontend'
@@ -156,11 +155,13 @@ stages:
         displayName: 'End-to-End Tests'
         pool:
           vmImage: $(vmImage)
+        # Best Practice: Run E2E tests only on main or when specifically requested, to save time/cost
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
         steps:
           - template: .azure/pipelines/test-cases/e2e-tests.yml
 
   # Stage 3: Deploy
+  # Best Practice: Sequential deployment for non-prod environments (Dev -> Staging)
   - stage: DeployDev
     displayName: 'Deploy to Dev'
     dependsOn: Test
@@ -188,6 +189,7 @@ stages:
 
   - stage: DeployStaging
     displayName: 'Deploy to Staging'
+    # Best Practice: Ensure Staging deploys only after Dev succeeds
     dependsOn: DeployDev
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
     jobs:
@@ -214,6 +216,7 @@ stages:
   - stage: DeployProduction
     displayName: 'Deploy to Production'
     dependsOn: Test
+    # Best Practice: Production deployment only from main branch
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     jobs:
       - deployment: DeployProduction
@@ -235,4 +238,3 @@ stages:
                     frontendImage: '$(ACR_NAME).azurecr.io/portfolio-frontend:$(Build.BuildId)'
                     resourceGroup: '$(RESOURCE_GROUP_PROD)'
                     containerAppEnv: '$(CONTAINER_APP_ENV_PROD)'
-
