@@ -70,3 +70,4 @@ coverage/
 .coverage
 htmlcov/
 test-case-results/
+.fake
