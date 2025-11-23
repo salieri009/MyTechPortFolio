@@ -1,6 +1,7 @@
 package com.mytechfolio.portfolio.comprehensive;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -20,6 +24,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Comprehensive Functional Test Suite
  * Tests all functional requirements including happy paths, boundary cases, and invalid inputs
  * Based on BACKEND_COMPREHENSIVE_TEST_CASES.md specification
+ * 
+ * Improvements:
+ * - Uses TestDataHelper to eliminate hardcoded IDs
+ * - Dynamic test data creation
+ * - Automatic cleanup after tests
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,6 +41,22 @@ class FunctionalTestSuite {
     
     @Autowired
     private ObjectMapper objectMapper;
+    
+    @Autowired
+    private com.mytechfolio.portfolio.repository.ProjectRepository projectRepository;
+    
+    @Autowired
+    private com.mytechfolio.portfolio.repository.TechStackRepository techStackRepository;
+    
+    private TestDataHelper testDataHelper;
+    
+    @org.junit.jupiter.api.BeforeEach
+    void setUp() {
+        testDataHelper = new TestDataHelper(mockMvc, projectRepository, techStackRepository);
+    }
+    
+    // Track created test data for cleanup
+    private final List<String> createdProjectIds = new ArrayList<>();
     
 
 
@@ -74,10 +99,16 @@ class FunctionalTestSuite {
 
     @Test
     @DisplayName("[기능 테스트] - 프로젝트 목록 조회 (필터링) - techStacks 파라미터로 필터링")
+    @WithMockUser(roles = "CONTENT_MANAGER")
     void test_Projects_List_Get_WithTechStackFilter() throws Exception {
+        // Given - Create a tech stack and project with it
+        String techStackId = testDataHelper.findOrCreateTechStack("React");
+        String projectId = testDataHelper.createTestProjectWithTechStacks("Filtered Project", java.util.List.of(techStackId));
+        createdProjectIds.add(projectId);
+        
         // When/Then
         MvcResult result = mockMvc.perform(get("/api/v1/projects")
-                .param("techStacks", "675aa6818b8e5d32789d5801"))
+                .param("techStacks", techStackId))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.success").value(true))
             .andReturn();
@@ -100,16 +131,18 @@ class FunctionalTestSuite {
 
     @Test
     @DisplayName("[기능 테스트] - 프로젝트 상세 조회 (정상) - 유효한 ID로 프로젝트 조회")
+    @WithMockUser(roles = "CONTENT_MANAGER")
     void test_Projects_GetById_WithValidId() throws Exception {
-        // Given - Assume a project exists (or create one)
-        String projectId = "675aa6818b8e5d32789d5894";
+        // Given - Create a test project
+        String projectId = testDataHelper.createTestProject("Test Project", "Test Summary");
+        createdProjectIds.add(projectId);
         
         // When/Then
         mockMvc.perform(get("/api/v1/projects/{id}", projectId))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.success").value(true))
-            .andExpect(jsonPath("$.data.id").exists())
-            .andExpect(jsonPath("$.data.title").exists())
+            .andExpect(jsonPath("$.data.id").value(projectId))
+            .andExpect(jsonPath("$.data.title").value("Test Project"))
             .andExpect(jsonPath("$.data.description").exists());
     }
 
@@ -163,6 +196,8 @@ class FunctionalTestSuite {
 
         // Verify project can be retrieved
         String projectId = com.jayway.jsonpath.JsonPath.read(result.getResponse().getContentAsString(), "$.data.id");
+        createdProjectIds.add(projectId);
+        
         mockMvc.perform(get("/api/v1/projects/{id}", projectId))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.title").value("Test Project"));
@@ -237,6 +272,7 @@ class FunctionalTestSuite {
             .andReturn();
 
         String projectId = com.jayway.jsonpath.JsonPath.read(createResult.getResponse().getContentAsString(), "$.data.id");
+        createdProjectIds.add(projectId);
 
         // When - Update project
         String updateBody = """
@@ -321,6 +357,15 @@ class FunctionalTestSuite {
         // Then - Verify deletion
         mockMvc.perform(get("/api/v1/projects/{id}", projectId))
             .andExpect(status().isNotFound());
+        
+        // Don't add to cleanup list since it's already deleted
+    }
+    
+    @AfterEach
+    void tearDown() {
+        // Clean up created test data
+        createdProjectIds.forEach(testDataHelper::deleteTestProject);
+        createdProjectIds.clear();
     }
 
     @Test
