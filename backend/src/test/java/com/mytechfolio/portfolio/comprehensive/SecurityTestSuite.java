@@ -83,10 +83,19 @@ class SecurityTestSuite {
         );
 
         // When/Then - Should either reject or sanitize
-        mockMvc.perform(post("/api/v1/projects")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(xssBody))
-            .andExpect(status().isBadRequest().or(status().isCreated())); // Either validation fails or sanitized
+        // Note: Actual behavior depends on implementation - may return 400 or 201 with sanitized data
+        try {
+            mockMvc.perform(post("/api/v1/projects")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(xssBody))
+                .andExpect(status().isBadRequest());
+        } catch (AssertionError e) {
+            // If not rejected, should be sanitized (201)
+            mockMvc.perform(post("/api/v1/projects")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(xssBody))
+                .andExpect(status().isCreated());
+        }
     }
 
     @Test
@@ -119,7 +128,7 @@ class SecurityTestSuite {
         mockMvc.perform(post("/api/v1/projects")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
-            .andExpect(status().isCreated().or(status().isBadRequest())); // May need valid data
+            .andExpect(status().isCreated()); // JWT auth should handle CSRF
     }
 
     // ==================== Authorization Tests ====================
@@ -142,8 +151,14 @@ class SecurityTestSuite {
         // When/Then - CONTENT_MANAGER trying to access SUPER_ADMIN endpoint
         // This assumes there's a SUPER_ADMIN only endpoint
         // Adjust based on actual implementation
-        mockMvc.perform(get("/api/v1/admin/users"))
-            .andExpect(status().isForbidden().or(status().isNotFound()));
+        try {
+            mockMvc.perform(get("/api/v1/admin/users"))
+                .andExpect(status().isForbidden());
+        } catch (AssertionError e) {
+            // If not forbidden, should be not found
+            mockMvc.perform(get("/api/v1/admin/users"))
+                .andExpect(status().isNotFound());
+        }
     }
 
     // ==================== Input Validation Tests ====================
@@ -172,23 +187,22 @@ class SecurityTestSuite {
     @WithMockUser(roles = "CONTENT_MANAGER")
     void test_Security_SpecialCharacters_Handling() throws Exception {
         // Given - Special characters in title
-        String requestBody = objectMapper.writeValueAsString(
-            java.util.Map.of(
-                "title", "Test & <Project> 'with' \"quotes\"",
-                "summary", "Test Summary",
-                "description", "Description",
-                "startDate", "2024-01-01",
-                "endDate", "2024-12-31",
-                "techStackIds", java.util.List.of(),
-                "status", "COMPLETED"
-            )
-        );
-
+        String fullRequestBody = """
+            {
+              "title": "Test & <Project> 'with' \\"quotes\\"",
+              "summary": "Test Summary",
+              "description": "Description",
+              "startDate": "2024-01-01",
+              "endDate": "2024-12-31",
+              "techStackIds": []
+            }
+            """;
+        
         // When/Then - Should handle safely
         mockMvc.perform(post("/api/v1/projects")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-            .andExpect(status().isCreated().or(status().isBadRequest()));
+                .content(fullRequestBody))
+            .andExpect(status().isCreated()); // Should handle safely
     }
 }
 

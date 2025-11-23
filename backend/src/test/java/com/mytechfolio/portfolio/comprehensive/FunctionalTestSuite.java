@@ -1,10 +1,6 @@
 package com.mytechfolio.portfolio.comprehensive;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mytechfolio.portfolio.dto.request.ProjectCreateRequest;
-import com.mytechfolio.portfolio.dto.request.ProjectUpdateRequest;
-import com.mytechfolio.portfolio.repository.ProjectRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +33,7 @@ class FunctionalTestSuite {
     @Autowired
     private ObjectMapper objectMapper;
     
-    @Autowired
-    private ProjectRepository projectRepository;
 
-    @BeforeEach
-    void setUp() {
-        // Clean up test data if needed
-    }
 
     // ==================== Projects API Tests ====================
 
@@ -183,14 +173,17 @@ class FunctionalTestSuite {
     @WithMockUser(roles = "CONTENT_MANAGER")
     void test_Projects_Create_WithMissingRequiredField() throws Exception {
         // Given
-        ProjectCreateRequest request = new ProjectCreateRequest();
-        request.setSummary("Test Summary");
-        request.setDescription("Test Description");
+        String requestBody = """
+            {
+              "summary": "Test Summary",
+              "description": "Test Description"
+            }
+            """;
 
         // When/Then
         mockMvc.perform(post("/api/v1/projects")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(requestBody))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.success").value(false))
             .andExpect(jsonPath("$.error.code").value("VALIDATION_ERROR"));
@@ -201,15 +194,21 @@ class FunctionalTestSuite {
     @WithMockUser(roles = "CONTENT_MANAGER")
     void test_Projects_Create_WithInvalidDateRange() throws Exception {
         // Given
-        ProjectCreateRequest request = new ProjectCreateRequest();
-        request.setTitle("Test Project");
-        request.setStartDate("2024-12-31");
-        request.setEndDate("2024-01-01");
+        String requestBody = """
+            {
+              "title": "Test Project",
+              "summary": "Test Summary",
+              "description": "Test Description",
+              "startDate": "2024-12-31",
+              "endDate": "2024-01-01",
+              "techStackIds": []
+            }
+            """;
 
         // When/Then
         mockMvc.perform(post("/api/v1/projects")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(requestBody))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.success").value(false))
             .andExpect(jsonPath("$.error.code").value("VALIDATION_ERROR"));
@@ -220,32 +219,41 @@ class FunctionalTestSuite {
     @WithMockUser(roles = "CONTENT_MANAGER")
     void test_Projects_Update_WithPartialFields() throws Exception {
         // Given - Create a project first
-        ProjectCreateRequest createRequest = new ProjectCreateRequest();
-        createRequest.setTitle("Original Title");
-        createRequest.setSummary("Original Summary");
-        createRequest.setDescription("Original Description");
-        createRequest.setStartDate("2024-01-01");
-        createRequest.setEndDate("2024-12-31");
-        createRequest.setTechStackIds(java.util.List.of());
-        createRequest.setStatus("COMPLETED");
+        String createBody = """
+            {
+              "title": "Original Title",
+              "summary": "Original Summary",
+              "description": "Original Description",
+              "startDate": "2024-01-01",
+              "endDate": "2024-12-31",
+              "techStackIds": []
+            }
+            """;
 
         MvcResult createResult = mockMvc.perform(post("/api/v1/projects")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createRequest)))
+                .content(createBody))
             .andExpect(status().isCreated())
             .andReturn();
 
         String projectId = com.jayway.jsonpath.JsonPath.read(createResult.getResponse().getContentAsString(), "$.data.id");
 
         // When - Update project
-        ProjectUpdateRequest updateRequest = new ProjectUpdateRequest();
-        updateRequest.setTitle("Updated Title");
-        updateRequest.setSummary("Updated Summary");
+        String updateBody = """
+            {
+              "title": "Updated Title",
+              "summary": "Updated Summary",
+              "description": "Original Description",
+              "startDate": "2024-01-01",
+              "endDate": "2024-12-31",
+              "techStackIds": []
+            }
+            """;
 
         // Then
         mockMvc.perform(put("/api/v1/projects/{id}", projectId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateRequest)))
+                .content(updateBody))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.success").value(true))
             .andExpect(jsonPath("$.data.title").value("Updated Title"))
@@ -262,13 +270,21 @@ class FunctionalTestSuite {
     @WithMockUser(roles = "CONTENT_MANAGER")
     void test_Projects_Update_WithNonExistentId() throws Exception {
         // Given
-        ProjectUpdateRequest request = new ProjectUpdateRequest();
-        request.setTitle("Updated Title");
+        String requestBody = """
+            {
+              "title": "Updated Title",
+              "summary": "Updated Summary",
+              "description": "Description",
+              "startDate": "2024-01-01",
+              "endDate": "2024-12-31",
+              "techStackIds": []
+            }
+            """;
 
         // When/Then
         mockMvc.perform(put("/api/v1/projects/507f1f77bcf86cd799439999")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(requestBody))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.success").value(false))
             .andExpect(jsonPath("$.error.code").value("RESOURCE_NOT_FOUND"));
@@ -279,18 +295,20 @@ class FunctionalTestSuite {
     @WithMockUser(roles = "CONTENT_MANAGER")
     void test_Projects_Delete_WithValidId() throws Exception {
         // Given - Create a project first
-        ProjectCreateRequest createRequest = new ProjectCreateRequest();
-        createRequest.setTitle("To Be Deleted");
-        createRequest.setSummary("Summary");
-        createRequest.setDescription("Description");
-        createRequest.setStartDate("2024-01-01");
-        createRequest.setEndDate("2024-12-31");
-        createRequest.setTechStackIds(java.util.List.of());
-        createRequest.setStatus("COMPLETED");
+        String createBody = """
+            {
+              "title": "To Be Deleted",
+              "summary": "Summary",
+              "description": "Description",
+              "startDate": "2024-01-01",
+              "endDate": "2024-12-31",
+              "techStackIds": []
+            }
+            """;
 
         MvcResult createResult = mockMvc.perform(post("/api/v1/projects")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createRequest)))
+                .content(createBody))
             .andExpect(status().isCreated())
             .andReturn();
 

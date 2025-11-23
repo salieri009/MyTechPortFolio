@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -64,7 +63,6 @@ class PerformanceTestSuite {
 
         // Wait for all requests to complete
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-        long totalTime = System.currentTimeMillis() - startTime;
 
         // Then
         List<Long> responseTimes = futures.stream()
