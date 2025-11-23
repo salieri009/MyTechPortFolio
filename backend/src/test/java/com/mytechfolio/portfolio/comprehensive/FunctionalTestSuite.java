@@ -148,19 +148,21 @@ class FunctionalTestSuite {
     @WithMockUser(roles = "CONTENT_MANAGER")
     void test_Projects_Create_WithAllRequiredFields() throws Exception {
         // Given
-        ProjectCreateRequest request = new ProjectCreateRequest();
-        request.setTitle("Test Project");
-        request.setSummary("Test Summary");
-        request.setDescription("Test Description");
-        request.setStartDate("2024-01-01");
-        request.setEndDate("2024-12-31");
-        request.setTechStackIds(java.util.List.of("675aa6818b8e5d32789d5801"));
-        request.setStatus("COMPLETED");
+        String requestBody = """
+            {
+              "title": "Test Project",
+              "summary": "Test Summary",
+              "description": "Test Description",
+              "startDate": "2024-01-01",
+              "endDate": "2024-12-31",
+              "techStackIds": ["675aa6818b8e5d32789d5801"]
+            }
+            """;
 
         // When/Then
         MvcResult result = mockMvc.perform(post("/api/v1/projects")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(requestBody))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.success").value(true))
             .andExpect(jsonPath("$.data.id").exists())
