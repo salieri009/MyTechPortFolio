@@ -1,0 +1,417 @@
+# API Test Cases for MyTechPortfolio Backend
+# Comprehensive test suite following best practices
+
+api:
+  baseUrl: "http://localhost:8080/api"
+  version: "v1"
+  
+testSuites:
+  - name: "Project API Tests"
+    description: "Test cases for project management endpoints"
+    basePath: "/projects"
+    
+    testCases:
+      # GET /api/projects - List Projects
+      - name: "Get all projects with default pagination"
+        method: "GET"
+        path: "/api/projects"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+          - type: "jsonPath"
+            path: "$.data.page"
+            value: 1
+          - type: "jsonPath"
+            path: "$.data.size"
+            value: 10
+          - type: "jsonPath"
+            path: "$.data.items"
+            type: "array"
+            
+      - name: "Get projects with custom pagination"
+        method: "GET"
+        path: "/api/projects?page=2&size=5"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          - type: "jsonPath"
+            path: "$.data.page"
+            value: 2
+          - type: "jsonPath"
+            path: "$.data.size"
+            value: 5
+            
+      - name: "Get projects with sorting"
+        method: "GET"
+        path: "/api/projects?sort=endDate,desc"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          - type: "jsonPath"
+            path: "$.data.items"
+            type: "array"
+            
+      - name: "Get projects with tech stack filter"
+        method: "GET"
+        path: "/api/projects?techStacks=React,Spring Boot"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+            
+      - name: "Get projects with year filter"
+        method: "GET"
+        path: "/api/projects?year=2024"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+            
+      - name: "Get projects with invalid page size (should limit to max)"
+        method: "GET"
+        path: "/api/projects?size=200"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          - type: "jsonPath"
+            path: "$.data.size"
+            value: 100  # Max size limit
+            
+      # GET /api/projects/{id} - Get Project by ID
+      - name: "Get project by valid ID"
+        method: "GET"
+        path: "/api/projects/{id}"
+        pathParams:
+          id: "507f1f77bcf86cd799439011"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+          - type: "jsonPath"
+            path: "$.data.id"
+            exists: true
+            
+      - name: "Get project with invalid ID format"
+        method: "GET"
+        path: "/api/projects/invalid-id"
+        expectedStatus: 400
+        assertions:
+          - type: "statusCode"
+            value: 400
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+            
+      - name: "Get non-existent project"
+        method: "GET"
+        path: "/api/projects/507f1f77bcf86cd799439999"
+        expectedStatus: 404
+        assertions:
+          - type: "statusCode"
+            value: 404
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+            
+      # POST /api/projects - Create Project
+      - name: "Create project with valid data"
+        method: "POST"
+        path: "/api/projects"
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "Test Project"
+          summary: "This is a test project summary"
+          description: "This is a detailed description of the test project"
+          startDate: "2024-01-01"
+          endDate: "2024-12-31"
+          githubUrl: "https://github.com/test/project"
+          demoUrl: "https://demo.example.com"
+          techStackIds:
+            - "507f1f77bcf86cd799439011"
+            - "507f1f77bcf86cd799439012"
+          academicIds:
+            - "507f1f77bcf86cd799439013"
+        expectedStatus: 201
+        assertions:
+          - type: "statusCode"
+            value: 201
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+          - type: "jsonPath"
+            path: "$.data.title"
+            value: "Test Project"
+            
+      - name: "Create project with missing required fields"
+        method: "POST"
+        path: "/api/projects"
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: ""
+          summary: "Summary"
+        expectedStatus: 400
+        assertions:
+          - type: "statusCode"
+            value: 400
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.errors"
+            exists: true
+            
+      - name: "Create project with invalid date range"
+        method: "POST"
+        path: "/api/projects"
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "Test Project"
+          summary: "Summary"
+          description: "Description"
+          startDate: "2024-12-31"
+          endDate: "2024-01-01"
+          techStackIds: []
+        expectedStatus: 400
+        assertions:
+          - type: "statusCode"
+            value: 400
+            
+      - name: "Create project with invalid URL"
+        method: "POST"
+        path: "/api/projects"
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "Test Project"
+          summary: "Summary"
+          description: "Description"
+          startDate: "2024-01-01"
+          endDate: "2024-12-31"
+          githubUrl: "javascript:alert('xss')"
+          techStackIds: []
+        expectedStatus: 400
+        assertions:
+          - type: "statusCode"
+            value: 400
+            
+      # PUT /api/projects/{id} - Update Project
+      - name: "Update project with valid data"
+        method: "PUT"
+        path: "/api/projects/{id}"
+        pathParams:
+          id: "507f1f77bcf86cd799439011"
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "Updated Project Title"
+          summary: "Updated summary"
+          description: "Updated description"
+          startDate: "2024-01-01"
+          endDate: "2024-12-31"
+          techStackIds: []
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          - type: "jsonPath"
+            path: "$.data.title"
+            value: "Updated Project Title"
+            
+      # DELETE /api/projects/{id} - Delete Project
+      - name: "Delete project by ID"
+        method: "DELETE"
+        path: "/api/projects/{id}"
+        pathParams:
+          id: "507f1f77bcf86cd799439011"
+        expectedStatus: 204
+        assertions:
+          - type: "statusCode"
+            value: 204
+          
+  - name: "Academic API Tests"
+    description: "Test cases for academic management endpoints"
+    basePath: "/academics"
+    
+    testCases:
+      - name: "Get all academics with pagination"
+        method: "GET"
+        path: "/api/academics?page=1&size=10"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+            
+      - name: "Get academic by ID"
+        method: "GET"
+        path: "/api/academics/{id}"
+        pathParams:
+          id: "507f1f77bcf86cd799439011"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+            
+      - name: "Create academic with valid data"
+        method: "POST"
+        path: "/api/academics"
+        headers:
+          Content-Type: "application/json"
+        body:
+          name: "Advanced Software Development"
+          semester: "2024 Spring"
+          grade: "HD"
+          description: "Course description"
+        expectedStatus: 201
+        assertions:
+          - type: "statusCode"
+            value: 201
+          
+  - name: "TechStack API Tests"
+    description: "Test cases for tech stack endpoints"
+    basePath: "/techstacks"
+    
+    testCases:
+      - name: "Get all tech stacks"
+        method: "GET"
+        path: "/api/techstacks"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+          - type: "jsonPath"
+            path: "$.data"
+            type: "array"
+            
+      - name: "Get tech stacks by type"
+        method: "GET"
+        path: "/api/techstacks?type=Frontend"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          
+  - name: "Authentication API Tests"
+    description: "Test cases for authentication endpoints"
+    basePath: "/auth"
+    
+    testCases:
+      - name: "Google OAuth login with valid token"
+        method: "POST"
+        path: "/auth/google"
+        headers:
+          Content-Type: "application/json"
+        body:
+          googleIdToken: "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiJjbGllbnQtaWQiLCJhdWQiOiJjbGllbnQtaWQiLCJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNjAwMDAwMDAwLCJleHAiOjE2MDAwMDM2MDB9.test"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+            
+      - name: "Google OAuth login with invalid token format"
+        method: "POST"
+        path: "/auth/google"
+        headers:
+          Content-Type: "application/json"
+        body:
+          googleIdToken: "invalid-token"
+        expectedStatus: 400
+        assertions:
+          - type: "statusCode"
+            value: 400
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+            
+      - name: "Google OAuth login with missing token"
+        method: "POST"
+        path: "/auth/google"
+        headers:
+          Content-Type: "application/json"
+        body: {}
+        expectedStatus: 400
+        assertions:
+          - type: "statusCode"
+            value: 400
+
+securityTests:
+  - name: "SQL Injection Prevention"
+    description: "Test SQL injection prevention"
+    testCases:
+      - name: "Project ID with SQL injection attempt"
+        method: "GET"
+        path: "/api/projects/1' OR '1'='1"
+        expectedStatus: 400
+        assertions:
+          - type: "statusCode"
+            value: 400
+            
+  - name: "NoSQL Injection Prevention"
+    description: "Test NoSQL injection prevention"
+    testCases:
+      - name: "Project ID with NoSQL injection attempt"
+        method: "GET"
+        path: "/api/projects/{\"$ne\":null}"
+        expectedStatus: 400
+        assertions:
+          - type: "statusCode"
+            value: 400
+            
+  - name: "XSS Prevention"
+    description: "Test XSS prevention"
+    testCases:
+      - name: "Project title with XSS attempt"
+        method: "POST"
+        path: "/api/projects"
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "<script>alert('xss')</script>"
+          summary: "Summary"
+          description: "Description"
+          startDate: "2024-01-01"
+          endDate: "2024-12-31"
+          techStackIds: []
+        expectedStatus: 400
+        assertions:
+          - type: "statusCode"
+            value: 400
+
+performanceTests:
+  - name: "Load Testing"
+    description: "Performance and load tests"
+    testCases:
+      - name: "Handle large page size request"
+        method: "GET"
+        path: "/api/projects?size=1000"
+        expectedStatus: 200
+        assertions:
+          - type: "statusCode"
+            value: 200
+          - type: "jsonPath"
+            path: "$.data.size"
+            value: 100  # Should be limited to max
+          - type: "responseTime"
+            maxMs: 1000
+

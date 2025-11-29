@@ -1,0 +1,600 @@
+# Comprehensive Backend Test Cases Automation
+# Based on BACKEND_COMPREHENSIVE_TEST_CASES.md specification
+# This YAML file defines test cases for automated execution
+
+api:
+  baseUrl: "http://localhost:8080"
+  version: "v1"
+  basePath: "/api/v1"
+
+testSuites:
+  # ==================== Functional Tests ====================
+  - name: "Functional Tests - Projects API"
+    description: "Comprehensive functional tests for Projects API"
+    basePath: "/projects"
+    
+    testCases:
+      # GET /api/v1/projects - List Projects
+      - name: "[기능 테스트] - 프로젝트 목록 조회 (정상) - 기본 페이징 파라미터로 프로젝트 목록 조회"
+        method: "GET"
+        path: "/api/v1/projects"
+        expectedStatus: 200
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+          - type: "jsonPath"
+            path: "$.data.content"
+            type: "array"
+          - type: "jsonPath"
+            path: "$.data.page"
+            value: 1
+          - type: "jsonPath"
+            path: "$.data.size"
+            value: 10
+
+      - name: "[기능 테스트] - 프로젝트 목록 조회 (경계) - page=0으로 요청"
+        method: "GET"
+        path: "/api/v1/projects"
+        queryParams:
+          page: 0
+        expectedStatus: 400
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "VALIDATION_ERROR"
+
+      - name: "[기능 테스트] - 프로젝트 목록 조회 (경계) - size=101 (MAX 초과) 요청"
+        method: "GET"
+        path: "/api/v1/projects"
+        queryParams:
+          size: 101
+        expectedStatus: 400
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "VALIDATION_ERROR"
+
+      - name: "[기능 테스트] - 프로젝트 목록 조회 (필터링) - techStacks 파라미터로 필터링"
+        method: "GET"
+        path: "/api/v1/projects"
+        queryParams:
+          techStacks: "675aa6818b8e5d32789d5801"
+        expectedStatus: 200
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+
+      - name: "[기능 테스트] - 프로젝트 목록 조회 (정렬) - sort=startDate,ASC로 정렬"
+        method: "GET"
+        path: "/api/v1/projects"
+        queryParams:
+          sort: "startDate,ASC"
+        expectedStatus: 200
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+
+      # GET /api/v1/projects/{id} - Get Project by ID
+      - name: "[기능 테스트] - 프로젝트 상세 조회 (정상) - 유효한 ID로 프로젝트 조회"
+        method: "GET"
+        path: "/api/v1/projects/{id}"
+        pathParams:
+          id: "675aa6818b8e5d32789d5894"
+        expectedStatus: 200
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+          - type: "jsonPath"
+            path: "$.data.id"
+            exists: true
+          - type: "jsonPath"
+            path: "$.data.title"
+            exists: true
+
+      - name: "[기능 테스트] - 프로젝트 상세 조회 (잘못된 입력) - 존재하지 않는 ID로 조회"
+        method: "GET"
+        path: "/api/v1/projects/507f1f77bcf86cd799439999"
+        expectedStatus: 404
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "RESOURCE_NOT_FOUND"
+
+      - name: "[기능 테스트] - 프로젝트 상세 조회 (잘못된 입력) - 유효하지 않은 ObjectId 형식으로 조회"
+        method: "GET"
+        path: "/api/v1/projects/invalid-id-format"
+        expectedStatus: 400
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "VALIDATION_ERROR"
+
+      # POST /api/v1/projects - Create Project
+      - name: "[기능 테스트] - 프로젝트 생성 (정상) - 모든 필수 필드 포함하여 생성"
+        method: "POST"
+        path: "/api/v1/projects"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER", "ADMIN", "SUPER_ADMIN"]
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "Test Project"
+          summary: "Test Summary"
+          description: "Test Description"
+          startDate: "2024-01-01"
+          endDate: "2024-12-31"
+          techStackIds: ["675aa6818b8e5d32789d5801"]
+          status: "COMPLETED"
+        expectedStatus: 201
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+          - type: "jsonPath"
+            path: "$.data.id"
+            exists: true
+          - type: "jsonPath"
+            path: "$.data.title"
+            value: "Test Project"
+
+      - name: "[기능 테스트] - 프로젝트 생성 (잘못된 입력) - 필수 필드(title) 누락"
+        method: "POST"
+        path: "/api/v1/projects"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER"]
+        headers:
+          Content-Type: "application/json"
+        body:
+          summary: "Test Summary"
+          description: "Test Description"
+        expectedStatus: 400
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "VALIDATION_ERROR"
+
+      - name: "[기능 테스트] - 프로젝트 생성 (경계) - endDate가 startDate보다 이전"
+        method: "POST"
+        path: "/api/v1/projects"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER"]
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "Test Project"
+          startDate: "2024-12-31"
+          endDate: "2024-01-01"
+        expectedStatus: 400
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "VALIDATION_ERROR"
+
+      # PUT /api/v1/projects/{id} - Update Project
+      - name: "[기능 테스트] - 프로젝트 수정 (정상) - 존재하는 프로젝트의 일부 필드 수정"
+        method: "PUT"
+        path: "/api/v1/projects/{id}"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER"]
+        pathParams:
+          id: "{{projectId}}"
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "Updated Title"
+          summary: "Updated Summary"
+        expectedStatus: 200
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+          - type: "jsonPath"
+            path: "$.data.title"
+            value: "Updated Title"
+
+      - name: "[기능 테스트] - 프로젝트 수정 (잘못된 입력) - 존재하지 않는 ID로 수정 시도"
+        method: "PUT"
+        path: "/api/v1/projects/507f1f77bcf86cd799439999"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER"]
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "Updated Title"
+        expectedStatus: 404
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "RESOURCE_NOT_FOUND"
+
+      # DELETE /api/v1/projects/{id} - Delete Project
+      - name: "[기능 테스트] - 프로젝트 삭제 (정상) - 존재하는 프로젝트 삭제"
+        method: "DELETE"
+        path: "/api/v1/projects/{id}"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER"]
+        pathParams:
+          id: "{{projectId}}"
+        expectedStatus: 204
+
+      - name: "[기능 테스트] - 프로젝트 삭제 (잘못된 입력) - 존재하지 않는 ID로 삭제 시도"
+        method: "DELETE"
+        path: "/api/v1/projects/507f1f77bcf86cd799439999"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER"]
+        expectedStatus: 404
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "RESOURCE_NOT_FOUND"
+
+  # ==================== API Layer Tests ====================
+  - name: "API Layer Tests"
+    description: "Tests for API request/response structure, authentication, and CORS"
+    
+    testCases:
+      - name: "[API 테스트] - 응답 구조 검증 (성공) - 모든 성공 응답이 표준 ApiResponse 형식 준수"
+        method: "GET"
+        path: "/api/v1/projects"
+        expectedStatus: 200
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+          - type: "jsonPath"
+            path: "$.data"
+            exists: true
+          - type: "jsonPath"
+            path: "$.timestamp"
+            exists: true
+
+      - name: "[API 테스트] - 응답 구조 검증 (에러) - 모든 에러 응답이 표준 ApiResponse 형식 준수"
+        method: "GET"
+        path: "/api/v1/projects/507f1f77bcf86cd799439999"
+        expectedStatus: 404
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            exists: true
+          - type: "jsonPath"
+            path: "$.error.message"
+            exists: true
+          - type: "jsonPath"
+            path: "$.timestamp"
+            exists: true
+
+      - name: "[API 테스트] - 페이징 응답 구조 검증 - 페이징된 응답이 PageResponse 형식 준수"
+        method: "GET"
+        path: "/api/v1/projects"
+        queryParams:
+          page: 2
+          size: 5
+        expectedStatus: 200
+        assertions:
+          - type: "jsonPath"
+            path: "$.data.content"
+            type: "array"
+          - type: "jsonPath"
+            path: "$.data.page"
+            value: 2
+          - type: "jsonPath"
+            path: "$.data.size"
+            value: 5
+          - type: "jsonPath"
+            path: "$.data.totalElements"
+            exists: true
+          - type: "jsonPath"
+            path: "$.data.totalPages"
+            exists: true
+          - type: "jsonPath"
+            path: "$.data.hasNext"
+            exists: true
+          - type: "jsonPath"
+            path: "$.data.hasPrevious"
+            exists: true
+
+      - name: "[API 테스트] - Content-Type 검증 - 모든 응답이 application/json 반환"
+        method: "GET"
+        path: "/api/v1/projects"
+        expectedStatus: 200
+        assertions:
+          - type: "header"
+            name: "Content-Type"
+            value: "application/json"
+
+      - name: "[API 테스트] - 인증 (실패) - 토큰 없이 보호된 엔드포인트 접근"
+        method: "POST"
+        path: "/api/v1/projects"
+        headers:
+          Content-Type: "application/json"
+        body: {}
+        expectedStatus: 401
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "UNAUTHORIZED"
+
+      - name: "[API 테스트] - 인가 (실패) - 권한 없는 사용자가 관리 엔드포인트 접근"
+        method: "POST"
+        path: "/api/v1/projects"
+        auth:
+          required: true
+          roles: ["USER"]
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "Test"
+        expectedStatus: 403
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "FORBIDDEN"
+
+      - name: "[API 테스트] - Public 엔드포인트 접근 - 인증 없이 Public 엔드포인트 접근"
+        method: "GET"
+        path: "/api/v1/projects"
+        expectedStatus: 200
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: true
+
+      - name: "[API 테스트] - CORS 헤더 검증 - OPTIONS 요청에 올바른 CORS 헤더 반환"
+        method: "OPTIONS"
+        path: "/api/v1/projects"
+        headers:
+          Origin: "http://localhost:5173"
+          Access-Control-Request-Method: "GET"
+        expectedStatus: 200
+        assertions:
+          - type: "header"
+            name: "Access-Control-Allow-Origin"
+            exists: true
+          - type: "header"
+            name: "Access-Control-Allow-Methods"
+            exists: true
+          - type: "header"
+            name: "Access-Control-Allow-Headers"
+            exists: true
+
+  # ==================== Database Tests ====================
+  - name: "Database Layer Tests"
+    description: "Tests for CRUD operations, transactions, and data integrity"
+    
+    testCases:
+      - name: "[데이터베이스 테스트] - 참조 무결성 - 존재하지 않는 techStackId 참조 시 검증"
+        method: "POST"
+        path: "/api/v1/projects"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER"]
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "Test"
+          summary: "Summary"
+          description: "Description"
+          startDate: "2024-01-01"
+          endDate: "2024-12-31"
+          techStackIds: ["507f1f77bcf86cd799439999"]
+          status: "COMPLETED"
+        expectedStatus: 400
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+
+      - name: "[데이터베이스 테스트] - 필수 필드 검증 - 필수 필드 누락 시 데이터베이스 저장 실패"
+        method: "POST"
+        path: "/api/v1/projects"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER"]
+        headers:
+          Content-Type: "application/json"
+        body: {}
+        expectedStatus: 400
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "VALIDATION_ERROR"
+
+  # ==================== Security Tests ====================
+  - name: "Security Tests"
+    description: "Tests for injection prevention, XSS, CSRF, and authorization"
+    
+    testCases:
+      - name: "[보안 테스트] - NoSQL Injection 방어 - MongoDB Injection 시도 차단"
+        method: "GET"
+        path: "/api/v1/projects/{\"$ne\":null}"
+        expectedStatus: 400
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "VALIDATION_ERROR"
+
+      - name: "[보안 테스트] - ObjectId 검증 - 잘못된 ObjectId 형식으로 Injection 시도 차단"
+        method: "GET"
+        path: "/api/v1/projects/'; DROP TABLE projects; --"
+        expectedStatus: 400
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+
+      - name: "[보안 테스트] - XSS 방어 (입력) - 스크립트 태그가 포함된 입력 차단 또는 이스케이프"
+        method: "POST"
+        path: "/api/v1/projects"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER"]
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "<script>alert('XSS')</script>"
+          summary: "Test Summary"
+          description: "Description"
+          startDate: "2024-01-01"
+          endDate: "2024-12-31"
+          techStackIds: []
+          status: "COMPLETED"
+        expectedStatus: [400, 201]  # Either validation fails or sanitized
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            exists: true
+
+      - name: "[보안 테스트] - 권한 없는 접근 차단 - 일반 사용자가 관리자 엔드포인트 접근 시도"
+        method: "DELETE"
+        path: "/api/v1/projects/507f1f77bcf86cd799439999"
+        auth:
+          required: true
+          roles: ["USER"]
+        expectedStatus: 403
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "FORBIDDEN"
+
+      - name: "[보안 테스트] - 입력 길이 제한 - 과도하게 긴 입력 차단"
+        method: "POST"
+        path: "/api/v1/projects"
+        auth:
+          required: true
+          roles: ["CONTENT_MANAGER"]
+        headers:
+          Content-Type: "application/json"
+        body:
+          title: "{{longString}}"  # 10000+ characters
+          summary: "Test"
+        expectedStatus: 400
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "VALIDATION_ERROR"
+
+  # ==================== Observability Tests ====================
+  - name: "Observability Tests"
+    description: "Tests for logging, monitoring, and health checks"
+    
+    testCases:
+      - name: "[모니터링 테스트] - Health Check 엔드포인트 - /actuator/health 엔드포인트 정상 동작"
+        method: "GET"
+        path: "/actuator/health"
+        expectedStatus: 200
+        assertions:
+          - type: "jsonPath"
+            path: "$.status"
+            exists: true
+
+      - name: "[모니터링 테스트] - 메트릭 엔드포인트 - /actuator/metrics 엔드포인트 정상 동작"
+        method: "GET"
+        path: "/actuator/metrics"
+        expectedStatus: 200
+
+      - name: "[로깅 테스트] - 에러 로그 기록 - 404 에러 발생 시 로그 기록"
+        method: "GET"
+        path: "/api/v1/projects/507f1f77bcf86cd799439999"
+        expectedStatus: 404
+        assertions:
+          - type: "jsonPath"
+            path: "$.success"
+            value: false
+          - type: "jsonPath"
+            path: "$.error.code"
+            value: "RESOURCE_NOT_FOUND"
+
+performanceTests:
+  - name: "[성능 테스트] - 동시 요청 처리 (읽기) - 100개의 동시 GET 요청 처리"
+    description: "Test concurrent read requests"
+    method: "GET"
+    path: "/api/v1/projects"
+    concurrentRequests: 100
+    maxThreads: 20
+    expectedStatus: 200
+    sla:
+      averageResponseTime: 1000  # ms
+      percentile95: 2000  # ms
+      errorRate: 0
+
+  - name: "[성능 테스트] - 응답 시간 SLA (읽기) - GET 요청 응답 시간 < 500ms"
+    description: "Test response time SLA for read operations"
+    method: "GET"
+    path: "/api/v1/projects"
+    iterations: 100
+    expectedStatus: 200
+    sla:
+      averageResponseTime: 500  # ms
+      percentile95: 800  # ms
+      percentile99: 1000  # ms
+
+  - name: "[성능 테스트] - 응답 시간 SLA (복잡한 쿼리) - 필터링 및 정렬 포함 조회 < 1초"
+    description: "Test response time SLA for complex queries"
+    method: "GET"
+    path: "/api/v1/projects"
+    queryParams:
+      techStacks: "675aa6818b8e5d32789d5801"
+      year: 2024
+      sort: "endDate,DESC"
+    iterations: 50
+    expectedStatus: 200
+    sla:
+      averageResponseTime: 1000  # ms
+      percentile95: 1500  # ms
+
