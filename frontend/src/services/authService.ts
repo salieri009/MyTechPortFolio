@@ -51,7 +51,64 @@ export interface ApiResponse<T> {
 }
 
 class AuthService {
-  private readonly API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
+  private readonly baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
+
+  /**
+   * Common request wrapper - DRY principle applied
+   * Centralizes headers, credentials, and error handling
+   */
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      ...options,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        ...options.headers
+      }
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({
+        message: 'Request failed',
+        error: `HTTP ${response.status}`
+      }))
+      throw new Error(errorData.message || errorData.error || `HTTP ${response.status}`)
+    }
+
+    const result = await response.json()
+
+    // Handle ApiResponse wrapper
+    if (result && typeof result === 'object' && 'success' in result) {
+      if (!result.success && result.error) {
+        throw new Error(result.error)
+      }
+      return result.data
+    }
+
+    return result
+  }
+
+  /**
+   * Fire-and-forget request for non-critical operations
+   */
+  private async requestSilent(endpoint: string, options: RequestInit = {}): Promise<void> {
+    try {
+      await fetch(`${this.baseUrl}${endpoint}`, {
+        ...options,
+        credentials: 'include',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          ...options.headers
+        }
+      })
+    } catch (error) {
+      console.warn(`Silent request failed for ${endpoint}:`, error)
+    }
+  }
 
   async initializeGoogleSignIn(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -60,49 +117,27 @@ class AuthService {
         return
       }
 
-      // Load Google Identity Services script
-      if (!document.querySelector('script[src*="accounts.google.com"]')) {
-        const script = document.createElement('script')
-        script.src = 'https://accounts.google.com/gsi/client'
-        script.async = true
-        script.defer = true
-        script.onload = () => resolve()
-        script.onerror = () => reject(new Error('Failed to load Google Identity Services'))
-        document.head.appendChild(script)
-      } else {
+      // Check for existing script
+      if (document.querySelector('script[src*="accounts.google.com"]')) {
         resolve()
+        return
       }
+
+      const script = document.createElement('script')
+      script.src = 'https://accounts.google.com/gsi/client'
+      script.async = true
+      script.defer = true
+      script.onload = () => resolve()
+      script.onerror = () => reject(new Error('Failed to load Google Identity Services'))
+      document.head.appendChild(script)
     })
   }
 
   async loginWithGoogle(credential: string, twoFactorCode?: string): Promise<AuthResponse> {
-    const loginRequest: LoginRequest = {
-      googleIdToken: credential,
-      twoFactorCode
-    }
-
-    const response = await fetch(`${this.API_BASE_URL}/auth/google`, {
+    return this.request<AuthResponse>('/auth/google', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-      credentials: 'include',
-      body: JSON.stringify(loginRequest)
+      body: JSON.stringify({ googleIdToken: credential, twoFactorCode })
     })
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Network error' }))
-      throw new Error(errorData.error || `HTTP ${response.status}`)
-    }
-
-    const apiResponse: ApiResponse<AuthResponse> = await response.json()
-    
-    if (!apiResponse.success) {
-      throw new Error(apiResponse.error || 'Authentication failed')
-    }
-
-    return apiResponse.data
   }
 
   async verifyTwoFactor(token: string): Promise<{
@@ -110,140 +145,48 @@ class AuthService {
     accessToken: string
     refreshToken: string
   }> {
-    const response = await fetch(`${this.API_BASE_URL}/auth/2fa/verify`, {
+    return this.request('/auth/2fa/verify', {
       method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      },
       body: JSON.stringify({ token })
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Verification failed' }))
-      throw new Error(error.message || 'Two-factor verification failed')
-    }
-
-    const result = await response.json()
-    return result.data
   }
 
   async setupTwoFactor(): Promise<{ qrCodeUrl: string; secret: string }> {
-    const response = await fetch(`${this.API_BASE_URL}/auth/2fa/setup`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Setup failed' }))
-      throw new Error(error.message || 'Two-factor setup failed')
-    }
-
-    const result = await response.json()
-    return result.data
+    return this.request('/auth/2fa/setup', { method: 'POST' })
   }
 
   async confirmTwoFactorSetup(token: string): Promise<void> {
-    const response = await fetch(`${this.API_BASE_URL}/auth/2fa/confirm`, {
+    await this.request('/auth/2fa/confirm', {
       method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      },
       body: JSON.stringify({ token })
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Confirmation failed' }))
-      throw new Error(error.message || 'Two-factor confirmation failed')
-    }
   }
 
   async refreshToken(): Promise<{ accessToken: string }> {
-    const response = await fetch(`${this.API_BASE_URL}/auth/refresh`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Token refresh failed' }))
-      throw new Error(error.message || 'Failed to refresh token')
-    }
-
-    const result = await response.json()
-    return result.data
+    return this.request('/auth/refresh', { method: 'POST' })
   }
 
   async storeRefreshToken(refreshToken: string): Promise<void> {
-    const response = await fetch(`${this.API_BASE_URL}/auth/set-refresh-token`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-      body: JSON.stringify({ token: refreshToken })
-    })
-
-    if (!response.ok) {
+    try {
+      await this.request('/auth/set-refresh-token', {
+        method: 'POST',
+        body: JSON.stringify({ token: refreshToken })
+      })
+    } catch {
       console.warn('Failed to store refresh token securely')
     }
   }
 
   async clearRefreshToken(): Promise<void> {
-    try {
-      await fetch(`${this.API_BASE_URL}/auth/clear-refresh-token`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      })
-    } catch (error) {
-      console.warn('Failed to clear refresh token:', error)
-    }
+    await this.requestSilent('/auth/clear-refresh-token', { method: 'POST' })
   }
 
   async logout(): Promise<void> {
-    try {
-      await fetch(`${this.API_BASE_URL}/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      })
-    } catch (error) {
-      console.warn('Logout request failed:', error)
-    }
+    await this.requestSilent('/auth/logout', { method: 'POST' })
   }
 
   async getCurrentUser(): Promise<any> {
-    const response = await fetch(`${this.API_BASE_URL}/auth/me`, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    })
-
-    if (!response.ok) {
-      throw new Error('Failed to get current user')
-    }
-
-    const result = await response.json()
-    return result.data
+    return this.request('/auth/me', { method: 'GET' })
   }
 }
 

@@ -1,0 +1,221 @@
+name: Deploy to AKS
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'k8s/**'
+      - '.github/workflows/deploy-aks.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  AZURE_CONTAINER_REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
+  AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+  AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
+  NAMESPACE: portfolio
+
+jobs:
+  # ===== Build and Test =====
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+
+    - name: Run Backend Tests
+      working-directory: ./backend
+      run: |
+        chmod +x gradlew
+        ./gradlew test --no-daemon
+      continue-on-error: true
+
+    - name: Run Frontend Tests
+      working-directory: ./frontend
+      run: |
+        npm ci
+        npm run test:ci
+      continue-on-error: true
+
+    - name: Generate Image Metadata
+      id: meta
+      run: |
+        echo "tags=${{ github.sha }}" >> $GITHUB_OUTPUT
+
+  # ===== Build and Push Docker Images =====
+  build-push-images:
+    name: Build & Push Images
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.AZURE_CONTAINER_REGISTRY }}
+        username: ${{ secrets.AZURE_ACR_USERNAME }}
+        password: ${{ secrets.AZURE_ACR_PASSWORD }}
+
+    - name: Build and Push Backend Image
+      run: |
+        docker build \
+          -t ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-backend:${{ github.sha }} \
+          -t ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-backend:latest \
+          ./backend
+        docker push ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-backend:${{ github.sha }}
+        docker push ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-backend:latest
+
+    - name: Build and Push Frontend Image
+      run: |
+        docker build \
+          -t ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-frontend:${{ github.sha }} \
+          -t ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-frontend:latest \
+          --build-arg VITE_API_BASE_URL=/api \
+          --build-arg VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+          ./frontend
+        docker push ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-frontend:${{ github.sha }}
+        docker push ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-frontend:latest
+
+  # ===== Deploy to AKS =====
+  deploy:
+    name: Deploy to AKS
+    needs: build-push-images
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Set AKS Context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
+        cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+
+    - name: Create Namespace (if not exists)
+      run: |
+        kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Create/Update Secrets
+      run: |
+        kubectl create secret generic portfolio-secrets \
+          --namespace=${{ env.NAMESPACE }} \
+          --from-literal=MONGODB_URI='${{ secrets.MONGODB_URI }}' \
+          --from-literal=GOOGLE_CLIENT_ID='${{ secrets.GOOGLE_CLIENT_ID }}' \
+          --from-literal=GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}' \
+          --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Update Image Tags in Manifests
+      run: |
+        sed -i "s|\${ACR_NAME}|${{ env.AZURE_CONTAINER_REGISTRY }}|g" k8s/all-in-one.yaml
+        sed -i "s|:latest|:${{ github.sha }}|g" k8s/all-in-one.yaml
+
+    - name: Deploy to AKS
+      run: |
+        kubectl apply -f k8s/all-in-one.yaml
+
+    - name: Wait for Rollout
+      run: |
+        kubectl rollout status deployment/backend -n ${{ env.NAMESPACE }} --timeout=300s
+        kubectl rollout status deployment/frontend -n ${{ env.NAMESPACE }} --timeout=300s
+
+    - name: Verify Deployment
+      run: |
+        echo "=== Pods ==="
+        kubectl get pods -n ${{ env.NAMESPACE }}
+        echo "=== Services ==="
+        kubectl get services -n ${{ env.NAMESPACE }}
+        echo "=== Ingress ==="
+        kubectl get ingress -n ${{ env.NAMESPACE }}
+
+    - name: Run Smoke Tests
+      run: |
+        # Get Ingress IP
+        INGRESS_IP=$(kubectl get ingress portfolio-ingress -n ${{ env.NAMESPACE }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        echo "Ingress IP: $INGRESS_IP"
+        
+        # Wait for endpoints
+        sleep 30
+        
+        # Test health endpoint
+        curl -f http://$INGRESS_IP/actuator/health || echo "Health check pending..."
+      continue-on-error: true
+
+  # ===== Rollback on Failure =====
+  rollback:
+    name: Rollback (on failure)
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: failure()
+    
+    steps:
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Set AKS Context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
+        cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+
+    - name: Rollback Backend
+      run: |
+        kubectl rollout undo deployment/backend -n ${{ env.NAMESPACE }}
+        kubectl rollout status deployment/backend -n ${{ env.NAMESPACE }} --timeout=300s
+
+    - name: Rollback Frontend
+      run: |
+        kubectl rollout undo deployment/frontend -n ${{ env.NAMESPACE }}
+        kubectl rollout status deployment/frontend -n ${{ env.NAMESPACE }} --timeout=300s

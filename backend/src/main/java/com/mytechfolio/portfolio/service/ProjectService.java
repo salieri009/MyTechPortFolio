@@ -1,9 +1,7 @@
 package com.mytechfolio.portfolio.service;
 
 import com.mytechfolio.portfolio.constants.ApiConstants;
-import com.mytechfolio.portfolio.domain.Academic;
 import com.mytechfolio.portfolio.domain.Project;
-import com.mytechfolio.portfolio.domain.TechStack;
 import com.mytechfolio.portfolio.dto.request.ProjectCreateRequest;
 import com.mytechfolio.portfolio.dto.request.ProjectUpdateRequest;
 import com.mytechfolio.portfolio.dto.response.PageResponse;
@@ -11,9 +9,7 @@ import com.mytechfolio.portfolio.dto.response.ProjectDetailResponse;
 import com.mytechfolio.portfolio.dto.response.ProjectSummaryResponse;
 import com.mytechfolio.portfolio.exception.ResourceNotFoundException;
 import com.mytechfolio.portfolio.mapper.ProjectMapper;
-import com.mytechfolio.portfolio.repository.AcademicRepository;
 import com.mytechfolio.portfolio.repository.ProjectRepository;
-import com.mytechfolio.portfolio.repository.TechStackRepository;
 import com.mytechfolio.portfolio.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +25,8 @@ import java.util.stream.Collectors;
 
 /**
  * Service layer for project management operations.
- * Handles business logic for projects including CRUD operations, filtering, and pagination.
+ * Handles business logic for projects including CRUD operations, filtering, and
+ * pagination.
  * 
  * @author MyTechPortfolio Team
  * @since 1.0.0
@@ -41,24 +38,23 @@ import java.util.stream.Collectors;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
-    private final TechStackRepository techStackRepository;
-    private final AcademicRepository academicRepository;
     private final ProjectMapper projectMapper;
 
     /**
      * Retrieves a paginated list of projects with optional filtering and sorting.
      * 
-     * @param page Page number (1-based)
-     * @param size Page size
-     * @param sort Sort criteria (field,direction)
+     * @param page       Page number (1-based)
+     * @param size       Page size
+     * @param sort       Sort criteria (field,direction)
      * @param techStacks Comma-separated tech stack IDs for filtering
-     * @param year Year filter
+     * @param year       Year filter
      * @return Paginated response with project summaries
      */
-    public PageResponse<ProjectSummaryResponse> getProjects(int page, int size, String sort, String techStacks, Integer year) {
-        log.debug("Fetching projects - page: {}, size: {}, sort: {}, techStacks: {}, year: {}", 
-                  page, size, sort, techStacks, year);
-        
+    public PageResponse<ProjectSummaryResponse> getProjects(int page, int size, String sort, String techStacks,
+            Integer year) {
+        log.debug("Fetching projects - page: {}, size: {}, sort: {}, techStacks: {}, year: {}",
+                page, size, sort, techStacks, year);
+
         // Use reusable pagination utility with default sort field
         Sort sortBy = PaginationUtil.parseSort(sort, ApiConstants.DEFAULT_SORT_FIELD, Sort.Direction.DESC);
 
@@ -101,15 +97,12 @@ public class ProjectService {
     @Transactional
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
         log.info("Creating new project: {}", request.getTitle());
-        
-        // Fetch tech stacks and academics
-        List<TechStack> techStacks = techStackRepository.findByIdIn(request.getTechStackIds());
-        List<Academic> academics = request.getAcademicIds() != null ?
-                academicRepository.findAllById(request.getAcademicIds()) :
-                List.of();
-        
-        log.debug("Project will be associated with {} tech stacks and {} academics", 
-                  techStacks.size(), academics.size());
+
+        // Log association counts (IDs are validated by mapper/MongoDB references)
+        int techStackCount = request.getTechStackIds() != null ? request.getTechStackIds().size() : 0;
+        int academicCount = request.getAcademicIds() != null ? request.getAcademicIds().size() : 0;
+        log.debug("Project will be associated with {} tech stacks and {} academics",
+                techStackCount, academicCount);
 
         Project project = projectMapper.toEntity(request);
         Project savedProject = projectRepository.save(project);
@@ -120,7 +113,7 @@ public class ProjectService {
     /**
      * Updates an existing project.
      * 
-     * @param id Project ID
+     * @param id      Project ID
      * @param request Project update request
      * @return Updated project detail response
      * @throws ResourceNotFoundException if project not found
@@ -158,7 +151,7 @@ public class ProjectService {
         projectRepository.deleteById(id);
         log.info("Project deleted successfully with ID: {}", id);
     }
-    
+
     /**
      * Deletes all projects.
      * WARNING: This is a destructive operation. Use with caution.

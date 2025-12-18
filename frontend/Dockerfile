@@ -33,8 +33,8 @@ RUN npm run build
 # Production stage with Nginx
 FROM nginx:1.25-alpine
 
-# Install additional packages for security and performance
-RUN apk --no-cache add curl tzdata && \
+# Install additional packages for security, performance, and runtime env injection
+RUN apk --no-cache add curl tzdata gettext && \
     ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
     echo "Asia/Seoul" > /etc/timezone
 
@@ -50,6 +50,10 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy additional nginx configurations
 COPY nginx.prod.conf /etc/nginx/conf.d/default.conf
+
+# Copy entrypoint script for runtime environment injection
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Create log directories
 RUN mkdir -p /var/log/nginx && \
@@ -67,5 +71,6 @@ USER nginxuser
 # Expose port
 EXPOSE 80
 
-# Start nginx
+# Use entrypoint for runtime env injection
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]

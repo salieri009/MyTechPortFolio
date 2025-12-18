@@ -179,40 +179,58 @@ export function GoogleLoginButton({ onSuccess, onError }: GoogleLoginProps) {
   const [pendingCredential, setPendingCredential] = useState<string | null>(null)
   const googleButtonRef = useRef<HTMLDivElement>(null)
 
+  // Memoized callback to prevent stale closures
+  const handleGoogleResponseRef = useRef<(response: any) => Promise<void>>()
+
   useEffect(() => {
-    initializeGoogleSignIn()
-  }, [])
+    let mounted = true
 
-  const initializeGoogleSignIn = async () => {
-    try {
-      console.log('=== 환경변수 확인 ===')
-      console.log('VITE_GOOGLE_CLIENT_ID:', import.meta.env.VITE_GOOGLE_CLIENT_ID)
-      console.log('NODE_ENV:', import.meta.env.MODE)
-      console.log('DEV:', import.meta.env.DEV)
-      console.log('==================')
-      
-      await authService.initializeGoogleSignIn()
-      
-      if (window.google && googleButtonRef.current) {
-        window.google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id',
-          callback: handleGoogleResponse,
-          auto_select: false,
-        })
+    const initializeGoogleSignIn = async () => {
+      try {
+        // Debug logs only in development
+        if (import.meta.env.DEV) {
+          console.log('=== Environment Check ===')
+          console.log('VITE_GOOGLE_CLIENT_ID:', import.meta.env.VITE_GOOGLE_CLIENT_ID)
+          console.log('MODE:', import.meta.env.MODE)
+          console.log('========================')
+        }
 
-        window.google.accounts.id.renderButton(googleButtonRef.current, {
-          theme: 'outline',
-          size: 'medium',
-          text: 'signin_with',
-          shape: 'rectangular',
-        })
+        await authService.initializeGoogleSignIn()
+
+        // Check if component is still mounted before updating state
+        if (!mounted || !googleButtonRef.current) return
+
+        if (window.google) {
+          window.google.accounts.id.initialize({
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id',
+            callback: (response: any) => handleGoogleResponseRef.current?.(response),
+            auto_select: false,
+          })
+
+          window.google.accounts.id.renderButton(googleButtonRef.current, {
+            theme: 'outline',
+            size: 'medium',
+            text: 'signin_with',
+            shape: 'rectangular',
+          })
+        }
+      } catch (err) {
+        if (mounted) {
+          console.error('Failed to initialize Google Sign-In:', err)
+          setError('Failed to initialize Google Sign-In')
+        }
       }
-    } catch (error) {
-      console.error('Failed to initialize Google Sign-In:', error)
-      setError('Failed to initialize Google Sign-In')
     }
-  }
 
+    initializeGoogleSignIn()
+
+    // Cleanup function to prevent memory leaks
+    return () => {
+      mounted = false
+    }
+  }, [setError])
+
+  // Keep the ref in sync with the latest handler
   const handleGoogleResponse = async (response: any) => {
     if (!response.credential) {
       setError('No credential received from Google')
@@ -224,7 +242,7 @@ export function GoogleLoginButton({ onSuccess, onError }: GoogleLoginProps) {
 
     try {
       const authResponse = await authService.loginWithGoogle(response.credential, twoFactorCode)
-      
+
       if (authResponse.requiresTwoFactor) {
         setRequiresTwoFactor(true)
         setPendingCredential(response.credential)
@@ -247,6 +265,11 @@ export function GoogleLoginButton({ onSuccess, onError }: GoogleLoginProps) {
     }
   }
 
+  // Keep the ref synchronized with the latest handler
+  useEffect(() => {
+    handleGoogleResponseRef.current = handleGoogleResponse
+  })
+
   const handleTwoFactorSubmit = async () => {
     if (!pendingCredential || !twoFactorCode) {
       setError('Please enter the 2FA code')
@@ -258,7 +281,7 @@ export function GoogleLoginButton({ onSuccess, onError }: GoogleLoginProps) {
 
     try {
       const authResponse = await authService.loginWithGoogle(pendingCredential, twoFactorCode)
-      
+
       setUser(authResponse.userInfo)
       setTokens(authResponse.accessToken, authResponse.refreshToken)
       setRequiresTwoFactor(false)
