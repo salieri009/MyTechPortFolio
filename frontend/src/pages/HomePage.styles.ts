@@ -199,42 +199,43 @@ export const PrimaryCTA = styled(Link)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[8]};
-  background: ${props => props.theme.colors.primary[500]};
+  padding: ${props => props.theme.spacing[5]} ${props => props.theme.spacing[10]};
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.primary[600]} 100%);
   color: white;
   text-decoration: none;
-  border-radius: ${props => props.theme.radius.lg};
+  border-radius: ${props => props.theme.radius.xl};
   font-weight: ${props => props.theme.typography.fontWeight.bold};
   font-size: ${props => props.theme.typography.fontSize.lg};
   font-family: ${props => props.theme.typography.fontFamily.primary};
-  border: 2px solid ${props => props.theme.colors.primary[500]};
-  transition: background 0.2s ease, border-color 0.2s ease;
+  border: none;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  min-width: ${props => props.theme.spacing[50]}; /* 4-point system: 200px */
+  min-width: ${props => props.theme.spacing[52]};
   white-space: nowrap;
 
-  /* H1: Visibility of System Status - Hover feedback */
+  /* Enhanced hover effect for DevOps professional feel */
   &:hover {
-    background: ${props => props.theme.colors.primary[700]};
-    border-color: ${props => props.theme.colors.primary[700]};
-    box-shadow: ${props => props.theme.shadows.md};
+    background: linear-gradient(135deg, ${props => props.theme.colors.primary[600]} 0%, ${props => props.theme.colors.primary[700]} 100%);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+    transform: translateY(-2px) translateX(4px);
   }
   
-  /* H3: User Control & Freedom - Focus state */
+  /* Focus state for accessibility */
   &:focus-visible {
-    outline: 2px solid ${props => props.theme.colors.primary[500]};
-    outline-offset: ${props => props.theme.spacing[0.5]}; /* 4-point system: 4px */
+    outline: 2px solid ${props => props.theme.colors.primary[400]};
+    outline-offset: ${props => props.theme.spacing[0.5]};
   }
   
-  /* H1: Visibility - Active state */
+  /* Active state */
   &:active {
-    background: ${props => props.theme.colors.primary[800]};
-    border-color: ${props => props.theme.colors.primary[800]};
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
   }
   
   @media (max-width: 640px) {
     width: 100%;
-    max-width: ${props => props.theme.spacing[75]}; /* 4-point system: 300px */
+    max-width: ${props => props.theme.spacing[75]};
     padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[8]};
     font-size: ${props => props.theme.typography.fontSize.base};
   }

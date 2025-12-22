@@ -1,7 +1,9 @@
 ---
+doc_id: "ADR-008"
+tech_stack: ["spring", "java", "mongodb"]
 title: "ADR-008: Layered Architecture Pattern"
 version: "1.0.0"
-last_updated: "2025-11-17"
+last_updated: "2025-12-19"
 status: "accepted"
 category: "Architecture Decision"
 audience: ["Backend Developers", "Architects"]
@@ -10,7 +12,7 @@ related_docs: ["Architecture/Backend-Refactoring.md", "backend/docs/BACKEND_DOCU
 maintainer: "Development Team"
 ---
 
-# ADR-008: Layered Architecture Pattern
+# <ADR-008-Layered Architecture Pattern>
 
 ## Status
 

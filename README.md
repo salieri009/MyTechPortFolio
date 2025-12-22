@@ -1,25 +1,29 @@
 <div align="center">
 
-![MyTechPortfolio Header](https://capsule-render.vercel.app/api?type=waving&color=0:1a1a2e,100:16213e&height=200&section=header&text=MyTechPortfolio&fontSize=60&fontAlignY=35&animation=twinkling&fontColor=ffffff&desc=Modern%20Full-Stack%20Portfolio%20Website&descAlignY=65&descSize=25&descColor=ffffff)
+![MyTechPortfolio Header](https://capsule-render.vercel.app/api?type=waving&color=0:1a1a2e,100:16213e&height=200&section=header&text=MyTechPortfolio&fontSize=60&fontAlignY=35&animation=twinkling&fontColor=ffffff&desc=Azure%20AKS%20Cloud-Native%20DevOps%20Portfolio&descAlignY=65&descSize=25&descColor=ffffff)
 
 </div>
 
 <div align="center">
 
-> **세련되고 미래지향적인 개인 포트폴리오 웹사이트**  
-> React TypeScript + Spring Boot + MongoDB로 구축된 풀스택 포트폴리오 애플리케이션  
+> 🚀 **Azure AKS 기반 Cloud-Native DevOps 포트폴리오**  
+> GitHub Actions + Azure Pipelines CI/CD | Kubernetes Deployment | Trivy Security Scan  
 > 🔥 **Live:** https://salieri009.studio
 
 </div>
 
 <div align="center">
 
+[![CI/CD Pipeline](https://github.com/salieri009/MyTechPortfolio/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/salieri009/MyTechPortfolio/actions/workflows/ci-cd.yml)
+[![Deploy to AKS](https://github.com/salieri009/MyTechPortfolio/actions/workflows/deploy-aks.yml/badge.svg)](https://github.com/salieri009/MyTechPortfolio/actions/workflows/deploy-aks.yml)
+[![Security Scan](https://img.shields.io/badge/security-trivy--scanned-brightgreen?style=flat-square&logo=trivy)](https://trivy.dev/)
+[![Kubernetes](https://img.shields.io/badge/k8s-AKS-326CE5?style=flat-square&logo=kubernetes&logoColor=white)](https://azure.microsoft.com/services/kubernetes-service/)
+
 [![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=flat-square&logo=react&logoColor=white)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3.4-6DB33F?style=flat-square&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![MongoDB](https://img.shields.io/badge/MongoDB-7.0-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Maintained](https://img.shields.io/badge/Maintained-yes-green?style=flat-square)](https://github.com/salieri009/MyTechPortfolio/graphs/commit-activity)
 
 **다국어 지원:** [English](README.en.md) | [日本語](README.ja.md) | [한국어](README.md)
 

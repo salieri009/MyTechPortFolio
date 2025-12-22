@@ -55,6 +55,8 @@ Every document must include frontmatter:
 
 ```markdown
 ---
+doc_id: "DOC-ARCH-001"              # Document Classification Code
+tech_stack: ["mongodb", "spring"]    # Related technologies
 title: "Document Title"
 version: "1.0.0"
 last_updated: "YYYY-MM-DD"
@@ -67,8 +69,33 @@ maintainer: "Development Team"
 ---
 ```
 
+### Document Classification Codes (doc_id)
+
+| Prefix | Category | Example |
+|--------|----------|---------|
+| `DOC-ARCH-` | Architecture | `DOC-ARCH-001` |
+| `DOC-API-` | API Documentation | `DOC-API-001` |
+| `DOC-BE-` | Backend | `DOC-BE-001` |
+| `DOC-FE-` | Frontend | `DOC-FE-001` |
+| `DOC-SEC-` | Security | `DOC-SEC-001` |
+| `DOC-DEP-` | Deployment | `DOC-DEP-001` |
+| `DOC-TEST-` | Testing | `DOC-TEST-001` |
+| `ADR-` | Architecture Decision | `ADR-007` |
+| `SPEC-` | Specification | `SPEC-DB-001` |
+| `GUIDE-` | Guide | `GUIDE-QUICKSTART-001` |
+
+### Technology Stack Tags (tech_stack)
+
+Available values:
+- **Backend**: `spring`, `java`, `mongodb`, `jwt`, `oauth2`
+- **Frontend**: `react`, `typescript`, `vite`, `zustand`, `axios`
+- **Deployment**: `docker`, `kubernetes`, `azure`, `aws`, `github-actions`
+- **Testing**: `junit`, `testcontainers`, `vitest`, `playwright`
+
 ### Required Frontmatter Fields
 
+- `doc_id`: Document classification code (for tracking)
+- `tech_stack`: Related technology tags (for filtering)
 - `title`: Document title
 - `version`: Version number (semantic versioning)
 - `last_updated`: ISO 8601 date (YYYY-MM-DD)
@@ -82,21 +109,23 @@ maintainer: "Development Team"
 - `prerequisites`: Prerequisite documents
 - `maintainer`: Maintainer name or team
 - `reviewer`: Reviewer name
-- `tags`: Tags for categorization
+- `tags`: Additional tags for categorization
 
 ### Document Header
 
 ```markdown
-# Document Title
+# <DOC-ID-Document Title>
 
-> **Version**: 1.0.0  
-> **Last Updated**: YYYY-MM-DD  
-> **Status**: Active
+> **doc_id**: `DOC-ARCH-001`  
+> **tech_stack**: `spring`, `mongodb`  
+> **Version**: 1.0.0 | **Last Updated**: YYYY-MM-DD | **Status**: Active
 
 ## Overview
 
 [Purpose and scope of the document]
 ```
+
+**Title Format**: `# <doc_id-Title>` (e.g., `# <ADR-007-MongoDB as Database>`)
 
 ---
 

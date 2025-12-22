@@ -116,6 +116,12 @@
       "gpa": "평점 평균",
       "wam": "가중 평균 점수"
     },
+    "tooltip": {
+      "totalCredits": "취득한 총 학점",
+      "completedCredits": "성적이 부여된 이수 학점",
+      "gpa": "GPA 6.00은 상위 5% 학생에 해당",
+      "wam": "WAM 목표: 80점 이상 유지"
+    },
     "timeline": {
       "title": "학업 타임라인"
     },
@@ -371,7 +377,7 @@
       "description": "몰입감 있는 3D 경험과 인터랙티브 시각화"
     },
     "software": {
-      "title": "소프트웨어 개발", 
+      "title": "소프트웨어 개발",
       "description": "풀스택 애플리케이션과 엔터프라이즈 솔루션"
     },
     "gamedev": {
@@ -381,7 +387,7 @@
     "techStack": {
       "default": "프로젝트에 마우스를 올려서 기술을 확인하세요",
       "threejs": "3D 개발 기술",
-      "software": "소프트웨어 개발 스택", 
+      "software": "소프트웨어 개발 스택",
       "gamedev": "게임 개발 도구"
     }
   },
@@ -409,7 +415,7 @@
   },
   "featured": {
     "title": "주요 프로젝트",
-    "purpose": "시스템과 시가 동시에 설계된 프로젝트들—구조와 감성이 만나는 곳",
+    "purpose": "클라우드 네이티브 애플리케이션, 풀스택 개발, DevOps 자동화 쇼케이스",
     "viewAll": "모든 프로젝트 보기"
   },
   "testimonials": {

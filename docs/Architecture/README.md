@@ -1,7 +1,7 @@
 ---
 title: "Architecture Documentation"
 version: "1.0.0"
-last_updated: "2025-11-17"
+last_updated: "2025-12-22"
 status: "active"
 category: "Reference"
 audience: ["Developers", "Architects", "DevOps Engineers"]
@@ -13,7 +13,7 @@ maintainer: "Development Team"
 # Architecture Documentation
 
 > **Version**: 1.0.0  
-> **Last Updated**: 2025-11-17  
+> **Last Updated**: 2025-12-22  
 > **Status**: Active
 
 ## Overview
@@ -22,38 +22,42 @@ This directory contains comprehensive architecture documentation for the MyTechP
 
 ---
 
-## ?“š Available Documents
+## ğŸ“š Available Documents
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Frontend Architecture](./Frontend-Architecture.md) | Frontend architecture and component structure | ??Complete |
-| [Backend Refactoring](./Backend-Refactoring.md) | Backend refactoring summary and improvements | ??Complete |
-| [Refactoring Status](./Refactoring-Status.md) | Current refactoring status and progress | ??Complete |
-| [Reiteration Summary](./Reiteration-Summary.md) | Comprehensive backend and frontend improvements | ??Complete |
-| [Implementation Status](./Implementation-Status.md) | Current implementation status and features | ??Complete |
+| [Frontend Architecture](./Frontend-Architecture.md) | Frontend architecture and component structure | âœ…Complete |
+| [Backend Refactoring](./Backend-Refactoring.md) | Backend refactoring summary and improvements | âœ…Complete |
+| [Refactoring Status](./Refactoring-Status.md) | Current refactoring status and progress | âœ…Complete |
+| [Reiteration Summary](./Reiteration-Summary.md) | Comprehensive backend and frontend improvements | âœ…Complete |
+| [Implementation Status](./Implementation-Status.md) | Current implementation status and features | âœ…Complete |
+| [Frontend-Backend Integration](./FRONTEND_BACKEND_INTEGRATION.md) | Comprehensive FE-BE integration analysis with file mappings | âœ…Complete |
+| [Architecture Design](./architecture-design.md) | Production deployment architecture and CI/CD | âœ…Complete |
+| [Current Implementation Status](./CURRENT-IMPLEMENTATION-STATUS.md) | Detailed current implementation status | âœ…Complete |
 
 ---
 
-## ?—ï¸?System Architecture
+## ğŸ—ï¸ System Architecture
 
 ### High-Level Overview
 
 ```
-?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€??
-??  Frontend      ??
-?? (React + TS)   ??
-?”â??€?€?€?€?€?€?€?¬â??€?€?€?€?€?€?€??
-         ??HTTP/REST
-         ??
-?Œâ??€?€?€?€?€?€?€?¼â??€?€?€?€?€?€?€??
-??   Backend      ??
-??(Spring Boot)   ??
-?”â??€?€?€?€?€?€?€?¬â??€?€?€?€?€?€?€??
-         ??
-?Œâ??€?€?€?€?€?€?€?¼â??€?€?€?€?€?€?€??
-??   MongoDB      ??
-??  (Database)    ??
-?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€??
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚     Frontend        â”‚
+â”‚   (React + TS)      â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+          â”‚ HTTP/REST
+          â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚     Backend         â”‚
+â”‚   (Spring Boot)     â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+          â”‚
+          â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚     MongoDB         â”‚
+â”‚    (Database)       â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### Technology Stack
@@ -80,7 +84,7 @@ This directory contains comprehensive architecture documentation for the MyTechP
 
 ---
 
-## ?“– Document Guide
+## ğŸ“– Document Guide
 
 ### For Understanding System Design
 
@@ -88,17 +92,19 @@ This directory contains comprehensive architecture documentation for the MyTechP
 2. Review [Frontend Architecture](./Frontend-Architecture.md) for frontend structure
 3. Read [Backend Refactoring](./Backend-Refactoring.md) for backend improvements
 4. Check [Reiteration Summary](./Reiteration-Summary.md) for comprehensive changes
+5. **NEW**: See [Frontend-Backend Integration](./FRONTEND_BACKEND_INTEGRATION.md) for FE-BE file mappings
 
 ### For Development
 
 - **Frontend Development**: [Frontend Architecture](./Frontend-Architecture.md)
 - **Backend Development**: [Backend Refactoring](./Backend-Refactoring.md)
+- **FE-BE Integration**: [Frontend-Backend Integration](./FRONTEND_BACKEND_INTEGRATION.md)
 - **Current Status**: [Implementation Status](./Implementation-Status.md)
 - **Refactoring Progress**: [Refactoring Status](./Refactoring-Status.md)
 
 ---
 
-## ?”— Related Documentation
+## ğŸ“— Related Documentation
 
 - [API Specification](../Specifications/API-Specification.md)
 - [Database Specification](../Specifications/Database-Specification.md)
@@ -108,7 +114,7 @@ This directory contains comprehensive architecture documentation for the MyTechP
 
 ---
 
-## ?“ Maintenance
+## ğŸ”„ Maintenance
 
 ### Update Frequency
 
@@ -126,7 +132,5 @@ When updating architecture documentation:
 
 ---
 
-**Last Updated**: 2025-11-17  
+**Last Updated**: 2025-12-22  
 **Maintained By**: Development Team
-
-

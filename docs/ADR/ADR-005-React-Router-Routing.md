@@ -1,7 +1,9 @@
 ---
+doc_id: "ADR-005"
+tech_stack: ["react", "typescript"]
 title: "ADR-005: React Router v6 Routing Strategy"
 version: "1.0.0"
-last_updated: "2025-11-17"
+last_updated: "2025-12-19"
 status: "accepted"
 category: "Architecture Decision"
 audience: ["Developers", "Architects"]
@@ -10,7 +12,7 @@ related_docs: ["Architecture/Frontend-Architecture.md", "Specifications/Frontend
 maintainer: "Development Team"
 ---
 
-# ADR-005: React Router v6 Routing Strategy
+# <ADR-005-React Router v6 Routing Strategy>
 
 ## Status
 

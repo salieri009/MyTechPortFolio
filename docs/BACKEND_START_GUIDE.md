@@ -1,111 +1,110 @@
-# Backend Server 시작 가이드
+# Backend Server Start Guide
 
-## 현재 상태
+## Current Status
 
 ### ✅ Frontend
-- **포트**: 5173
-- **상태**: 실행 중
+- **Port**: 5173
+- **Status**: Running
 - **URL**: http://localhost:5173
 
 ### ❌ Backend
-- **포트**: 8080
-- **상태**: 실행 중이 아님
-- **필요한 서비스**: MongoDB (포트 27017)
+- **Port**: 8080
+- **Status**: Not running
+- **Required Service**: MongoDB (port 27017)
 
-## 백엔드 서버 시작 방법
+## How to Start Backend Server
 
-### 1. MongoDB 확인 및 시작
+### 1. Check and Start MongoDB
 
-#### MongoDB가 설치되어 있는 경우:
+#### If MongoDB is installed:
 ```powershell
-# MongoDB 서비스 확인
+# Check MongoDB service
 Get-Service | Where-Object { $_.Name -like "*mongo*" }
 
-# MongoDB 서비스 시작 (관리자 권한 필요)
+# Start MongoDB service (admin privileges required)
 Start-Service MongoDB
 ```
 
-#### MongoDB가 설치되어 있지 않은 경우:
-1. [MongoDB Community Server 다운로드](https://www.mongodb.com/try/download/community)
-2. 설치 후 서비스 시작
+#### If MongoDB is not installed:
+1. [Download MongoDB Community Server](https://www.mongodb.com/try/download/community)
+2. Start service after installation
 
-#### 또는 Docker 사용:
+#### Or use Docker:
 ```bash
 docker run -d -p 27017:27017 --name mongodb mongo:latest
 ```
 
-### 2. 백엔드 서버 시작
+### 2. Start Backend Server
 
-#### 방법 1: Gradle Wrapper (권장)
+#### Method 1: Gradle Wrapper (Recommended)
 ```powershell
 cd backend
 .\gradlew.bat bootRun
 ```
 
-#### 방법 2: IDE에서 실행
-- IntelliJ IDEA 또는 Eclipse에서 `PortfolioApplication.java` 실행
-- Run Configuration에서 `--spring.profiles.active=dev` 추가 가능
+#### Method 2: Run from IDE
+- Run `PortfolioApplication.java` in IntelliJ IDEA or Eclipse
+- Optionally add `--spring.profiles.active=dev` in Run Configuration
 
-### 3. 서버 시작 확인
+### 3. Verify Server Start
 
-서버가 시작되면 다음 명령어로 확인:
+When server starts, verify with following commands:
 ```powershell
 # Health Check
 Invoke-WebRequest -Uri "http://localhost:8080/actuator/health" -Method GET
 
-# API 테스트
+# API Test
 Invoke-WebRequest -Uri "http://localhost:8080/api/v1/journey-milestones" -Method GET
 ```
 
-## 문제 해결
+## Troubleshooting
 
-### 포트 8080이 이미 사용 중인 경우
+### Port 8080 already in use
 ```powershell
-# 포트 사용 중인 프로세스 확인
+# Check process using port
 netstat -ano | findstr :8080
 
-# 프로세스 종료 (PID 확인 후)
+# Kill process (after checking PID)
 Stop-Process -Id <PID>
 ```
 
-### MongoDB 연결 오류
-1. MongoDB가 실행 중인지 확인
-2. `application.properties`의 MongoDB URI 확인:
+### MongoDB Connection Error
+1. Verify MongoDB is running
+2. Check MongoDB URI in `application.properties`:
    ```
    spring.data.mongodb.uri=mongodb://localhost:27017/portfolio
    ```
 
-### Java 버전 문제
-- Java 21이 필요합니다
-- 확인: `java -version`
-- 설치: [Oracle JDK 21](https://www.oracle.com/java/technologies/downloads/#java21)
+### Java Version Issue
+- Java 21 is required
+- Check: `java -version`
+- Install: [Oracle JDK 21](https://www.oracle.com/java/technologies/downloads/#java21)
 
-## 프론트엔드-백엔드 연결 확인
+## Frontend-Backend Connection Verification
 
-### 1. 백엔드 직접 접근
+### 1. Direct Backend Access
 ```powershell
 Invoke-WebRequest -Uri "http://localhost:8080/api/v1/journey-milestones" -Method GET
 ```
 
-### 2. 프론트엔드 프록시를 통한 접근
+### 2. Access via Frontend Proxy
 ```powershell
 Invoke-WebRequest -Uri "http://localhost:5173/api/journey-milestones" -Method GET
 ```
 
-### 3. 브라우저에서 확인
-- 개발자 도구 (F12) → Network 탭
-- `/api/journey-milestones` 요청 확인
-- Status Code가 200이면 정상
+### 3. Verify in Browser
+- Developer Tools (F12) → Network tab
+- Check `/api/journey-milestones` request
+- Status Code 200 indicates success
 
-## 환경 변수 설정
+## Environment Variables Setup
 
-### Frontend (.env 파일 생성)
+### Frontend (.env file)
 ```env
 VITE_GOOGLE_CLIENT_ID=your-google-client-id-here
 VITE_API_BASE_URL=http://localhost:8080/api
 ```
 
 ### Backend
-- `application.properties` 파일에서 설정
-- MongoDB URI, JWT Secret 등 확인
-
+- Configure in `application.properties` file
+- Check MongoDB URI, JWT Secret, etc.

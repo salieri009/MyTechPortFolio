@@ -63,7 +63,7 @@ const TimelineContainer = styled.div`
 
 const AcademicCard = styled(Card).withConfig({
   shouldForwardProp: (prop) => !['status', '$isVisible', '$index', '$isExpanded'].includes(prop)
-})<{ status: string; $isVisible?: boolean; $index?: number; $isExpanded?: boolean }>`
+}) <{ status: string; $isVisible?: boolean; $index?: number; $isExpanded?: boolean }>`
   margin-bottom: ${props => props.theme.spacing[4]};
   border-left: ${props => props.theme.spacing[1]} solid ${props => { /* 4-point system: 4px */
     switch (props.status) {
@@ -217,9 +217,9 @@ const StatusBadge = styled.span<{ status: string }>`
   
   ${props => props.theme.mode === 'dark' && `
     background: ${props.status === 'completed' ? props.theme.colors.success + '30' :
-                  props.status === 'enrolled' ? props.theme.colors.primary[500] + '30' :
-                  props.status === 'exemption' ? props.theme.colors.warning + '30' :
-                  props.theme.colors.neutral[800]};
+      props.status === 'enrolled' ? props.theme.colors.primary[500] + '30' :
+        props.status === 'exemption' ? props.theme.colors.warning + '30' :
+          props.theme.colors.neutral[800]};
   `}
 `
 
@@ -237,7 +237,7 @@ const AcademicMeta = styled.div`
 
 const StatCard = styled(Card).withConfig({
   shouldForwardProp: (prop) => prop !== '$isVisible' && prop !== '$isHighlighted'
-})<{ $isVisible?: boolean; $isHighlighted?: boolean }>`
+}) <{ $isVisible?: boolean; $isHighlighted?: boolean }>`
   text-align: center;
   padding: ${props => props.$isHighlighted ? props.theme.spacing[8] : props.theme.spacing[6]}; /* 32px or 24px */
   font-family: ${props => props.theme.typography.fontFamily.primary};
@@ -249,7 +249,7 @@ const StatCard = styled(Card).withConfig({
   
   /* Highlighted state for GPA/WAM */
   ${props => props.$isHighlighted && `
-    background: ${props.theme.mode === 'dark' 
+    background: ${props.theme.mode === 'dark'
       ? props.theme.colors.primary[900]  /* 다크 테마: 어두운 배경 */
       : props.theme.colors.primary[50]};  /* 라이트 테마: 밝은 배경 */
     border-color: ${props.theme.colors.primary[500]};
@@ -275,25 +275,25 @@ const StatCard = styled(Card).withConfig({
     font-weight: ${props => props.theme.typography.fontWeight.bold};
     font-family: ${props => props.theme.typography.fontFamily.primary};
     color: ${props => {
-      if (props.$isHighlighted) {
-        /* 다크 테마에서 가독성 향상: 밝은 색상 사용 */
-        return props.theme.mode === 'dark' 
-          ? props.theme.colors.primary[200]  /* 다크 테마: 밝은 텍스트 */
-          : props.theme.colors.primary[700];  /* 라이트 테마: 어두운 텍스트 */
-      }
-      return props.theme.colors.primary[500];
-    }};
+    if (props.$isHighlighted) {
+      /* 다크 테마에서 가독성 향상: 밝은 색상 사용 */
+      return props.theme.mode === 'dark'
+        ? props.theme.colors.primary[200]  /* 다크 테마: 밝은 텍스트 */
+        : props.theme.colors.primary[700];  /* 라이트 테마: 어두운 텍스트 */
+    }
+    return props.theme.colors.primary[500];
+  }};
     margin: 0 0 ${props => props.theme.spacing[2]} 0; /* 4-point system: 8px */
   }
   
   p {
     color: ${props => {
-      /* 다크 테마에서 Highlighted 카드의 라벨 가독성 향상 */
-      if (props.$isHighlighted && props.theme.mode === 'dark') {
-        return props.theme.colors.primary[300]; /* 다크 테마: 더 밝은 라벨 */
-      }
-      return props.theme.colors.textSecondary;
-    }};
+    /* 다크 테마에서 Highlighted 카드의 라벨 가독성 향상 */
+    if (props.$isHighlighted && props.theme.mode === 'dark') {
+      return props.theme.colors.primary[300]; /* 다크 테마: 더 밝은 라벨 */
+    }
+    return props.theme.colors.textSecondary;
+  }};
     margin: 0;
     font-size: ${props => props.theme.typography.fontSize.sm}; /* 4-point system: 14px */
     font-family: ${props => props.theme.typography.fontFamily.primary};
@@ -500,50 +500,85 @@ export function AcademicsPage() {
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set())
   const [hoveredStat, setHoveredStat] = useState<string | null>(null)
   const [activeSemester, setActiveSemester] = useState<string | null>(null)
-  
+
   const statsRef = useRef<HTMLDivElement>(null)
   const timelineRef = useRef<HTMLDivElement>(null)
   const semesterRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
-  // Mock data based on the provided transcript
+  // Mock data based on UTS December 2025 transcript
+  // Total: 120 CP | GPA: 6.00 | WAM: 79.92
   const mockAcademicsData: Academic[] = [
-    // Current Enrolled Subjects (2025 Spring)
+    // Current Enrolled Subjects (2026 Autumn)
     {
       id: 1,
+      name: 'Deep Learning and Convolutional Neural Network',
+      semester: '2026 AUT',
+      status: 'enrolled',
+      creditPoints: 6,
+      description: 'Deep learning architectures, CNNs, and neural network applications in computer vision'
+    },
+    {
+      id: 2,
+      name: 'Software Development Studio',
+      semester: '2026 AUT',
+      status: 'enrolled',
+      creditPoints: 6,
+      description: 'Capstone software development project with industry-standard practices and agile methodology'
+    },
+    {
+      id: 3,
+      name: 'TD: Shaping technologies that shape us',
+      semester: '2026 AUT',
+      status: 'enrolled',
+      creditPoints: 6,
+      description: 'Transdisciplinary exploration of technology ethics, society, and human-technology interaction'
+    },
+
+    // Completed Subjects (2025 Spring)
+    {
+      id: 4,
       name: 'Advanced Software Development',
       semester: '2025 SPR',
-      status: 'enrolled',
+      grade: 'HIGH DISTINCTION',
+      marks: 87,
+      status: 'completed',
       creditPoints: 6,
       description: 'Advanced concepts in software development, design patterns, and enterprise architecture'
     },
     {
-      id: 2,
+      id: 5,
       name: 'Fundamentals of Interaction Design',
       semester: '2025 SPR',
-      status: 'enrolled',
+      grade: 'DISTINCTION',
+      marks: 81,
+      status: 'completed',
       creditPoints: 6,
       description: 'User experience design, human-computer interaction, and interface design principles'
     },
     {
-      id: 3,
-      name: 'Project Management and the Professional',
+      id: 6,
+      name: 'Interactive Media',
       semester: '2025 SPR',
-      status: 'enrolled',
-      creditPoints: 6,
-      description: 'Professional project management methodologies and industry practices'
-    },
-    {
-      id: 4,
-      name: 'Interaction Media',
-      semester: '2025 SPR',
-      status: 'enrolled',
+      grade: 'DISTINCTION',
+      marks: 82,
+      status: 'completed',
       creditPoints: 6,
       description: 'Interactive media design, user experience, and digital interaction principles'
     },
-    
+    {
+      id: 7,
+      name: 'Project Management and the Professional',
+      semester: '2025 SPR',
+      grade: 'DISTINCTION',
+      marks: 80,
+      status: 'completed',
+      creditPoints: 6,
+      description: 'Professional project management methodologies and industry practices'
+    },
+
     // Completed Subjects (2025 Autumn)
     {
-      id: 5,
+      id: 8,
       name: 'Computer Graphics',
       semester: '2025 AUT',
       grade: 'DISTINCTION',
@@ -553,7 +588,7 @@ export function AcademicsPage() {
       description: '3D graphics programming, rendering techniques, and computer visualization'
     },
     {
-      id: 6,
+      id: 9,
       name: 'Data Structures and Algorithms',
       semester: '2025 AUT',
       grade: 'HIGH DISTINCTION',
@@ -563,7 +598,7 @@ export function AcademicsPage() {
       description: 'Advanced data structures, algorithm analysis, and computational complexity'
     },
     {
-      id: 7,
+      id: 10,
       name: 'Game Design Methodologies',
       semester: '2025 AUT',
       grade: 'PASS',
@@ -573,7 +608,7 @@ export function AcademicsPage() {
       description: 'Game design principles, prototyping, and iterative development processes'
     },
     {
-      id: 8,
+      id: 11,
       name: 'Introduction to Software Development',
       semester: '2025 AUT',
       grade: 'HIGH DISTINCTION',
@@ -582,20 +617,20 @@ export function AcademicsPage() {
       creditPoints: 6,
       description: 'Software development lifecycle, version control, and collaborative programming'
     },
-    
+
     // Completed Subjects (2024 Spring)
     {
-      id: 9,
+      id: 12,
       name: 'Cloud Computing and Software as a Service',
       semester: '2024 SPR',
       grade: 'HIGH DISTINCTION',
       marks: 86,
       status: 'completed',
       creditPoints: 6,
-      description: 'Cloud architecture, microservices, containerization, and SaaS development'
+      description: 'Cloud architecture (Azure, AWS), microservices, containerization, and SaaS development'
     },
     {
-      id: 10,
+      id: 13,
       name: 'Communication for IT Professionals',
       semester: '2024 SPR',
       grade: 'CREDIT',
@@ -605,7 +640,7 @@ export function AcademicsPage() {
       description: 'Technical communication, documentation, and professional presentation skills'
     },
     {
-      id: 11,
+      id: 14,
       name: 'Introduction to Computer Game Development',
       semester: '2024 SPR',
       grade: 'CREDIT',
@@ -615,7 +650,7 @@ export function AcademicsPage() {
       description: 'Game development fundamentals, Unity engine, and interactive media creation'
     },
     {
-      id: 12,
+      id: 15,
       name: 'Software Architecture',
       semester: '2024 SPR',
       grade: 'DISTINCTION',
@@ -624,10 +659,10 @@ export function AcademicsPage() {
       creditPoints: 6,
       description: 'Architectural patterns, system design, and scalable software solutions'
     },
-    
-    // Exemptions
+
+    // Exemptions (42 CP total from prior learning)
     {
-      id: 13,
+      id: 16,
       name: 'Business Requirements Modelling',
       semester: 'Exemption',
       status: 'exemption',
@@ -635,7 +670,7 @@ export function AcademicsPage() {
       description: 'Business analysis, requirements gathering, and process modeling'
     },
     {
-      id: 14,
+      id: 17,
       name: 'Database Fundamentals',
       semester: 'Exemption',
       status: 'exemption',
@@ -643,7 +678,7 @@ export function AcademicsPage() {
       description: 'Relational database design, SQL, and data management principles'
     },
     {
-      id: 15,
+      id: 18,
       name: 'Introduction to Information Systems',
       semester: 'Exemption',
       status: 'exemption',
@@ -651,7 +686,7 @@ export function AcademicsPage() {
       description: 'Information systems concepts, enterprise systems, and IT governance'
     },
     {
-      id: 16,
+      id: 19,
       name: 'Network Fundamentals',
       semester: 'Exemption',
       status: 'exemption',
@@ -659,7 +694,7 @@ export function AcademicsPage() {
       description: 'Network protocols, infrastructure, and distributed systems'
     },
     {
-      id: 17,
+      id: 20,
       name: 'Programming 1',
       semester: 'Exemption',
       status: 'exemption',
@@ -667,7 +702,7 @@ export function AcademicsPage() {
       description: 'Fundamental programming concepts and problem-solving techniques'
     },
     {
-      id: 18,
+      id: 21,
       name: 'Programming 2',
       semester: 'Exemption',
       status: 'exemption',
@@ -675,7 +710,7 @@ export function AcademicsPage() {
       description: 'Object-oriented programming, data structures, and software design'
     },
     {
-      id: 19,
+      id: 22,
       name: 'Web Systems',
       semester: 'Exemption',
       status: 'exemption',
@@ -693,7 +728,7 @@ export function AcademicsPage() {
         // if (response.success) {
         //   setAcademics(response.data.items)
         // }
-        
+
         // For now, use mock data
         setAcademics(mockAcademicsData)
       } catch (error) {
@@ -765,10 +800,10 @@ export function AcademicsPage() {
   if (loading) {
     return (
       <PageWrapper role="main" aria-label={t('academics.title', 'Academic Record')}>
-      <Container>
-        <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
-        <LoadingText>{t('common.loading', 'Loading...')}</LoadingText>
-      </Container>
+        <Container>
+          <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
+          <LoadingText>{t('common.loading', 'Loading...')}</LoadingText>
+        </Container>
       </PageWrapper>
     )
   }
@@ -787,14 +822,17 @@ export function AcademicsPage() {
 
   // Calculate statistics
   const completedSubjects = academics.filter(a => a.status === 'completed')
-  const totalCreditPoints = academics.reduce((sum, a) => sum + (a.creditPoints || 0), 0)
+  const totalCreditPoints = 120 // Official: 120 CP gained
   const completedCreditPoints = completedSubjects.reduce((sum, a) => sum + (a.creditPoints || 0), 0)
-  const averageMark = completedSubjects.filter(a => a.marks).reduce((sum, a, _, arr) => sum + (a.marks || 0) / arr.length, 0)
-  
-  // Calculate GPA trend (mock data - in real app, this would come from backend)
-  const gpaTrend = [5.5, 5.7, 5.8, 5.88]
-  const wamTrend = [75, 78, 80, averageMark]
-  
+
+  // Official transcript values: GPA 6.00, WAM 79.92
+  const officialGPA = 6.00
+  const officialWAM = 79.92
+
+  // GPA and WAM trends (historical progression)
+  const gpaTrend = [5.5, 5.7, 5.88, officialGPA]
+  const wamTrend = [75, 78, 80, officialWAM]
+
   // Group academics by status and semester
   const groupedAcademics = academics.reduce((groups, academic) => {
     const key = academic.status === 'exemption' ? 'exemption' : academic.semester
@@ -802,14 +840,14 @@ export function AcademicsPage() {
     groups[key].push(academic)
     return groups
   }, {} as Record<string, Academic[]>)
-  
+
   // Sort groups by semester (most recent first)
   const sortedGroups = Object.entries(groupedAcademics).sort(([a], [b]) => {
     if (a === 'exemption') return 1
     if (b === 'exemption') return -1
     return b.localeCompare(a)
   })
-  
+
   // Handle card expansion
   const handleCardClick = (academicId: number) => {
     setExpandedCards(prev => {
@@ -822,7 +860,7 @@ export function AcademicsPage() {
       return newSet
     })
   }
-  
+
   // Handle semester navigation
   const handleSemesterClick = (semester: string) => {
     setActiveSemester(semester)
@@ -831,7 +869,7 @@ export function AcademicsPage() {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
-  
+
   // Generate sparkline path
   const generateSparklinePath = (data: number[], width: number = 100, height: number = 32) => {
     if (data.length === 0) return ''
@@ -839,16 +877,16 @@ export function AcademicsPage() {
     const max = Math.max(...data)
     const range = max - min || 1
     const stepX = width / (data.length - 1)
-    
+
     const points = data.map((value, index) => {
       const x = index * stepX
       const y = height - ((value - min) / range) * height
       return `${x},${y}`
     })
-    
+
     return `M ${points.join(' L ')}`
   }
-  
+
   // Tooltip messages
   const getTooltipMessage = (statType: string): string => {
     switch (statType) {
@@ -867,15 +905,15 @@ export function AcademicsPage() {
 
   return (
     <PageWrapper role="main" aria-label={t('academics.title', 'Academic Record')}>
-    <Container>
-      <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
-      
+      <Container>
+        <PageTitle>{t('academics.title', 'Academic Record')}</PageTitle>
+
         <SummaryStats ref={statsRef} $isVisible={isStatsVisible} role="region" aria-label={t('academics.stats.title', 'Academic Statistics')}>
-          <StatCard 
-            $isVisible={isStatsVisible} 
+          <StatCard
+            $isVisible={isStatsVisible}
             $isHighlighted={false}
-            tabIndex={0} 
-            role="article" 
+            tabIndex={0}
+            role="article"
             aria-label={t('academics.stats.totalCredits', 'Total Credit Points')}
             onMouseEnter={() => setHoveredStat('totalCredits')}
             onMouseLeave={() => setHoveredStat(null)}
@@ -886,11 +924,11 @@ export function AcademicsPage() {
             <h3>{totalCreditPoints}</h3>
             <p>{t('academics.stats.totalCredits', 'Total Credit Points')}</p>
           </StatCard>
-          <StatCard 
-            $isVisible={isStatsVisible} 
+          <StatCard
+            $isVisible={isStatsVisible}
             $isHighlighted={false}
-            tabIndex={0} 
-            role="article" 
+            tabIndex={0}
+            role="article"
             aria-label={t('academics.stats.completedCredits', 'Completed Credit Points')}
             onMouseEnter={() => setHoveredStat('completedCredits')}
             onMouseLeave={() => setHoveredStat(null)}
@@ -901,11 +939,11 @@ export function AcademicsPage() {
             <h3>{completedCreditPoints}</h3>
             <p>{t('academics.stats.completedCredits', 'Completed Credit Points')}</p>
           </StatCard>
-          <StatCard 
-            $isVisible={isStatsVisible} 
+          <StatCard
+            $isVisible={isStatsVisible}
             $isHighlighted={true}
-            tabIndex={0} 
-            role="article" 
+            tabIndex={0}
+            role="article"
             aria-label={t('academics.stats.gpa', 'GPA')}
             onMouseEnter={() => setHoveredStat('gpa')}
             onMouseLeave={() => setHoveredStat(null)}
@@ -913,7 +951,7 @@ export function AcademicsPage() {
             <Tooltip $isVisible={hoveredStat === 'gpa'}>
               {getTooltipMessage('gpa')}
             </Tooltip>
-            <h3>5.88</h3>
+            <h3>{officialGPA.toFixed(2)}</h3>
             <p>{t('academics.stats.gpa', 'GPA')}</p>
             <SparklineChart viewBox="0 0 100 32" preserveAspectRatio="none">
               <path
@@ -927,11 +965,11 @@ export function AcademicsPage() {
               />
             </SparklineChart>
           </StatCard>
-          <StatCard 
-            $isVisible={isStatsVisible} 
+          <StatCard
+            $isVisible={isStatsVisible}
             $isHighlighted={true}
-            tabIndex={0} 
-            role="article" 
+            tabIndex={0}
+            role="article"
             aria-label={t('academics.stats.wam', 'WAM')}
             onMouseEnter={() => setHoveredStat('wam')}
             onMouseLeave={() => setHoveredStat(null)}
@@ -939,7 +977,7 @@ export function AcademicsPage() {
             <Tooltip $isVisible={hoveredStat === 'wam'}>
               {getTooltipMessage('wam')}
             </Tooltip>
-            <h3>{averageMark.toFixed(1)}</h3>
+            <h3>{officialWAM.toFixed(2)}</h3>
             <p>{t('academics.stats.wam', 'WAM (Weighted Average Mark)')}</p>
             <SparklineChart viewBox="0 0 100 32" preserveAspectRatio="none">
               <path
@@ -954,7 +992,7 @@ export function AcademicsPage() {
             </SparklineChart>
           </StatCard>
         </SummaryStats>
-        
+
         <QuickNavBar role="navigation" aria-label={t('academics.navigation.title', 'Quick Navigation')}>
           {sortedGroups.map(([semester]) => (
             <QuickNavButton
@@ -967,21 +1005,21 @@ export function AcademicsPage() {
             </QuickNavButton>
           ))}
         </QuickNavBar>
-      
+
         <TimelineContainer ref={timelineRef} role="region" aria-label={t('academics.timeline.title', 'Academic Timeline')}>
-        {sortedGroups.map(([semester, academicGroup]) => (
-          <div 
-            key={semester}
-            ref={(el) => {
-              if (el) semesterRefs.current.set(semester, el)
-            }}
-          >
+          {sortedGroups.map(([semester, academicGroup]) => (
+            <div
+              key={semester}
+              ref={(el) => {
+                if (el) semesterRefs.current.set(semester, el)
+              }}
+            >
               <SemesterTitle $isVisible={isTimelineVisible}>
                 {semester === 'exemption' ? t('academics.exemptions', 'Exemptions') : semester}
-            </SemesterTitle>
+              </SemesterTitle>
               {academicGroup.map((academic, index) => (
-                <AcademicCard 
-                  key={academic.id} 
+                <AcademicCard
+                  key={academic.id}
                   status={academic.status}
                   $isVisible={visibleCards.has(academic.id)}
                   $index={index}
@@ -1000,8 +1038,8 @@ export function AcademicsPage() {
                   }}
                 >
                   <AcademicTitle id={`academic-${academic.id}-title`}>
-                  <span>{academic.name}</span>
-                  <GradeContainer>
+                    <span>{academic.name}</span>
+                    <GradeContainer>
                       {academic.grade && (
                         <GradeBadge grade={academic.grade} aria-label={t('academics.grade', { grade: academic.grade }, 'Grade: {{grade}}')}>
                           {academic.grade}
@@ -1009,10 +1047,10 @@ export function AcademicsPage() {
                       )}
                       <StatusBadge status={academic.status} aria-label={t('academics.status', { status: academic.status }, 'Status: {{status}}')}>
                         {t(`academics.status.${academic.status}`, academic.status.toUpperCase())}
-                    </StatusBadge>
-                  </GradeContainer>
-                </AcademicTitle>
-                <AcademicMeta>
+                      </StatusBadge>
+                    </GradeContainer>
+                  </AcademicTitle>
+                  <AcademicMeta>
                     <span>{t('academics.semester', { semester: academic.semester }, academic.semester)}</span>
                     {academic.marks && (
                       <span>
@@ -1024,7 +1062,7 @@ export function AcademicsPage() {
                         {t('academics.creditPoints', { points: academic.creditPoints }, '{{points}} Credit Points')}
                       </span>
                     )}
-                </AcademicMeta>
+                  </AcademicMeta>
                   {academic.description && (
                     <AcademicDescription>{academic.description}</AcademicDescription>
                   )}
@@ -1044,12 +1082,12 @@ export function AcademicsPage() {
                       </DetailRow>
                     )}
                   </ExpandedContent>
-              </AcademicCard>
-            ))}
-          </div>
-        ))}
-      </TimelineContainer>
-    </Container>
+                </AcademicCard>
+              ))}
+            </div>
+          ))}
+        </TimelineContainer>
+      </Container>
     </PageWrapper>
   )
 }

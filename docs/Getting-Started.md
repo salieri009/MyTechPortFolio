@@ -1,19 +1,19 @@
 ---
 title: "Getting Started Guide"
-version: "1.0.0"
-last_updated: "2025-11-17"
+version: "1.1.0"
+last_updated: "2025-12-19"
 status: "active"
 category: "Guide"
 audience: ["Developers", "DevOps Engineers"]
 prerequisites: []
-related_docs: ["Important-Concepts.md", "Architecture/README.md"]
+related_docs: ["Important-Concepts.md", "Architecture/README.md", "deployment/AKS-Deployment-Guide.md"]
 maintainer: "Development Team"
 ---
 
 # Getting Started Guide
 
-> **Version**: 1.0.0  
-> **Last Updated**: 2025-11-17  
+> **Version**: 1.1.0  
+> **Last Updated**: 2025-12-19  
 > **Status**: Active
 
 This guide will help you set up the development environment and get the project running locally.

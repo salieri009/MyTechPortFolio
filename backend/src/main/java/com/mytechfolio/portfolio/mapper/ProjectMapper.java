@@ -23,46 +23,48 @@ import java.util.stream.Collectors;
  */
 @Component
 @RequiredArgsConstructor
-public class ProjectMapper extends EntityMapper<Project, ProjectDetailResponse, ProjectCreateRequest, ProjectUpdateRequest> {
-    
+public class ProjectMapper
+        extends EntityMapper<Project, ProjectDetailResponse, ProjectCreateRequest, ProjectUpdateRequest> {
+
     private final TechStackRepository techStackRepository;
     private final AcademicRepository academicRepository;
-    
+
     @Override
     public ProjectDetailResponse toResponse(Project project) {
         if (project == null) {
             return null;
         }
-        
+
         // Fetch related entities for detailed response
         List<TechStack> techStacks = project.getTechStackIds() != null && !project.getTechStackIds().isEmpty()
-            ? techStackRepository.findByIdIn(project.getTechStackIds())
-            : List.of();
-        
+                ? techStackRepository.findByIdIn(project.getTechStackIds())
+                : List.of();
+
         List<String> techStackNames = techStacks.stream()
-            .map(TechStack::getName)
-            .collect(Collectors.toList());
-        
-        List<String> academicNames = project.getRelatedAcademicIds() != null && !project.getRelatedAcademicIds().isEmpty()
-            ? academicRepository.findAllById(project.getRelatedAcademicIds()).stream()
-                .map(com.mytechfolio.portfolio.domain.Academic::getName)
-                .collect(Collectors.toList())
-            : List.of();
-        
+                .map(TechStack::getName)
+                .collect(Collectors.toList());
+
+        List<String> academicNames = project.getRelatedAcademicIds() != null
+                && !project.getRelatedAcademicIds().isEmpty()
+                        ? academicRepository.findAllById(project.getRelatedAcademicIds()).stream()
+                                .map(com.mytechfolio.portfolio.domain.Academic::getName)
+                                .collect(Collectors.toList())
+                        : List.of();
+
         return ProjectDetailResponse.builder()
-            .id(project.getId())
-            .title(project.getTitle())
-            .summary(project.getSummary())
-            .description(project.getDescription())
-            .startDate(project.getStartDate())
-            .endDate(project.getEndDate())
-            .githubUrl(project.getGithubUrl())
-            .demoUrl(project.getDemoUrl())
-            .techStacks(techStackNames)
-            .relatedAcademics(academicNames)
-            .build();
+                .id(project.getId())
+                .title(project.getTitle())
+                .summary(project.getSummary())
+                .description(project.getDescription())
+                .startDate(project.getStartDate())
+                .endDate(project.getEndDate())
+                .githubUrl(project.getGithubUrl())
+                .demoUrl(project.getDemoUrl())
+                .techStacks(techStackNames)
+                .relatedAcademics(academicNames)
+                .build();
     }
-    
+
     /**
      * Converts Project to ProjectSummaryResponse.
      * 
@@ -73,50 +75,52 @@ public class ProjectMapper extends EntityMapper<Project, ProjectDetailResponse, 
         if (project == null) {
             return null;
         }
-        
+
         List<TechStack> techStacks = project.getTechStackIds() != null && !project.getTechStackIds().isEmpty()
-            ? techStackRepository.findByIdIn(project.getTechStackIds())
-            : List.of();
-        
+                ? techStackRepository.findByIdIn(project.getTechStackIds())
+                : List.of();
+
         List<String> techStackNames = techStacks.stream()
-            .map(TechStack::getName)
-            .collect(Collectors.toList());
-        
+                .map(TechStack::getName)
+                .collect(Collectors.toList());
+
         return ProjectSummaryResponse.builder()
-            .id(project.getId())
-            .title(project.getTitle())
-            .summary(project.getSummary())
-            .startDate(project.getStartDate())
-            .endDate(project.getEndDate())
-            .techStacks(techStackNames)
-            .build();
+                .id(project.getId())
+                .title(project.getTitle())
+                .summary(project.getSummary())
+                .startDate(project.getStartDate())
+                .endDate(project.getEndDate())
+                .techStacks(techStackNames)
+                .imageUrl(null) // TODO: Add imageUrl field to Project entity if needed
+                .isFeatured(project.getIsFeatured())
+                .build();
     }
-    
+
     @Override
     public Project toEntity(ProjectCreateRequest createRequest) {
         if (createRequest == null) {
             return null;
         }
-        
+
         return Project.builder()
-            .title(createRequest.getTitle())
-            .summary(createRequest.getSummary())
-            .description(createRequest.getDescription())
-            .startDate(createRequest.getStartDate())
-            .endDate(createRequest.getEndDate())
-            .githubUrl(createRequest.getGithubUrl())
-            .demoUrl(createRequest.getDemoUrl())
-            .techStackIds(createRequest.getTechStackIds())
-            .relatedAcademicIds(createRequest.getAcademicIds())
-            .build();
+                .title(createRequest.getTitle())
+                .summary(createRequest.getSummary())
+                .description(createRequest.getDescription())
+                .startDate(createRequest.getStartDate())
+                .endDate(createRequest.getEndDate())
+                .githubUrl(createRequest.getGithubUrl())
+                .demoUrl(createRequest.getDemoUrl())
+                .techStackIds(createRequest.getTechStackIds())
+                .relatedAcademicIds(createRequest.getAcademicIds())
+                .build();
     }
-    
+
     @Override
     public void updateEntity(Project entity, ProjectUpdateRequest updateRequest) {
         if (entity == null || updateRequest == null) {
             return;
         }
-        
+
         entity.setTitle(updateRequest.getTitle());
         entity.setSummary(updateRequest.getSummary());
         entity.setDescription(updateRequest.getDescription());
@@ -128,4 +132,3 @@ public class ProjectMapper extends EntityMapper<Project, ProjectDetailResponse, 
         entity.setRelatedAcademicIds(updateRequest.getAcademicIds());
     }
 }
-

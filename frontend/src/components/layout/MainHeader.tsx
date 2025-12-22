@@ -281,16 +281,16 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
         <HeaderContent>
           <LogoSection>
             <Logo to="/" onClick={closeMobileMenu}>
-              Portfolio
+              Salieri.dev
             </Logo>
 
-            <NavLinks 
+            <NavLinks
               $isOpen={mobileMenuOpen}
               role="navigation"
               aria-label="Main navigation"
             >
-              <NavLink 
-                to="/" 
+              <NavLink
+                to="/"
                 className={isActive('/') || isSectionActive('hero') ? 'active' : ''}
                 onClick={(e) => {
                   closeMobileMenu()
@@ -306,8 +306,8 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
               >
                 {t('navigation.home')}
               </NavLink>
-              <NavLink 
-                to="/projects" 
+              <NavLink
+                to="/projects"
                 className={isActive('/projects') || isSectionActive('projects') ? 'active' : ''}
                 onClick={(e) => {
                   closeMobileMenu()
@@ -323,16 +323,16 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
               >
                 {t('navigation.projects')}
               </NavLink>
-              <NavLink 
-                to="/about" 
+              <NavLink
+                to="/about"
                 className={isActive('/about')}
                 onClick={closeMobileMenu}
                 aria-current={isActive('/about') ? 'page' : undefined}
               >
                 {t('navigation.about')}
               </NavLink>
-              <NavLink 
-                to="/academics" 
+              <NavLink
+                to="/academics"
                 className={isActive('/academics')}
                 onClick={closeMobileMenu}
                 aria-current={isActive('/academics') ? 'page' : undefined}
@@ -354,7 +354,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
           <RightSection>
             <LanguageSwitcher />
             <ThemeToggle />
-            
+
             <UserMenu>
               {isAuthenticated && user ? (
                 <>
@@ -370,7 +370,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
               )}
             </UserMenu>
 
-            <MobileMenuButton 
+            <MobileMenuButton
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
               aria-expanded={mobileMenuOpen}

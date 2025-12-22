@@ -1,7 +1,7 @@
 ---
 title: "MyTechPortfolio Documentation"
-version: "1.0.0"
-last_updated: "2025-11-17"
+version: "2.0.0"
+last_updated: "2025-12-19"
 status: "active"
 category: "Index"
 audience: ["Developers", "DevOps Engineers", "Project Managers", "UX Designers"]
@@ -12,11 +12,11 @@ maintainer: "Development Team"
 
 # MyTechPortfolio Documentation
 
-> **Comprehensive technical documentation for MyTechPortfolio project**  
-> **Last Updated**: November 17, 2025  
+> **Unified technical documentation for MyTechPortfolio**  
+> **Version**: 2.0.0 | **Last Updated**: 2025-12-19  
 > **Status**: Active Development
 
-Welcome to the MyTechPortfolio documentation. This directory serves as the single source of truth for all project documentation, organized following technical writing best practices.
+Welcome to the MyTechPortfolio documentation. All project documentation is now consolidated here as the **single source of truth**.
 
 ---
 
@@ -30,69 +30,64 @@ Welcome to the MyTechPortfolio documentation. This directory serves as the singl
 
 ---
 
-## ?�� Documentation Structure
+## 📁 Documentation Structure
 
 ```
 docs/
-?��??� README.md                          # This file - Documentation index
-?��??� Important-Concepts.md              # Quick overview (start here)
-?��??� Getting-Started.md                 # Setup and development guide
-?��??� CHANGELOG.md                       # Version history and changes
-?��??� Architecture/                      # Architecture documentation
-??  ?��??� README.md
-??  ?��??� Frontend-Architecture.md
-??  ?��??� Backend-Refactoring.md
-??  ?��??� Refactoring-Status.md
-??  ?��??� Reiteration-Summary.md
-??  ?��??� Implementation-Status.md
-?��??� Specifications/                    # Technical specifications
-??  ?��??� README.md
-??  ?��??� API-Specification.md
-??  ?��??� Database-Specification.md
-??  ?��??� Frontend-Specification.md
-??  ?��??� UI-UX-Specification.md
-?��??� Guides/                           # How-to guides
-??  ?��??� README.md
-??  ?��??� Development/
-??  ??  ?��??� Frontend-Setup.md
-??  ??  ?��??� Backend-Setup.md
-??  ?��??� Deployment/
-??  ??  ?��??� Azure-Deployment-Guide.md
-??  ??  ?��??� Deployment-Guide.md
-??  ?��??� Integration/
-??      ?��??� EmailJS-Setup.md
-?��??� Testing/                          # Test documentation
-??  ?��??� README.md
-??  ?��??� Frontend-Backend-Connectivity-Test.md
-??  ?��??� Integration-Test-Report.md
-?��??� Security/                         # Security documentation
-??  ?��??� README.md
-?��??� Best-Practices/                   # Best practices and guidelines
-??  ?��??� README.md
-??  ?��??� Heuristics-Implementation.md
-??  ?��??� Accessibility.md
-??  ?��??� Performance.md
-??  ?��??� Naming-Conventions.md
-??  ?��??� Component-Guidelines.md
-??  ?��??� UI-Improvements.md
-??  ?��??� Portfolio-Enhancements.md
-?��??� Troubleshooting/                  # Troubleshooting guides
-??  ?��??� README.md
-??  ?��??� Common-Issues.md
-?��??� Contributing/                     # Contribution guidelines
-??  ?��??� README.md
-??  ?��??� Contributing-Guide.md
-??  ?��??� Documentation-Standards.md
-?��??� ADR/                              # Architectural Decision Records
-??  ?��??� README.md
-?��??� design-plan/                      # Legacy design documents
-    ?��??� README.md
-    ?��??� Recruiter-Focus-Improvements.md
+├── README.md                     # This file - Documentation index
+├── Getting-Started.md            # Setup and development guide
+├── Important-Concepts.md         # Quick overview (start here)
+├── CHANGELOG.md                  # Version history
+│
+├── Architecture/                 # System architecture
+│   ├── architecture-design.md    # Overall system design
+│   ├── CURRENT-IMPLEMENTATION-STATUS.md
+│   └── Implementation-Status.md
+│
+├── API/                          # API documentation
+│   └── api-design.md             # Complete API spec
+│
+├── Backend/                      # Backend documentation
+│   ├── README.md                 # Backend overview
+│   ├── backend-design.md         # Backend architecture
+│   ├── Architecture/             # Backend-specific architecture
+│   ├── Patterns/                 # Coding patterns (TDD)
+│   ├── Guides/                   # Implementation guides
+│   ├── Onboarding/               # New developer guides
+│   └── Migration/                # Migration guides
+│
+├── Frontend/                     # Frontend documentation
+│   ├── README.md                 # Frontend overview
+│   ├── frontend-design.md        # Frontend architecture
+│   ├── Pages/                    # Page-specific docs
+│   └── Tutorials/                # Tutorials
+│
+├── Security/                     # Security documentation
+│   ├── security-improvements.md
+│   ├── backend-security-implementation.md
+│   └── frontend-security-implementation.md
+│
+├── Deployment/                   # Deployment guides
+│   ├── README.md
+│   ├── Azure-DevOps-Deployment-Guide.md
+│   ├── AWS-Deployment-Guide.md
+│   └── GitHub-Actions-Deployment-Guide.md
+│
+├── Specifications/               # Technical specs
+│   ├── api-spec.md
+│   ├── db-spec.md
+│   └── frontend-spec.md
+│
+├── Best-Practices/               # Guidelines
+├── Testing/                      # Test documentation
+├── Troubleshooting/              # Common issues
+├── Contributing/                 # Contribution guidelines
+└── ADR/                          # Architecture Decision Records
 ```
 
 ---
 
-## ?�� Documentation by Audience
+## ? Documentation by Audience
 
 ### For Developers
 - **Getting Started**: [Getting-Started.md](./Getting-Started.md)

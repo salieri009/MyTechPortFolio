@@ -1,20 +1,20 @@
-// 미래지향적이고 세련된 디자인 시스템
+// Modern DevOps-focused Design System
 // 
-// KickoffLabs 가이드라인 엄격 준수:
-// 1. 색상 팔레트 제한: Primary + Neutral만 사용 (1-3개 색상)
-// 2. 폰트 제한: Inter 폰트 패밀리만 사용 (1개 폰트)
-// 3. CTA 색상 역할: Primary 색상은 CTA 버튼에만 사용
-// 4. 일관성: 모든 버튼, 패딩, border-radius 등 일관된 스타일 유지
-// 참고: https://kickofflabs.com/blog/landing-page-fonts-colors/
+// Design Principles:
+// 1. DevOps Color Palette: Slate Dark + Sky Blue accents for professional tech feel
+// 2. Single Font Family: Inter for clean, modern typography
+// 3. CTA Focus: Primary colors reserved for call-to-action elements
+// 4. Consistency: Unified spacing, border-radius, and animation patterns
+// Reference: KickoffLabs design guidelines
 
-// 베이스 테마 (공통 요소)
+// Base Theme (Shared Elements)
 const baseTheme = {
   // 색상 시스템 - 미래지향적 팔레트
   colors: {
     // Primary - Electric Blue 계열 (CTA 전용 색상)
     primary: {
       50: '#eff6ff',
-      100: '#dbeafe', 
+      100: '#dbeafe',
       200: '#bfdbfe',
       300: '#93c5fd',
       400: '#60a5fa',
@@ -57,27 +57,27 @@ const baseTheme = {
       950: '#172554'  // primary[950]으로 매핑
     },
 
-    // Neutral - Modern Gray 계열
+    // Neutral - DevOps Slate Gray (Professional tech palette)
     neutral: {
       0: '#ffffff',
-      50: '#fafafa',
-      100: '#f5f5f5',
-      200: '#e5e5e5',
-      300: '#d4d4d4',
-      400: '#a3a3a3',
-      500: '#737373',
-      600: '#525252',
-      700: '#404040',
-      800: '#262626',
-      900: '#171717',
-      950: '#0a0a0a'
+      50: '#f8fafc',   // Slate 50
+      100: '#f1f5f9',  // Slate 100
+      200: '#e2e8f0',  // Slate 200
+      300: '#cbd5e1',  // Slate 300
+      400: '#94a3b8',  // Slate 400
+      500: '#64748b',  // Slate 500
+      600: '#475569',  // Slate 600
+      700: '#334155',  // Slate 700
+      800: '#1e293b',  // Slate 800
+      900: '#0f172a',  // Slate 900 - DevOps Dark BG
+      950: '#020617'   // Slate 950
     },
 
-    // Semantic Colors
-    success: '#22c55e',
-    warning: '#f59e0b',
-    error: '#ef4444',
-    info: '#3b82f6',
+    // Semantic Colors (DevOps-friendly)
+    success: '#10b981',  // Emerald - Deployment success
+    warning: '#f59e0b',  // Amber - Warnings
+    error: '#ef4444',    // Red - Errors
+    info: '#38bdf8',     // Sky Blue - Info/Primary accent
 
     // 특별한 색상 (KickoffLabs 원칙 준수: Primary만 사용)
     gradient: {
@@ -97,7 +97,7 @@ const baseTheme = {
       strong: 'rgba(255, 255, 255, 0.3)',
       dark: 'rgba(0, 0, 0, 0.1)'
     },
-    
+
     // Hero 섹션 전용 색상 (Primary 배경 위의 흰색 텍스트)
     hero: {
       text: 'rgba(255, 255, 255, 0.95)',
@@ -159,7 +159,7 @@ const baseTheme = {
 
     letterSpacing: {
       tighter: '-0.05em',
-      tight: '-0.025em', 
+      tight: '-0.025em',
       normal: '0em',
       wide: '0.025em',
       wider: '0.05em',
@@ -229,7 +229,7 @@ const baseTheme = {
     xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
     '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
     inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
-    
+
     // 글로우 효과 (KickoffLabs 원칙 준수: Primary만 사용)
     glow: {
       primary: '0 0 20px rgba(59, 130, 246, 0.5)',
@@ -250,7 +250,7 @@ const baseTheme = {
   animation: {
     duration: {
       fastest: '100ms',
-      fast: '200ms', 
+      fast: '200ms',
       normal: '300ms',
       slow: '500ms',
       slowest: '1000ms'
@@ -303,13 +303,13 @@ const baseTheme = {
 export const lightTheme = {
   ...baseTheme,
   mode: 'light' as const,
-  
+
   // 반지름 별칭
   radius: baseTheme.borderRadius,
-  
+
   colors: {
     ...baseTheme.colors,
-    
+
     // 테마별 시맨틱 컬러
     background: baseTheme.colors.neutral[0],
     surface: baseTheme.colors.neutral[50],
@@ -318,34 +318,34 @@ export const lightTheme = {
     textMuted: baseTheme.colors.neutral[500],
     border: baseTheme.colors.neutral[200],
     divider: baseTheme.colors.neutral[100],
-    
+
     // 배경 별칭
     bg: baseTheme.colors.neutral[0]
   }
 };
 
-// 다크 테마
+// Dark Theme (DevOps Professional)
 export const darkTheme = {
   ...baseTheme,
   mode: 'dark' as const,
-  
-  // 반지름 별칭
+
+  // Border radius alias
   radius: baseTheme.borderRadius,
-  
+
   colors: {
     ...baseTheme.colors,
-    
-    // 테마별 시맨틱 컬러 - 더 밝고 읽기 쉽게 조정
-    background: baseTheme.colors.neutral[900],  // 950 → 900 (더 밝게)
-    surface: baseTheme.colors.neutral[800],     // 900 → 800 (더 밝게)
-    text: baseTheme.colors.neutral[100],        // 50 → 100 (약간 톤 다운)
-    textSecondary: baseTheme.colors.neutral[400], // 300 → 400 (더 진하게)
-    textMuted: baseTheme.colors.neutral[500],   // 400 → 500 (더 진하게)
-    border: baseTheme.colors.neutral[600],      // 700 → 600 (더 밝게)
-    divider: baseTheme.colors.neutral[700],     // 800 → 700 (더 밝게)
-    
-    // 배경 별칭
-    bg: baseTheme.colors.neutral[900]           // 950 → 900 (더 밝게)
+
+    // DevOps Dark Theme - Professional Slate palette
+    background: '#0f172a',           // Slate 900 - Deep professional dark
+    surface: '#1e293b',              // Slate 800 - Elevated surfaces
+    text: '#f8fafc',                 // Slate 50 - High contrast text
+    textSecondary: '#94a3b8',        // Slate 400 - Secondary text
+    textMuted: '#64748b',            // Slate 500 - Muted text
+    border: '#334155',               // Slate 700 - Subtle borders
+    divider: '#1e293b',              // Slate 800 - Dividers
+
+    // Background alias
+    bg: '#0f172a'                    // Slate 900
   },
 
   // 다크 테마용 그림자

@@ -37,7 +37,7 @@ This guide explains how to deploy the **MyTechPortFolio** application to Azure K
 - ✅ Rolling Updates (zero-downtime deployment)
 - ✅ Health Checks (Liveness & Readiness Probes)
 - ✅ Resource Limits & Requests
-- ✅ Path-based Routing (CORS 해결)
+- ✅ Path-based Routing (CORS solution)
 - ✅ Automatic Rollback on Failure
 - ✅ TLS/SSL Support
 

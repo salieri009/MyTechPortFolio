@@ -1,7 +1,9 @@
 ---
+doc_id: "ADR-007"
+tech_stack: ["mongodb", "spring"]
 title: "ADR-007: MongoDB as Database"
 version: "1.0.0"
-last_updated: "2025-11-17"
+last_updated: "2025-12-19"
 status: "accepted"
 category: "Architecture Decision"
 audience: ["Backend Developers", "Architects", "Database Administrators"]
@@ -10,7 +12,7 @@ related_docs: ["Specifications/Database-Specification.md", "Architecture/Backend
 maintainer: "Development Team"
 ---
 
-# ADR-007: MongoDB as Database
+# <ADR-007-MongoDB as Database>
 
 ## Status
 

@@ -220,7 +220,7 @@ const MilestoneNode = styled.div<{ $status: 'completed' | 'current' | 'planned' 
   }
 `
 
-const MilestoneContent = styled(motion.div)<{ $isLast?: boolean }>`
+const MilestoneContent = styled(motion.div) <{ $isLast?: boolean }>`
   background: transparent;
   padding: ${props => props.theme.spacing[5]} 0; /* 20px */
   border-bottom: ${props => props.$isLast ? 'none' : `${props.theme.spacing[0.5]} solid ${props.theme.colors.border}`}; /* 4px (1px → 4px 배수로 조정) */
@@ -335,7 +335,7 @@ const legacyMilestoneData: MilestoneData[] = [
     id: 'high-school',
     year: '2015',
     title: 'High School Graduation',
-    description: '고등학교 졸업 후 대학 진학을 위한 준비 과정을 거쳤습니다. 이 시기부터 컴퓨터와 기술에 대한 관심이 싹트기 시작했습니다.',
+    description: 'Graduated high school and began preparing for university entrance. This period marked the beginning of my interest in computers and technology.',
     icon: '',
     techStack: ['Basic Computer Skills', 'Microsoft Office'],
     status: 'completed',
@@ -350,7 +350,7 @@ const legacyMilestoneData: MilestoneData[] = [
     id: 'university',
     year: '2015~2020',
     title: 'Jeonbuk National University',
-    description: '전북대학교에서 학업을 시작하며 컴퓨터공학의 기초를 다졌습니다. 프로그래밍 언어와 소프트웨어 개발의 기본기를 익혔습니다.',
+    description: 'Started my academic journey at Jeonbuk National University, building a solid foundation in computer engineering. Learned programming languages and fundamental software development concepts.',
     icon: '',
     techStack: ['C/C++', 'Java', 'Data Structures', 'Algorithms', 'Database'],
     status: 'completed',
@@ -363,14 +363,14 @@ const legacyMilestoneData: MilestoneData[] = [
     },
     keyAchievements: [
       {
-        title: '데이터 구조 및 알고리즘 마스터',
-        description: '기본적인 자료구조와 알고리즘을 완전히 이해하고 구현할 수 있게 되었습니다.',
-        impact: '프로그래밍 기초 실력 향상'
+        title: 'Data Structures & Algorithms Master',
+        description: 'Fully understood and implemented fundamental data structures and algorithms.',
+        impact: 'Improved programming fundamentals'
       },
       {
-        title: 'Java 객체지향 프로그래밍',
-        description: 'Java를 활용한 객체지향 설계 및 구현 능력을 습득했습니다.',
-        impact: '소프트웨어 설계 능력 향상'
+        title: 'Java Object-Oriented Programming',
+        description: 'Acquired object-oriented design and implementation skills using Java.',
+        impact: 'Enhanced software design capabilities'
       }
     ],
     skillProgression: [
@@ -385,7 +385,7 @@ const legacyMilestoneData: MilestoneData[] = [
     id: 'military',
     year: '2021~2023',
     title: 'Military Service - Interpreter',
-    description: '군 복무 중 통역병으로 근무하며 영어 실력을 크게 향상시켰습니다. 다양한 국제 업무를 경험하며 글로벌 마인드를 기를 수 있었습니다.',
+    description: 'Served as an interpreter during military service, significantly improving my English proficiency. Gained a global mindset through various international duties and experiences.',
     icon: '',
     techStack: ['English Communication', 'Translation', 'International Relations', 'Leadership'],
     status: 'completed',
@@ -400,10 +400,10 @@ const legacyMilestoneData: MilestoneData[] = [
   {
     id: 'australia',
     year: '2023~Present',
-    title: 'Study in Australia',
-    description: '호주에서 유학 생활을 시작하며 최신 웹 기술과 소프트웨어 개발 트렌드를 학습하고 있습니다. 글로벌 환경에서의 개발 경험을 쌓고 있습니다.',
+    title: 'Study in Australia (UTS)',
+    description: 'Currently studying at University of Technology Sydney (UTS), learning modern web technologies and software development trends. Building global development experience with cloud-native and DevOps practices.',
     icon: '',
-    techStack: ['React', 'TypeScript', 'Node.js', 'Spring Boot', 'MongoDB', 'Docker', 'AWS'],
+    techStack: ['React', 'TypeScript', 'Node.js', 'Spring Boot', 'MongoDB', 'Docker', 'Azure AKS'],
     status: 'current',
     technicalComplexity: 4,
     projectCount: 11,
@@ -414,19 +414,19 @@ const legacyMilestoneData: MilestoneData[] = [
     },
     keyAchievements: [
       {
-        title: '풀스택 웹 개발 마스터',
-        description: 'React, TypeScript, Spring Boot를 활용한 풀스택 웹 애플리케이션 개발 능력을 습득했습니다.',
-        impact: '11개 프로젝트 완료'
+        title: 'Full-Stack Web Development',
+        description: 'Mastered full-stack web application development using React, TypeScript, and Spring Boot.',
+        impact: '11 projects completed'
       },
       {
-        title: '클라우드 인프라 경험',
-        description: 'AWS, Docker를 활용한 클라우드 배포 및 컨테이너화 경험을 쌓았습니다.',
-        impact: '실무 수준의 DevOps 능력 향상'
+        title: 'Cloud Infrastructure & DevOps',
+        description: 'Gained hands-on experience with Azure AKS, Docker, and cloud deployment strategies.',
+        impact: 'Production-level DevOps capabilities'
       },
       {
-        title: 'MongoDB NoSQL 데이터베이스',
-        description: 'MongoDB를 활용한 NoSQL 데이터베이스 설계 및 최적화 경험을 쌓았습니다.',
-        impact: '다양한 데이터베이스 기술 습득'
+        title: 'MongoDB NoSQL Database',
+        description: 'Designed and optimized NoSQL database solutions using MongoDB.',
+        impact: 'Diverse database technology expertise'
       }
     ],
     skillProgression: [
@@ -436,14 +436,14 @@ const legacyMilestoneData: MilestoneData[] = [
       { name: 'Spring Boot', level: 4, category: 'Backend' },
       { name: 'MongoDB', level: 3, category: 'Database' },
       { name: 'Docker', level: 3, category: 'DevOps' },
-      { name: 'AWS', level: 2, category: 'DevOps' }
+      { name: 'Azure AKS', level: 3, category: 'DevOps' }
     ]
   },
   {
     id: 'future',
-    year: '2025',
+    year: '2025~2026',
     title: 'Current Goals',
-    description: '풀스택 개발자로서의 전문성을 더욱 발전시키고, 혁신적인 웹 서비스를 개발하여 사용자에게 가치를 제공하는 것이 목표입니다.',
+    description: 'Aiming to further develop expertise as a DevOps-focused full-stack developer, building innovative cloud-native applications that deliver real value to users.',
     icon: '',
     techStack: ['Full Stack Development', 'Cloud Architecture', 'AI/ML Integration', 'DevOps'],
     status: 'planned',
@@ -498,7 +498,7 @@ export function JourneyMilestoneSection() {
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const milestoneRefs = useRef<Map<string, HTMLElement>>(new Map())
-  
+
   // Check for prefers-reduced-motion
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -524,7 +524,7 @@ export function JourneyMilestoneSection() {
         setIsLoading(false)
       }
     }
-    
+
     loadMilestones()
   }, [])
 
@@ -581,14 +581,14 @@ export function JourneyMilestoneSection() {
     const container = containerRef.current
     const containerRect = container.getBoundingClientRect()
     const lineX = window.innerWidth > 768 ? 40 : 20
-    
+
     // Update SVG viewBox to match container dimensions
     const containerHeight = container.scrollHeight
     const containerWidth = container.offsetWidth
     svg.setAttribute('viewBox', `0 0 ${containerWidth} ${containerHeight}`)
     svg.setAttribute('width', `${containerWidth}`)
     svg.setAttribute('height', `${containerHeight}`)
-    
+
     // Get all milestone positions
     const pathPoints: Array<{ x: number; y: number }> = []
     milestoneData.forEach((milestone) => {
@@ -605,16 +605,16 @@ export function JourneyMilestoneSection() {
     // Create path from first to last milestone
     const firstPoint = pathPoints[0]
     const lastPoint = pathPoints[pathPoints.length - 1]
-    
+
     // Simple vertical line path
     const pathData = `M ${firstPoint.x} ${firstPoint.y} L ${lastPoint.x} ${lastPoint.y}`
-    
+
     const backgroundPath = svg.querySelector('#timeline-background') as SVGPathElement
     const progressPath = svg.querySelector('#timeline-progress') as SVGPathElement
-    
+
     if (backgroundPath) backgroundPath.setAttribute('d', pathData)
     if (progressPath) progressPath.setAttribute('d', pathData)
-    
+
     // Trigger path length calculation in hook
     if (progressPath && !prefersReducedMotion) {
       const length = progressPath.getTotalLength()
@@ -666,69 +666,69 @@ export function JourneyMilestoneSection() {
         <JourneyGrid>
           {/* F-패턴: 좌측 텍스트 영역 */}
           <TextColumn>
-        <SectionTitle>{t('journey.title') || 'Career Timeline'}</SectionTitle>
-        <SectionPurpose 
-          text={t('storytelling.journeyPurpose')}
-        />
-        <SectionSubtitle>
-          {t('journey.subtitle') || '개발자로 성장해온 여정과 앞으로의 목표를 소개합니다'}
-        </SectionSubtitle>
+            <SectionTitle>{t('journey.title') || 'Career Timeline'}</SectionTitle>
+            <SectionPurpose
+              text={t('storytelling.journeyPurpose')}
+            />
+            <SectionSubtitle>
+              {t('journey.subtitle') || '개발자로 성장해온 여정과 앞으로의 목표를 소개합니다'}
+            </SectionSubtitle>
           </TextColumn>
-        
+
           {/* F-패턴: 우측 타임라인 영역 */}
           <TimelineColumn>
-        <TimelineContainer ref={containerRef}>
-          <TimelineSVG ref={svgRef} preserveAspectRatio="none">
-            <TimelinePathBackground id="timeline-background" />
-            <TimelinePathProgress 
-              id="timeline-progress"
-              $dashOffset={dashOffset}
-              $pathLength={pathLength}
-            />
-          </TimelineSVG>
-          
-          {milestoneData.map((milestone, index) => (
-            <MilestoneItem
-              key={milestone.id}
-              id={`milestone-${milestone.id}`}
-              ref={(el) => {
-                if (el) milestoneRefs.current.set(milestone.id, el)
-              }}
-              data-milestone-id={milestone.id}
-              data-visible={visibleMilestones.includes(milestone.id)}
-              data-active={activeMilestone === milestone.id}
-              variants={itemVariants}
-              initial="hidden"
-              animate={visibleMilestones.includes(milestone.id) ? "visible" : "hidden"}
-              custom={index}
-              aria-live={activeMilestone === milestone.id ? "polite" : "off"}
-            >
-              <MilestoneNode $status={milestone.status} />
-              
-              <MilestoneContent $isLast={index === milestoneData.length - 1}>
-                <MilestoneYear>{milestone.year}</MilestoneYear>
-                <CardContent>
-                  <MilestoneTitle>{milestone.title}</MilestoneTitle>
-                  <MilestoneDescription>{milestone.description}</MilestoneDescription>
-                  
-                  <ComplexityIndicator complexity={milestone.technicalComplexity} />
-                  
-                  {milestone.skillProgression && milestone.skillProgression.length > 0 && (
-                    <TechStackProgression skills={milestone.skillProgression} />
-                  )}
-                  
-                  <TechTags>
-                    {milestone.techStack.map((tech, techIndex) => (
-                      <TechTag key={`${milestone.id}-${techIndex}`}>
-                        {tech}
-                      </TechTag>
-                    ))}
-                  </TechTags>
-                </CardContent>
-              </MilestoneContent>
-            </MilestoneItem>
-          ))}
-        </TimelineContainer>
+            <TimelineContainer ref={containerRef}>
+              <TimelineSVG ref={svgRef} preserveAspectRatio="none">
+                <TimelinePathBackground id="timeline-background" />
+                <TimelinePathProgress
+                  id="timeline-progress"
+                  $dashOffset={dashOffset}
+                  $pathLength={pathLength}
+                />
+              </TimelineSVG>
+
+              {milestoneData.map((milestone, index) => (
+                <MilestoneItem
+                  key={milestone.id}
+                  id={`milestone-${milestone.id}`}
+                  ref={(el) => {
+                    if (el) milestoneRefs.current.set(milestone.id, el)
+                  }}
+                  data-milestone-id={milestone.id}
+                  data-visible={visibleMilestones.includes(milestone.id)}
+                  data-active={activeMilestone === milestone.id}
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate={visibleMilestones.includes(milestone.id) ? "visible" : "hidden"}
+                  custom={index}
+                  aria-live={activeMilestone === milestone.id ? "polite" : "off"}
+                >
+                  <MilestoneNode $status={milestone.status} />
+
+                  <MilestoneContent $isLast={index === milestoneData.length - 1}>
+                    <MilestoneYear>{milestone.year}</MilestoneYear>
+                    <CardContent>
+                      <MilestoneTitle>{milestone.title}</MilestoneTitle>
+                      <MilestoneDescription>{milestone.description}</MilestoneDescription>
+
+                      <ComplexityIndicator complexity={milestone.technicalComplexity} />
+
+                      {milestone.skillProgression && milestone.skillProgression.length > 0 && (
+                        <TechStackProgression skills={milestone.skillProgression} />
+                      )}
+
+                      <TechTags>
+                        {milestone.techStack.map((tech, techIndex) => (
+                          <TechTag key={`${milestone.id}-${techIndex}`}>
+                            {tech}
+                          </TechTag>
+                        ))}
+                      </TechTags>
+                    </CardContent>
+                  </MilestoneContent>
+                </MilestoneItem>
+              ))}
+            </TimelineContainer>
           </TimelineColumn>
         </JourneyGrid>
       </Container>

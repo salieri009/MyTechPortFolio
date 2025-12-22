@@ -28,8 +28,8 @@
     "closeMenu": "Close menu"
   },
   "hero": {
-    "headline": "Where Technology Meets Poetry, Structure Meets Emotion",
-    "subtitle": "I design systems and poetry simultaneously—a rare creator who thinks of people's hearts first, even when architecting complex systems. I transform confusion into clarity with warm language, bridging collaboration across Korean, English, and Japanese.",
+    "headline": "Engineering Scalable Cloud-Native Solutions",
+    "subtitle": "Full-Stack Developer & DevOps Engineer specializing in Azure AKS, React, TypeScript, and Spring Boot. Building high-performance, maintainable systems with CI/CD automation and cloud-native architecture.",
     "greeting": "Hello, I'm",
     "name": "Jungwook Van",
     "scrollIndicator": "Explore My Journey",
@@ -115,6 +115,12 @@
       "gpa": "GPA",
       "wam": "WAM (Weighted Average Mark)"
     },
+    "tooltip": {
+      "totalCredits": "Total credit points completed",
+      "completedCredits": "Credits completed with grades",
+      "gpa": "GPA 6.00 is in the top 5% of students",
+      "wam": "WAM target: Maintain above 80"
+    },
     "timeline": {
       "title": "Academic Timeline"
     },
@@ -132,8 +138,8 @@
     "hero": {
       "greeting": "Hello, I am",
       "name": "Jungwook Van",
-      "headline": "Where Technology Meets Poetry",
-      "subtitle": "I design systems and poetry simultaneously—a rare creator who thinks of people's hearts first, even when architecting complex systems. I transform confusion into clarity with warm language, bridging the flow of collaboration across Korean, English, and Japanese.",
+      "headline": "Cloud-Native Full-Stack Engineer",
+      "subtitle": "Specializing in Azure AKS, React, TypeScript, and Spring Boot. I architect scalable solutions with modern DevOps practices, bridging development and operations to deliver robust, production-ready systems.",
       "cta": {
         "primary": "View Projects",
         "secondary": "Contact Me"
@@ -261,9 +267,9 @@
   },
   "footer": {
     "branding": {
-      "name": "MyTech",
-      "tagline": "Where technology meets poetry, structure meets emotion—creating spaces where sincerity reaches through code",
-      "builtWith": "Built with React & Spring Boot"
+      "name": "Salieri.dev",
+      "tagline": "Cloud-Native Solutions | Azure AKS | Full-Stack Development",
+      "builtWith": "Built with React, Spring Boot & Azure AKS"
     },
     "sections": {
       "navigation": "Navigation",
@@ -370,7 +376,7 @@
       "description": "Immersive 3D experiences and interactive visualizations"
     },
     "software": {
-      "title": "Software Development", 
+      "title": "Software Development",
       "description": "Full-stack applications and enterprise solutions"
     },
     "gamedev": {
@@ -380,13 +386,13 @@
     "techStack": {
       "default": "Hover over projects to see technologies",
       "threejs": "3D Development Technologies",
-      "software": "Software Development Stack", 
+      "software": "Software Development Stack",
       "gamedev": "Game Development Tools"
     }
   },
   "language": {
     "korean": "한국어",
-    "english": "English", 
+    "english": "English",
     "japanese": "日本語"
   },
   "storytelling": {
@@ -408,7 +414,7 @@
   },
   "featured": {
     "title": "Featured Projects",
-    "purpose": "Projects where systems and poetry are designed simultaneously—where structure meets emotion",
+    "purpose": "Cloud-native applications, full-stack development, and DevOps automation showcases",
     "viewAll": "View All Projects"
   },
   "testimonials": {
