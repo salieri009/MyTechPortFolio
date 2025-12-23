@@ -1,101 +1,101 @@
-# 🚀 ProjectsPage 성능 및 UX 고도화 전략
+# 🚀 ProjectsPage Performance and UX Enhancement Strategy
 
-> **관점**: 시니어 퍼포먼스 엔지니어(Performance Engineer) 겸 UX 아키텍트  
-> **목표**: 대규모 데이터(500+개)에서도 쾌적한 성능(LCP, TBT)과 향상된 사용자 경험(UX) 동시 달성  
-> **원칙**: 기존 접근성(A11y) 기능 유지, 기존 기술 스택 활용
+> **Perspective**: Senior Performance Engineer & UX Architect  
+> **Goal**: Achieve comfortable performance (LCP, TBT) and enhanced user experience (UX) even with large datasets (500+)  
+> **Principles**: Maintain existing accessibility (A11y) features, utilize existing tech stack
 
 ---
 
-## 📊 현재 아키텍처 분석
+## 📊 Current Architecture Analysis
 
-### 강점
-- ✅ Zustand를 활용한 명확한 전역 필터 상태 관리
-- ✅ URL 파라미터 연동 (category → techStacks 자동 매핑)
-- ✅ 강력한 키보드 접근성 및 ARIA 지원
-- ✅ IntersectionObserver를 활용한 점진적 애니메이션(Stagger Effect)
-- ✅ 우수한 Empty/Loading 상태 처리
+### Strengths
+- ✅ Clear global filter state management using Zustand
+- ✅ URL parameter integration (category → techStacks auto-mapping)
+- ✅ Strong keyboard accessibility and ARIA support
+- ✅ Progressive animation using IntersectionObserver (Stagger Effect)
+- ✅ Excellent Empty/Loading state handling
 
-### 병목 현상 (Bottlenecks)
+### Bottlenecks
 
-#### 1. 확장성 문제 (Scalability)
+#### 1. Scalability Issues
 ```typescript
-// 현재: 클라이언트 사이드 필터링
+// Current: Client-side filtering
 useEffect(() => {
   const loadProjects = async () => {
     const response = await getProjects({
       page: 0,
-      size: 50,  // ❌ 하드코딩: 500개 프로젝트 시 초기 로드 50개만
+      size: 50,  // ❌ Hardcoded: only 50 initial load for 500 projects
       sort: 'endDate,desc'
     })
-    setProjects(response.data.items)  // ❌ 전체 데이터를 메모리에 보관
+    setProjects(response.data.items)  // ❌ Keep all data in memory
   }
 }, [])
 
 useEffect(() => {
-  // ❌ 클라이언트에서 500개 배열 필터링/정렬 (O(n) 연산)
+  // ❌ Client-side filtering/sorting of 500 item array (O(n) operation)
   let filtered = [...projects]
   if (techStacks.length > 0) {
-    filtered = filtered.filter(...)  // 메인 스레드 블로킹
+    filtered = filtered.filter(...)  // Main thread blocking
   }
   setFilteredProjects(filtered)
 }, [projects, techStacks, year, sort])
 ```
 
-**문제점**:
-- 초기 로드: 50개만 로드하므로 필터링 시 누락 가능
-- 메모리 사용: 모든 프로젝트를 클라이언트에 보관 (500개 × 평균 5KB = 2.5MB)
-- CPU 블로킹: 필터링/정렬이 메인 스레드에서 동기적으로 실행 (TBT 증가)
-- 네트워크 낭비: 사용하지 않는 데이터까지 다운로드
+**Issues**:
+- Initial load: Only 50 loaded, possible missing items when filtering
+- Memory usage: All projects kept on client (500 × avg 5KB = 2.5MB)
+- CPU blocking: Filtering/sorting runs synchronously on main thread (TBT increase)
+- Network waste: Download unused data
 
-#### 2. UX-Fidelity 부족
+#### 2. UX-Fidelity Lacking
 ```typescript
-// 현재: 필터링 피드백 부족
+// Current: Lacking filter feedback
 <Tag onClick={() => handleTechStackToggle(tech)}>
-  {tech}  // ❌ 몇 개의 프로젝트가 있는지 표시 안 됨
+  {tech}  // ❌ No display of how many projects exist
 </Tag>
 
-// 필터링 중 시각적 피드백 없음
-// ❌ "React" 태그 클릭 → 즉시 필터링되지만 진행 중임을 알 수 없음
+// No visual feedback during filtering
+// ❌ Click "React" tag → Filters immediately but no indication of progress
 ```
 
-**문제점**:
-- 필터 적용 시 결과 수 미리 알 수 없음
-- 필터링 진행 중 상태 표시 없음 (서버 요청 중인지 불명확)
-- EmptyState가 "초기 상태"와 "필터 결과 없음"을 구분하지 못함
+**Issues**:
+- Cannot preview result count when applying filters
+- No filtering-in-progress state display (unclear if server request is active)
+- EmptyState cannot distinguish "initial state" from "no filter results"
 
 ---
 
-## 🎯 전략 1: 서버사이드 데이터 처리 (Scalability)
+## 🎯 Strategy 1: Server-side Data Processing (Scalability)
 
-### 제안: 하이브리드 페이지네이션 + 서버사이드 필터링
+### Proposal: Hybrid Pagination + Server-side Filtering
 
-**아키텍처 전환**:
+**Architecture Transition**:
 ```
-[현재] 클라이언트 필터링
-  초기 로드 (50개) → 클라이언트 메모리 → 필터링/정렬 → 렌더링
+[Current] Client filtering
+  Initial load (50) → Client memory → Filtering/Sorting → Rendering
 
-[개선] 서버사이드 필터링 + 페이지네이션
-  필터 변경 → 디바운스 (300ms) → API 호출 → 서버 필터링/정렬 → 페이지네이션 응답 → 렌더링
+[Improved] Server-side filtering + Pagination
+  Filter change → Debounce (300ms) → API call → Server filtering/sorting → Paginated response → Rendering
 ```
 
-### 구현 상세
+### Implementation Details
 
-#### 1.1 StateManagement 리팩토링 (Zustand)
+#### 1.1 StateManagement Refactoring (Zustand)
 
 ```typescript
-// stores/filters.ts 개선
+// stores/filters.ts improvement
 interface FilterState {
-  // 기존 필터 상태
+  // Existing filter state
   techStacks: string[]
   year: number | null
   sort: 'endDate,desc' | 'endDate,asc'
   
-  // ✅ 추가: 로딩 상태 세분화
-  isLoading: boolean           // 초기 로딩
-  isFiltering: boolean         // 필터링 중 (서버 요청)
-  isInitialLoad: boolean       // 첫 로드 여부
+  // ✅ Added: Granular loading states
+  isLoading: boolean           // Initial loading
+  isFiltering: boolean         // Filtering in progress (server request)
+  isInitialLoad: boolean       // First load flag
   
-  // ✅ 추가: 페이지네이션 상태
+  // ✅ Added: Pagination state
   currentPage: number
   pageSize: number
   totalItems: number
@@ -103,7 +103,7 @@ interface FilterState {
   hasNext: boolean
   hasPrevious: boolean
   
-  // ✅ 추가: 필터 메타데이터 (UX 개선용)
+  // ✅ Added: Filter metadata (for UX improvement)
   filterCounts: Record<string, number>  // { "React": 15, "TypeScript": 23 }
   
   // Actions
@@ -118,10 +118,10 @@ interface FilterState {
 }
 ```
 
-#### 1.2 DataFlow 리팩토링
+#### 1.2 DataFlow Refactoring
 
 ```typescript
-// ProjectsPage.tsx 개선
+// ProjectsPage.tsx improvement
 const ProjectsPage: React.FC = () => {
   const { 
     techStacks, year, sort,
@@ -134,17 +134,17 @@ const ProjectsPage: React.FC = () => {
   const [projects, setProjects] = useState<ProjectSummary[]>([])
   const [filterCounts, setFilterCounts] = useState<Record<string, number>>({})
   
-  // ✅ 디바운스 훅 (300ms)
+  // ✅ Debounce hook (300ms)
   const debouncedFilters = useDebounce(
     { techStacks, year, sort },
     300
   )
   
-  // ✅ 서버사이드 필터링 API 호출
+  // ✅ Server-side filtering API call
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        setFiltering(true)  // 필터링 중 상태
+        setFiltering(true)  // Filtering state
         
         const response = await getProjects({
           page: currentPage,
@@ -157,7 +157,7 @@ const ProjectsPage: React.FC = () => {
         if (response.success && response.data) {
           setProjects(response.data.items)
           
-          // ✅ 페이지네이션 메타데이터 저장
+          // ✅ Save pagination metadata
           setPagination({
             totalItems: response.data.pagination.total,
             totalPages: response.data.pagination.totalPages,
@@ -175,25 +175,25 @@ const ProjectsPage: React.FC = () => {
     }
     
     loadProjects()
-  }, [debouncedFilters, currentPage, pageSize])  // ✅ 필터 변경 시 자동 재요청
+  }, [debouncedFilters, currentPage, pageSize])  // ✅ Auto re-request on filter change
   
-  // ✅ 필터 카운트 API 호출 (선택적, 백그라운드)
+  // ✅ Filter count API call (optional, background)
   useEffect(() => {
     const loadFilterCounts = async () => {
-      // 각 tech stack별 프로젝트 수를 가져오는 API
-      // 예: GET /api/v1/projects/counts?techStacks=React,TypeScript
+      // API to get project count per tech stack
+      // e.g.: GET /api/v1/projects/counts?techStacks=React,TypeScript
       const counts = await getProjectCountsByTechStack()
       setFilterCounts(counts)
     }
     
     loadFilterCounts()
-  }, [])  // 초기 로드 시 한 번만
+  }, [])  // Once on initial load
 }
 ```
 
-#### 1.3 성능 최적화 전략
+#### 1.3 Performance Optimization Strategy
 
-**A. 디바운싱 (Debouncing)**
+**A. Debouncing**
 ```typescript
 // utils/useDebounce.ts
 export function useDebounce<T>(value: T, delay: number): T {
@@ -211,15 +211,15 @@ export function useDebounce<T>(value: T, delay: number): T {
 }
 ```
 
-**효과**: 
-- 사용자가 빠르게 여러 필터를 클릭해도 마지막 입력 후 300ms 후에만 API 호출
-- 불필요한 네트워크 요청 감소 (TBT 개선)
+**Effect**: 
+- Only API call 300ms after last input even when user rapidly clicks multiple filters
+- Reduced unnecessary network requests (TBT improvement)
 
-**B. 페이지네이션 전략**
+**B. Pagination Strategy**
 
-**옵션 1: 전통적 페이지네이션** (권장)
+**Option 1: Traditional Pagination** (Recommended)
 ```typescript
-// 페이지 번호 기반
+// Page number based
 <Pagination>
   <PageButton page={1} />
   <PageButton page={2} />
@@ -228,14 +228,14 @@ export function useDebounce<T>(value: T, delay: number): T {
 </Pagination>
 ```
 
-**옵션 2: 무한 스크롤** (대안)
+**Option 2: Infinite Scroll** (Alternative)
 ```typescript
-// IntersectionObserver로 하단 감지
+// Detect bottom with IntersectionObserver
 useEffect(() => {
   const observer = new IntersectionObserver(
     (entries) => {
       if (entries[0].isIntersecting && hasNext && !isFiltering) {
-        loadNextPage()  // 다음 페이지 로드
+        loadNextPage()  // Load next page
       }
     },
     { threshold: 0.1 }
@@ -245,37 +245,37 @@ useEffect(() => {
 }, [hasNext, isFiltering])
 ```
 
-**권장**: 전통적 페이지네이션 (접근성 우수, 사용자 제어 가능)
+**Recommendation**: Traditional pagination (excellent accessibility, user controllable)
 
-#### 1.4 영향 분석 (State & DataFlow)
+#### 1.4 Impact Analysis (State & DataFlow)
 
-**변경 전**:
+**Before Change**:
 ```
-초기 로드 → projects[] (50개) → 클라이언트 필터링 → filteredProjects[]
-```
-
-**변경 후**:
-```
-필터 변경 → 디바운스 (300ms) → API 호출 → projects[] (페이지네이션) → 렌더링
+Initial load → projects[] (50) → Client filtering → filteredProjects[]
 ```
 
-**State 변화**:
-- `projects`: 서버에서 받은 현재 페이지의 프로젝트만 저장 (메모리 절약)
-- `filteredProjects` 제거: 서버에서 이미 필터링된 데이터
-- `isLoading`: 초기 로딩만 담당
-- `isFiltering`: 필터 변경 시 서버 요청 중 상태 (새로 추가)
+**After Change**:
+```
+Filter change → Debounce (300ms) → API call → projects[] (paginated) → Rendering
+```
 
-**DataFlow 변화**:
-- 필터 변경 → `debouncedFilters` 업데이트 → `useEffect` 트리거 → API 호출
-- 페이지 변경 → `currentPage` 업데이트 → `useEffect` 트리거 → API 호출
+**State Changes**:
+- `projects`: Store only current page projects from server (memory savings)
+- `filteredProjects` removed: Data already filtered from server
+- `isLoading`: Only handles initial loading
+- `isFiltering`: Server request state during filter changes (newly added)
+
+**DataFlow Changes**:
+- Filter change → `debouncedFilters` update → `useEffect` trigger → API call
+- Page change → `currentPage` update → `useEffect` trigger → API call
 
 ---
 
-## 🎨 전략 2: 인터랙티브 필터 피드백 (UX-Fidelity)
+## 🎨 Strategy 2: Interactive Filter Feedback (UX-Fidelity)
 
-### 제안: 실시간 필터 피드백 + 스켈레톤 UI
+### Proposal: Real-time Filter Feedback + Skeleton UI
 
-#### 2.1 필터 Tag에 카운트 표시
+#### 2.1 Display Count on Filter Tags
 
 ```typescript
 // ProjectsPage.tsx
@@ -288,7 +288,7 @@ useEffect(() => {
       aria-label={`${techStacks.includes(tech) ? 'Remove' : 'Add'} filter: ${tech} (${filterCounts[tech] || 0} projects)`}
     >
       {tech}
-      {/* ✅ 카운트 표시 */}
+      {/* ✅ Display count */}
       {filterCounts[tech] !== undefined && (
         <TagCount>({filterCounts[tech]})</TagCount>
       )}
@@ -297,7 +297,7 @@ useEffect(() => {
 </TechStackFilters>
 ```
 
-**스타일**:
+**Styling**:
 ```typescript
 const TagCount = styled.span`
   margin-left: ${props => props.theme.spacing[1]};
@@ -307,13 +307,13 @@ const TagCount = styled.span`
 `
 ```
 
-**효과**:
-- 사용자가 필터를 선택하기 전에 결과 수를 미리 확인 가능
-- "React (15)" → 15개 프로젝트가 있다는 것을 즉시 인지
+**Effect**:
+- Users can preview result count before selecting filter
+- "React (15)" → Immediately know there are 15 projects
 
-#### 2.2 필터링 진행 중 시각적 피드백
+#### 2.2 Visual Feedback During Filtering
 
-**A. 스켈레톤 UI (권장)**
+**A. Skeleton UI (Recommended)**
 ```typescript
 // components/project/ProjectCardSkeleton.tsx
 const ProjectCardSkeleton = styled(Card)`
@@ -349,7 +349,7 @@ const ProjectCardSkeleton = styled(Card)`
 )}
 ```
 
-**B. 블러 효과 (대안)**
+**B. Blur Effect (Alternative)**
 ```typescript
 const ProjectGrid = styled.div<{ $isFiltering: boolean }>`
   filter: ${props => props.$isFiltering ? 'blur(4px)' : 'none'};
@@ -370,19 +370,19 @@ const ProjectGrid = styled.div<{ $isFiltering: boolean }>`
 `
 ```
 
-**권장**: 스켈레톤 UI (더 명확한 피드백, LCP 개선)
+**Recommendation**: Skeleton UI (clearer feedback, LCP improvement)
 
-#### 2.3 EmptyState 메시지 고도화
+#### 2.3 Enhanced EmptyState Messages
 
 ```typescript
 // ProjectsPage.tsx
 {(() => {
-  // ✅ 초기 상태 (데이터 로딩 전)
+  // ✅ Initial state (before data loading)
   if (isLoading && projects.length === 0) {
     return <LoadingState />
   }
   
-  // ✅ 필터 결과 없음 (필터 적용 후)
+  // ✅ No filter results (after filter applied)
   if (!isLoading && projects.length === 0 && (techStacks.length > 0 || year !== null)) {
     return (
       <EmptyState role="status" aria-live="polite">
@@ -398,7 +398,7 @@ const ProjectGrid = styled.div<{ $isFiltering: boolean }>`
     )
   }
   
-  // ✅ 데이터 없음 (초기 상태, 필터 없음)
+  // ✅ No data (initial state, no filters)
   if (!isLoading && projects.length === 0) {
     return (
       <EmptyState role="status" aria-live="polite">
@@ -408,7 +408,7 @@ const ProjectGrid = styled.div<{ $isFiltering: boolean }>`
     )
   }
   
-  // ✅ 정상 상태
+  // ✅ Normal state
   return (
     <ProjectGrid>
       {projects.map((project, index) => (
@@ -419,9 +419,9 @@ const ProjectGrid = styled.div<{ $isFiltering: boolean }>`
 })()}
 ```
 
-#### 2.4 접근성 (A11y) 보장
+#### 2.4 Accessibility (A11y) Guarantee
 
-**A. aria-live 영역 개선**
+**A. aria-live Region Improvement**
 ```typescript
 // ProjectsPage.tsx
 <StatusAnnouncer 
@@ -450,7 +450,7 @@ const StatusAnnouncer = styled.div`
 `
 ```
 
-**B. 필터 카운트 스크린 리더 지원**
+**B. Filter Count Screen Reader Support**
 ```typescript
 <Tag
   aria-label={`${tech} filter, ${filterCounts[tech] || 0} projects available`}
@@ -463,92 +463,91 @@ const StatusAnnouncer = styled.div`
 </Tag>
 ```
 
-**C. 키보드 네비게이션 유지**
-- 기존 `tabIndex`, `onKeyDown`, `aria-pressed` 유지
-- 필터링 중에도 키보드 접근 가능 (스켈레톤 UI는 포커스 가능)
+**C. Keyboard Navigation Maintained**
+- Existing `tabIndex`, `onKeyDown`, `aria-pressed` maintained
+- Keyboard access available even during filtering (skeleton UI is focusable)
 
 ---
 
-## 📈 성능 지표 개선 예상
+## 📈 Expected Performance Metric Improvements
 
-### LCP (Largest Contentful Paint) 개선
-- **현재**: 초기 50개 로드 → 클라이언트 필터링 → 렌더링 (약 800ms)
-- **개선**: 서버 필터링 → 페이지네이션 (20개) → 렌더링 (약 400ms)
-- **예상 개선**: **50% 감소** (400ms → 200ms)
+### LCP (Largest Contentful Paint) Improvement
+- **Current**: Initial 50 load → Client filtering → Rendering (~800ms)
+- **Improved**: Server filtering → Pagination (20) → Rendering (~400ms)
+- **Expected Improvement**: **50% reduction** (400ms → 200ms)
 
-### TBT (Total Blocking Time) 개선
-- **현재**: 클라이언트 필터링 (500개 배열 처리) → 메인 스레드 블로킹 (약 150ms)
-- **개선**: 서버 필터링 → 디바운싱 → 비동기 처리 (약 0ms)
-- **예상 개선**: **100% 감소** (150ms → 0ms)
+### TBT (Total Blocking Time) Improvement
+- **Current**: Client filtering (500 item array processing) → Main thread blocking (~150ms)
+- **Improved**: Server filtering → Debouncing → Async processing (~0ms)
+- **Expected Improvement**: **100% reduction** (150ms → 0ms)
 
-### 메모리 사용량 개선
-- **현재**: 500개 프로젝트 × 5KB = **2.5MB**
-- **개선**: 20개 프로젝트 × 5KB = **100KB** (페이지당)
-- **예상 개선**: **96% 감소**
-
----
-
-## 🔧 구현 체크리스트
-
-### Phase 1: 서버사이드 필터링 (1-2일)
-- [ ] `useDebounce` 훅 구현
-- [ ] Zustand store에 `isFiltering`, `pagination` 상태 추가
-- [ ] `getProjects` API 호출을 필터 변경 시 트리거되도록 수정
-- [ ] 클라이언트 필터링 로직 제거
-- [ ] 페이지네이션 UI 추가 (또는 무한 스크롤)
-
-### Phase 2: 필터 피드백 (1일)
-- [ ] `getProjectCountsByTechStack` API 엔드포인트 구현 (백엔드)
-- [ ] 필터 카운트 표시 (`TagCount` 컴포넌트)
-- [ ] 스켈레톤 UI 컴포넌트 구현
-- [ ] `isFiltering` 상태에 따른 스켈레톤 UI 표시
-- [ ] EmptyState 메시지 분리 (초기/필터 결과 없음)
-
-### Phase 3: 접근성 및 최적화 (0.5일)
-- [ ] `aria-live` 영역 개선
-- [ ] 필터 카운트 스크린 리더 지원
-- [ ] 성능 테스트 (Lighthouse)
-- [ ] 메모리 프로파일링
+### Memory Usage Improvement
+- **Current**: 500 projects × 5KB = **2.5MB**
+- **Improved**: 20 projects × 5KB = **100KB** (per page)
+- **Expected Improvement**: **96% reduction**
 
 ---
 
-## 🎯 핵심 원칙 준수
+## 🔧 Implementation Checklist
 
-### ✅ 성능 최적화
-- 서버사이드 필터링으로 클라이언트 CPU 부하 제거
-- 페이지네이션으로 메모리 사용량 최소화
-- 디바운싱으로 불필요한 네트워크 요청 감소
+### Phase 1: Server-side Filtering (1-2 days)
+- [ ] Implement `useDebounce` hook
+- [ ] Add `isFiltering`, `pagination` state to Zustand store
+- [ ] Modify `getProjects` API call to trigger on filter changes
+- [ ] Remove client filtering logic
+- [ ] Add pagination UI (or infinite scroll)
 
-### ✅ 접근성 유지
-- 기존 키보드 네비게이션 유지
-- `aria-live` 영역으로 필터링 상태 알림
-- 스크린 리더 사용자를 위한 카운트 정보 제공
+### Phase 2: Filter Feedback (1 day)
+- [ ] Implement `getProjectCountsByTechStack` API endpoint (backend)
+- [ ] Display filter counts (`TagCount` component)
+- [ ] Implement Skeleton UI component
+- [ ] Display skeleton UI based on `isFiltering` state
+- [ ] Separate EmptyState messages (initial/no filter results)
 
-### ✅ 기술 스택 활용
-- Zustand: 상태 관리 (기존 유지)
-- styled-components: 스타일링 (기존 유지)
-- IntersectionObserver: 애니메이션 (기존 유지)
-- React hooks: 디바운싱, 상태 관리 (기존 패턴)
+### Phase 3: Accessibility & Optimization (0.5 days)
+- [ ] Improve `aria-live` region
+- [ ] Support filter count screen reader
+- [ ] Performance testing (Lighthouse)
+- [ ] Memory profiling
 
 ---
 
-## 📝 참고사항
+## 🎯 Core Principle Compliance
 
-### 백엔드 API 지원 확인
-✅ **확인 완료**: `ProjectController`가 이미 서버사이드 필터링을 지원합니다:
+### ✅ Performance Optimization
+- Server-side filtering removes client CPU load
+- Pagination minimizes memory usage
+- Debouncing reduces unnecessary network requests
+
+### ✅ Accessibility Maintained
+- Existing keyboard navigation maintained
+- Alert filtering state via `aria-live` region
+- Provide count information for screen reader users
+
+### ✅ Tech Stack Utilization
+- Zustand: State management (maintained)
+- styled-components: Styling (maintained)
+- IntersectionObserver: Animation (maintained)
+- React hooks: Debouncing, state management (existing patterns)
+
+---
+
+## 📝 Notes
+
+### Backend API Support Confirmation
+✅ **Confirmed**: `ProjectController` already supports server-side filtering:
 - `GET /api/v1/projects?techStacks=React,TypeScript&year=2024&sort=endDate,desc&page=1&size=20`
-- 응답: `ApiResponse<PageResponse<ProjectSummaryResponse>>`
-- `PageResponse`에 `pagination` 메타데이터 포함 (`totalPages`, `hasNext`, `hasPrevious`, `total`)
-- **즉시 구현 가능**: 백엔드 변경 없이 프론트엔드만 수정하면 됨
+- Response: `ApiResponse<PageResponse<ProjectSummaryResponse>>`
+- `PageResponse` includes `pagination` metadata (`totalPages`, `hasNext`, `hasPrevious`, `total`)
+- **Immediately implementable**: Only frontend changes needed, no backend changes
 
-### 필터 카운트 API
-새로운 엔드포인트 필요 (선택적):
+### Filter Count API
+New endpoint needed (optional):
 - `GET /api/v1/projects/counts?techStacks=React,TypeScript`
-- 응답: `{ "React": 15, "TypeScript": 23, ... }`
+- Response: `{ "React": 15, "TypeScript": 23, ... }`
 
-### 점진적 마이그레이션
-기존 클라이언트 필터링을 완전히 제거하기 전에:
-1. 서버사이드 필터링과 병행 운영
-2. A/B 테스트로 성능 비교
-3. 사용자 피드백 수집 후 완전 전환
-
+### Gradual Migration
+Before completely removing client filtering:
+1. Run server-side filtering in parallel
+2. A/B test for performance comparison
+3. Full transition after collecting user feedback

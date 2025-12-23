@@ -1,48 +1,48 @@
-# 💡 AboutPage 인터랙티브 내러티브 고도화 제안
+# 💡 AboutPage Interactive Narrative Enhancement Proposal
 
-> **관점**: 시니어 인터랙션 디자이너(Interaction Designer) 겸 UX 전략가  
-> **목표**: 정적인 콘텐츠를 사용자의 참여를 유도하는 '인터랙티브 내러티브'로 전환  
-> **원칙**: KickoffLabs 디자인 시스템 준수, 4-Point Spacing, Nielsen Heuristics, A11y 유지, prefers-reduced-motion 존중
-
----
-
-## 현재 상태 분석
-
-### 강점
-- HomePage와 완벽히 차별화된 Hero 섹션
-- 명확한 섹션 분리 (SectionBridge)
-- 높은 컴포넌트 재사용률 (93%)
-- F-pattern을 활용한 우수한 가독성
-- Nielsen Heuristics 및 A11y 원칙 준수
-- 인터랙티브 타임라인 (SVG Path Animation)
-- Tech Stack 모달 및 하이라이트 연동
-- Mission & Vision 섹션 확장 기능
-
-### 개선 기회 (해결됨)
-- ✅ JourneyMilestoneSection: SVG Path Animation으로 스크롤 연동형 타임라인 구현
-- ✅ BackgroundCard와 ValueCard: 인터랙티브 하이라이트 및 모달 기능 추가
-- ✅ '스킬'과 '가치'의 연관성: TECH_VALUE_MAP을 통한 시각적 연결 구현
-- ✅ Mission & Vision Section: ValueCard 확장 기능 및 텍스트 카드 스타일링 개선
+> **Perspective**: Senior Interaction Designer & UX Strategist  
+> **Goal**: Transform static content into an 'interactive narrative' that encourages user engagement  
+> **Principles**: KickoffLabs design system compliance, 4-Point Spacing, Nielsen Heuristics, A11y maintenance, prefers-reduced-motion respect
 
 ---
 
-## 핵심 제안
+## Current State Analysis
 
-### 1. JourneyMilestoneSection: '경험하는 타임라인'으로 진화 (구현 완료)
+### Strengths
+- Hero section perfectly differentiated from HomePage
+- Clear section separation (SectionBridge)
+- High component reusability (93%)
+- Excellent readability using F-pattern
+- Nielsen Heuristics and A11y principle compliance
+- Interactive timeline (SVG Path Animation)
+- Tech Stack modal and highlight integration
+- Mission & Vision section expansion feature
 
-#### 제안: SVG Path Animation을 활용한 스크롤 연동형 타임라인
+### Improvement Opportunities (Resolved)
+- ✅ JourneyMilestoneSection: Scroll-synced timeline implemented with SVG Path Animation
+- ✅ BackgroundCard and ValueCard: Interactive highlight and modal features added
+- ✅ 'Skills' and 'Values' correlation: Visual connection implemented through TECH_VALUE_MAP
+- ✅ Mission & Vision Section: ValueCard expansion feature and text card styling improvements
 
-**구현 방식**:
-- 기존 `TimelineLineProgress`를 SVG `<path>`로 전환
-- `IntersectionObserver`와 `getBoundingClientRect()`를 활용해 스크롤 진행도에 따라 `stroke-dasharray`와 `stroke-dashoffset` 애니메이션
-- 각 마일스톤 노드가 화면에 진입할 때 SVG path가 해당 지점까지 그려짐
+---
+
+## Key Proposals
+
+### 1. JourneyMilestoneSection: Evolution to 'Experiential Timeline' (Implementation Complete)
+
+#### Proposal: Scroll-synced Timeline using SVG Path Animation
+
+**Implementation Approach**:
+- Convert existing `TimelineLineProgress` to SVG `<path>`
+- Use `IntersectionObserver` and `getBoundingClientRect()` to animate `stroke-dasharray` and `stroke-dashoffset` based on scroll progress
+- SVG path draws up to the point when each milestone node enters the viewport
 
 **UX Rationale**:
-- **H1 (Visibility of System Status)**: 사용자가 스크롤할 때 타임라인이 "활성화"되는 것을 시각적으로 확인
-- **Progressive Disclosure**: 한 번에 모든 정보를 보여주는 대신, 스크롤에 따라 점진적으로 타임라인이 그려지며 사용자의 주의를 자연스럽게 유도
-- **Emotional Connection**: 정적 타임라인보다 "살아있는" 타임라인이 개인의 성장 여정을 더 생생하게 전달
+- **H1 (Visibility of System Status)**: Users visually confirm the timeline "activating" when scrolling
+- **Progressive Disclosure**: Instead of showing all information at once, the timeline progressively draws as the user scrolls, naturally guiding attention
+- **Emotional Connection**: A "living" timeline conveys the personal growth journey more vividly than a static one
 
-**기술적 구현**:
+**Technical Implementation**:
 ```typescript
 // SVG Path Animation Hook
 const useTimelinePathAnimation = (containerRef: RefObject<HTMLElement>) => {
@@ -75,29 +75,29 @@ const useTimelinePathAnimation = (containerRef: RefObject<HTMLElement>) => {
 }
 ```
 
-**접근성 고려사항**:
-- `prefers-reduced-motion`에서 SVG path 애니메이션 비활성화, 대신 즉시 완성된 path 표시
-- `aria-live="polite"`로 현재 활성화된 마일스톤을 스크린 리더에 알림
+**Accessibility Considerations**:
+- Disable SVG path animation with `prefers-reduced-motion`, show completed path immediately instead
+- Notify screen readers of currently active milestone with `aria-live="polite"`
 
 ---
 
-### 2. '스킬'과 '가치'의 연결 (Background & Mission) (구현 완료)
+### 2. Connecting 'Skills' and 'Values' (Background & Mission) (Implementation Complete)
 
-#### 제안: 인터랙티브 카드 연결성 강화
+#### Proposal: Strengthening Interactive Card Connectivity
 
-**A. Tech Stack 카드 클릭 → 관련 프로젝트 모달**
+**A. Tech Stack Card Click → Related Projects Modal**
 
-**구현 방식**:
-- `BackgroundCard` (Tech Stack) 클릭 시 관련 프로젝트를 필터링하여 모달 표시
-- 모달은 `/projects` 페이지의 `ProjectCard` 컴포넌트 재사용
-- 모달 닫기 버튼과 배경 클릭으로 닫기
+**Implementation Approach**:
+- Filter and display related projects in a modal when `BackgroundCard` (Tech Stack) is clicked
+- Modal reuses `ProjectCard` component from `/projects` page
+- Modal closes via close button and background click
 
 **UX Rationale**:
-- **H4 (Consistency & Standards)**: 기존 ProjectCard 컴포넌트 재사용으로 일관성 유지
-- **H3 (User Control & Freedom)**: 모달 닫기, ESC 키, 배경 클릭 등 다양한 닫기 방법 제공
-- **Evidence-Based Trust**: "React, TypeScript" 같은 기술 스택이 단순 나열이 아닌 실제 프로젝트로 증명됨
+- **H4 (Consistency & Standards)**: Maintain consistency by reusing existing ProjectCard component
+- **H3 (User Control & Freedom)**: Provide various closing methods including modal close, ESC key, background click
+- **Evidence-Based Trust**: Tech stacks like "React, TypeScript" are proven through actual projects, not just listed
 
-**기술적 구현**:
+**Technical Implementation**:
 ```typescript
 // Tech Stack Modal Component
 const TechStackModal = ({ techStack, onClose }: { techStack: string, onClose: () => void }) => {
@@ -126,19 +126,19 @@ const TechStackModal = ({ techStack, onClose }: { techStack: string, onClose: ()
 }
 ```
 
-**B. Tech Stack ↔ Mission Value 하이라이트 연동**
+**B. Tech Stack ↔ Mission Value Highlight Integration**
 
-**구현 방식**:
-- `BackgroundCard` (Tech Stack)에 특정 기술이 포함되어 있을 때, 관련 `ValueCard` (예: "React" → "Innovation")에 시각적 하이라이트
-- Hover 시 연결선(connecting line) 또는 배경색 변화로 관계 표시
-- 클릭 시 두 카드가 동시에 하이라이트되고, 짧은 설명 툴팁 표시
+**Implementation Approach**:
+- When `BackgroundCard` (Tech Stack) contains a specific technology, visually highlight related `ValueCard` (e.g., "React" → "Innovation")
+- Show relationship via connecting line or background color change on hover
+- Both cards highlight simultaneously on click, with short tooltip description
 
 **UX Rationale**:
-- **H4 (Recognition Rather Than Recall)**: 기술 스택과 가치의 관계를 시각적으로 명확히 제시
-- **H1 (Visibility of System Status)**: Hover/Click 시 즉각적인 시각적 피드백
-- **Narrative Coherence**: "React를 사용한다"는 기술적 사실이 "Innovation"이라는 가치와 어떻게 연결되는지 직관적으로 이해 가능
+- **H4 (Recognition Rather Than Recall)**: Clearly present the relationship between tech stacks and values visually
+- **H1 (Visibility of System Status)**: Immediate visual feedback on Hover/Click
+- **Narrative Coherence**: Intuitively understand how the technical fact of "using React" connects to the value of "Innovation"
 
-**기술적 구현**:
+**Technical Implementation**:
 ```typescript
 // Tech Stack to Value Mapping
 const TECH_VALUE_MAP: Record<string, string[]> = {
@@ -157,38 +157,38 @@ const useTechValueConnection = () => {
   const handleTechHover = (tech: string) => {
     setHighlightedTech(tech)
     const relatedValues = TECH_VALUE_MAP[tech] || []
-    // 관련 ValueCard에 하이라이트 클래스 추가
+    // Add highlight class to related ValueCards
   }
   
   return { highlightedTech, highlightedValue, handleTechHover }
 }
 ```
 
-**시각적 디자인**:
-- 하이라이트: Primary[50] 배경, Primary[500] 테두리, Primary[200] 그림자
-- ValueCard 확장: 클릭 시 상세 설명 표시, fadeIn 애니메이션
-- ValueIcon: 원형 배경 (Primary[50]), Primary[500] 텍스트, 64px 크기
+**Visual Design**:
+- Highlight: Primary[50] background, Primary[500] border, Primary[200] shadow
+- ValueCard expansion: Show detailed description on click, fadeIn animation
+- ValueIcon: Circular background (Primary[50]), Primary[500] text, 64px size
 
 **C. Mission & Vision Section Enhancement**
 
-**구현 방식**:
-- ValueCard 클릭 시 확장 가능한 상세 설명 표시
-- Mission/Vision 텍스트를 카드 형태로 재디자인 (라벨 포함)
-- 스크롤 트리거 애니메이션으로 점진적 등장
-- ValueIcon을 원형 배경이 있는 아이콘으로 개선
+**Implementation Approach**:
+- Display expandable detailed description on ValueCard click
+- Redesign Mission/Vision text as cards (with labels)
+- Progressive appearance with scroll trigger animations
+- Improve ValueIcon with circular background icons
 
 **UX Rationale**:
-- **H3 (User Control & Freedom)**: 사용자가 원하는 가치에 대해 더 자세한 정보를 선택적으로 탐색 가능
-- **H1 (Visibility of System Status)**: 확장/축소 상태가 명확히 표시됨 (`aria-expanded`)
-- **Progressive Disclosure**: 기본 설명만 보여주고, 관심 있는 가치에 대해 더 깊이 있는 정보 제공
-- **Narrative Depth**: 단순 나열이 아닌, 각 가치에 대한 구체적인 설명으로 신뢰도 향상
+- **H3 (User Control & Freedom)**: Users can selectively explore more detailed information about desired values
+- **H1 (Visibility of System Status)**: Expansion/collapse state clearly indicated (`aria-expanded`)
+- **Progressive Disclosure**: Show only basic description, provide deeper information for values of interest
+- **Narrative Depth**: Build trust with specific descriptions for each value, not just listing
 
-**기술적 구현**:
+**Technical Implementation**:
 ```typescript
-// ValueCard 확장 기능
+// ValueCard expansion feature
 const [expandedValue, setExpandedValue] = useState<string | null>(null)
 
-// ValueCard 클릭/키보드 이벤트
+// ValueCard click/keyboard events
 onClick={() => setExpandedValue(expandedValue === 'innovation' ? null : 'innovation')}
 onKeyDown={(e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -197,7 +197,7 @@ onKeyDown={(e) => {
   }
 }}
 
-// 확장된 콘텐츠
+// Expanded content
 {expandedValue === 'innovation' && (
   <ValueExpandedContent>
     {t('about.mission.values.innovation.detail', '...')}
@@ -205,36 +205,36 @@ onKeyDown={(e) => {
 )}
 ```
 
-**Mission/Vision 텍스트 개선**:
-- 카드 형태로 재디자인 (배경, 테두리, 패딩)
-- "MISSION" / "VISION" 라벨 추가 (Primary 색상, 대문자)
-- 호버 효과 추가 (테두리 색상 변화, 그림자)
-- 스크롤 트리거 fadeInUp 애니메이션
+**Mission/Vision Text Improvements**:
+- Redesign as card format (background, border, padding)
+- Add "MISSION" / "VISION" labels (Primary color, uppercase)
+- Add hover effects (border color change, shadow)
+- Scroll trigger fadeInUp animation
 
 ---
 
-### 3. Mission & Vision Section Enhancement (구현 완료)
+### 3. Mission & Vision Section Enhancement (Implementation Complete)
 
-#### 제안: 확장 가능한 ValueCard 및 개선된 텍스트 프레젠테이션
+#### Proposal: Expandable ValueCard and Improved Text Presentation
 
-**구현 방식**:
-- ValueCard 클릭 시 확장 가능한 상세 설명 표시
-- Mission/Vision 텍스트를 카드 형태로 재디자인
-- ValueIcon을 원형 배경이 있는 아이콘으로 개선
-- 스크롤 트리거 애니메이션으로 점진적 등장
+**Implementation Approach**:
+- Display expandable detailed description on ValueCard click
+- Redesign Mission/Vision text as cards
+- Improve ValueIcon with circular background icons
+- Progressive appearance with scroll trigger animations
 
 **UX Rationale**:
-- **H3 (User Control & Freedom)**: 사용자가 원하는 가치에 대해 더 자세한 정보를 선택적으로 탐색 가능
-- **H1 (Visibility of System Status)**: 확장/축소 상태가 명확히 표시됨 (`aria-expanded`)
-- **Progressive Disclosure**: 기본 설명만 보여주고, 관심 있는 가치에 대해 더 깊이 있는 정보 제공
-- **Narrative Depth**: 단순 나열이 아닌, 각 가치에 대한 구체적인 설명으로 신뢰도 향상
+- **H3 (User Control & Freedom)**: Users can selectively explore more detailed information about desired values
+- **H1 (Visibility of System Status)**: Expansion/collapse state clearly indicated (`aria-expanded`)
+- **Progressive Disclosure**: Show only basic description, provide deeper information for values of interest
+- **Narrative Depth**: Build trust with specific descriptions for each value, not just listing
 
-**기술적 구현**:
+**Technical Implementation**:
 ```typescript
-// ValueCard 확장 상태 관리
+// ValueCard expansion state management
 const [expandedValue, setExpandedValue] = useState<string | null>(null)
 
-// 클릭/키보드 이벤트
+// Click/keyboard events
 onClick={() => setExpandedValue(expandedValue === 'innovation' ? null : 'innovation')}
 onKeyDown={(e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -243,7 +243,7 @@ onKeyDown={(e) => {
   }
 }}
 
-// 확장된 콘텐츠 (fadeIn 애니메이션)
+// Expanded content (fadeIn animation)
 {expandedValue === 'innovation' && (
   <ValueExpandedContent>
     {t('about.mission.values.innovation.detail', '...')}
@@ -251,17 +251,17 @@ onKeyDown={(e) => {
 )}
 ```
 
-**Mission/Vision 텍스트 개선**:
-- 카드 형태로 재디자인 (배경, 테두리, 패딩)
-- "MISSION" / "VISION" 라벨 추가 (Primary 색상, 대문자)
-- 호버 효과 추가 (테두리 색상 변화, 그림자)
-- 스크롤 트리거 fadeInUp 애니메이션
+**Mission/Vision Text Improvements**:
+- Redesign as card format (background, border, padding)
+- Add "MISSION" / "VISION" labels (Primary color, uppercase)
+- Add hover effects (border color change, shadow)
+- Scroll trigger fadeInUp animation
 
 ---
 
-## 접근성 고려사항 (A11y)
+## Accessibility Considerations (A11y)
 
-### prefers-reduced-motion 지원
+### prefers-reduced-motion Support
 
 **SVG Path Animation**:
 ```css
@@ -274,107 +274,106 @@ onKeyDown={(e) => {
 }
 ```
 
-**카드 하이라이트**:
-- 애니메이션 대신 즉각적인 색상 변화
-- 연결선 애니메이션 제거, 정적 선으로 표시
+**Card Highlighting**:
+- Immediate color change instead of animation
+- Remove connecting line animation, show as static line
 
-### 키보드 네비게이션
+### Keyboard Navigation
 
-- Tech Stack 카드: `tabIndex={0}`, `Enter`/`Space`로 모달 열기
-- 모달: `Escape`로 닫기, `Tab`으로 모달 내부 요소 순환, `Shift+Tab`으로 역순
-- ValueCard: `tabIndex={0}`, `Enter`/`Space`로 확장/축소, `aria-expanded`로 상태 표시
+- Tech Stack cards: `tabIndex={0}`, open modal with `Enter`/`Space`
+- Modal: Close with `Escape`, cycle through modal elements with `Tab`, reverse with `Shift+Tab`
+- ValueCard: `tabIndex={0}`, expand/collapse with `Enter`/`Space`, indicate state with `aria-expanded`
 
-### 스크린 리더 지원
+### Screen Reader Support
 
-- 모달: `role="dialog"`, `aria-modal="true"`, `aria-labelledby`로 제목 연결
-- 하이라이트 상태: `$isHighlighted` prop으로 시각적 피드백 제공
-- 타임라인 진행도: `aria-live="polite"`로 현재 활성 마일스톤 알림
-- ValueCard 확장: `aria-expanded`로 확장/축소 상태 명시
+- Modal: `role="dialog"`, `aria-modal="true"`, connect title with `aria-labelledby`
+- Highlight state: Provide visual feedback with `$isHighlighted` prop
+- Timeline progress: Notify current active milestone with `aria-live="polite"`
+- ValueCard expansion: Indicate expand/collapse state with `aria-expanded`
 
 ---
 
-## 디자인 원칙 준수
+## Design Principle Compliance
 
 ### KickoffLabs
-- Primary + Neutral 색상만 사용
-- Inter 폰트 유지
-- 일관된 border-radius (`radius.lg`, `radius.md`)
+- Use Primary + Neutral colors only
+- Maintain Inter font
+- Consistent border-radius (`radius.lg`, `radius.md`)
 
 ### 4-Point Spacing
-- 모든 spacing 값이 4px의 배수
-- 모달 패딩: `spacing[6]` (24px)
-- ValueIcon 크기: `spacing[16]` (64px)
-- MissionText 패딩: `spacing[6]` (24px)
+- All spacing values are multiples of 4px
+- Modal padding: `spacing[6]` (24px)
+- ValueIcon size: `spacing[16]` (64px)
+- MissionText padding: `spacing[6]` (24px)
 
 ### Nielsen Heuristics
-- **H1 (Visibility of System Status)**: 스크롤 진행도, 하이라이트 상태, 확장 상태 명확히 표시
-- **H3 (User Control & Freedom)**: 모달 닫기, 키보드 네비게이션, ValueCard 확장/축소
-- **H4 (Consistency & Standards)**: 기존 컴포넌트 재사용, 일관된 인터랙션 패턴
+- **H1 (Visibility of System Status)**: Clearly display scroll progress, highlight state, expansion state
+- **H3 (User Control & Freedom)**: Modal close, keyboard navigation, ValueCard expand/collapse
+- **H4 (Consistency & Standards)**: Reuse existing components, consistent interaction patterns
 
 ---
 
-## 🚀 구현 우선순위
+## 🚀 Implementation Priority
 
-### Phase 1: SVG Path Animation (완료)
-- [x] SVG path로 타임라인 라인 전환
-- [x] `useTimelinePathAnimation` hook 구현
-- [x] 스크롤 진행도 계산 로직
-- [x] `prefers-reduced-motion` 지원
+### Phase 1: SVG Path Animation (Complete)
+- [x] Convert timeline line to SVG path
+- [x] Implement `useTimelinePathAnimation` hook
+- [x] Scroll progress calculation logic
+- [x] `prefers-reduced-motion` support
 
-### Phase 2: Tech Stack Modal (완료)
-- [x] `TechStackModal` 컴포넌트 구현
-- [x] 모달 오버레이 및 닫기 로직
-- [x] ProjectCard 재사용
-- [x] 키보드 네비게이션 및 ARIA 속성
+### Phase 2: Tech Stack Modal (Complete)
+- [x] Implement `TechStackModal` component
+- [x] Modal overlay and close logic
+- [x] Reuse ProjectCard
+- [x] Keyboard navigation and ARIA attributes
 
-### Phase 3: Tech-Value Connection (완료)
-- [x] `TECH_VALUE_MAP` 정의
-- [x] Tech-Value 하이라이트 연동 구현
-- [x] ValueCard 하이라이트 상태 스타일링
-- [x] BackgroundCard 클릭 시 모달 열기
+### Phase 3: Tech-Value Connection (Complete)
+- [x] Define `TECH_VALUE_MAP`
+- [x] Implement Tech-Value highlight integration
+- [x] Style ValueCard highlight state
+- [x] Open modal on BackgroundCard click
 
-### Phase 4: Mission & Vision Section Enhancement (완료)
-- [x] ValueCard 확장 가능한 콘텐츠 추가
-- [x] 클릭/키보드로 ValueCard 확장/축소
-- [x] Mission/Vision 텍스트 카드 스타일링
-- [x] Mission/Vision 라벨 추가
-- [x] 스크롤 트리거 애니메이션
-- [x] ValueIcon 스타일 개선 (원형 배경)
+### Phase 4: Mission & Vision Section Enhancement (Complete)
+- [x] Add expandable content to ValueCard
+- [x] Expand/collapse ValueCard via click/keyboard
+- [x] Style Mission/Vision text cards
+- [x] Add Mission/Vision labels
+- [x] Scroll trigger animations
+- [x] Improve ValueIcon style (circular background)
 
 ---
 
-## 구현 완료 사항
+## Implementation Completed Items
 
 ### Phase 1: SVG Path Animation
-- SVG path로 타임라인 라인 전환 완료
-- `useTimelinePathAnimation` hook 구현 완료
-- 스크롤 진행도 계산 로직 구현 완료
-- `prefers-reduced-motion` 지원 완료
+- Timeline line converted to SVG path complete
+- `useTimelinePathAnimation` hook implementation complete
+- Scroll progress calculation logic implementation complete
+- `prefers-reduced-motion` support complete
 
 ### Phase 2: Tech Stack Modal
-- `TechStackModal` 컴포넌트 구현 완료
-- 모달 오버레이 및 닫기 로직 구현 완료
-- ProjectCard 재사용 완료
-- 키보드 네비게이션 및 ARIA 속성 구현 완료
+- `TechStackModal` component implementation complete
+- Modal overlay and close logic implementation complete
+- ProjectCard reuse complete
+- Keyboard navigation and ARIA attributes implementation complete
 
 ### Phase 3: Tech-Value Connection
-- `TECH_VALUE_MAP` 정의 완료
-- Tech-Value 하이라이트 연동 구현 완료
-- ValueCard 하이라이트 상태 스타일링 완료
-- BackgroundCard 클릭 시 모달 열기 구현 완료
+- `TECH_VALUE_MAP` definition complete
+- Tech-Value highlight integration implementation complete
+- ValueCard highlight state styling complete
+- Modal open on BackgroundCard click implementation complete
 
 ### Phase 4: Mission & Vision Section Enhancement
-- ValueCard 확장 가능한 콘텐츠 추가 완료
-- 클릭/키보드로 ValueCard 확장/축소 구현 완료
-- Mission/Vision 텍스트 카드 스타일링 완료
-- Mission/Vision 라벨 추가 완료
-- 스크롤 트리거 애니메이션 구현 완료
-- ValueIcon 스타일 개선 (원형 배경) 완료
+- Expandable content added to ValueCard complete
+- ValueCard expand/collapse via click/keyboard implementation complete
+- Mission/Vision text card styling complete
+- Mission/Vision labels added complete
+- Scroll trigger animation implementation complete
+- ValueIcon style improvement (circular background) complete
 
-## 참고사항
+## Notes
 
-- 모든 인터랙션은 기존 디자인 시스템을 존중하며 구현됨
-- 성능 최적화: `will-change`, `transform` 사용, 불필요한 리렌더링 방지
-- 모바일 반응형: 터치 제스처 지원, 모달 전체 화면 표시
-- 접근성: 모든 인터랙티브 요소에 키보드 네비게이션 및 ARIA 속성 적용
-
+- All interactions are implemented respecting the existing design system
+- Performance optimization: Use `will-change`, `transform`, prevent unnecessary re-renders
+- Mobile responsive: Touch gesture support, modal full screen display
+- Accessibility: All interactive elements have keyboard navigation and ARIA attributes applied

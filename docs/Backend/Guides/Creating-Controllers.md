@@ -66,21 +66,21 @@ public static final String YOUR_ENDPOINT = API_BASE_PATH + "/your-resource";
 
 ```java
 @GetMapping
-@Operation(summary = "목록 조회", description = "페이징과 정렬을 지원하는 목록을 조회합니다.")
+@Operation(summary = "Get list", description = "Retrieves list with pagination and sorting support.")
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "성공"),
-    @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    @ApiResponse(responseCode = "200", description = "Success"),
+    @ApiResponse(responseCode = "400", description = "Bad request")
 })
 public ResponseEntity<ApiResponse<PageResponse<YourSummaryResponse>>> getAll(
-    @Parameter(description = "페이지 번호", example = "1")
+    @Parameter(description = "Page number", example = "1")
     @RequestParam(defaultValue = "" + ApiConstants.DEFAULT_PAGE_NUMBER) 
     @Min(1) int page,
     
-    @Parameter(description = "페이지 크기", example = "10")
+    @Parameter(description = "Page size", example = "10")
     @RequestParam(defaultValue = "" + ApiConstants.DEFAULT_PAGE_SIZE) 
     @Min(1) @Max(ApiConstants.MAX_PAGE_SIZE) int size,
     
-    @Parameter(description = "정렬 기준", example = "createdAt,desc")
+    @Parameter(description = "Sort criteria", example = "createdAt,desc")
     @RequestParam(required = false, defaultValue = ApiConstants.DEFAULT_SORT_FIELD + "," + ApiConstants.DEFAULT_SORT_DIRECTION) 
     String sort
 ) {
@@ -93,13 +93,13 @@ public ResponseEntity<ApiResponse<PageResponse<YourSummaryResponse>>> getAll(
 
 ```java
 @GetMapping("/{id}")
-@Operation(summary = "상세 조회", description = "ID로 상세 정보를 조회합니다.")
+@Operation(summary = "Get details", description = "Retrieves details by ID.")
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "성공"),
-    @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음")
+    @ApiResponse(responseCode = "200", description = "Success"),
+    @ApiResponse(responseCode = "404", description = "Resource not found")
 })
 public ResponseEntity<ApiResponse<YourDetailResponse>> getById(
-    @Parameter(description = "리소스 ID", required = true)
+    @Parameter(description = "Resource ID", required = true)
     @PathVariable 
     @ValidMongoId(message = "Invalid ID format")
     String id
@@ -113,13 +113,13 @@ public ResponseEntity<ApiResponse<YourDetailResponse>> getById(
 
 ```java
 @PostMapping
-@Operation(summary = "생성", description = "새로운 리소스를 생성합니다.")
+@Operation(summary = "Create", description = "Creates a new resource.")
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "201", description = "생성 성공"),
-    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
+    @ApiResponse(responseCode = "201", description = "Created successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid request data")
 })
 public ResponseEntity<ApiResponse<YourDetailResponse>> create(
-    @Parameter(description = "생성 요청", required = true)
+    @Parameter(description = "Create request", required = true)
     @Valid @RequestBody YourCreateRequest request
 ) {
     YourDetailResponse response = yourService.create(request);
@@ -131,16 +131,16 @@ public ResponseEntity<ApiResponse<YourDetailResponse>> create(
 
 ```java
 @PutMapping("/{id}")
-@Operation(summary = "수정", description = "기존 리소스를 수정합니다.")
+@Operation(summary = "Update", description = "Updates an existing resource.")
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "수정 성공"),
-    @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음")
+    @ApiResponse(responseCode = "200", description = "Updated successfully"),
+    @ApiResponse(responseCode = "404", description = "Resource not found")
 })
 public ResponseEntity<ApiResponse<YourDetailResponse>> update(
-    @Parameter(description = "리소스 ID", required = true)
+    @Parameter(description = "Resource ID", required = true)
     @PathVariable @ValidMongoId String id,
     
-    @Parameter(description = "수정 요청", required = true)
+    @Parameter(description = "Update request", required = true)
     @Valid @RequestBody YourUpdateRequest request
 ) {
     YourDetailResponse response = yourService.update(id, request);
@@ -152,13 +152,13 @@ public ResponseEntity<ApiResponse<YourDetailResponse>> update(
 
 ```java
 @DeleteMapping("/{id}")
-@Operation(summary = "삭제", description = "리소스를 삭제합니다.")
+@Operation(summary = "Delete", description = "Deletes a resource.")
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "204", description = "삭제 성공"),
-    @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음")
+    @ApiResponse(responseCode = "204", description = "Deleted successfully"),
+    @ApiResponse(responseCode = "404", description = "Resource not found")
 })
 public ResponseEntity<Void> delete(
-    @Parameter(description = "리소스 ID", required = true)
+    @Parameter(description = "Resource ID", required = true)
     @PathVariable @ValidMongoId String id
 ) {
     yourService.delete(id);
@@ -232,7 +232,7 @@ public class YourController {
     private final YourService yourService;
     
     @GetMapping
-    @Operation(summary = "목록 조회")
+    @Operation(summary = "Get list")
     public ResponseEntity<ApiResponse<PageResponse<YourSummaryResponse>>> getAll(
         @RequestParam(defaultValue = "1") @Min(1) int page,
         @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size
@@ -241,7 +241,7 @@ public class YourController {
     }
     
     @GetMapping("/{id}")
-    @Operation(summary = "상세 조회")
+    @Operation(summary = "Get details")
     public ResponseEntity<ApiResponse<YourDetailResponse>> getById(
         @PathVariable @ValidMongoId String id
     ) {
@@ -249,7 +249,7 @@ public class YourController {
     }
     
     @PostMapping
-    @Operation(summary = "생성")
+    @Operation(summary = "Create")
     public ResponseEntity<ApiResponse<YourDetailResponse>> create(
         @Valid @RequestBody YourCreateRequest request
     ) {
@@ -257,7 +257,7 @@ public class YourController {
     }
     
     @PutMapping("/{id}")
-    @Operation(summary = "수정")
+    @Operation(summary = "Update")
     public ResponseEntity<ApiResponse<YourDetailResponse>> update(
         @PathVariable @ValidMongoId String id,
         @Valid @RequestBody YourUpdateRequest request
@@ -266,7 +266,7 @@ public class YourController {
     }
     
     @DeleteMapping("/{id}")
-    @Operation(summary = "삭제")
+    @Operation(summary = "Delete")
     public ResponseEntity<Void> delete(@PathVariable @ValidMongoId String id) {
         yourService.delete(id);
         return ResponseUtil.noContent();

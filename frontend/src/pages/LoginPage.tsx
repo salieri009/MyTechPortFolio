@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { GoogleLoginButton } from '../components/GoogleLoginButton'
+import { GitHubLoginButton } from '../components/GitHubLoginButton'
 import { useAuthStore } from '../store/authStore'
 import { securityMonitor } from '../services/securityMonitor'
 
@@ -130,6 +131,34 @@ const LoadingSpinner = styled.div`
   }
 `
 
+const SocialLoginContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[3]};
+`
+
+const Divider = styled.div`
+  display: flex;
+  align-items: center;
+  margin: ${props => props.theme.spacing[2]} 0;
+  
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: ${props => props.theme.colors.border};
+  }
+  
+  span {
+    padding: 0 ${props => props.theme.spacing[3]};
+    color: ${props => props.theme.colors.textSecondary};
+    font-size: ${props => props.theme.typography.fontSize.xs};
+    text-transform: uppercase;
+    font-family: ${props => props.theme.typography.fontFamily.primary};
+  }
+`
+
 const TwoFactorSection = styled.div`
   margin-top: ${props => props.theme.spacing[6]};
   padding: ${props => props.theme.spacing[6]};
@@ -212,23 +241,23 @@ const VerifyButton = styled.button`
 
 export function LoginPage() {
   const navigate = useNavigate()
-  const { 
-    isAuthenticated, 
-    isLoading, 
-    error, 
+  const {
+    isAuthenticated,
+    isLoading,
+    error,
     user,
     twoFactorRequired,
     verifyTwoFactor,
     clearError
   } = useAuthStore()
-  
+
   const [twoFactorToken, setTwoFactorToken] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
 
   useEffect(() => {
     // Initialize security monitoring
     securityMonitor.init()
-    
+
     // Check if already authenticated
     if (isAuthenticated && user) {
       navigate('/', { replace: true })
@@ -247,13 +276,13 @@ export function LoginPage() {
 
   const handleTwoFactorSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!twoFactorToken || twoFactorToken.length !== 6) {
       return
     }
 
     setIsVerifying(true)
-    
+
     try {
       await verifyTwoFactor(twoFactorToken)
       // Navigation will happen automatically via useEffect
@@ -294,8 +323,8 @@ export function LoginPage() {
                 autoComplete="one-time-code"
                 autoFocus
               />
-              <VerifyButton 
-                type="submit" 
+              <VerifyButton
+                type="submit"
                 disabled={twoFactorToken.length !== 6 || isVerifying}
               >
                 {isVerifying ? <LoadingSpinner /> : 'Verify Code'}
@@ -328,7 +357,7 @@ export function LoginPage() {
         <SecurityNotice>
           <SecurityTitle>Security Features</SecurityTitle>
           <SecurityList>
-            <SecurityItem>Google OAuth 2.0 authentication</SecurityItem>
+            <SecurityItem>OAuth 2.0 authentication (Google, GitHub)</SecurityItem>
             <SecurityItem>Two-factor authentication (2FA)</SecurityItem>
             <SecurityItem>Role-based access control</SecurityItem>
             <SecurityItem>Session security monitoring</SecurityItem>
@@ -338,7 +367,11 @@ export function LoginPage() {
         {isLoading ? (
           <LoadingSpinner />
         ) : (
-          <GoogleLoginButton />
+          <SocialLoginContainer>
+            <GoogleLoginButton />
+            <Divider><span>or</span></Divider>
+            <GitHubLoginButton />
+          </SocialLoginContainer>
         )}
 
         {error && (
@@ -348,7 +381,7 @@ export function LoginPage() {
         )}
 
         <Footer>
-          This is a secure admin portal. Only authorized users with admin privileges 
+          This is a secure admin portal. Only authorized users with admin privileges
           can access blog management features. All login attempts are monitored and logged.
         </Footer>
       </LoginCard>

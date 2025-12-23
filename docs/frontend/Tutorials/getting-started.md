@@ -1,26 +1,26 @@
 # Getting Started
 
-이 튜토리얼은 MyPortFolio Frontend 프로젝트를 시작하는 방법을 단계별로 안내합니다.
+This tutorial guides you step-by-step on how to start the MyPortFolio Frontend project.
 
-## 목차
+## Table of Contents
 
-- [필수 요구사항](#필수-요구사항)
-- [프로젝트 설치](#프로젝트-설치)
-- [개발 서버 실행](#개발-서버-실행)
-- [프로젝트 구조 이해하기](#프로젝트-구조-이해하기)
-- [다음 단계](#다음-단계)
+- [Prerequisites](#prerequisites)
+- [Project Installation](#project-installation)
+- [Running the Development Server](#running-the-development-server)
+- [Understanding the Project Structure](#understanding-the-project-structure)
+- [Next Steps](#next-steps)
 
-## 필수 요구사항
+## Prerequisites
 
-프로젝트를 시작하기 전에 다음이 설치되어 있어야 합니다:
+Before starting the project, ensure the following are installed:
 
-- **Node.js**: v18.0.0 이상
-- **npm**: v9.0.0 이상 (또는 yarn, pnpm)
-- **Git**: 최신 버전
+- **Node.js**: v18.0.0 or higher
+- **npm**: v9.0.0 or higher (or yarn, pnpm)
+- **Git**: Latest version
 
-### 설치 확인
+### Verify Installation
 
-터미널에서 다음 명령어로 설치 여부를 확인하세요:
+Verify installation by running the following commands in your terminal:
 
 ```bash
 node --version
@@ -28,24 +28,24 @@ npm --version
 git --version
 ```
 
-## 프로젝트 설치
+## Project Installation
 
-1. **저장소 클론** (이미 클론했다면 이 단계를 건너뛰세요)
+1. **Clone the repository** (Skip this step if already cloned)
 
 ```bash
 git clone <repository-url>
 cd MyPortFolio/frontend
 ```
 
-2. **의존성 설치**
+2. **Install dependencies**
 
 ```bash
 npm install
 ```
 
-이 명령어는 `package.json`에 정의된 모든 의존성을 설치합니다.
+This command installs all dependencies defined in `package.json`.
 
-주요 의존성:
+Key dependencies:
 - React 18.2.0
 - TypeScript 5.5.3
 - Vite 5.3.3
@@ -54,95 +54,84 @@ npm install
 - i18next 25.3.4
 - Zustand 4.5.7
 
-## 개발 서버 실행
+## Running the Development Server
 
-설치가 완료되면 개발 서버를 시작할 수 있습니다:
+Once installation is complete, you can start the development server:
 
 ```bash
 npm run dev
 ```
 
-서버가 시작되면 브라우저에서 `http://localhost:5173`으로 접속할 수 있습니다.
+When the server starts, access it in your browser at `http://localhost:5173`.
 
-### 개발 서버 기능
+### Development Server Features
 
-- **Hot Module Replacement (HMR)**: 코드 변경 시 자동으로 페이지가 새로고침됩니다
-- **Fast Refresh**: React 컴포넌트의 상태를 유지하면서 업데이트됩니다
-- **API Proxy**: `/api` 요청이 자동으로 `http://localhost:8080/api/v1`로 프록시됩니다
+- **Hot Module Replacement (HMR)**: Page automatically refreshes on code changes
+- **Fast Refresh**: React component state is preserved during updates
+- **API Proxy**: `/api` requests are automatically proxied to `http://localhost:8080/api/v1`
 
-## 프로젝트 구조 이해하기
+## Understanding the Project Structure
 
-프로젝트는 다음과 같은 구조로 구성되어 있습니다:
+The project is organized with the following structure:
 
 ```
 frontend/
 ├── src/
-│   ├── components/     # 재사용 가능한 컴포넌트
-│   ├── pages/         # 페이지 컴포넌트
-│   ├── services/      # API 및 비즈니스 로직
-│   ├── stores/        # 상태 관리 (Zustand)
-│   ├── styles/        # 테마 및 전역 스타일
-│   ├── hooks/         # 커스텀 훅
-│   ├── utils/         # 유틸리티 함수
-│   ├── types/         # TypeScript 타입 정의
-│   └── i18n/          # 다국어 설정
-├── public/            # 정적 파일
-├── docs/              # 문서
-└── package.json       # 프로젝트 설정
+│   ├── components/     # Reusable components
+│   ├── pages/         # Page components
+│   ├── services/      # API and business logic
+│   ├── stores/        # State management (Zustand)
+│   ├── styles/        # Theme and global styles
+│   ├── hooks/         # Custom hooks
+│   ├── utils/         # Utility functions
+│   ├── types/         # TypeScript type definitions
+│   └── i18n/          # Internationalization settings
+├── public/            # Static files
+├── docs/              # Documentation
+└── package.json       # Project configuration
 ```
 
-### 주요 디렉토리 설명
+### Key Directory Descriptions
 
-- **components/**: Atomic Design Pattern에 따라 atoms, molecules, organisms로 구성
-- **pages/**: React Router로 연결되는 페이지 컴포넌트
-- **services/**: 백엔드 API와 통신하는 서비스 레이어
-- **stores/**: Zustand를 사용한 전역 상태 관리
-- **styles/**: Styled Components 테마 및 전역 스타일
+- **components/**: Organized according to Atomic Design Pattern (atoms, molecules, organisms)
+- **pages/**: Page components connected via React Router
+- **services/**: Service layer for backend API communication
+- **stores/**: Global state management using Zustand
+- **styles/**: Styled Components theme and global styles
 
-## 다음 단계
+## Next Steps
 
-프로젝트를 시작했으니 다음 튜토리얼을 진행하세요:
+Now that you've started the project, proceed with the following tutorials:
 
-1. [Creating Your First Component](./creating-your-first-component.md) - 첫 컴포넌트 만들기
-2. [Understanding Styling System](./understanding-styling-system.md) - 스타일링 시스템 이해하기
-3. [Setting Up Routing](./setting-up-routing.md) - 라우팅 설정하기
+1. [Creating Your First Component](./creating-your-first-component.md) - Create your first component
+2. [Understanding Styling System](./understanding-styling-system.md) - Understand the styling system
+3. [Setting Up Routing](./setting-up-routing.md) - Set up routing
 
-또는 [How-to Guides](../how-to/)에서 특정 작업을 수행하는 방법을 찾아보세요.
+Or find how to perform specific tasks in the [How-to Guides](../how-to/).
 
-## 문제 해결
+## Troubleshooting
 
-### 포트가 이미 사용 중인 경우
+### Port Already in Use
 
-다른 포트를 사용하려면 `vite.config.ts`에서 포트를 변경하거나 환경 변수를 설정하세요:
+To use a different port, change the port in `vite.config.ts` or set an environment variable:
 
 ```bash
 PORT=3000 npm run dev
 ```
 
-### 의존성 설치 오류
+### Dependency Installation Errors
 
-`node_modules`를 삭제하고 다시 설치하세요:
+Delete `node_modules` and reinstall:
 
 ```bash
 rm -rf node_modules package-lock.json
 npm install
 ```
 
-### 타입 오류
+### Type Errors
 
-TypeScript 타입을 확인하세요:
+Check TypeScript types:
 
 ```bash
 npm run build
 ```
-
-
-
-
-
-
-
-
-
-
-

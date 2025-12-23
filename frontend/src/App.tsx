@@ -19,6 +19,7 @@ const AcademicsPage = lazy(() => import('@pages/AcademicsPage').then(module => (
 const AboutPage = lazy(() => import('@pages/AboutPage').then(module => ({ default: module.AboutPage })))
 const FeedbackPage = lazy(() => import('@pages/FeedbackPage').then(module => ({ default: module.FeedbackPage })))
 const LoginPage = lazy(() => import('./pages/LoginPage').then(module => ({ default: module.LoginPage })))
+const GitHubCallbackPage = lazy(() => import('./pages/GitHubCallbackPage').then(module => ({ default: module.GitHubCallbackPage })))
 const AdminLayout = lazy(() => import('@components/admin/AdminLayout').then(module => ({ default: module.AdminLayout })))
 const AdminDashboard = lazy(() => import('@pages/admin/AdminDashboard').then(module => ({ default: module.AdminDashboard })))
 const AdminRoute = lazy(() => import('@components/admin/AdminRoute').then(module => ({ default: module.AdminRoute })))
@@ -46,7 +47,7 @@ function TestimonialFormWrapper({ mode }: { mode: 'create' | 'edit' }) {
 function App() {
   const { isDark } = useThemeStore()
   const currentTheme = isDark ? darkTheme : lightTheme
-  
+
   // Analytics 초기화
   useEffect(() => {
     analytics.init().catch(error => {
@@ -64,6 +65,7 @@ function App() {
       <Suspense fallback={<LoadingSpinner fullScreen message="Loading page..." />}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/auth/github/callback" element={<GitHubCallbackPage />} />
           {/* Admin Routes */}
           <Route path="/admin" element={
             <AdminRoute>

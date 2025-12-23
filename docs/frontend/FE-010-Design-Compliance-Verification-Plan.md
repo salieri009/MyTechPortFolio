@@ -1,452 +1,451 @@
-# 디자인 원칙 준수 검증 계획
+# Design Principle Compliance Verification Plan
 
-> **검증 기준**: [KickoffLabs Landing Page Design Guide](https://kickofflabs.com/blog/landing-page-fonts-colors/) & [UX Planet 4-Point Spacing System](https://uxplanet.org/principles-of-spacing-in-ui-design-a-beginners-guide-to-the-4-point-spacing-system-6e88233b527a)  
-> **작성 일자**: 2025-01-XX  
-> **검증 범위**: 모든 페이지 및 주요 컴포넌트  
-> **검증 방법론**: 체계적 파일 검토, 자동화 스크립트, 시각적 검증
-
----
-
-## 📋 검증 목표
-
-이 계획은 다음 두 가지 핵심 디자인 원칙을 모든 페이지에서 준수하는지 체계적으로 검증합니다:
-
-1. **KickoffLabs 원칙**: 색상 팔레트 제한, 폰트 제한, CTA 색상 역할, 일관성
-2. **4-Point Spacing 시스템**: 모든 spacing 값이 4px의 배수인지 확인
+> **Verification Criteria**: [KickoffLabs Landing Page Design Guide](https://kickofflabs.com/blog/landing-page-fonts-colors/) & [UX Planet 4-Point Spacing System](https://uxplanet.org/principles-of-spacing-in-ui-design-a-beginners-guide-to-the-4-point-spacing-system-6e88233b527a)  
+> **Written**: 2025-01-XX  
+> **Scope**: All pages and major components  
+> **Methodology**: Systematic file review, automation scripts, visual verification
 
 ---
 
-## 🎯 검증 범위
+## 📋 Verification Goals
 
-### 페이지 목록
-- [ ] `HomePage.tsx` - 랜딩 페이지
-- [ ] `AboutPage.tsx` - 소개 페이지
-- [ ] `ProjectsPage.tsx` - 프로젝트 목록 페이지
-- [ ] `ProjectDetailPage.tsx` - 프로젝트 상세 페이지
-- [ ] `AcademicsPage.tsx` - 학업 기록 페이지
-- [ ] `FeedbackPage.tsx` - 피드백 페이지
-- [ ] `LoginPage.tsx` - 로그인 페이지
+This plan systematically verifies compliance with the following two core design principles across all pages:
 
-### 주요 컴포넌트 목록
-- [ ] `MainHeader.tsx` - 메인 헤더
-- [ ] `Footer.tsx` - 푸터
-- [ ] `Button.tsx` - 버튼 컴포넌트
-- [ ] `Card.tsx` - 카드 컴포넌트
-- [ ] `Tag.tsx` - 태그 컴포넌트
-- [ ] `ProjectCard.tsx` - 프로젝트 카드
-- [ ] `FeaturedProjectCard.tsx` - 피처드 프로젝트 카드
-- [ ] `HeroProjectCard.tsx` - 히어로 프로젝트 카드
-- [ ] `TestimonialCard.tsx` - 추천사 카드
-- [ ] `JourneyMilestoneSection.tsx` - 여정 마일스톤 섹션
-- [ ] `StatCard.tsx` - 통계 카드
-- [ ] `CustomSelect.tsx` - 커스텀 셀렉트
-- [ ] `TechStackModal.tsx` - 기술 스택 모달
-
-### 스타일 파일 목록
-- [ ] `theme.ts` - 테마 시스템 (중앙 집중식)
-- [ ] `HomePage.styles.ts` - 홈페이지 스타일
-- [ ] `AboutPage.styles.ts` - 소개 페이지 스타일
-- [ ] `ProjectsPage.styles.ts` - 프로젝트 페이지 스타일 (있는 경우)
-- [ ] 기타 컴포넌트별 스타일 파일
+1. **KickoffLabs Principles**: Color palette limitation, font limitation, CTA color role, consistency
+2. **4-Point Spacing System**: Ensure all spacing values are multiples of 4px
 
 ---
 
-## 🔍 검증 체크리스트
+## 🎯 Verification Scope
 
-### 1. KickoffLabs 색상 팔레트 제한
+### Page List
+- [ ] `HomePage.tsx` - Landing page
+- [ ] `AboutPage.tsx` - About page
+- [ ] `ProjectsPage.tsx` - Projects list page
+- [ ] `ProjectDetailPage.tsx` - Project detail page
+- [ ] `AcademicsPage.tsx` - Academic records page
+- [ ] `FeedbackPage.tsx` - Feedback page
+- [ ] `LoginPage.tsx` - Login page
 
-**원칙**: 페이지당 1-3개 색상만 사용. CTA는 강한 색상 하나만 사용.
+### Major Component List
+- [ ] `MainHeader.tsx` - Main header
+- [ ] `Footer.tsx` - Footer
+- [ ] `Button.tsx` - Button component
+- [ ] `Card.tsx` - Card component
+- [ ] `Tag.tsx` - Tag component
+- [ ] `ProjectCard.tsx` - Project card
+- [ ] `FeaturedProjectCard.tsx` - Featured project card
+- [ ] `HeroProjectCard.tsx` - Hero project card
+- [ ] `TestimonialCard.tsx` - Testimonial card
+- [ ] `JourneyMilestoneSection.tsx` - Journey milestone section
+- [ ] `StatCard.tsx` - Statistics card
+- [ ] `CustomSelect.tsx` - Custom select
+- [ ] `TechStackModal.tsx` - Tech stack modal
 
-#### 검증 항목
-- [ ] **Primary 색상 사용**: CTA 버튼에만 Primary 색상 사용
-- [ ] **Neutral 색상 사용**: 배경, 텍스트, 테두리에 Neutral 색상만 사용
-- [ ] **하드코딩 색상 제거**: `#` 또는 `rgb()` 직접 사용 금지
-- [ ] **Semantic 색상**: Success, Warning, Error는 테마에서만 사용
-- [ ] **그라데이션**: Primary 색상 변형만 사용
+### Style File List
+- [ ] `theme.ts` - Theme system (centralized)
+- [ ] `HomePage.styles.ts` - Homepage styles
+- [ ] `AboutPage.styles.ts` - About page styles
+- [ ] `ProjectsPage.styles.ts` - Projects page styles (if exists)
+- [ ] Other component-specific style files
 
-#### 검증 방법
+---
+
+## 🔍 Verification Checklist
+
+### 1. KickoffLabs Color Palette Limitation
+
+**Principle**: Use only 1-3 colors per page. CTA uses only one strong color.
+
+#### Verification Items
+- [ ] **Primary color usage**: Primary color only for CTA buttons
+- [ ] **Neutral color usage**: Only Neutral colors for background, text, borders
+- [ ] **Hardcoded color removal**: No direct `#` or `rgb()` usage
+- [ ] **Semantic colors**: Success, Warning, Error used only from theme
+- [ ] **Gradients**: Only Primary color variations used
+
+#### Verification Method
 ```bash
-# 하드코딩된 색상 검색
+# Search for hardcoded colors
 grep -r "#[0-9a-fA-F]\{6\}" frontend/src --include="*.tsx" --include="*.ts"
 grep -r "rgb(" frontend/src --include="*.tsx" --include="*.ts"
 grep -r "rgba(" frontend/src --include="*.tsx" --include="*.ts"
 
-# 테마 색상 사용 확인
+# Confirm theme color usage
 grep -r "theme.colors" frontend/src --include="*.tsx" --include="*.ts"
 ```
 
-#### 예상 발견 사항
-- 일부 컴포넌트에서 하드코딩된 색상 사용 가능성
-- 테마 색상 미사용 컴포넌트
+#### Expected Findings
+- Possible hardcoded colors in some components
+- Components not using theme colors
 
 ---
 
-### 2. KickoffLabs 폰트 제한
+### 2. KickoffLabs Font Limitation
 
-**원칙**: 1개 폰트 패밀리만 사용 (디자이너는 최대 2개).
+**Principle**: Use only 1 font family (designers max 2).
 
-#### 검증 항목
-- [ ] **단일 폰트 패밀리**: Inter만 사용
-- [ ] **테마 폰트 사용**: `theme.typography.fontFamily.primary` 사용
-- [ ] **하드코딩 폰트 제거**: `font-family` 직접 지정 금지
-- [ ] **폰트 스타일 변형**: bold, italic, weight만 사용
+#### Verification Items
+- [ ] **Single font family**: Only Inter used
+- [ ] **Theme font usage**: Use `theme.typography.fontFamily.primary`
+- [ ] **Hardcoded font removal**: No direct `font-family` specification
+- [ ] **Font style variations**: Only bold, italic, weight variations
 
-#### 검증 방법
+#### Verification Method
 ```bash
-# 하드코딩된 폰트 검색
+# Search for hardcoded fonts
 grep -r "font-family:" frontend/src --include="*.tsx" --include="*.ts" | grep -v "theme.typography"
 grep -r "Arial\|Helvetica\|Verdana\|Times" frontend/src --include="*.tsx" --include="*.ts"
 ```
 
-#### 예상 발견 사항
-- 일부 컴포넌트에서 하드코딩된 폰트 사용 가능성
-- 테마 폰트 미사용 컴포넌트
+#### Expected Findings
+- Possible hardcoded fonts in some components
+- Components not using theme fonts
 
 ---
 
-### 3. KickoffLabs CTA 색상 역할
+### 3. KickoffLabs CTA Color Role
 
-**원칙**: CTA 버튼은 Primary 색상만 사용. 보조 색상은 보완적 역할만.
+**Principle**: CTA buttons use Primary color only. Secondary colors play complementary roles.
 
-#### 검증 항목
-- [ ] **Primary CTA**: `primary[500]` 또는 `primary[600]` 사용
-- [ ] **Secondary CTA**: 투명 배경 + 테두리 또는 Neutral 색상
-- [ ] **CTA 일관성**: 모든 페이지에서 동일한 CTA 스타일
-- [ ] **대비 비율**: WCAG AA 기준 충족 (4.5:1 이상)
+#### Verification Items
+- [ ] **Primary CTA**: Use `primary[500]` or `primary[600]`
+- [ ] **Secondary CTA**: Transparent background + border or Neutral color
+- [ ] **CTA consistency**: Same CTA style across all pages
+- [ ] **Contrast ratio**: Meet WCAG AA standard (4.5:1 or higher)
 
-#### 검증 방법
+#### Verification Method
 ```bash
-# CTA 버튼 색상 확인
+# Check CTA button colors
 grep -r "Button\|CTA\|button" frontend/src --include="*.tsx" -A 5 | grep "background\|color"
 ```
 
-#### 예상 발견 사항
-- 일부 페이지에서 CTA 색상 불일치 가능성
-- 대비 비율 미달 가능성
+#### Expected Findings
+- Possible CTA color inconsistency on some pages
+- Potential contrast ratio failures
 
 ---
 
-### 4. KickoffLabs 일관성
+### 4. KickoffLabs Consistency
 
-**원칙**: 색상, 텍스트 스타일, 버튼 스타일, 패딩, border-radius 일관성 유지.
+**Principle**: Maintain consistency in colors, text styles, button styles, padding, border-radius.
 
-#### 검증 항목
-- [ ] **버튼 스타일**: 모든 버튼이 동일한 border-radius 사용
-- [ ] **패딩 일관성**: 섹션 간 패딩 일관성
-- [ ] **텍스트 스타일**: 제목, 본문, 라벨 스타일 일관성
-- [ ] **간격 일관성**: 요소 간 간격 일관성
+#### Verification Items
+- [ ] **Button style**: All buttons use same border-radius
+- [ ] **Padding consistency**: Consistent padding between sections
+- [ ] **Text style**: Consistent title, body, label styles
+- [ ] **Spacing consistency**: Consistent spacing between elements
 
-#### 검증 방법
+#### Verification Method
 ```bash
-# border-radius 사용 확인
+# Check border-radius usage
 grep -r "border-radius\|borderRadius" frontend/src --include="*.tsx" --include="*.ts"
 grep -r "padding\|margin" frontend/src --include="*.tsx" --include="*.ts" | head -50
 ```
 
 ---
 
-### 5. 4-Point Spacing 시스템
+### 5. 4-Point Spacing System
 
-**원칙**: 모든 spacing 값이 4px의 배수여야 함 (4px, 8px, 12px, 16px, 20px, 24px, ...).
+**Principle**: All spacing values must be multiples of 4px (4px, 8px, 12px, 16px, 20px, 24px, ...).
 
-#### 검증 항목
-- [ ] **테마 Spacing 사용**: `theme.spacing[n]` 사용
-- [ ] **하드코딩 Spacing 제거**: `px` 직접 사용 금지
-- [ ] **4px 배수 확인**: 모든 spacing 값이 4의 배수
-- [ ] **일관된 Spacing 스케일**: spacing[0.5]=4px, spacing[1]=8px, spacing[2]=16px 등
+#### Verification Items
+- [ ] **Theme Spacing usage**: Use `theme.spacing[n]`
+- [ ] **Hardcoded Spacing removal**: No direct `px` usage
+- [ ] **4px multiple check**: All spacing values are multiples of 4
+- [ ] **Consistent Spacing scale**: spacing[0.5]=4px, spacing[1]=8px, spacing[2]=16px, etc.
 
-#### 검증 방법
+#### Verification Method
 ```bash
-# 하드코딩된 spacing 검색
+# Search for hardcoded spacing
 grep -r "[0-9]px" frontend/src --include="*.tsx" --include="*.ts" | grep -v "theme.spacing"
 grep -r "spacing\[" frontend/src --include="*.tsx" --include="*.ts" | head -100
 
-# 4px 배수가 아닌 값 검색 (예: 5px, 7px, 13px 등)
+# Search for non-4px-multiple values (e.g., 5px, 7px, 13px, etc.)
 grep -r "[0-9]px" frontend/src --include="*.tsx" --include="*.ts" | grep -E "(5|7|9|11|13|15|17|19|21|23|25|27|29|31)px"
 ```
 
-#### 예상 발견 사항
-- 일부 컴포넌트에서 하드코딩된 spacing 사용
-- 4px 배수가 아닌 spacing 값 사용
-- 테마 spacing 미사용
+#### Expected Findings
+- Hardcoded spacing in some components
+- Spacing values not multiples of 4px
+- Theme spacing not used
 
 ---
 
-## 📊 검증 우선순위
+## 📊 Verification Priority
 
-### Priority 1: Critical (즉시 수정 필요)
-- [ ] 하드코딩된 색상 사용 (`#`, `rgb()`, `rgba()`)
-- [ ] 하드코딩된 폰트 사용 (`font-family` 직접 지정)
-- [ ] CTA 색상 불일치 (Primary 색상 미사용)
-- [ ] 4px 배수가 아닌 spacing 값
+### Priority 1: Critical (Immediate Fix Required)
+- [ ] Hardcoded color usage (`#`, `rgb()`, `rgba()`)
+- [ ] Hardcoded font usage (direct `font-family` specification)
+- [ ] CTA color inconsistency (Primary color not used)
+- [ ] Spacing values not multiples of 4px
 
-### Priority 2: High (빠른 수정 권장)
-- [ ] 테마 색상 미사용 (하드코딩은 아니지만 테마 미사용)
-- [ ] 테마 폰트 미사용
-- [ ] 테마 spacing 미사용
-- [ ] 버튼 스타일 불일치
+### Priority 2: High (Quick Fix Recommended)
+- [ ] Theme colors not used (not hardcoded but not using theme)
+- [ ] Theme fonts not used
+- [ ] Theme spacing not used
+- [ ] Button style inconsistency
 
-### Priority 3: Medium (점진적 개선)
-- [ ] 패딩/마진 일관성 개선
-- [ ] 텍스트 스타일 일관성 개선
-- [ ] 대비 비율 최적화
+### Priority 3: Medium (Gradual Improvement)
+- [ ] Padding/margin consistency improvement
+- [ ] Text style consistency improvement
+- [ ] Contrast ratio optimization
 
 ---
 
-## 🔧 검증 도구 및 스크립트
+## 🔧 Verification Tools & Scripts
 
-### 자동화 검증 스크립트
+### Automation Verification Script
 
 ```typescript
 // scripts/verify-design-compliance.ts
-// 이 스크립트는 다음을 검증:
-// 1. 하드코딩된 색상 (#, rgb, rgba)
-// 2. 하드코딩된 폰트
-// 3. 하드코딩된 spacing (px 값)
-// 4. 테마 사용 여부
+// This script verifies:
+// 1. Hardcoded colors (#, rgb, rgba)
+// 2. Hardcoded fonts
+// 3. Hardcoded spacing (px values)
+// 4. Theme usage
 ```
 
-### 수동 검증 체크리스트
+### Manual Verification Checklist
 
-각 페이지별로 다음을 확인:
+For each page, verify the following:
 
-1. **색상 검증**
-   - [ ] 모든 색상이 `theme.colors`에서 가져옴
-   - [ ] Primary 색상은 CTA에만 사용
-   - [ ] 하드코딩된 색상 없음
+1. **Color Verification**
+   - [ ] All colors from `theme.colors`
+   - [ ] Primary color only for CTA
+   - [ ] No hardcoded colors
 
-2. **폰트 검증**
-   - [ ] 모든 텍스트가 `theme.typography.fontFamily.primary` 사용
-   - [ ] 하드코딩된 폰트 없음
-   - [ ] 폰트 크기는 `theme.typography.fontSize` 사용
+2. **Font Verification**
+   - [ ] All text uses `theme.typography.fontFamily.primary`
+   - [ ] No hardcoded fonts
+   - [ ] Font sizes use `theme.typography.fontSize`
 
-3. **Spacing 검증**
-   - [ ] 모든 spacing이 `theme.spacing[n]` 사용
-   - [ ] 하드코딩된 `px` 값 없음
-   - [ ] 모든 spacing 값이 4px 배수
+3. **Spacing Verification**
+   - [ ] All spacing uses `theme.spacing[n]`
+   - [ ] No hardcoded `px` values
+   - [ ] All spacing values are 4px multiples
 
-4. **일관성 검증**
-   - [ ] 버튼 스타일 일관성
-   - [ ] 카드 스타일 일관성
-   - [ ] 패딩/마진 일관성
-
----
-
-## 📝 페이지별 상세 검증 계획
-
-### HomePage 검증
-
-**파일**: `frontend/src/pages/HomePage.tsx`, `frontend/src/pages/HomePage.styles.ts`
-
-#### 검증 항목
-- [ ] Hero 섹션: Primary 그라데이션 배경, Inter 폰트, 4-point spacing
-- [ ] Featured Projects: Primary 색상 CTA, 테마 spacing
-- [ ] Journey Milestone: Primary 색상 타임라인, Neutral 배경
-- [ ] Testimonials: 테마 색상, 일관된 spacing
-
-#### 예상 이슈
-- Hero 섹션 하드코딩된 padding 값
-- 일부 컴포넌트 테마 미사용
+4. **Consistency Verification**
+   - [ ] Button style consistency
+   - [ ] Card style consistency
+   - [ ] Padding/margin consistency
 
 ---
 
-### AboutPage 검증
+## 📝 Per-Page Detailed Verification Plan
 
-**파일**: `frontend/src/pages/AboutPage.tsx`, `frontend/src/pages/AboutPage.styles.ts`
+### HomePage Verification
 
-#### 검증 항목
-- [ ] Hero 섹션: Neutral 배경, Inter 폰트, 프로필 중심 레이아웃
-- [ ] Background Section: 테마 색상, 4-point spacing
-- [ ] Mission & Vision: Primary 색상 강조, 일관된 스타일
-- [ ] Contact Section: Primary 그라데이션 배경, White 텍스트, Solid White CTA
+**Files**: `frontend/src/pages/HomePage.tsx`, `frontend/src/pages/HomePage.styles.ts`
 
-#### 예상 이슈
-- Contact Section의 새로운 스타일 검증 필요
-- Mission & Vision 텍스트 스타일 일관성
+#### Verification Items
+- [ ] Hero section: Primary gradient background, Inter font, 4-point spacing
+- [ ] Featured Projects: Primary color CTA, theme spacing
+- [ ] Journey Milestone: Primary color timeline, Neutral background
+- [ ] Testimonials: Theme colors, consistent spacing
 
----
-
-### ProjectsPage 검증
-
-**파일**: `frontend/src/pages/ProjectsPage.tsx`
-
-#### 검증 항목
-- [ ] FilterBar: Primary 색상 강조, CustomSelect 테마 준수
-- [ ] ProjectCard: Primary 색상 CTA, 테마 spacing
-- [ ] Tag 컴포넌트: 선택/비활성화 상태 색상 테마 준수
-- [ ] Empty State: 테마 색상, 일관된 스타일
-
-#### 예상 이슈
-- FilterBar의 정적 그라데이션 라인 검증
-- CustomSelect 컴포넌트 테마 준수 확인
+#### Expected Issues
+- Hardcoded padding values in Hero section
+- Some components not using theme
 
 ---
 
-### AcademicsPage 검증
+### AboutPage Verification
 
-**파일**: `frontend/src/pages/AcademicsPage.tsx`
+**Files**: `frontend/src/pages/AboutPage.tsx`, `frontend/src/pages/AboutPage.styles.ts`
 
-#### 검증 항목
-- [ ] StatCard: Primary 색상 강조 (GPA/WAM), 4-point spacing
-- [ ] QuickNavBar: 테마 색상, 일관된 스타일
-- [ ] AcademicCard: 테마 색상, expandable 스타일
-- [ ] GradeBadge: Semantic 색상 (error, warning, success, primary)
+#### Verification Items
+- [ ] Hero section: Neutral background, Inter font, profile-centered layout
+- [ ] Background Section: Theme colors, 4-point spacing
+- [ ] Mission & Vision: Primary color emphasis, consistent style
+- [ ] Contact Section: Primary gradient background, White text, Solid White CTA
 
-#### 예상 이슈
-- StatCard의 highlighted 스타일 검증
-- QuickNavBar의 스크롤 가능한 레이아웃 검증
-
----
-
-### ProjectDetailPage 검증
-
-**파일**: `frontend/src/pages/ProjectDetailPage.tsx`
-
-#### 검증 항목
-- [ ] Hero 섹션: Primary 색상, Inter 폰트
-- [ ] 섹션 스타일: 테마 색상, 4-point spacing
-- [ ] CTA 버튼: Primary 색상 사용
+#### Expected Issues
+- Contact Section new style needs verification
+- Mission & Vision text style consistency
 
 ---
 
-### FeedbackPage 검증
+### ProjectsPage Verification
 
-**파일**: `frontend/src/pages/FeedbackPage.tsx`
+**Files**: `frontend/src/pages/ProjectsPage.tsx`
 
-#### 검증 항목
-- [ ] 폼 스타일: 테마 색상, 일관된 spacing
-- [ ] 버튼: Primary 색상 CTA
-- [ ] 성공 메시지: Semantic 색상 (success)
+#### Verification Items
+- [ ] FilterBar: Primary color emphasis, CustomSelect theme compliance
+- [ ] ProjectCard: Primary color CTA, theme spacing
+- [ ] Tag component: Selected/disabled state color theme compliance
+- [ ] Empty State: Theme colors, consistent style
 
----
-
-### LoginPage 검증
-
-**파일**: `frontend/src/pages/LoginPage.tsx`
-
-#### 검증 항목
-- [ ] 로그인 폼: 테마 색상, Inter 폰트
-- [ ] 버튼: Primary 색상 CTA
-- [ ] Google 로그인 버튼: 테마 준수
+#### Expected Issues
+- FilterBar static gradient line verification
+- CustomSelect component theme compliance check
 
 ---
 
-## 🛠️ 검증 실행 계획
+### AcademicsPage Verification
 
-### Phase 1: 자동화 검증 (1일)
-1. 검증 스크립트 작성
-2. 모든 파일 스캔
-3. 이슈 리포트 생성
+**Files**: `frontend/src/pages/AcademicsPage.tsx`
 
-### Phase 2: 수동 검증 (2-3일)
-1. 각 페이지별 상세 검토
-2. 브라우저에서 시각적 확인
-3. 컴포넌트별 스타일 검증
+#### Verification Items
+- [ ] StatCard: Primary color emphasis (GPA/WAM), 4-point spacing
+- [ ] QuickNavBar: Theme colors, consistent style
+- [ ] AcademicCard: Theme colors, expandable styles
+- [ ] GradeBadge: Semantic colors (error, warning, success, primary)
 
-### Phase 3: 수정 및 재검증 (3-5일)
-1. Priority 1 이슈 수정
-2. Priority 2 이슈 수정
-3. Priority 3 이슈 점진적 개선
-4. 재검증 및 문서화
+#### Expected Issues
+- StatCard highlighted style verification
+- QuickNavBar scrollable layout verification
 
 ---
 
-## 📈 검증 결과 문서화
+### ProjectDetailPage Verification
 
-### 결과 리포트 형식
+**Files**: `frontend/src/pages/ProjectDetailPage.tsx`
+
+#### Verification Items
+- [ ] Hero section: Primary color, Inter font
+- [ ] Section styles: Theme colors, 4-point spacing
+- [ ] CTA buttons: Primary color usage
+
+---
+
+### FeedbackPage Verification
+
+**Files**: `frontend/src/pages/FeedbackPage.tsx`
+
+#### Verification Items
+- [ ] Form styles: Theme colors, consistent spacing
+- [ ] Buttons: Primary color CTA
+- [ ] Success message: Semantic colors (success)
+
+---
+
+### LoginPage Verification
+
+**Files**: `frontend/src/pages/LoginPage.tsx`
+
+#### Verification Items
+- [ ] Login form: Theme colors, Inter font
+- [ ] Buttons: Primary color CTA
+- [ ] Google login button: Theme compliance
+
+---
+
+## 🛠️ Verification Execution Plan
+
+### Phase 1: Automation Verification (1 day)
+1. Write verification scripts
+2. Scan all files
+3. Generate issue report
+
+### Phase 2: Manual Verification (2-3 days)
+1. Detailed review of each page
+2. Visual confirmation in browser
+3. Per-component style verification
+
+### Phase 3: Fix & Re-verify (3-5 days)
+1. Fix Priority 1 issues
+2. Fix Priority 2 issues
+3. Gradual improvement of Priority 3 issues
+4. Re-verify and document
+
+---
+
+## 📈 Verification Results Documentation
+
+### Result Report Format
 
 ```markdown
-# 디자인 원칙 준수 검증 결과
+# Design Principle Compliance Verification Results
 
-## 종합 점수
-- KickoffLabs 준수: X/10
-- 4-Point Spacing 준수: X/10
-- 전체 준수율: X%
+## Overall Score
+- KickoffLabs Compliance: X/10
+- 4-Point Spacing Compliance: X/10
+- Total Compliance Rate: X%
 
-## 페이지별 점수
-| 페이지 | 색상 | 폰트 | CTA | Spacing | 일관성 | 총점 |
-|--------|------|------|-----|---------|--------|------|
+## Per-Page Scores
+| Page | Color | Font | CTA | Spacing | Consistency | Total |
+|------|-------|------|-----|---------|-------------|-------|
 | HomePage | X/10 | X/10 | X/10 | X/10 | X/10 | X/50 |
 | AboutPage | X/10 | X/10 | X/10 | X/10 | X/10 | X/50 |
 | ... | ... | ... | ... | ... | ... | ... |
 
-## 발견된 이슈
+## Found Issues
 ### Critical
-- [이슈 1]
-- [이슈 2]
+- [Issue 1]
+- [Issue 2]
 
 ### High Priority
-- [이슈 1]
-- [이슈 2]
+- [Issue 1]
+- [Issue 2]
 
 ### Medium Priority
-- [이슈 1]
-- [이슈 2]
+- [Issue 1]
+- [Issue 2]
 
-## 수정 완료 사항
-- [수정 1]
-- [수정 2]
+## Completed Fixes
+- [Fix 1]
+- [Fix 2]
 ```
 
 ---
 
-## 🔄 지속적 검증 프로세스
+## 🔄 Continuous Verification Process
 
-### 정기 검증
-- **주간**: 새로 추가된 컴포넌트 검증
-- **월간**: 전체 페이지 재검증
-- **분기별**: 전체 시스템 재검증 및 문서 업데이트
+### Regular Verification
+- **Weekly**: Verify newly added components
+- **Monthly**: Re-verify all pages
+- **Quarterly**: Full system re-verification and document update
 
-### 자동화 체크
-- **Pre-commit Hook**: 하드코딩된 색상/폰트/spacing 사용 시 경고
-- **CI/CD Pipeline**: 디자인 원칙 준수 검증 단계 추가
-- **Linter 규칙**: ESLint 규칙으로 디자인 원칙 강제
+### Automation Checks
+- **Pre-commit Hook**: Warn on hardcoded color/font/spacing usage
+- **CI/CD Pipeline**: Add design principle compliance verification step
+- **Linter Rules**: Enforce design principles with ESLint rules
 
 ---
 
-## 📚 참고 자료
+## 📚 References
 
-### KickoffLabs 원칙
+### KickoffLabs Principles
 - [Landing Page Design: Optimizing Fonts and Colors for Conversions](https://kickofflabs.com/blog/landing-page-fonts-colors/)
-- **핵심 원칙**:
-  - 색상 팔레트 제한 (1-3개)
-  - 폰트 제한 (1개, 최대 2개)
-  - CTA 색상 역할 명확화
-  - 일관성 유지
+- **Core Principles**:
+  - Color palette limitation (1-3)
+  - Font limitation (1, max 2)
+  - CTA color role clarification
+  - Maintain consistency
 
-### 4-Point Spacing 시스템
+### 4-Point Spacing System
 - [Principles of Spacing in UI Design: A Beginner's Guide to the 4-Point Spacing System](https://uxplanet.org/principles-of-spacing-in-ui-design-a-beginners-guide-to-the-4-point-spacing-system-6e88233b527a)
-- **핵심 원칙**:
-  - 모든 spacing 값이 4px의 배수
-  - 일관된 spacing 스케일 사용
-  - 시각적 리듬 유지
+- **Core Principles**:
+  - All spacing values are multiples of 4px
+  - Use consistent spacing scale
+  - Maintain visual rhythm
 
-### 프로젝트 내부 문서
+### Internal Project Documents
 - [KickoffLabs Compliance Audit](./KICKOFFLABS-COMPLIANCE-AUDIT.md)
-- [Design Compatibility Analysis](./DESIGN-COMPATIBILITY-ANALYSIS.md)
+- [Design Compatibility Analysis](./FE-009-Design-Compatibility-Analysis.md)
 - [Design Review: F+Z Pattern](./DESIGN-REVIEW-F-Z-PATTERN.md)
 
 ---
 
-## ✅ 검증 완료 기준
+## ✅ Verification Completion Criteria
 
-### 최종 목표
-- ✅ 모든 페이지가 KickoffLabs 원칙 100% 준수
-- ✅ 모든 spacing 값이 4px 배수
-- ✅ 하드코딩된 색상/폰트/spacing 0개
-- ✅ 테마 시스템 100% 사용
-- ✅ 일관성 점수 10/10
+### Final Goals
+- ✅ All pages 100% KickoffLabs principle compliance
+- ✅ All spacing values are 4px multiples
+- ✅ 0 hardcoded colors/fonts/spacing
+- ✅ 100% theme system usage
+- ✅ Consistency score 10/10
 
-### 승인 기준
-- KickoffLabs 준수율: 95% 이상
-- 4-Point Spacing 준수율: 100%
-- Critical 이슈: 0개
-- High Priority 이슈: 5개 이하
+### Approval Criteria
+- KickoffLabs compliance rate: 95% or higher
+- 4-Point Spacing compliance rate: 100%
+- Critical issues: 0
+- High Priority issues: 5 or less
 
 ---
 
-**작성자**: Design System Team  
-**검토자**: [검토자 이름]  
-**승인자**: [승인자 이름]  
-**다음 검증 예정일**: [날짜]
-
+**Author**: Design System Team  
+**Reviewer**: [Reviewer Name]  
+**Approver**: [Approver Name]  
+**Next Verification Date**: [Date]

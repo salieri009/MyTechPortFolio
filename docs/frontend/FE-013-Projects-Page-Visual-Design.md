@@ -1,41 +1,41 @@
-# 🎨 ProjectsPage 시각 디자인 고도화 제안
+# 🎨 ProjectsPage Visual Design Enhancement Proposal
 
-> **관점**: 시니어 비주얼 디자이너(Visual Designer) 및 UI 아티스트  
-> **목표**: 기능적으로 완벽한 페이지를 '매력적이고 아름다운 인터랙티브 쇼케이스'로 업그레이드  
-> **원칙**: KickoffLabs 디자인 시스템 준수, 4-Point Spacing, A11y 유지, prefers-reduced-motion 존중
-
----
-
-## 📊 현재 상태 분석
-
-### 강점
-- ✅ 기능적으로 완벽: 필터링, 정렬, 상태 관리, A11y 모두 우수
-- ✅ KickoffLabs 원칙 준수: Primary + Neutral 색상, 일관된 스타일
-- ✅ 4-Point Spacing 시스템 적용
-
-### 개선 기회
-- ⚠️ ProjectCard: 정보 나열식, 클릭 유도가 약함
-- ⚠️ FilterBar: 네이티브 `<select>` 사용으로 디자인 일관성 저하
-- ⚠️ Tag 상태: 선택됨/선택 가능/비활성화 구분이 명확하지 않음
-- ⚠️ 시각적 즐거움: 마이크로 인터랙션이 부족
+> **Perspective**: Senior Visual Designer & UI Artist  
+> **Goal**: Upgrade a functionally perfect page to an 'attractive and beautiful interactive showcase'  
+> **Principles**: KickoffLabs design system compliance, 4-Point Spacing, A11y maintained, prefers-reduced-motion respected
 
 ---
 
-## 🎯 핵심: ProjectCard 디자인 업그레이드
+## 📊 Current State Analysis
 
-### 제안 1: 이미지 통합 및 Hover 이펙트
+### Strengths
+- ✅ Functionally perfect: Filtering, sorting, state management, A11y all excellent
+- ✅ KickoffLabs principle compliance: Primary + Neutral colors, consistent style
+- ✅ 4-Point Spacing system applied
 
-#### 레이아웃 제안: 카드 상단 이미지 + 오버레이
+### Improvement Opportunities
+- ⚠️ ProjectCard: Information listing style, weak click inducement
+- ⚠️ FilterBar: Native `<select>` usage degrading design consistency
+- ⚠️ Tag states: Selected/selectable/disabled distinction not clear
+- ⚠️ Visual enjoyment: Lacking micro-interactions
+
+---
+
+## 🎯 Core: ProjectCard Design Upgrade
+
+### Proposal 1: Image Integration and Hover Effects
+
+#### Layout Proposal: Card Top Image + Overlay
 
 ```typescript
-// 레이아웃 구조
+// Layout structure
 <ProjectCardWrapper>
-  <ImageContainer>  {/* 상단: 이미지 영역 */}
+  <ImageContainer>  {/* Top: Image area */}
     <ProjectImage />
-    <ImageOverlay />  {/* Hover 시 나타나는 오버레이 */}
-    <ViewButton />    {/* "View Project →" 버튼 */}
+    <ImageOverlay />  {/* Overlay appearing on hover */}
+    <ViewButton />    {/* "View Project →" button */}
   </ImageContainer>
-  <ProjectContent>  {/* 하단: 텍스트 콘텐츠 */}
+  <ProjectContent>  {/* Bottom: Text content */}
     <ProjectTitle />
     <ProjectSummary />
     <ProjectMeta />
@@ -44,20 +44,20 @@
 </ProjectCardWrapper>
 ```
 
-#### Hover 마이크로 인터랙션 상세
+#### Hover Micro-interaction Details
 
-**A. 이미지 줌인 효과**
+**A. Image Zoom-in Effect**
 ```css
 ProjectImage {
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 ProjectCardWrapper:hover ProjectImage {
-  transform: scale(1.08);  /* 미묘한 줌인 (8%) */
+  transform: scale(1.08);  /* Subtle zoom-in (8%) */
 }
 ```
 
-**B. Primary 색상 오버레이**
+**B. Primary Color Overlay**
 ```css
 ImageOverlay {
   position: absolute;
@@ -76,7 +76,7 @@ ProjectCardWrapper:hover ImageOverlay {
 }
 ```
 
-**C. "View Project →" 버튼 등장**
+**C. "View Project →" Button Appearance**
 ```css
 ViewButton {
   position: absolute;
@@ -93,44 +93,44 @@ ProjectCardWrapper:hover ViewButton {
 }
 ```
 
-**스타일**:
-- 배경: `primary[500]` 또는 `hero.text` (오버레이 위에서 보이도록)
-- 텍스트: 흰색 또는 `hero.text`
-- 아이콘: `→` 또는 `↗` (외부 링크 느낌)
-- 패딩: `spacing[3] spacing[6]` (12px 24px)
+**Styling**:
+- Background: `primary[500]` or `hero.text` (visible on overlay)
+- Text: White or `hero.text`
+- Icon: `→` or `↗` (external link feel)
+- Padding: `spacing[3] spacing[6]` (12px 24px)
 - border-radius: `radius.lg` (16px)
 
-#### 이미지 없을 때 Fallback
+#### Fallback When No Image
 
 ```typescript
 <ImagePlaceholder>
-  {/* 그라데이션 배경 또는 아이콘 */}
+  {/* Gradient background or icon */}
   <PlaceholderIcon>💻</PlaceholderIcon>
-  {/* 또는 Primary 색상 그라데이션 */}
+  {/* Or Primary color gradient */}
   background: linear-gradient(135deg, primary[500], primary[600]);
 </ImagePlaceholder>
 ```
 
-### 제안 2: Tech Stack 태그(+N) 스타일
+### Proposal 2: Tech Stack Tag (+N) Style
 
-#### +N 태그 디자인
+#### +N Tag Design
 
 ```typescript
 const MoreTag = styled(Tag)`
-  /* 기본 스타일: Outline */
+  /* Base style: Outline */
   background: transparent;
   border: 1px solid ${props => props.theme.colors.primary[300]};
   color: ${props => props.theme.colors.primary[600]};
   font-weight: ${props => props.theme.typography.fontWeight.semibold};
   
-  /* Hover: Primary 배경 */
+  /* Hover: Primary background */
   &:hover {
     background: ${props => props.theme.colors.primary[50]};
     border-color: ${props => props.theme.colors.primary[400]};
     color: ${props => props.theme.colors.primary[700]};
   }
   
-  /* 아이콘 추가 (선택적) */
+  /* Icon addition (optional) */
   &::before {
     content: '+';
     margin-right: ${props => props.theme.spacing[0.5]};
@@ -139,17 +139,17 @@ const MoreTag = styled(Tag)`
 `
 ```
 
-**시각적 계층**:
-- 일반 태그: `surface` 배경, `border` 테두리
-- +N 태그: `primary[300]` 테두리, `primary[600]` 텍스트 (더 눈에 띄게)
+**Visual Hierarchy**:
+- Regular tags: `surface` background, `border` border
+- +N tag: `primary[300]` border, `primary[600]` text (more prominent)
 
 ---
 
-## 🎨 FilterBar: 세련된 컨트롤 UI
+## 🎨 FilterBar: Refined Control UI
 
-### 제안 1: 커스텀 드롭다운(Select) 디자인
+### Proposal 1: Design System-aligned Custom Dropdown (Select)
 
-#### 디자인 시스템에 맞는 커스텀 Select
+#### Custom Select Matching Design System
 
 ```typescript
 const CustomSelect = styled.div<{ $isOpen: boolean }>`
@@ -198,7 +198,7 @@ const SelectIcon = styled.span<{ $isOpen: boolean }>`
   transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
   color: ${props => props.theme.colors.textSecondary};
   
-  /* 화살표 아이콘: ▼ */
+  /* Arrow icon: ▼ */
   &::after {
     content: '▼';
     font-size: ${props => props.theme.typography.fontSize.xs};
@@ -257,14 +257,14 @@ const SelectOption = styled.button<{ $isSelected: boolean }>`
 `
 ```
 
-**접근성 보장**:
+**Accessibility Guarantee**:
 - `role="combobox"`, `aria-expanded`, `aria-haspopup="listbox"`
-- 키보드 네비게이션: Arrow keys, Enter, Escape
-- `aria-activedescendant`로 현재 포커스 옵션 표시
+- Keyboard navigation: Arrow keys, Enter, Escape
+- Show currently focused option with `aria-activedescendant`
 
-### 제안 2: Tag 상태 별 시각적 피드백 강화
+### Proposal 2: Enhanced Visual Feedback for Tag States
 
-#### 3가지 상태: Selected / Available / Disabled
+#### 3 States: Selected / Available / Disabled
 
 ```typescript
 const FilterTag = styled(Tag).withConfig({
@@ -274,12 +274,12 @@ const FilterTag = styled(Tag).withConfig({
   isDisabled?: boolean
   count?: number
 }>`
-  /* 기본: Available (선택 가능) */
+  /* Default: Available (selectable) */
   background: transparent;
   border: 1px solid ${props => props.theme.colors.border};
   color: ${props => props.theme.colors.text};
   
-  /* Selected: Primary 배경 */
+  /* Selected: Primary background */
   ${props => props.isSelected && `
     background: ${props.theme.colors.primary[500]};
     border-color: ${props.theme.colors.primary[500]};
@@ -288,14 +288,14 @@ const FilterTag = styled(Tag).withConfig({
     box-shadow: 0 0 0 ${props.theme.spacing[0.5]} ${props.theme.colors.primary[200]};
   `}
   
-  /* Disabled: 반투명 (결과 0개) */
+  /* Disabled: Semi-transparent (0 results) */
   ${props => props.isDisabled && `
     opacity: 0.4;
     cursor: not-allowed;
     pointer-events: none;
   `}
   
-  /* Hover: Available 상태에서만 */
+  /* Hover: Only for Available state */
   ${props => !props.isSelected && !props.isDisabled && `
     &:hover {
       border-color: ${props.theme.colors.primary[300]};
@@ -305,7 +305,7 @@ const FilterTag = styled(Tag).withConfig({
     }
   `}
   
-  /* 카운트 표시 */
+  /* Count display */
   ${props => props.count !== undefined && `
     &::after {
       content: ' (${props.count})';
@@ -317,20 +317,20 @@ const FilterTag = styled(Tag).withConfig({
 `
 ```
 
-**시각적 계층**:
-1. **Selected**: Primary 배경 + 흰색 텍스트 + 그림자 (가장 눈에 띔)
-2. **Available**: Outline 스타일 + Hover 시 Primary 배경 (중간)
-3. **Disabled**: 반투명 + pointer-events: none (가장 약함)
+**Visual Hierarchy**:
+1. **Selected**: Primary background + white text + shadow (most prominent)
+2. **Available**: Outline style + Primary background on hover (medium)
+3. **Disabled**: Semi-transparent + pointer-events: none (weakest)
 
-### 제안 3: FilterBar Shimmer 애니메이션 개선
+### Proposal 3: FilterBar Shimmer Animation Improvement
 
-#### 대안: 미묘한 Border-Bottom 그라데이션
+#### Alternative: Subtle Border-Bottom Gradient
 
 ```typescript
 const FilterBar = styled(Card)`
-  /* 기존 shimmer 제거 또는 선택적 사용 */
+  /* Remove existing shimmer or use optionally */
   
-  /* 대안: 하단 그라데이션 라인 */
+  /* Alternative: Bottom gradient line */
   &::after {
     content: '';
     position: absolute;
@@ -356,7 +356,7 @@ const FilterBar = styled(Card)`
     50% { background-position: 100% 50%; }
   }
   
-  /* 또는 정적 그라데이션 (더 미묘함) */
+  /* Or static gradient (more subtle) */
   /* 
   &::after {
     content: '';
@@ -377,48 +377,47 @@ const FilterBar = styled(Card)`
 `
 ```
 
-**권장**: 정적 그라데이션 (더 미묘하고 세련됨, 성능 우수)
+**Recommendation**: Static gradient (more subtle and refined, excellent performance)
 
 ---
 
-## 🎯 구현 우선순위
+## 🎯 Implementation Priority
 
-### Phase 1: ProjectCard Hover 이펙트 (즉시 구현)
-- [ ] ImageOverlay 컴포넌트 추가
-- [ ] ViewButton 컴포넌트 추가
-- [ ] 이미지 줌인 애니메이션
-- [ ] +N 태그 스타일 개선
+### Phase 1: ProjectCard Hover Effects (Immediate Implementation)
+- [ ] Add ImageOverlay component
+- [ ] Add ViewButton component
+- [ ] Image zoom-in animation
+- [ ] +N tag style improvement
 
-### Phase 2: FilterBar UI 세련화 (1-2일)
-- [ ] 커스텀 Select 컴포넌트 구현
-- [ ] Tag 상태별 스타일 (Selected/Available/Disabled)
-- [ ] FilterBar shimmer 개선 (정적 그라데이션)
+### Phase 2: FilterBar UI Refinement (1-2 days)
+- [ ] Implement custom Select component
+- [ ] Per-state tag styling (Selected/Available/Disabled)
+- [ ] FilterBar shimmer improvement (static gradient)
 
-### Phase 3: 마이크로 인터랙션 정제 (0.5일)
-- [ ] 애니메이션 타이밍 조정
-- [ ] prefers-reduced-motion 테스트
-- [ ] 접근성 검증
+### Phase 3: Micro-interaction Refinement (0.5 days)
+- [ ] Animation timing adjustment
+- [ ] prefers-reduced-motion testing
+- [ ] Accessibility verification
 
 ---
 
-## 📐 디자인 원칙 준수
+## 📐 Design Principle Compliance
 
 ### ✅ KickoffLabs
-- Primary + Neutral 색상만 사용
-- Inter 폰트 유지
-- 일관된 border-radius (`radius.lg`, `radius.md`)
+- Only Primary + Neutral colors used
+- Inter font maintained
+- Consistent border-radius (`radius.lg`, `radius.md`)
 
 ### ✅ 4-Point Spacing
-- 모든 spacing 값이 4px의 배수
-- `spacing[0.5]` (4px), `spacing[1]` (8px), `spacing[2]` (16px) 등
+- All spacing values are multiples of 4px
+- `spacing[0.5]` (4px), `spacing[1]` (8px), `spacing[2]` (16px), etc.
 
-### ✅ 접근성 (A11y)
-- 키보드 네비게이션 유지
-- `aria-*` 속성 보존
-- 포커스 상태 명확히 표시
+### ✅ Accessibility (A11y)
+- Keyboard navigation maintained
+- `aria-*` attributes preserved
+- Focus states clearly indicated
 
-### ✅ 성능
-- `will-change` 최소 사용
-- GPU 가속 (`translateZ(0)`)
-- `prefers-reduced-motion` 존중
-
+### ✅ Performance
+- Minimal `will-change` usage
+- GPU acceleration (`translateZ(0)`)
+- `prefers-reduced-motion` respected

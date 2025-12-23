@@ -27,7 +27,7 @@ This document describes the patterns and conventions for REST controllers in the
 ```java
 @RestController
 @RequestMapping(ApiConstants.PROJECTS_ENDPOINT)
-@Tag(name = "Projects", description = "프로젝트 관리 API")
+@Tag(name = "Projects", description = "Project Management API")
 public class ProjectController {
 
     private final ProjectService projectService;
@@ -54,21 +54,21 @@ public class ProjectController {
 
 ```java
 @GetMapping
-@Operation(summary = "프로젝트 목록 조회", description = "페이징, 정렬, 필터링을 지원하는 프로젝트 목록을 조회합니다.")
+@Operation(summary = "Get project list", description = "Retrieves project list with pagination, sorting, and filtering support.")
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "성공"),
-    @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    @ApiResponse(responseCode = "200", description = "Success"),
+    @ApiResponse(responseCode = "400", description = "Bad request")
 })
 public ResponseEntity<ApiResponse<PageResponse<ProjectSummaryResponse>>> getProjects(
-    @Parameter(description = "페이지 번호 (1부터 시작)", example = "1")
+    @Parameter(description = "Page number (starts from 1)", example = "1")
     @RequestParam(defaultValue = "" + ApiConstants.DEFAULT_PAGE_NUMBER) 
     @Min(1) int page,
     
-    @Parameter(description = "페이지 크기", example = "10")
+    @Parameter(description = "Page size", example = "10")
     @RequestParam(defaultValue = "" + ApiConstants.DEFAULT_PAGE_SIZE) 
     @Min(1) @Max(ApiConstants.MAX_PAGE_SIZE) int size,
     
-    @Parameter(description = "정렬 기준 (field,direction)", example = "endDate,desc")
+    @Parameter(description = "Sort criteria (field,direction)", example = "endDate,desc")
     @RequestParam(required = false, defaultValue = ApiConstants.DEFAULT_SORT_FIELD + "," + ApiConstants.DEFAULT_SORT_DIRECTION) 
     String sort
 ) {
@@ -91,14 +91,14 @@ public ResponseEntity<ApiResponse<PageResponse<ProjectSummaryResponse>>> getProj
 
 ```java
 @GetMapping("/{id}")
-@Operation(summary = "프로젝트 상세 조회", description = "프로젝트 ID로 상세 정보를 조회합니다.")
+@Operation(summary = "Get project details", description = "Retrieves project details by project ID."))
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "성공"),
-    @ApiResponse(responseCode = "400", description = "잘못된 ID 형식"),
-    @ApiResponse(responseCode = "404", description = "프로젝트를 찾을 수 없음")
+    @ApiResponse(responseCode = "200", description = "Success"),
+    @ApiResponse(responseCode = "400", description = "Invalid ID format"),
+    @ApiResponse(responseCode = "404", description = "Project not found")
 })
 public ResponseEntity<ApiResponse<ProjectDetailResponse>> getProject(
-    @Parameter(description = "프로젝트 ID (MongoDB ObjectId)", required = true, example = "507f1f77bcf86cd799439011")
+    @Parameter(description = "Project ID (MongoDB ObjectId)", required = true, example = "507f1f77bcf86cd799439011")
     @PathVariable 
     @ValidMongoId(message = "Invalid project ID format")
     String id
@@ -118,14 +118,14 @@ public ResponseEntity<ApiResponse<ProjectDetailResponse>> getProject(
 
 ```java
 @PostMapping
-@Operation(summary = "프로젝트 생성", description = "새로운 프로젝트를 생성합니다.")
+@Operation(summary = "Create project", description = "Creates a new project."))
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "201", description = "생성 성공"),
-    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
-    @ApiResponse(responseCode = "409", description = "중복된 리소스")
+    @ApiResponse(responseCode = "201", description = "Created successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid request data"),
+    @ApiResponse(responseCode = "409", description = "Duplicate resource")
 })
 public ResponseEntity<ApiResponse<ProjectDetailResponse>> createProject(
-    @Parameter(description = "프로젝트 생성 요청", required = true)
+    @Parameter(description = "Project creation request", required = true)
     @Valid @RequestBody ProjectCreateRequest request
 ) {
     ProjectDetailResponse response = projectService.createProject(request);
@@ -144,17 +144,17 @@ public ResponseEntity<ApiResponse<ProjectDetailResponse>> createProject(
 
 ```java
 @PutMapping("/{id}")
-@Operation(summary = "프로젝트 수정", description = "기존 프로젝트를 수정합니다.")
+@Operation(summary = "Update project", description = "Updates an existing project."))
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "수정 성공"),
-    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
-    @ApiResponse(responseCode = "404", description = "프로젝트를 찾을 수 없음")
+    @ApiResponse(responseCode = "200", description = "Updated successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid request data"),
+    @ApiResponse(responseCode = "404", description = "Project not found")
 })
 public ResponseEntity<ApiResponse<ProjectDetailResponse>> updateProject(
-    @Parameter(description = "프로젝트 ID", required = true)
+    @Parameter(description = "Project ID", required = true)
     @PathVariable @ValidMongoId String id,
     
-    @Parameter(description = "프로젝트 수정 요청", required = true)
+    @Parameter(description = "Project update request", required = true)
     @Valid @RequestBody ProjectUpdateRequest request
 ) {
     ProjectDetailResponse response = projectService.updateProject(id, request);
@@ -171,13 +171,13 @@ public ResponseEntity<ApiResponse<ProjectDetailResponse>> updateProject(
 
 ```java
 @DeleteMapping("/{id}")
-@Operation(summary = "프로젝트 삭제", description = "프로젝트를 삭제합니다.")
+@Operation(summary = "Delete project", description = "Deletes a project."))
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "204", description = "삭제 성공"),
-    @ApiResponse(responseCode = "404", description = "프로젝트를 찾을 수 없음")
+    @ApiResponse(responseCode = "204", description = "Deleted successfully"),
+    @ApiResponse(responseCode = "404", description = "Project not found")
 })
 public ResponseEntity<Void> deleteProject(
-    @Parameter(description = "프로젝트 ID", required = true)
+    @Parameter(description = "Project ID", required = true)
     @PathVariable @ValidMongoId String id
 ) {
     projectService.deleteProject(id);
@@ -201,7 +201,7 @@ For standard CRUD operations, extend `AbstractCrudController`:
 ```java
 @RestController
 @RequestMapping(ApiConstants.ACADEMICS_ENDPOINT)
-@Tag(name = "Academics", description = "학력 관리 API")
+@Tag(name = "Academics", description = "Academic Management API")
 public class AcademicController extends AbstractCrudController<Academic, String, AcademicResponse, AcademicCreateRequest, AcademicUpdateRequest> {
     
     public AcademicController(AcademicService academicService) {
@@ -349,7 +349,7 @@ Validation errors are automatically handled by Spring:
 ### Controller-Level Documentation
 
 ```java
-@Tag(name = "Projects", description = "프로젝트 관리 API")
+@Tag(name = "Projects", description = "Project Management API")
 public class ProjectController {
     // ...
 }
@@ -359,12 +359,12 @@ public class ProjectController {
 
 ```java
 @Operation(
-    summary = "프로젝트 목록 조회",
-    description = "페이징, 정렬, 필터링을 지원하는 프로젝트 목록을 조회합니다."
+    summary = "Get project list",
+    description = "Retrieves project list with pagination, sorting, and filtering support."
 )
 @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "성공"),
-    @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    @ApiResponse(responseCode = "200", description = "Success"),
+    @ApiResponse(responseCode = "400", description = "Bad request")
 })
 public ResponseEntity<...> getProjects(...) {
     // ...
@@ -375,7 +375,7 @@ public ResponseEntity<...> getProjects(...) {
 
 ```java
 @Parameter(
-    description = "페이지 번호 (1부터 시작)",
+    description = "Page number (starts from 1)",
     example = "1"
 )
 @RequestParam(defaultValue = "1") int page
@@ -427,7 +427,7 @@ public ResponseEntity<...> getProjects(
 
 ```java
 @GetMapping("/{id}/related")
-@Operation(summary = "관련 프로젝트 조회")
+@Operation(summary = "Get related projects")
 public ResponseEntity<...> getRelatedProjects(@PathVariable @ValidMongoId String id) {
     return ResponseUtil.ok(service.getRelatedProjects(id));
 }

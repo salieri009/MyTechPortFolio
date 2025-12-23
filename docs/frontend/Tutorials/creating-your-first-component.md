@@ -1,37 +1,37 @@
 # Creating Your First Component
 
-이 튜토리얼은 프로젝트에서 첫 번째 컴포넌트를 만드는 방법을 단계별로 안내합니다.
+This tutorial guides you step-by-step on how to create your first component in the project.
 
-## 목차
+## Table of Contents
 
-- [컴포넌트란?](#컴포넌트란)
+- [What is a Component?](#what-is-a-component)
 - [Atomic Design Pattern](#atomic-design-pattern)
-- [간단한 컴포넌트 만들기](#간단한-컴포넌트-만들기)
-- [스타일링 추가하기](#스타일링-추가하기)
-- [컴포넌트 사용하기](#컴포넌트-사용하기)
-- [다음 단계](#다음-단계)
+- [Creating a Simple Component](#creating-a-simple-component)
+- [Adding Styling](#adding-styling)
+- [Using the Component](#using-the-component)
+- [Next Steps](#next-steps)
 
-## 컴포넌트란?
+## What is a Component?
 
-컴포넌트는 재사용 가능한 UI 요소입니다. React에서 컴포넌트는 함수나 클래스로 작성되며, props를 받아 UI를 렌더링합니다.
+A component is a reusable UI element. In React, components are written as functions or classes that receive props and render UI.
 
 ## Atomic Design Pattern
 
-이 프로젝트는 Atomic Design Pattern을 사용합니다. 컴포넌트는 크기에 따라 분류됩니다:
+This project uses the Atomic Design Pattern. Components are categorized by size:
 
-- **Atoms**: 가장 작은 단위의 컴포넌트 (Button, Input, Tag 등)
-- **Molecules**: Atoms를 조합한 컴포넌트 (SearchBar, Card 등)
-- **Organisms**: Molecules와 Atoms를 조합한 복잡한 컴포넌트 (Header, Footer 등)
+- **Atoms**: Smallest unit components (Button, Input, Tag, etc.)
+- **Molecules**: Components combining Atoms (SearchBar, Card, etc.)
+- **Organisms**: Complex components combining Molecules and Atoms (Header, Footer, etc.)
 
-자세한 내용은 [Atomic Design Pattern 설명](../explanation/atomic-design-pattern.md)을 참고하세요.
+For more details, see [Atomic Design Pattern Explanation](../FE-002-Atomic-Design-Pattern.md).
 
-## 간단한 컴포넌트 만들기
+## Creating a Simple Component
 
-`src/components/ui/` 디렉토리에 새로운 Atom 컴포넌트를 만들어보겠습니다.
+Let's create a new Atom component in the `src/components/ui/` directory.
 
-### 1. 컴포넌트 파일 생성
+### 1. Create Component File
 
-`src/components/ui/Badge.tsx` 파일을 생성합니다:
+Create `src/components/ui/Badge.tsx`:
 
 ```typescript
 import React from 'react'
@@ -92,22 +92,22 @@ export function Badge({ children, variant = 'primary', size = 'md' }: BadgeProps
 }
 ```
 
-### 2. 컴포넌트 내보내기
+### 2. Export the Component
 
-`src/components/ui/index.ts`에 컴포넌트를 추가합니다:
+Add the component to `src/components/ui/index.ts`:
 
 ```typescript
 export { Badge } from './Badge'
 export type { BadgeProps } from './Badge'
 ```
 
-## 스타일링 추가하기
+## Adding Styling
 
-컴포넌트는 Styled Components를 사용하여 스타일링됩니다. 테마 시스템을 활용하여 일관된 디자인을 유지하세요.
+Components are styled using Styled Components. Use the theme system to maintain consistent design.
 
-### 테마 사용하기
+### Using Theme
 
-테마의 색상, 간격, 타이포그래피를 사용합니다:
+Use theme colors, spacing, and typography:
 
 ```typescript
 const StyledComponent = styled.div`
@@ -117,11 +117,11 @@ const StyledComponent = styled.div`
 `
 ```
 
-자세한 내용은 [Styling System 설명](../explanation/styling-system.md)을 참고하세요.
+For more details, see [Styling System Explanation](./understanding-styling-system.md).
 
-## 컴포넌트 사용하기
+## Using the Component
 
-만든 컴포넌트를 페이지나 다른 컴포넌트에서 사용할 수 있습니다:
+Use the created component in pages or other components:
 
 ```typescript
 import { Badge } from '@components/ui'
@@ -137,28 +137,17 @@ function MyPage() {
 }
 ```
 
-## 다음 단계
+## Next Steps
 
-컴포넌트를 만들었으니 다음을 학습하세요:
+Now that you've created a component, learn the following:
 
-1. [Understanding Styling System](./understanding-styling-system.md) - 스타일링 시스템을 더 깊이 이해하기
-2. [Add New Component](../how-to/add-new-component.md) - 더 복잡한 컴포넌트 만들기
-3. [Components API Reference](../reference/components-api.md) - 기존 컴포넌트 API 확인하기
+1. [Understanding Styling System](./understanding-styling-system.md) - Understand the styling system in depth
+2. [Add New Component](../how-to/add-new-component.md) - Create more complex components
+3. [Components API Reference](../reference/components-api.md) - Check existing component APIs
 
-## 모범 사례
+## Best Practices
 
-- **타입 안정성**: TypeScript를 사용하여 props 타입을 명확히 정의하세요
-- **재사용성**: 컴포넌트는 가능한 한 재사용 가능하게 만드세요
-- **일관성**: 기존 컴포넌트의 패턴을 따르세요
-- **접근성**: 접근성 가이드라인을 준수하세요 (ARIA 속성, 키보드 네비게이션 등)
-
-
-
-
-
-
-
-
-
-
-
+- **Type Safety**: Use TypeScript to clearly define prop types
+- **Reusability**: Make components as reusable as possible
+- **Consistency**: Follow patterns from existing components
+- **Accessibility**: Follow accessibility guidelines (ARIA attributes, keyboard navigation, etc.)

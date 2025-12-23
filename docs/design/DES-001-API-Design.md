@@ -264,14 +264,14 @@ Retrieves detailed information for a specific academic course and its related pr
   "success": true,
   "data": {
     "id": "...",
-    "name": "자료구조",
-    "semester": "2학년 1학기",
+    "name": "Data Structures",
+    "semester": "2nd Year 1st Semester",
     "grade": "A+",
     "description": "...",
     "relatedProjects": [
       {
         "id": "...",
-        "title": "알고리즘 문제 풀이 저장소"
+        "title": "Algorithm Problem Solving Repository"
       }
     ]
   }
@@ -523,7 +523,7 @@ Retrieves the primary (active) resume.
 ```json
 {
   "success": true,
-  "data": Resume  // isActive=true인 이력서
+  "data": Resume  // Resume with isActive=true
 }
 ```
 
@@ -1134,7 +1134,7 @@ Spring Security + JWT token-based authentication:
 
 ### 8.1 Caching
 
-TechStackService에 캐싱 적용:
+Caching applied to TechStackService:
 
 ```java
 @Service
@@ -1176,15 +1176,15 @@ MongoDB index configuration:
 
 ### 9.1 Swagger/OpenAPI
 
-SpringDoc OpenAPI 3.0을 사용한 자동 문서 생성:
+Auto-generated documentation using SpringDoc OpenAPI 3.0:
 
-- **UI 경로**: `/swagger-ui.html`
-- **API Docs 경로**: `/v3/api-docs`
-- **어노테이션**: `@Operation`, `@ApiResponses`, `@Tag`, `@Parameter`
+- **UI Path**: `/swagger-ui.html`
+- **API Docs Path**: `/v3/api-docs`
+- **Annotations**: `@Operation`, `@ApiResponses`, `@Tag`, `@Parameter`
 
 ### 9.2 JavaDoc
 
-모든 Controller, Service, DTO에 JavaDoc 주석:
+JavaDoc comments for all Controllers, Services, and DTOs:
 
 ```java
 /**
@@ -1225,7 +1225,7 @@ public class ProjectController {
 
 ### 11.1 Environment Variables
 
-필수 환경 변수:
+Required environment variables:
 
 ```properties
 # Database
@@ -1246,7 +1246,7 @@ GOOGLE_CLIENT_SECRET=your-client-secret
 
 ### 11.2 Health Check
 
-Spring Boot Actuator를 통한 헬스 체크:
+Health check via Spring Boot Actuator:
 
 - **Endpoint**: `/actuator/health`
 - **Response**: `{"status": "UP"}`

@@ -36,146 +36,150 @@ The goal is to build a stable and scalable API server that seamlessly provides d
 
 ### MongoDB Collection Structure
 
-| `grade` | `Enum` | `Optional` | 받은 성적 (HIGH_DISTINCTION, DISTINCTION, CREDIT, PASS) |
-| `creditPoints` | `Integer` | `Optional` | 학점 (예: 6) |
-| `marks` | `Integer` | `Optional` | 점수 (예: 92) |
-| `description` | `String` | `Optional` | 과목에 대한 간략한 설명 |
-| `status` | `Enum` | `Required` | 상태 (COMPLETED, ENROLLED, EXEMPTION) |
-| `year` | `Integer` | `Optional` | 연도 (예: 2024, 2025) |
-| `semesterType` | `Enum` | `Optional` | 학기 타입 (SPRING, AUTUMN) |
-| `createdAt` | `LocalDateTime` | `Auto-generated` | 생성 일시 |
-| `updatedAt` | `LocalDateTime` | `Auto-updated` | 수정 일시 |
+### A. `academics` Collection (continued)
 
-**인덱스**:
-- `subjectCode` (Indexed) - 빠른 조회
-- `semester` - 학기 필터링
-
-### 다. `tech_stacks` 컬렉션
-
-기술 스택 정보를 저장하는 컬렉션입니다.
-
-| 필드명 | 데이터 타입 | 제약조건 | 설명 |
+| Field | Data Type | Constraint | Description |
 | --- | --- | --- | --- |
-| `_id` | `ObjectId` | `PK` | 기술 스택 고유 ID |
-| `name` | `String` | `Unique, Indexed` | 기술 이름 (예: "Spring Boot", "React") |
-| `type` | `Enum` | `Required` | 기술 분류 (FRONTEND, BACKEND, DATABASE, DEVOPS, MOBILE, TESTING, OTHER) |
-| `logoUrl` | `String` | `Optional` | 기술 로고 이미지 주소 |
-| `officialUrl` | `String` | `Optional` | 공식 웹사이트 |
-| `description` | `String` | `Optional` | 기술에 대한 설명 |
-| `proficiencyLevel` | `Enum` | `Default: INTERMEDIATE` | 숙련도 (BEGINNER, INTERMEDIATE, ADVANCED, EXPERT) |
-| `usageCount` | `Long` | `Default: 0` | 사용된 프로젝트 수 |
-| `isPrimary` | `Boolean` | `Default: false` | 주력 기술 여부 |
-| `createdAt` | `LocalDateTime` | `Auto-generated` | 생성 일시 |
-| `updatedAt` | `LocalDateTime` | `Auto-updated` | 수정 일시 |
+| `grade` | `Enum` | `Optional` | Grade received (HIGH_DISTINCTION, DISTINCTION, CREDIT, PASS) |
+| `creditPoints` | `Integer` | `Optional` | Credit points (e.g., 6) |
+| `marks` | `Integer` | `Optional` | Score (e.g., 92) |
+| `description` | `String` | `Optional` | Brief description of the subject |
+| `status` | `Enum` | `Required` | Status (COMPLETED, ENROLLED, EXEMPTION) |
+| `year` | `Integer` | `Optional` | Year (e.g., 2024, 2025) |
+| `semesterType` | `Enum` | `Optional` | Semester type (SPRING, AUTUMN) |
+| `createdAt` | `LocalDateTime` | `Auto-generated` | Created timestamp |
+| `updatedAt` | `LocalDateTime` | `Auto-updated` | Updated timestamp |
 
-**인덱스**:
-- `name` (Unique, Indexed) - 유일성 보장 및 빠른 조회
-- `type` - 타입별 필터링
+**Indexes**:
+- `subjectCode` (Indexed) - Fast query
+- `semester` - Semester filtering
 
-**캐싱**: 이 컬렉션은 자주 조회되므로 캐싱 적용 (1시간 TTL)
+### B. `tech_stacks` Collection
 
-### 라. `users` 컬렉션
+Collection that stores tech stack information.
 
-사용자 계정 정보를 저장하는 컬렉션입니다.
-
-| 필드명 | 데이터 타입 | 제약조건 | 설명 |
+| Field | Data Type | Constraint | Description |
 | --- | --- | --- | --- |
-| `_id` | `ObjectId` | `PK` | 사용자 고유 ID |
-| `email` | `String` | `Unique, Indexed` | 이메일 주소 |
-| `password` | `String` | `Optional` | BCrypt 해시된 비밀번호 (OAuth 사용자는 null) |
-| `displayName` | `String` | `Optional` | 표시 이름 |
-| `role` | `Enum` | `Default: USER` | 역할 (USER, ADMIN) |
-| `enabled` | `Boolean` | `Default: true` | 계정 활성화 여부 |
-| `isEmailVerified` | `Boolean` | `Default: false` | 이메일 인증 여부 |
-| `oauthProvider` | `String` | `Optional` | OAuth 제공자 (예: "google", "github") |
-| `oauthId` | `String` | `Optional` | OAuth 제공자 사용자 ID |
-| `twoFactorEnabled` | `Boolean` | `Default: false` | 2FA 활성화 여부 |
-| `twoFactorSecret` | `String` | `Optional` | 2FA 시크릿 (암호화됨) |
-| `createdAt` | `LocalDateTime` | `Auto-generated` | 생성 일시 |
-| `updatedAt` | `LocalDateTime` | `Auto-updated` | 수정 일시 |
+| `_id` | `ObjectId` | `PK` | Tech stack unique ID |
+| `name` | `String` | `Unique, Indexed` | Tech name (e.g., "Spring Boot", "React") |
+| `type` | `Enum` | `Required` | Tech category (FRONTEND, BACKEND, DATABASE, DEVOPS, MOBILE, TESTING, OTHER) |
+| `logoUrl` | `String` | `Optional` | Tech logo image URL |
+| `officialUrl` | `String` | `Optional` | Official website |
+| `description` | `String` | `Optional` | Description of the technology |
+| `proficiencyLevel` | `Enum` | `Default: INTERMEDIATE` | Proficiency level (BEGINNER, INTERMEDIATE, ADVANCED, EXPERT) |
+| `usageCount` | `Long` | `Default: 0` | Number of projects used in |
+| `isPrimary` | `Boolean` | `Default: false` | Primary technology flag |
+| `createdAt` | `LocalDateTime` | `Auto-generated` | Created timestamp |
+| `updatedAt` | `LocalDateTime` | `Auto-updated` | Updated timestamp |
 
-**인덱스**:
-- `email` (Unique, Indexed) - 인증용
+**Indexes**:
+- `name` (Unique, Indexed) - Uniqueness and fast query
+- `type` - Type filtering
 
-### 마. `contacts` 컬렉션
+**Caching**: This collection is frequently queried, so caching is applied (1 hour TTL)
 
-연락처 폼 제출 정보를 저장하는 컬렉션입니다.
+### C. `users` Collection
 
-| 필드명 | 데이터 타입 | 제약조건 | 설명 |
+Collection that stores user account information.
+
+| Field | Data Type | Constraint | Description |
 | --- | --- | --- | --- |
-| `_id` | `ObjectId` | `PK` | 연락처 고유 ID |
-| `email` | `String` | `Indexed` | 이메일 주소 |
-| `name` | `String` | `Required` | 이름 (2-100 chars) |
-| `company` | `String` | `Optional` | 회사명 (max 100 chars) |
-| `subject` | `String` | `Optional` | 제목 (max 100 chars) |
-| `message` | `String` | `Required` | 메시지 (10-2000 chars) |
-| `phoneNumber` | `String` | `Optional` | 전화번호 |
+| `_id` | `ObjectId` | `PK` | User unique ID |
+| `email` | `String` | `Unique, Indexed` | Email address |
+| `password` | `String` | `Optional` | BCrypt hashed password (null for OAuth users) |
+| `displayName` | `String` | `Optional` | Display name |
+| `role` | `Enum` | `Default: USER` | Role (USER, ADMIN) |
+| `enabled` | `Boolean` | `Default: true` | Account activation status |
+| `isEmailVerified` | `Boolean` | `Default: false` | Email verification status |
+| `oauthProvider` | `String` | `Optional` | OAuth provider (e.g., "google", "github") |
+| `oauthId` | `String` | `Optional` | OAuth provider user ID |
+| `twoFactorEnabled` | `Boolean` | `Default: false` | 2FA enabled status |
+| `twoFactorSecret` | `String` | `Optional` | 2FA secret (encrypted) |
+| `createdAt` | `LocalDateTime` | `Auto-generated` | Created timestamp |
+| `updatedAt` | `LocalDateTime` | `Auto-updated` | Updated timestamp |
+
+**Indexes**:
+- `email` (Unique, Indexed) - For authentication
+
+### D. `contacts` Collection
+
+Collection that stores contact form submission information.
+
+| Field | Data Type | Constraint | Description |
+| --- | --- | --- | --- |
+| `_id` | `ObjectId` | `PK` | Contact unique ID |
+| `email` | `String` | `Indexed` | Email address |
+| `name` | `String` | `Required` | Name (2-100 chars) |
+| `company` | `String` | `Optional` | Company name (max 100 chars) |
+| `subject` | `String` | `Optional` | Subject (max 100 chars) |
+| `message` | `String` | `Required` | Message (10-2000 chars) |
+| `phoneNumber` | `String` | `Optional` | Phone number |
 | `linkedInUrl` | `String` | `Optional` | LinkedIn URL |
-| `jobTitle` | `String` | `Optional` | 직책 |
-| `referrer` | `String` | `Optional` | 참조 URL |
-| `source` | `String` | `Optional` | 소스 ("portfolio", "project", "resume") |
-| `projectId` | `String` | `Optional` | 관련 프로젝트 ID |
-| `ipAddress` | `String` | `Optional` | IP 주소 (해싱됨) |
+| `jobTitle` | `String` | `Optional` | Job title |
+| `referrer` | `String` | `Optional` | Referrer URL |
+| `source` | `String` | `Optional` | Source ("portfolio", "project", "resume") |
+| `projectId` | `String` | `Optional` | Related project ID |
+| `ipAddress` | `String` | `Optional` | IP address (hashed) |
 | `userAgent` | `String` | `Optional` | User Agent |
-| `status` | `Enum` | `Default: NEW` | 상태 (NEW, READ, REPLIED, ARCHIVED, SPAM) |
-| `isSpam` | `Boolean` | `Default: false` | 스팸 여부 |
-| `createdAt` | `LocalDateTime` | `Auto-generated` | 생성 일시 |
+| `status` | `Enum` | `Default: NEW` | Status (NEW, READ, REPLIED, ARCHIVED, SPAM) |
+| `isSpam` | `Boolean` | `Default: false` | Spam flag |
+| `createdAt` | `LocalDateTime` | `Auto-generated` | Created timestamp |
 
-**인덱스**:
-- `email` (Indexed) - 중복 검사 및 Rate Limiting
-- `createdAt` - 시간순 조회
+**Indexes**:
+- `email` (Indexed) - Duplicate check and Rate Limiting
+- `createdAt` - Chronological query
 
-### 바. `resumes` 컬렉션
+### E. `resumes` Collection
 
-이력서 관리 정보를 저장하는 컬렉션입니다.
+Collection that stores resume management information.
 
-| 필드명 | 데이터 타입 | 제약조건 | 설명 |
+| Field | Data Type | Constraint | Description |
 | --- | --- | --- | --- |
-| `_id` | `ObjectId` | `PK` | 이력서 고유 ID |
-| `version` | `String` | `Indexed` | 버전 (예: "full", "software-engineer") |
-| `title` | `String` | `Required` | 제목 |
-| `description` | `String` | `Optional` | 설명 |
-| `fileName` | `String` | `Required` | 파일명 |
-| `fileUrl` | `String` | `Required` | 파일 URL (Azure Blob Storage) |
-| `fileType` | `String` | `Required` | 파일 타입 ("pdf", "docx") |
-| `fileSize` | `Long` | `Optional` | 파일 크기 (bytes) |
-| `isActive` | `Boolean` | `Default: true` | 활성 여부 |
-| `isPublic` | `Boolean` | `Default: true` | 공개 여부 |
-| `downloadCount` | `Long` | `Default: 0` | 다운로드 횟수 |
-| `createdAt` | `LocalDateTime` | `Auto-generated` | 생성 일시 |
-| `updatedAt` | `LocalDateTime` | `Auto-updated` | 수정 일시 |
+| `_id` | `ObjectId` | `PK` | Resume unique ID |
+| `version` | `String` | `Indexed` | Version (e.g., "full", "software-engineer") |
+| `title` | `String` | `Required` | Title |
+| `description` | `String` | `Optional` | Description |
+| `fileName` | `String` | `Required` | File name |
+| `fileUrl` | `String` | `Required` | File URL (Azure Blob Storage) |
+| `fileType` | `String` | `Required` | File type ("pdf", "docx") |
+| `fileSize` | `Long` | `Optional` | File size (bytes) |
+| `isActive` | `Boolean` | `Default: true` | Active status |
+| `isPublic` | `Boolean` | `Default: true` | Public status |
+| `downloadCount` | `Long` | `Default: 0` | Download count |
+| `createdAt` | `LocalDateTime` | `Auto-generated` | Created timestamp |
+| `updatedAt` | `LocalDateTime` | `Auto-updated` | Updated timestamp |
 
-**인덱스**:
-- `version` (Indexed) - 버전 조회
-- `isActive` - 주요 이력서 조회
+**Indexes**:
+- `version` (Indexed) - Version query
+- `isActive` - Primary resume query
 
-### 사. `project_engagement` 컬렉션
+### F. `project_engagement` Collection
 
-프로젝트 참여도 추적 정보를 저장하는 컬렉션입니다.
+Collection that stores project engagement tracking information.
 
-| 필드명 | 데이터 타입 | 제약조건 | 설명 |
+| Field | Data Type | Constraint | Description |
 | --- | --- | --- | --- |
-| `_id` | `ObjectId` | `PK` | 참여도 고유 ID |
-| `projectId` | `String` | `Required` | 프로젝트 ID |
-| `sessionId` | `String` | `Required` | 세션 ID |
-| `visitorId` | `String` | `Optional` | 방문자 ID |
-| `viewDuration` | `Long` | `Optional` | 조회 시간 (초) |
-| `scrollDepth` | `Integer` | `Optional` | 스크롤 깊이 (0-100%) |
-| `githubLinkClicked` | `Boolean` | `Optional` | GitHub 링크 클릭 여부 |
-| `demoLinkClicked` | `Boolean` | `Optional` | Demo 링크 클릭 여부 |
-| `timesViewed` | `Integer` | `Optional` | 조회 횟수 |
-| `referrer` | `String` | `Optional` | 참조 URL |
-| `source` | `String` | `Optional` | 소스 |
+| `_id` | `ObjectId` | `PK` | Engagement unique ID |
+| `projectId` | `String` | `Required` | Project ID |
+| `sessionId` | `String` | `Required` | Session ID |
+| `visitorId` | `String` | `Optional` | Visitor ID |
+| `viewDuration` | `Long` | `Optional` | View duration (seconds) |
+| `scrollDepth` | `Integer` | `Optional` | Scroll depth (0-100%) |
+| `githubLinkClicked` | `Boolean` | `Optional` | GitHub link clicked flag |
+| `demoLinkClicked` | `Boolean` | `Optional` | Demo link clicked flag |
+| `timesViewed` | `Integer` | `Optional` | View count |
+| `referrer` | `String` | `Optional` | Referrer URL |
+| `source` | `String` | `Optional` | Source |
 | `userAgent` | `String` | `Optional` | User Agent |
-| `ipAddress` | `String` | `Optional` | IP 주소 (해싱됨) |
-| `viewedAt` | `LocalDateTime` | `Auto-generated` | 조회 일시 |
-| `lastInteractionAt` | `LocalDateTime` | `Optional` | 마지막 상호작용 일시 |
+| `ipAddress` | `String` | `Optional` | IP address (hashed) |
+| `viewedAt` | `LocalDateTime` | `Auto-generated` | Viewed timestamp |
+| `lastInteractionAt` | `LocalDateTime` | `Optional` | Last interaction timestamp |
 
-**인덱스**:
-- `projectId` - 프로젝트별 통계 조회
-- `viewedAt` - 시간순 조회
+**Indexes**:
+- `projectId` - Per-project statistics query
+- `viewedAt` - Chronological query
 
-### 관계 설명
+### Relationships
 
 - **Project ↔ TechStack**: Many-to-Many via `techStackIds` array (embedded references)
 - **Project ↔ Academic**: Many-to-Many via `relatedAcademicIds` array (embedded references)
@@ -400,12 +404,12 @@ public class ValidationService {
 ### 6.2 API Version Management
 
 - **Base Path**: `/api/v1`
-- **버전 상수**: `ApiConstants.API_BASE_PATH = "/api/v1"`
-- **향후 확장**: `/api/v2` 등으로 버전 업그레이드 가능
+- **Version Constant**: `ApiConstants.API_BASE_PATH = "/api/v1"`
+- **Future Extension**: Can upgrade to `/api/v2` etc.
 
-### 6.3 표준화된 응답
+### 6.3 Standardized Response
 
-모든 API 응답은 `ApiResponse<T>` 래퍼로 감싸집니다:
+All API responses are wrapped in `ApiResponse<T>`:
 
 ```java
 {
@@ -421,66 +425,66 @@ public class ValidationService {
 }
 ```
 
-### 6.4 페이지네이션
+### 6.4 Pagination
 
-모든 목록 API는 페이지네이션을 지원합니다:
+All list APIs support pagination:
 
-- **기본값**: page=1, size=10
-- **최대값**: size=100
-- **응답**: `PageResponse<T>` with `page`, `size`, `total`, `items[]`
+- **Defaults**: page=1, size=10
+- **Maximum**: size=100
+- **Response**: `PageResponse<T>` with `page`, `size`, `total`, `items[]`
 
-## 7. 보안 구현
+## 7. Security Implementation
 
-### 7.1 인증 및 인가
+### 7.1 Authentication & Authorization
 
 - **JWT Authentication**: Access Token + Refresh Token
-- **Google OAuth**: Social login 지원
-- **2FA**: TOTP 기반 2단계 인증
-- **Role-Based Access**: USER, ADMIN 역할
+- **Google OAuth**: Social login support
+- **2FA**: TOTP-based two-factor authentication
+- **Role-Based Access**: USER, ADMIN roles
 
-### 7.2 보안 헤더
+### 7.2 Security Headers
 
 - **HSTS**: `Strict-Transport-Security: max-age=31536000; includeSubDomains`
 - **X-Frame-Options**: `DENY`
 - **X-Content-Type-Options**: `nosniff`
 - **Referrer-Policy**: `strict-origin-when-cross-origin`
 
-### 7.3 입력 검증
+### 7.3 Input Validation
 
 - **Bean Validation**: Jakarta Bean Validation
 - **Custom Validators**: `@ValidMongoId`, `@ValidUrl`, `@ValidDateRange`
-- **Input Sanitization**: `InputSanitizer`를 통한 XSS 방지
+- **Input Sanitization**: XSS prevention via `InputSanitizer`
 
-### 7.4 CORS 설정
+### 7.4 CORS Configuration
 
-- **허용된 오리진**: 환경 변수 또는 기본값
-- **허용된 메서드**: GET, POST, PUT, DELETE, OPTIONS, PATCH
-- **허용된 헤더**: Content-Type, Authorization, X-Requested-With
+- **Allowed Origins**: Environment variable or defaults
+- **Allowed Methods**: GET, POST, PUT, DELETE, OPTIONS, PATCH
+- **Allowed Headers**: Content-Type, Authorization, X-Requested-With
 
-## 8. 성능 최적화
+## 8. Performance Optimization
 
-### 8.1 캐싱
+### 8.1 Caching
 
-- **TechStackService**: Caffeine 캐시 (1시간 TTL)
-- **CacheConfig**: 캐시 매니저 설정
+- **TechStackService**: Caffeine cache (1 hour TTL)
+- **CacheConfig**: Cache manager configuration
 
-### 8.2 데이터베이스 최적화
+### 8.2 Database Optimization
 
-- **인덱스**: 자주 조회되는 필드에 인덱스 설정
-- **Connection Pooling**: MongoDB connection pool 설정
-- **쿼리 최적화**: Projection을 통한 필드 선택
+- **Indexes**: Index frequently queried fields
+- **Connection Pooling**: MongoDB connection pool configuration
+- **Query Optimization**: Field selection via Projection
 
-### 8.3 API 최적화
+### 8.3 API Optimization
 
-- **페이지네이션**: 모든 목록 API에 적용
-- **DTO Projection**: 필요한 필드만 반환
-- **ResponseUtil**: 표준화된 응답 생성
+- **Pagination**: Applied to all list APIs
+- **DTO Projection**: Return only required fields
+- **ResponseUtil**: Standardized response generation
 
-## 9. 에러 처리
+## 9. Error Handling
 
 ### 9.1 GlobalExceptionHandler
 
-모든 예외를 중앙에서 처리합니다:
+Handles all exceptions centrally:
 
 - **ValidationException**: 400 Bad Request
 - **ResourceNotFoundException**: 404 Not Found
@@ -489,7 +493,7 @@ public class ValidationService {
 
 ### 9.2 ErrorCode Enum
 
-표준화된 에러 코드:
+Standardized error codes:
 
 ```java
 public enum ErrorCode {
@@ -502,37 +506,37 @@ public enum ErrorCode {
 }
 ```
 
-## 10. 테스트 전략
+## 10. Testing Strategy
 
-### 10.1 단위 테스트
+### 10.1 Unit Testing
 
-- **Service Layer**: 비즈니스 로직 테스트
-- **Repository Layer**: 데이터 접근 테스트
-- **Validation**: 검증 로직 테스트
+- **Service Layer**: Business logic testing
+- **Repository Layer**: Data access testing
+- **Validation**: Validation logic testing
 
-### 10.2 통합 테스트
+### 10.2 Integration Testing
 
-- **Controller**: API 엔드포인트 테스트
-- **Testcontainers**: MongoDB 통합 테스트
-- **Security**: 인증/인가 테스트
+- **Controller**: API endpoint testing
+- **Testcontainers**: MongoDB integration testing
+- **Security**: Authentication/authorization testing
 
-## 11. 배포 및 운영
+## 11. Deployment & Operations
 
-### 11.1 빌드
+### 11.1 Build
 
 ```bash
 ./gradlew clean build
 ```
 
-### 11.2 실행
+### 11.2 Run
 
 ```bash
 ./gradlew bootRun
-# 또는
+# or
 java -jar build/libs/portfolio-0.0.1-SNAPSHOT.jar
 ```
 
-### 11.3 환경 변수
+### 11.3 Environment Variables
 
 ```properties
 # MongoDB
@@ -549,16 +553,16 @@ GOOGLE_CLIENT_ID=your-client-id
 GOOGLE_CLIENT_SECRET=your-client-secret
 ```
 
-## 12. 향후 개선 사항
+## 12. Future Improvements
 
-1. **Rate Limiting**: 모든 API 엔드포인트에 Rate Limiting 적용
-2. **Caching**: 추가적인 캐싱 전략 (Redis)
-3. **Monitoring**: Application Insights 또는 CloudWatch 연동
-4. **API Versioning**: v2 API 설계
-5. **GraphQL**: 복잡한 쿼리를 위한 GraphQL 엔드포인트 검토
+1. **Rate Limiting**: Apply Rate Limiting to all API endpoints
+2. **Caching**: Additional caching strategy (Redis)
+3. **Monitoring**: Application Insights or CloudWatch integration
+4. **API Versioning**: v2 API design
+5. **GraphQL**: Consider GraphQL endpoint for complex queries
 
 ---
 
 **Document Version**: 2.0.0  
-**Last Updated**: 2025-11-15  
+**Last Updated**: 2025-12-22  
 **Maintained By**: Development Team

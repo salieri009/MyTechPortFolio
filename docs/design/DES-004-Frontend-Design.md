@@ -1,4 +1,3 @@
-
 # Frontend Design Plan
 
 ## 1. Overview
@@ -37,43 +36,43 @@ The primary goal is to provide an attractive and intuitive experience for users 
 ### A. Main Page (Home) - With Improvements
 
 #### Hero Section
-- **타이틀**: Typewriter 효과로 "문제 해결을 즐기는 개발자 정욱반입니다" 순차 출력
-- **CTA 버튼들**: Projects, About, Email, LinkedIn으로 이동하는 4개 버튼을 3+1 레이아웃으로 배치
-- **언어 설정 개선사항**:
-  - **문제점**: 언어 변경 방법을 모르는 사용자를 위한 명확한 표기 필요
-  - **해결책**: `🇰🇷 한국어 ← Swipe to change language →` 형태로 힌트 텍스트 추가
-  - **다국어 지원**: 한국어(기본), English, 日本語
-  - **기술 구현**: LanguageSwiper 컴포넌트에 `showHint` prop 추가
+- **Title**: Sequential output with Typewriter effect: "I'm Ukban Jung, a developer who enjoys solving problems"
+- **CTA Buttons**: 4 buttons navigating to Projects, About, Email, LinkedIn arranged in 3+1 layout
+- **Language Setting Improvements**:
+  - **Problem**: Clear notation needed for users unfamiliar with language change method
+  - **Solution**: Add hint text in format `🇰🇷 한국어 ← Swipe to change language →`
+  - **Multi-language Support**: Korean (default), English, Japanese
+  - **Technical Implementation**: Add `showHint` prop to LanguageSwiper component
 
 #### Project Showcase Section (3-Column Interactive Cards)
-- **개선사항**: 각 컬럼 클릭 시 해당 분야의 프로젝트 페이지로 이동
-- **구조**:
-  1. **3D/Game Development** (🎮): Three.js, WebGL, Unity 관련 프로젝트
-  2. **Software Engineering** (💻): React, Spring Boot, 풀스택 프로젝트  
-  3. **Game Development** (🎯): Unity, 게임 개발 프로젝트
-- **인터랙션**:
-  - **호버 시**: 관련 기술 스택 하단에 애니메이션으로 표시
-  - **클릭 시**: React Router를 통해 해당 카테고리로 필터링된 프로젝트 페이지로 라우팅
-  - **모바일**: 터치 피드백과 함께 즉시 이동
-  - **접근성**: Tab 키 포커스 + Enter/Space 키 활성화 지원
+- **Improvements**: Navigate to respective project page on column click
+- **Structure**:
+  1. **3D/Game Development** (🎮): Three.js, WebGL, Unity related projects
+  2. **Software Engineering** (💻): React, Spring Boot, full-stack projects  
+  3. **Game Development** (🎯): Unity, game development projects
+- **Interactions**:
+  - **On Hover**: Display related tech stack at bottom with animation
+  - **On Click**: Route to filtered projects page via React Router
+  - **Mobile**: Immediate navigation with touch feedback
+  - **Accessibility**: Tab key focus + Enter/Space key activation support
 
-#### Journey Milestone Section (최신 트렌드 반영)
-- **개선사항**: 스크롤 기반 개발자 여정 타임라인 구현
-- **기술 구현**:
-  - Intersection Observer API를 활용한 스크롤 트리거 애니메이션
-  - 각 마일스톤별 ID 기반 스크롤 네비게이션 (`#milestone-university`, `#milestone-programming` 등)
-  - Framer Motion을 활용한 순차적 등장 애니메이션 (stagger: 150ms)
-- **컨텐츠 구조**:
+#### Journey Milestone Section (Latest Trends)
+- **Improvements**: Implement scroll-based developer journey timeline
+- **Technical Implementation**:
+  - Scroll-triggered animations using Intersection Observer API
+  - ID-based scroll navigation per milestone (`#milestone-university`, `#milestone-programming`, etc.)
+  - Sequential entrance animations using Framer Motion (stagger: 150ms)
+- **Content Structure**:
   ```
   🎓 High School Graduation (2015) → 🏫 Jeonbuk National University (2015~2020) → 
   🪖 Military Service - Interpreter (2021~2023) → 🇦🇺 Study in Australia (2023~Present) → 
   🚀 Current Goals (2025)
   ```
-- **시각적 요소**:
-  - 세로 타임라인 with 진행 표시바 (CSS `::before` pseudo-element)
-  - 각 단계별 아이콘, 제목, 설명, 관련 기술 태그
-  - 현재 진행 중인 단계는 CSS `animation: pulse 2s infinite` 효과로 강조
-  - 스크롤 진행도에 따른 타임라인 라인 색상 변화
+- **Visual Elements**:
+  - Vertical timeline with progress bar (CSS `::before` pseudo-element)
+  - Icons, titles, descriptions, and related tech tags per stage
+  - Current stage emphasized with CSS `animation: pulse 2s infinite` effect
+  - Timeline line color change based on scroll progress
 
 ### B. Projects Page
 
@@ -108,90 +107,90 @@ The primary goal is to provide an attractive and intuitive experience for users 
 
 ```
 src/
-|-- components/       # 재사용 가능한 공통 컴포넌트
-|   |-- common/       # 공통 UI 컴포넌트
+|-- components/       # Reusable common components
+|   |-- common/       # Common UI components
 |   |   |-- Button.tsx
 |   |   |-- Card.tsx
 |   |   `-- Tag.tsx
-|   |-- layout/       # 레이아웃 컴포넌트
+|   |-- layout/       # Layout components
 |   |   |-- Header.tsx
 |   |   |-- Footer.tsx
 |   |   `-- Layout.tsx
-|   |-- ui/           # 재사용 가능한 UI 컴포넌트
-|   |-- sections/     # 페이지별 섹션 컴포넌트
-|   |   |-- ProjectShowcaseSection.tsx    # 3-Column 인터랙티브 카드
-|   |   |-- JourneyMilestoneSection.tsx   # 스크롤 기반 타임라인
+|   |-- ui/           # Reusable UI components
+|   |-- sections/     # Page section components
+|   |   |-- ProjectShowcaseSection.tsx    # 3-Column interactive cards
+|   |   |-- JourneyMilestoneSection.tsx   # Scroll-based timeline
 |   |   `-- TechStackSection.tsx
-|   |-- LanguageSwiper/    # 언어 스위처 컴포넌트 (개선)
+|   |-- LanguageSwiper/    # Language switcher component (improved)
 |   |   |-- LanguageSwiper.tsx
 |   |   `-- index.ts
-|   |-- Typewriter/        # 타이핑 효과 컴포넌트
-|   |-- ThemeToggle/       # 다크모드 토글
-|   `-- ScrollMilestone/   # 스크롤 기반 마일스톤 컴포넌트
-|-- hooks/           # 커스텀 훅
-|   |-- useScrollAnimation.ts  # 스크롤 애니메이션 훅
+|   |-- Typewriter/        # Typing effect component
+|   |-- ThemeToggle/       # Dark mode toggle
+|   `-- ScrollMilestone/   # Scroll-based milestone component
+|-- hooks/           # Custom hooks
+|   |-- useScrollAnimation.ts  # Scroll animation hook
 |   |-- useIntersectionObserver.ts
 |   `-- useAnalytics.ts
-|-- i18n/            # 다국어 설정
-|-- pages/           # 각 페이지 컴포넌트
-|-- services/        # API 연동 서비스
-|-- stores/          # 개별 스토어들 (Zustand)
-|   |-- themeStore.ts     # 테마 관리
-|   |-- filterStore.ts    # 프로젝트 필터 상태
-|   `-- milestoneStore.ts # 마일스톤 진행 상태
-|-- styles/          # 전역 스타일 및 테마
-|-- types/           # TypeScript 타입 정의
-|   |-- domain.ts         # 도메인 타입
-|   |-- milestone.ts      # 마일스톤 타입
-|   `-- interaction.ts    # 인터랙션 타입
-|-- utils/           # 유틸리티 함수
-|   |-- scrollUtils.ts    # 스크롤 관련 유틸
-|   `-- routingUtils.ts   # 라우팅 헬퍼
-|-- App.tsx          # 메인 애플리케이션 컴포넌트
-`-- main.tsx         # 엔트리 포인트
+|-- i18n/            # Multi-language configuration
+|-- pages/           # Page components
+|-- services/        # API integration services
+|-- stores/          # Individual stores (Zustand)
+|   |-- themeStore.ts     # Theme management
+|   |-- filterStore.ts    # Project filter state
+|   `-- milestoneStore.ts # Milestone progress state
+|-- styles/          # Global styles and themes
+|-- types/           # TypeScript type definitions
+|   |-- domain.ts         # Domain types
+|   |-- milestone.ts      # Milestone types
+|   `-- interaction.ts    # Interaction types
+|-- utils/           # Utility functions
+|   |-- scrollUtils.ts    # Scroll-related utilities
+|   `-- routingUtils.ts   # Routing helpers
+|-- App.tsx          # Main application component
+`-- main.tsx         # Entry point
 ```
 
-## 5. 정보 구조 및 내비게이션 (IA & Navigation) - 개선사항 반영
+## 5. Information Architecture & Navigation - With Improvements
 
-- **글로벌 내비게이션**: Home, Projects, Academics, About, Blog + 언어 설정 + 다크모드 토글
-- **메인 페이지 구조** (개선):
-  - Hero Section (CTA 버튼들)
-  - 3-Column Project Showcase (클릭 가능한 카테고리)
-  - Journey Milestone Timeline (스크롤 기반, ID 앵커 네비게이션)
-- **네비게이션 개선사항**:
-  - 언어 스위처에 사용법 힌트 추가: "← Swipe to change language →"
-  - 3-Column 카드에서 프로젝트 페이지로의 직접 연결
-  - 마일스톤 섹션의 앵커 기반 내부 네비게이션 (`#milestone-*`)
-- **하위 구조**:
+- **Global Navigation**: Home, Projects, Academics, About, Blog + Language settings + Dark mode toggle
+- **Main Page Structure** (improved):
+  - Hero Section (CTA buttons)
+  - 3-Column Project Showcase (clickable categories)
+  - Journey Milestone Timeline (scroll-based, ID anchor navigation)
+- **Navigation Improvements**:
+  - Add usage hint to language switcher: "← Swipe to change language →"
+  - Direct connection from 3-Column cards to projects page
+  - Anchor-based internal navigation for milestone section (`#milestone-*`)
+- **Sub-structure**:
     - **Home**: Hero → 3-Column Showcase → Journey Timeline → CTA
-    - **Projects**: 필터 바(카테고리 연동) → 카드 그리드 → 페이지네이션
-    - **Project Details**: 개요 → 역할 → 기술 선택 이유 → 문제/해결 → 미디어 데모
-    - **Academics**: 학기별 타임라인 → 과목 상세 툴팁/모달
-    - **About**: 스토리, 가치관, 연락처
+    - **Projects**: Filter bar (category linked) → Card grid → Pagination
+    - **Project Details**: Overview → Role → Tech selection rationale → Problem/Solution → Media demo
+    - **Academics**: Semester timeline → Course detail tooltip/modal
+    - **About**: Story, values, contact info
 
-## 6. 디자인 시스템 (Design System)
+## 6. Design System
 
-- 컬러 팔레트
+- Color Palette
     - Primary: #4F46E5 (Indigo 600), Hover #4338CA
     - Accent: #06B6D4 (Cyan 500)
-    - Neutral: 글자 #0F172A, 본문 #334155, 경계 #E2E8F0, 배경 #FFFFFF
-    - Dark Mode: 배경 #0B1220, 카드 #0F172A, 글자 #E5E7EB, 경계 #1F2937
-- 타이포그라피
+    - Neutral: Text #0F172A, Body #334155, Border #E2E8F0, Background #FFFFFF
+    - Dark Mode: Background #0B1220, Card #0F172A, Text #E5E7EB, Border #1F2937
+- Typography
     - Title/Hero: Pretendard SemiBold 48/56
     - H2: 28/36, H3: 20/28, Body: 16/24, Caption: 14/20
-    - 글자 대비 AA 이상, 줄간 1.5, 문단 최대 폭 72ch
-- 레이아웃/그리드
-    - 컨테이너: max-width 1200px, 양옆 24px 패딩
-    - 카드 그리드: Desktop 3열, Tablet 2열, Mobile 1열, gap 24px
-    - 컴포넌트 라운딩 12px, 그림자 Elevation 1/2/3 단계 사용
-- 컴포넌트 상태
-    - 버튼: default/hover/active/disabled, focus-visible 아웃라인 2px Accent
-    - 태그: 선택/해제, 다중 선택 시 칩 형태 집계
-- 아이콘: Lucide/Feather 계열 선형 아이콘 1.5px 두께統一
-- 테마 토큰(styled-components ThemeProvider)
+    - Text contrast AA or above, line-height 1.5, max paragraph width 72ch
+- Layout/Grid
+    - Container: max-width 1200px, 24px padding on sides
+    - Card Grid: Desktop 3-column, Tablet 2-column, Mobile 1-column, gap 24px
+    - Component rounding 12px, shadow Elevation levels 1/2/3
+- Component States
+    - Button: default/hover/active/disabled, focus-visible outline 2px Accent
+    - Tag: selected/deselected, chip-style aggregation for multi-select
+- Icons: Lucide/Feather line icons with uniform 1.5px stroke width
+- Theme Tokens (styled-components ThemeProvider)
 
-```
-// 예시 토큰(발췌)
+```javascript
+// Example tokens (excerpt)
 export const theme = {
     colors: { primary: '#4F46E5', primaryHover: '#4338CA', accent: '#06B6D4',
         text: '#0F172A', textSecondary: '#334155', border: '#E2E8F0', bg: '#FFFFFF' },
@@ -202,76 +201,76 @@ export const theme = {
 }
 ```
 
-## 7. 반응형 규칙 (Responsive)
+## 7. Responsive Rules
 
 - Breakpoints: sm 640px, md 768px, lg 1024px, xl 1280px
-- Hero: 모바일에서 1열(텍스트 → 이미지), 데스크톱 2열 좌우 배치
-- 네비게이션: md 미만 햄버거 + 오버레이 드로어, 스크롤 시 축소 고정 헤더
-- 프로젝트 카드: 이미지 16:9 고정, 스켈레톤 로딩 제공
+- Hero: Mobile single column (text → image), Desktop two-column side by side
+- Navigation: Below md hamburger + overlay drawer, shrink fixed header on scroll
+- Project Cards: Fixed 16:9 image ratio, skeleton loading provided
 
-## 8. 상호작용 & 모션 (Interaction & Motion) - 개선사항
+## 8. Interaction & Motion - With Improvements
 
-### 메인 페이지 인터랙션
-- **Typewriter 효과**: Hero 섹션에서 순차적 텍스트 출력 (속도: 80ms/char)
-- **3-Column 호버/클릭**:
-  - **호버**: 카드 확대 (scale 1.02) + 관련 기술 스택 하단 표시
-  - **클릭**: 해당 카테고리 프로젝트 페이지로 라우팅 (React Router)
-  - **트랜지션**: `transform 0.2s ease, box-shadow 0.2s ease`
-- **스크롤 기반 Journey Timeline**:
-  - Intersection Observer로 뷰포트 진입 감지 (threshold: 0.3)
-  - 순차적 마일스톤 등장 애니메이션 (stagger: 150ms)
-  - 현재 진행 중인 마일스톤은 CSS `pulse` 애니메이션 효과
+### Main Page Interactions
+- **Typewriter Effect**: Sequential text output in Hero section (speed: 80ms/char)
+- **3-Column Hover/Click**:
+  - **Hover**: Card scale up (scale 1.02) + display related tech stack below
+  - **Click**: Route to corresponding category projects page (React Router)
+  - **Transition**: `transform 0.2s ease, box-shadow 0.2s ease`
+- **Scroll-based Journey Timeline**:
+  - Viewport entry detection via Intersection Observer (threshold: 0.3)
+  - Sequential milestone entrance animations (stagger: 150ms)
+  - CSS `pulse` animation effect for current milestone
 
-### 언어 스위처 개선
-- **힌트 표시**: "← Swipe to change language →" 텍스트 (opacity: 0.7)
-- **스와이프 제스처**: 좌우 스와이프로 언어 변경 (delta: 50px)
-- **키보드 지원**: Tab + Enter로 언어 토글
-- **애니메이션**: 언어 변경 시 slide + fade 효과 (duration: 200ms)
+### Language Switcher Improvements
+- **Hint Display**: "← Swipe to change language →" text (opacity: 0.7)
+- **Swipe Gesture**: Change language via left/right swipe (delta: 50px)
+- **Keyboard Support**: Tab + Enter for language toggle
+- **Animation**: Slide + fade effect on language change (duration: 200ms)
 
-### 애니메이션 성능 최적화
-- **will-change** 속성을 애니메이션 요소에 적용
-- **transform**과 **opacity**만 사용하여 리페인트 최소화
-- **prefers-reduced-motion** 미디어 쿼리로 접근성 대응
+### Animation Performance Optimization
+- Apply **will-change** property to animated elements
+- Use only **transform** and **opacity** to minimize repaints
+- Accessibility support with **prefers-reduced-motion** media query
 
-## 9. 접근성 & 국제화 (A11y & i18n) - 개선사항
+## 9. Accessibility & Internationalization (A11y & i18n) - With Improvements
 
-### 언어 지원 개선
-- **힌트 텍스트 다국어화**:
-  - 한국어: "← 스와이프하여 언어 변경 →"
+### Language Support Improvements
+- **Hint Text Internationalization**:
+  - Korean: "← 스와이프하여 언어 변경 →"
   - English: "← Swipe to change language →"  
-  - 日本語: "← スワイプして言語変更 →"
-- **키보드 접근성**: Tab + Space/Enter로 언어 변경 가능
-- **ARIA 라벨**: `aria-label="Language selector"`, `aria-describedby="lang-hint"` 추가
-- **언어별 폰트 최적화**: 한글(Pretendard), 영문(Inter), 일문(Noto Sans JP)
+  - Japanese: "← スワイプして言語変更 →"
+- **Keyboard Accessibility**: Language change via Tab + Space/Enter
+- **ARIA Labels**: Add `aria-label="Language selector"`, `aria-describedby="lang-hint"`
+- **Per-language Font Optimization**: Korean (Pretendard), English (Inter), Japanese (Noto Sans JP)
 
-### 스크롤 애니메이션 접근성
-- **prefers-reduced-motion**: 모션 민감 사용자를 위한 애니메이션 비활성화
-- **키보드 네비게이션**: 마일스톤 간 Tab 키 이동 지원
-- **스크린 리더**: 각 마일스톤에 `aria-label="Milestone: University Entry, 2021"` 제공
-- **포커스 관리**: 스크롤 애니메이션 중에도 포커스 트랩 없이 자연스러운 탐색
+### Scroll Animation Accessibility
+- **prefers-reduced-motion**: Disable animations for motion-sensitive users
+- **Keyboard Navigation**: Tab key navigation between milestones
+- **Screen Reader**: Provide `aria-label="Milestone: University Entry, 2021"` for each milestone
+- **Focus Management**: Natural navigation without focus trap during scroll animations
 
-### 인터랙션 접근성
-- **3-Column 카드**: `role="button"`, `aria-describedby` 속성으로 카테고리 설명 연결
-- **키보드 지원**: Enter/Space 키로 카드 클릭 기능 활성화
-- **포커스 표시**: 2px solid accent color 아웃라인으로 포커스 상태 명확히 표시
+### Interaction Accessibility
+- **3-Column Cards**: Connect category description with `role="button"`, `aria-describedby` attributes
+- **Keyboard Support**: Activate card click function with Enter/Space keys
+- **Focus Indicator**: Clearly show focus state with 2px solid accent color outline
 
-## 10. 성능/SEO/분석 (Perf/SEO/Analytics)
+## 10. Performance/SEO/Analytics
 
-- **Core Web Vitals 목표**: LCP < 2.5s, CLS < 0.1, TTI < 3.5s (모바일 4G 기준)
-- **최적화 전략**:
-  - 컴포넌트 기반 코드 스플리팅 (`React.lazy()` + `Suspense`)
-  - 이미지 lazy loading + WebP 포맷 + responsive images
-  - Intersection Observer 기반 애니메이션 최적화 (GPU 가속)
-  - 폰트 디스플레이 swap + preload critical fonts
-- **캐싱 전략**: 
-  - 프로젝트 목록 SWR 캐시 5분
-  - 정적 에셋 1년 캐시 + 컨텐츠 해시
-- **SEO**: 메타 태그, OG 카드, 구조화 데이터 (Person, CreativeWork schema)
-- **분석**: 주요 인터랙션 이벤트 추적 (카드 클릭, 언어 변경, 마일스톤 도달)
+- **Core Web Vitals Target**: LCP < 2.5s, CLS < 0.1, TTI < 3.5s (mobile 4G baseline)
+- **Optimization Strategies**:
+  - Component-based code splitting (`React.lazy()` + `Suspense`)
+  - Image lazy loading + WebP format + responsive images
+  - Intersection Observer based animation optimization (GPU acceleration)
+  - Font display swap + preload critical fonts
+- **Caching Strategy**: 
+  - Project list SWR cache 5 minutes
+  - Static assets 1-year cache + content hash
+- **SEO**: Meta tags, OG cards, structured data (Person, CreativeWork schema)
+- **Analytics**: Track major interaction events (card clicks, language changes, milestone reach)
 
-## 11. 스크롤 기반 Journey Milestone 구현 명세
+## 11. Scroll-based Journey Milestone Implementation Spec
 
-### 기술적 구현 방식
+### Technical Implementation
 ```typescript
 interface MilestoneData {
   id: string;
@@ -283,7 +282,7 @@ interface MilestoneData {
   status: 'completed' | 'current' | 'planned';
 }
 
-// Intersection Observer 기반 스크롤 트리거
+// Intersection Observer based scroll trigger
 const useScrollMilestone = () => {
   const [visibleMilestones, setVisibleMilestones] = useState<string[]>([]);
   
@@ -304,16 +303,16 @@ const useScrollMilestone = () => {
 };
 ```
 
-### 시각적 구현
-- **타임라인 라인**: 세로 진행바 with 그라데이션 (`linear-gradient`)
-- **마일스톤 노드**: 원형 아이콘 + 연결선 (`border-radius: 50%`)
-- **컨텐츠 카드**: 우측에 등장하는 정보 카드 (`transform: translateX`)
-- **진행 상태 표시**: 
-  - 완료: 체크 아이콘 + 녹색 (`#10B981`)
-  - 진행중: 펄스 애니메이션 + 파란색 (`#3B82F6`)
-  - 계획: 점선 + 회색 (`border-style: dashed`)
+### Visual Implementation
+- **Timeline Line**: Vertical progress bar with gradient (`linear-gradient`)
+- **Milestone Node**: Circular icon + connector line (`border-radius: 50%`)
+- **Content Card**: Info card appearing from right (`transform: translateX`)
+- **Progress Status Indicator**: 
+  - Completed: Check icon + green (`#10B981`)
+  - In Progress: Pulse animation + blue (`#3B82F6`)
+  - Planned: Dashed line + gray (`border-style: dashed`)
 
-### CSS 애니메이션 최적화
+### CSS Animation Optimization
 ```css
 .milestone-card {
   transform: translateY(50px);
@@ -332,9 +331,9 @@ const useScrollMilestone = () => {
 }
 ```
 
-## 12. 핵심 컴포넌트 명세 (개선사항 반영)
+## 12. Key Component Specifications (With Improvements)
 
-### LanguageSwiper (개선)
+### LanguageSwiper (Improved)
 ```typescript
 interface LanguageSwiperProps {
   showHint?: boolean;
@@ -343,11 +342,11 @@ interface LanguageSwiperProps {
   onLanguageChange?: (language: string) => void;
 }
 ```
-- **개선사항**: 힌트 텍스트 표시 옵션 추가
-- **다국어 지원**: 힌트 텍스트도 i18n으로 관리
-- **접근성**: ARIA 라벨 및 키보드 지원 (Tab + Enter/Space)
+- **Improvements**: Added hint text display option
+- **Multi-language Support**: Hint text also managed via i18n
+- **Accessibility**: ARIA label and keyboard support (Tab + Enter/Space)
 
-### ProjectShowcaseCard (클릭 가능)
+### ProjectShowcaseCard (Clickable)
 ```typescript
 interface ProjectShowcaseCardProps {
   category: 'threejs' | 'software' | 'gamedev';
@@ -360,11 +359,11 @@ interface ProjectShowcaseCardProps {
   className?: string;
 }
 ```
-- **개선사항**: 클릭 이벤트 및 라우팅 기능 추가
-- **호버 상태**: 기술 스택 표시 애니메이션
-- **접근성**: 키보드 포커스, ARIA 라벨, `role="button"`
+- **Improvements**: Added click event and routing functionality
+- **Hover State**: Tech stack display animation
+- **Accessibility**: Keyboard focus, ARIA label, `role="button"`
 
-### JourneyMilestone (신규)
+### JourneyMilestone (New)
 ```typescript
 interface MilestoneData {
   id: string;
@@ -382,87 +381,87 @@ interface JourneyMilestoneProps {
   className?: string;
 }
 ```
-- **기능**: 스크롤 기반 타임라인 표시
-- **애니메이션**: 순차적 등장 + 진행 상태별 스타일링
-- **인터랙션**: 클릭 시 관련 프로젝트 페이지로 이동
+- **Features**: Scroll-based timeline display
+- **Animations**: Sequential entrance + status-based styling
+- **Interactions**: Navigate to related projects page on click
 
-### 기존 컴포넌트 (유지)
+### Existing Components (Maintained)
 - **Button**: variant(primary/ghost), size(sm/md/lg), icon, loading, onClick
-- **Card**: 썸네일, 제목, 설명, 태그[], onClick/Link, 강조 플래그
-- **Header**: 로고, nav, LanguageSwiper(개선), ThemeToggle, 스크롤 상태
-- **FilterBar**: 선택된 태그 Zustand 상태와 양방향 바인딩
+- **Card**: Thumbnail, title, description, tags[], onClick/Link, highlight flag
+- **Header**: Logo, nav, LanguageSwiper (improved), ThemeToggle, scroll state
+- **FilterBar**: Bidirectional binding with selected tags Zustand state
 
-## 13. 데이터 흐름 & 상태 (Data & State)
+## 13. Data Flow & State
 
-- 전역: UI 테마, 필터 상태, 토스트 알림(Zustand store)
-- 서버 데이터: 프로젝트 목록/상세, 학업 이력(Axios + SWR 패턴)
-- 에러/로딩: 페이지 스켈레톤, API 에러 토스트, 재시도 버튼
+- Global: UI theme, filter state, toast notifications (Zustand store)
+- Server Data: Project list/details, academic history (Axios + SWR pattern)
+- Error/Loading: Page skeleton, API error toast, retry button
 
-## 14. 개발 마일스톤 (3주 계획) - 개선사항 반영
+## 14. Development Milestones (3-Week Plan) - With Improvements
 
-### Week 1: 기초 구조 및 핵심 컴포넌트
-- **Day 1-2**: 프로젝트 설정, 라우팅, 기본 레이아웃 + 테마 시스템
-- **Day 3-4**: Hero 섹션 + Typewriter 컴포넌트 구현
-- **Day 5-7**: 3-Column Showcase 섹션 + 클릭 라우팅 기능
+### Week 1: Foundation & Core Components
+- **Day 1-2**: Project setup, routing, basic layout + theme system
+- **Day 3-4**: Hero section + Typewriter component implementation
+- **Day 5-7**: 3-Column Showcase section + click routing functionality
 
-### Week 2: 인터랙션 및 애니메이션
-- **Day 8-10**: Journey Milestone 섹션 구현 (스크롤 기반)
-- **Day 11-12**: Intersection Observer + 순차적 애니메이션 구현
-- **Day 13-14**: 언어 스위처 개선 + 힌트 텍스트 다국어화
+### Week 2: Interactions & Animations
+- **Day 8-10**: Journey Milestone section implementation (scroll-based)
+- **Day 11-12**: Intersection Observer + sequential animation implementation
+- **Day 13-14**: Language switcher improvements + hint text internationalization
 
-### Week 3: 최적화 및 완성
-- **Day 15-17**: 성능 최적화 + 접근성 개선 (WCAG 2.1 AA)
-- **Day 18-19**: 크로스 브라우저 테스트 + 반응형 최적화
-- **Day 20-21**: QA, 문서화, 배포 준비
+### Week 3: Optimization & Completion
+- **Day 15-17**: Performance optimization + accessibility improvements (WCAG 2.1 AA)
+- **Day 18-19**: Cross-browser testing + responsive optimization
+- **Day 20-21**: QA, documentation, deployment preparation
 
-### 주요 기술 구현 포인트
-1. **Intersection Observer API**: 스크롤 기반 애니메이션 최적화
-2. **React Router**: 카테고리 기반 동적 라우팅
-3. **Framer Motion**: 고성능 애니메이션 (GPU 가속)
-4. **Zustand**: 경량 상태 관리 (필터, 테마, 마일스톤 상태)
-5. **i18next**: 다국어 지원 + 힌트 텍스트 관리
+### Key Technical Implementation Points
+1. **Intersection Observer API**: Scroll-based animation optimization
+2. **React Router**: Category-based dynamic routing
+3. **Framer Motion**: High-performance animations (GPU acceleration)
+4. **Zustand**: Lightweight state management (filter, theme, milestone state)
+5. **i18next**: Multi-language support + hint text management
 
-## 15. 성공 기준 (Quality Gates) - 업데이트
+## 15. Quality Gates - Updated
 
-### 기능적 요구사항
-- ✅ 언어 스위처에 사용법 힌트 표시 (3개 언어 지원)
-- ✅ 3-Column 카드 클릭 시 프로젝트 페이지 이동 (카테고리 필터링)
-- ✅ 스크롤 기반 Journey Milestone 구현 (Intersection Observer)
-- ✅ 모든 인터랙션의 키보드 접근성 지원 (Tab + Enter/Space)
+### Functional Requirements
+- ✅ Language switcher shows usage hint (3 languages supported)
+- ✅ 3-Column card clicks navigate to projects page (category filtering)
+- ✅ Scroll-based Journey Milestone implementation (Intersection Observer)
+- ✅ Keyboard accessibility for all interactions (Tab + Enter/Space)
 
-### 성능 요구사항
+### Performance Requirements
 - **Lighthouse Score**: Performance ≥ 90, Accessibility ≥ 95, SEO ≥ 90
 - **Core Web Vitals**: LCP < 2.5s, CLS < 0.1, TTI < 3.5s
-- **애니메이션**: 60fps 유지 (transform/opacity 사용, GPU 가속)
-- **첫 화면 로딩**: < 2초 (모바일 4G 기준)
+- **Animations**: Maintain 60fps (using transform/opacity, GPU acceleration)
+- **First Screen Load**: < 2 seconds (mobile 4G baseline)
 
-### 사용자 경험 요구사항
-- **언어 변경**: 5초 내에 사용법 이해 가능
-- **프로젝트 탐색**: 메인 페이지에서 원하는 카테고리로 1클릭 이동
-- **개발자 여정**: 스크롤을 통한 직관적 스토리텔링 이해
-- **접근성**: WCAG 2.1 AA 준수 + 키보드/스크린 리더 완전 지원
+### User Experience Requirements
+- **Language Change**: Understandable usage within 5 seconds
+- **Project Exploration**: 1-click navigation from main page to desired category
+- **Developer Journey**: Intuitive storytelling understanding through scrolling
+- **Accessibility**: WCAG 2.1 AA compliance + full keyboard/screen reader support
 
-### 기술적 요구사항
-- **Build**: 경고 0, 오류 0 (ESLint + TypeScript)
-- **크로스 브라우저**: Chrome, Safari, Edge 최신 2버전
-- **반응형**: 320px ~ 2560px 모든 해상도 대응
-- **SEO**: 메타 태그, 구조화 데이터, sitemap.xml
+### Technical Requirements
+- **Build**: 0 warnings, 0 errors (ESLint + TypeScript)
+- **Cross-browser**: Latest 2 versions of Chrome, Safari, Edge
+- **Responsive**: Support all resolutions from 320px to 2560px
+- **SEO**: Meta tags, structured data, sitemap.xml
 
 ---
 
-## 부가 가치 제안
+## Value Proposition
 
-### 최신 트렌드 반영
-- **스크롤 스토리텔링**: Journey Milestone을 통한 개발자 성장 스토리 시각화
-- **마이크로 인터랙션**: 호버, 클릭, 스크롤 시 세밀한 피드백 제공
-- **접근성 우선**: WCAG 2.1 AA 준수 + 키보드/스크린 리더 완전 지원
+### Latest Trends Applied
+- **Scroll Storytelling**: Visualize developer growth story through Journey Milestone
+- **Micro-interactions**: Detailed feedback on hover, click, and scroll
+- **Accessibility First**: WCAG 2.1 AA compliance + full keyboard/screen reader support
 
-### 기술적 우수성
-- **성능 최적화**: Intersection Observer, 코드 스플리팅, 이미지 최적화
-- **확장 가능성**: 컴포넌트 기반 아키텍처로 새로운 섹션 추가 용이
-- **국제화**: 3개 언어 지원 + 사용법 힌트로 UX 개선
+### Technical Excellence
+- **Performance Optimization**: Intersection Observer, code splitting, image optimization
+- **Scalability**: Component-based architecture for easy addition of new sections
+- **Internationalization**: 3 language support + UX improvement with usage hints
 
-### 차별화 요소
-- **개발자 중심 스토리텔링**: 기술적 성장 과정을 타임라인으로 시각화
-- **인터랙티브 포트폴리오**: 단순 나열이 아닌 체험형 콘텐츠
-- **채용 담당자 친화적**: 원하는 기술 분야를 빠르게 탐색할 수 있는 구조
+### Differentiating Factors
+- **Developer-Centric Storytelling**: Visualize technical growth journey through timeline
+- **Interactive Portfolio**: Experience-based content rather than simple listing
+- **Recruiter-Friendly**: Structure for quick exploration of desired tech domains

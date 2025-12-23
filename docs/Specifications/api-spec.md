@@ -45,7 +45,7 @@ This document provides a complete, implementation-ready API specification for th
   "success": false,
   "data": null,
   "message": null,
-  "error": "Error message in Korean",
+  "error": "Error message",
   "errorCode": "RESOURCE_NOT_FOUND",
   "errors": {
     "fieldName": "Validation error message"
@@ -379,7 +379,7 @@ Create a new project.
 {
   "success": true,
   "data": ProjectDetailResponse,
-  "message": "프로젝트가 성공적으로 생성되었습니다"
+  "message": "Project created successfully"
 }
 ```
 
@@ -401,7 +401,7 @@ Update an existing project.
 {
   "success": true,
   "data": ProjectDetailResponse,
-  "message": "프로젝트가 성공적으로 수정되었습니다"
+  "message": "Project updated successfully"
 }
 ```
 
@@ -497,13 +497,39 @@ Authenticate using Google OAuth ID token.
 {
   "success": true,
   "data": LoginResponse,
-  "message": "로그인 성공"
+  "message": "Login successful"
 }
 ```
 
 **Error Responses**:
 - `400 Bad Request`: Invalid token format
 - `401 Unauthorized`: Authentication failed
+
+#### POST `/api/v1/auth/github`
+
+Authenticate using GitHub OAuth access token.
+
+**Request Body**: `GitHubLoginRequest`
+
+```typescript
+{
+  accessToken: string;     // Required, GitHub OAuth access token
+  twoFactorCode?: string;  // Optional, exactly 6 digits
+}
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "data": LoginResponse,
+  "message": "Login successful"
+}
+```
+
+**Error Responses**:
+- `400 Bad Request`: Invalid token format
+- `401 Unauthorized`: Authentication failed (invalid GitHub token or email not accessible)
 
 #### POST `/api/v1/auth/refresh`
 
@@ -517,7 +543,7 @@ Refresh access token using refresh token.
 {
   "success": true,
   "data": LoginResponse,
-  "message": "토큰 갱신 성공"
+  "message": "Token refreshed successfully"
 }
 ```
 
@@ -536,7 +562,7 @@ Logout and invalidate token.
 {
   "success": true,
   "data": null,
-  "message": "로그아웃 성공"
+  "message": "Logout successful"
 }
 ```
 
@@ -792,7 +818,7 @@ All errors follow the standardized `ApiResponse` format with appropriate HTTP st
 
 Error responses include:
 - `errorCode`: Standardized error code from `ErrorCode` enum
-- `error`: Human-readable error message (Korean)
+- `error`: Human-readable error message
 - `errors`: Field-specific validation errors (Map<String, String>)
 
 ## Mock Parity

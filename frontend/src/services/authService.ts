@@ -140,6 +140,17 @@ class AuthService {
     })
   }
 
+  /**
+   * Authenticate with GitHub using authorization code
+   * The backend will exchange the code for access token and verify with GitHub
+   */
+  async loginWithGitHub(accessToken: string, twoFactorCode?: string): Promise<AuthResponse> {
+    return this.request<AuthResponse>('/auth/github', {
+      method: 'POST',
+      body: JSON.stringify({ accessToken, twoFactorCode })
+    })
+  }
+
   async verifyTwoFactor(token: string): Promise<{
     user: any
     accessToken: string

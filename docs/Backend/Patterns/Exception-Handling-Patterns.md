@@ -194,7 +194,7 @@ public ResponseEntity<ApiResponse<Void>> handleMissingParams(
         MissingServletRequestParameterException ex) {
     log.warn("Missing parameter: {}", ex.getParameterName());
     ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.MISSING_PARAMETER, 
-        "필수 파라미터가 누락되었습니다: " + ex.getParameterName());
+        "Missing required parameter: " + ex.getParameterName());
     return ResponseEntity.badRequest()
             .body(ResponseUtil.enrichWithMetadata(errorResponse));
 }
@@ -210,7 +210,7 @@ public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(
         MethodArgumentTypeMismatchException ex) {
     log.warn("Type mismatch for parameter: {}", ex.getName());
     ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.INVALID_PARAMETER_TYPE, 
-        "잘못된 파라미터 타입입니다: " + ex.getName());
+        "Invalid parameter type: " + ex.getName());
     return ResponseEntity.badRequest()
             .body(ResponseUtil.enrichWithMetadata(errorResponse));
 }
@@ -228,7 +228,7 @@ public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(
         IllegalArgumentException ex) {
     log.warn("Invalid argument: {}", ex.getMessage());
     ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.BAD_REQUEST, 
-        "잘못된 요청입니다: " + ex.getMessage());
+        "Bad request: " + ex.getMessage());
     return ResponseEntity.badRequest()
             .body(ResponseUtil.enrichWithMetadata(errorResponse));
 }
