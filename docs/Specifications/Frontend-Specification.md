@@ -1,351 +1,526 @@
----
-title: "Frontend Specification"
-version: "1.0.0"
-last_updated: "2025-11-17"
-status: "active"
-category: "Specification"
-audience: ["Frontend Developers", "UI Developers"]
-prerequisites: ["Getting-Started.md"]
-related_docs: ["UI-UX-Specification.md", "Architecture/Frontend-Architecture.md"]
-maintainer: "Development Team"
----
+# Frontend Implementation Spec (React + Vite + TypeScript)
 
-# Frontend Specification
-
-> **Version**: 1.0.0  
-> **Last Updated**: 2025-11-17  
-> **Status**: Active
+> **Version**: 2.0.0  
+> **Last Updated**: 2025-11-15  
+> **Status**: Production Ready
 
 ## Overview
 
-This document specifies the frontend component contracts, data structures, and integration requirements for the MyTechPortfolio application.
+Modern, responsive portfolio frontend built with React 18, TypeScript, and Vite. Features atomic design pattern, internationalization, dark mode, and full backend integration.
 
-**Framework**: React 18 + TypeScript  
-**Build Tool**: Vite  
-**State Management**: Zustand  
-**Styling**: Styled Components  
-**Routing**: React Router v6
+## Tech Stack
 
----
+| Category | Technology | Version | Purpose |
+|----------|-----------|---------|---------|
+| **Framework** | React | 18.2.0 | UI framework |
+| **Language** | TypeScript | 5.5.3 | Type safety |
+| **Build Tool** | Vite | 5.3.3 | Fast build & HMR |
+| **Styling** | Styled Components | 6.1.11 | CSS-in-JS |
+| **State Management** | Zustand | 4.5.7 | Global state |
+| **Routing** | React Router | 6.23.1 | Client-side routing |
+| **HTTP Client** | Axios | 1.7.2 | API communication |
+| **Animation** | Framer Motion | 12.23.12 | Smooth animations |
+| **i18n** | React i18next | 15.6.1 | Internationalization |
+| **i18n Core** | i18next | 25.3.4 | i18n engine |
+| **Language Detection** | i18next-browser-languagedetector | 8.2.0 | Auto language detection |
+| **Email** | @emailjs/browser | 4.4.1 | Contact form emails |
+| **Gestures** | React Swipeable | 7.0.2 | Touch gestures |
+
+## Project Structure
+
+```
+frontend/
+├── src/
+│   ├── components/          # React components
+│   │   ├── ui/              # Atomic: Atoms (Button, Card, Tag, etc.)
+│   │   ├── layout/          # Organisms: Layout components
+│   │   │   ├── Header.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   └── footer/      # Footer sub-components
+│   │   ├── sections/        # Organisms: Page sections
+│   │   │   ├── ProjectShowcaseSection.tsx
+│   │   │   ├── JourneyMilestoneSection.tsx
+│   │   │   └── TechStackSection.tsx
+│   │   ├── recruiter/       # Recruiter-focused components
+│   │   │   ├── PersonalInfoHeader.tsx
+│   │   │   └── CareerSummaryDashboard.tsx
+│   │   ├── project/          # Project-related components
+│   │   │   └── ProjectCard.tsx
+│   │   └── common/          # Shared components
+│   ├── pages/               # Page components
+│   │   ├── HomePage.tsx
+│   │   ├── ProjectsPage.tsx
+│   │   ├── ProjectDetailPage.tsx
+│   │   ├── AcademicsPage.tsx
+│   │   ├── AboutPage.tsx
+│   │   ├── LoginPage.tsx
+│   │   └── FeedbackPage.tsx
+│   ├── services/            # API services
+│   │   ├── apiClient.ts     # Axios instance
+│   │   ├── projects.ts
+│   │   ├── academics.ts
+│   │   ├── techStacks.ts
+│   │   ├── auth.ts
+│   │   ├── analytics.ts
+│   │   └── email/           # Email service
+│   ├── store/               # Zustand stores
+│   │   ├── authStore.ts
+│   │   ├── filters.ts
+│   │   └── theme.ts
+│   ├── types/               # TypeScript types
+│   │   ├── api.ts           # API response types
+│   │   ├── domain.ts        # Domain models
+│   │   └── recruiter.ts     # Recruiter-specific types
+│   ├── styles/              # Global styles
+│   │   ├── theme.ts         # Theme configuration
+│   │   ├── GlobalStyle.ts   # Global CSS
+│   │   └── styled.d.ts     # Styled-components types
+│   ├── i18n/                # Internationalization
+│   │   ├── config.ts        # i18n configuration
+│   │   └── locales/         # Translation files
+│   │       ├── ko.json      # Korean
+│   │       ├── en.json      # English
+│   │       └── ja.json      # Japanese
+│   ├── mocks/               # Mock data (dev only)
+│   │   ├── projects.ts
+│   │   ├── academics.ts
+│   │   ├── techStacks.ts
+│   │   └── testimonials.ts
+│   ├── hooks/               # Custom React hooks
+│   │   └── useAnalytics.ts
+│   ├── constants/           # Constants
+│   │   └── contact.ts
+│   ├── App.tsx              # Root component
+│   └── main.tsx             # Entry point
+├── public/                  # Static assets
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
+```
+
+## Routing
+
+### Route Configuration
+
+```typescript
+/ → HomePage
+/projects → ProjectsPage (with filters)
+/projects/:id → ProjectDetailPage
+/academics → AcademicsPage
+/about → AboutPage
+/login → LoginPage
+/feedback → FeedbackPage
+```
+
+### Route Features
+
+- **Query String Sync**: Filters persist in URL (`/projects?techStacks=React&year=2024`)
+- **Zustand Integration**: URL state synced with Zustand store
+- **Code Splitting**: Route-based lazy loading (future)
+
+## Data Access Strategy
+
+### API Client Configuration
+
+**Base URL**: Environment-based
+- **Development**: `/api` (Vite proxy to `http://localhost:8080/api/v1`)
+- **Production**: `VITE_API_BASE_URL` environment variable
+
+**Proxy Configuration** (`vite.config.ts`):
+```typescript
+proxy: {
+  '/api': {
+    target: 'http://localhost:8080',
+    changeOrigin: true,
+    rewrite: (path) => path.replace(/^\/api/, '/api/v1'),
+  },
+}
+```
+
+### Response Envelope
+
+All API responses follow standardized format:
+```typescript
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  error: string | null;
+  errorCode?: string;
+  errors?: Record<string, string>;
+  message?: string;
+  metadata?: {
+    timestamp: string;
+    version: string;
+    requestId?: string;
+  };
+}
+```
+
+### Error Handling
+
+- **Network Errors**: User-friendly toast notifications
+- **Validation Errors**: Field-level error display
+- **404 Errors**: Custom error pages
+- **Empty States**: Friendly empty state components
+
+## Authentication
+
+### Auth Modes
+
+**Environment Variable**: `VITE_AUTH_MODE` (default: `demo`)
+
+- **Demo Mode** (`demo`):
+  - `isAuthenticated()` returns `true`
+  - `login()` resolves immediately
+  - No actual authentication
+
+- **JWT Mode** (`jwt`):
+  - Reads JWT token from `localStorage`
+  - Attaches `Authorization: Bearer <token>` header
+  - Token refresh on expiration
+  - Logout clears token
+
+### Auth Service
+
+```typescript
+// services/auth.ts
+export const authService = {
+  login: (googleIdToken: string) => Promise<LoginResponse>,
+  logout: () => void,
+  getToken: () => string | null,
+  isAuthenticated: () => boolean,
+  refreshToken: () => Promise<LoginResponse>,
+};
+```
+
+### Axios Interceptor
+
+```typescript
+api.interceptors.request.use((config) => {
+  if (AUTH_MODE === 'jwt') {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+```
 
 ## Component Architecture
 
 ### Atomic Design Pattern
 
-The frontend follows Atomic Design principles:
+#### Atoms (UI Components)
 
-- **Atoms**: Basic UI components (`Button`, `Card`, `Typography`, `Tag`)
-- **Molecules**: Composed components (`ProjectCard`, `TechStackBadge`)
-- **Organisms**: Complex sections (`Header`, `Footer`, `ProjectShowcaseSection`)
-- **Templates**: Page layouts
-- **Pages**: Complete page components
+Located in `components/ui/`:
 
----
+- **Button**: Primary, secondary, ghost variants; loading, disabled states
+- **Card**: Container with hover effects, clickable
+- **Tag**: Selectable, removable, keyboard accessible
+- **Typography**: Consistent text styling (H1-H6, Body, Caption)
+- **LoadingSpinner**: Loading indicator
+- **ErrorMessage**: Error display component
+- **SuccessMessage**: Success notification
+- **ConfirmationDialog**: Modal confirmation
+- **Breadcrumbs**: Navigation breadcrumbs
+- **Container**: Max-width container wrapper
 
-## Core Components
+**Nielsen's Heuristics Compliance**:
+- Visibility of system status (LoadingSpinner, SuccessMessage)
+- Error prevention (ConfirmationDialog)
+- Error recovery (ErrorMessage)
+- Consistency (unified design system)
 
-### ProjectCard
+#### Molecules
 
-**Location**: `components/project/ProjectCard.tsx`
+- **ProjectCard**: Project summary card
+- **FeaturedProjectCard**: Featured project display
+- **TechIcon**: Technology icon with tooltip
 
-**Props**:
+#### Organisms
+
+- **Header**: Main navigation with theme toggle
+- **Footer**: Multi-section footer (Branding, Nav, Contact, CTA, Legal, Social)
+- **ProjectShowcaseSection**: 3-column interactive project showcase
+- **JourneyMilestoneSection**: Scroll-based timeline
+- **TechStackSection**: Technology stack display
+- **PersonalInfoHeader**: Recruiter-focused header
+- **CareerSummaryDashboard**: Career summary with resume download
+
+## Internationalization (i18n)
+
+### Supported Languages
+
+- **Korean** (`ko`) - Default
+- **English** (`en`)
+- **Japanese** (`ja`)
+
+### Configuration
+
+**i18n setup** (`src/i18n/config.ts`):
+- Language detection: Browser language + localStorage
+- Fallback: Korean
+- Namespace: `translation`
+
+### Usage
+
 ```typescript
-interface ProjectCardProps {
-  id: string | number
-  title: string
-  summary: string
-  startDate: string
-  endDate: string
-  techStacks: string[]
-  imageUrl?: string
+import { useTranslation } from 'react-i18next';
+
+function Component() {
+  const { t } = useTranslation();
+  return <h1>{t('welcome.title')}</h1>;
 }
 ```
 
-**Behavior**:
-- Navigates to `/projects/{id}` on click
-- Tracks view analytics
-- Displays tech stack badges
-- Lazy loads images
+### Language Switcher
 
----
+- **Component**: `LanguageSwiper`
+- **Features**: Swipe gesture support, hint text for UX
+- **Storage**: Selected language persisted in localStorage
 
-### FeaturedProjectCard
+## Styling
 
-**Location**: `components/project/FeaturedProjectCard.tsx`
+### Theme System
 
-**Props**:
-```typescript
-interface FeaturedProjectCardProps {
-  id: string | number
-  title: string
-  summary: string
-  startDate: string
-  endDate: string
-  techStacks: string[]
-  imageUrl?: string
-  index?: number
-}
-```
+**Theme Configuration** (`src/styles/theme.ts`):
+- **Colors**: Primary (Indigo), Accent (Cyan), Neutrals
+- **Dark Mode**: Full dark mode support
+- **Typography**: Type scale (Title, H2, H3, Body, Caption)
+- **Spacing**: Consistent spacing scale
+- **Breakpoints**: 640px, 768px, 1024px, 1280px
 
-**Behavior**:
-- Used in homepage featured section
-- Supports asymmetric grid layout
-- First project uses 12-column full width
-- Subsequent projects use asymmetric grid
+### Styled Components
 
----
+- **Global Styles**: `GlobalStyle.ts` with CSS reset
+- **Theme Provider**: Wraps entire app
+- **Dark Mode**: `prefers-color-scheme` + manual toggle
 
-### HeroProjectCard
+### Responsive Design
 
-**Location**: `components/project/HeroProjectCard.tsx`
-
-**Props**: Same as `FeaturedProjectCardProps`
-
-**Behavior**:
-- Main hero project on homepage
-- 12-column full width layout
-- Opens project detail modal
-
----
-
-### ProjectDetailOverlay
-
-**Location**: `components/project/ProjectDetailOverlay.tsx`
-
-**Behavior**:
-- Route-based modal (`/projects/:id`)
-- Full-screen overlay with high contrast background
-- Esc key to close
-- Scroll position preservation
-- Focus management
-
----
-
-## Data Structures
-
-### Project
-
-```typescript
-interface Project {
-  id: string
-  title: string
-  summary: string
-  description: string
-  startDate: string
-  endDate: string
-  githubUrl?: string
-  demoUrl?: string
-  isFeatured: boolean
-  status: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED'
-  viewCount: number
-  techStackIds: string[]
-  relatedAcademicIds: string[]
-  createdAt: string
-  updatedAt: string
-}
-```
-
-### Academic
-
-```typescript
-interface Academic {
-  id: string
-  subjectCode: string
-  name: string
-  semester: string
-  grade: 'HIGH_DISTINCTION' | 'DISTINCTION' | 'CREDIT' | 'PASS'
-  creditPoints: number
-  marks?: number
-  description?: string
-  status: 'COMPLETED' | 'ENROLLED' | 'EXEMPTION'
-  year: number
-  semesterType: 'SPRING' | 'AUTUMN'
-}
-```
-
-### JourneyMilestone
-
-```typescript
-interface JourneyMilestone {
-  id: string
-  year: string
-  title: string
-  description: string
-  icon?: string
-  techStack: string[]
-  status: 'COMPLETED' | 'CURRENT' | 'PLANNED'
-  technicalComplexity: number
-  projectCount: number
-  codeMetrics?: {
-    linesOfCode: number
-    commits: number
-    repositories: number
-  }
-  keyAchievements: Array<{
-    title: string
-    description: string
-    impact: string
-  }>
-  skillProgression: Array<{
-    name: string
-    level: number
-    category: 'FRONTEND' | 'BACKEND' | 'DATABASE' | 'DEVOPS' | 'OTHER'
-  }>
-}
-```
-
----
-
-## API Integration
-
-### API Client
-
-**Location**: `services/apiClient.ts`
-
-**Features**:
-- Axios instance with interceptors
-- JWT token management
-- Error handling
-- Request/response logging
-
-### API Services
-
-- `projectsApi.ts` - Project CRUD operations
-- `academicsApi.ts` - Academic CRUD operations
-- `milestonesApi.ts` - Journey milestone operations
-- `adminApi.ts` - Admin authentication
-
----
+- **Mobile First**: Base styles for mobile
+- **Breakpoints**: 
+  - `sm`: 640px
+  - `md`: 768px
+  - `lg`: 1024px
+  - `xl`: 1280px
+- **Grid System**: CSS Grid for layouts
+- **Flexbox**: For component layouts
 
 ## State Management
 
 ### Zustand Stores
 
-- `authStore.ts` - User authentication state
-- `adminStore.ts` - Admin authentication and permissions
-- `themeStore.ts` - Theme preferences
-- `filterStore.ts` - Project filters
-
----
-
-## Routing
-
-### Route Structure
-
-```
-/ - HomePage
-/projects - ProjectsPage (with Outlet for child routes)
-/projects/:id - ProjectDetailOverlay (modal route)
-/academics - AcademicsPage
-/about - AboutPage
-/feedback - FeedbackOverlay (modal route)
-/admin - AdminRoute (protected)
-  /admin - AdminDashboard
-  /admin/projects - ProjectsAdminPage
-  /admin/projects/new - ProjectForm (create)
-  /admin/projects/:id/edit - ProjectForm (edit)
-  /admin/academics - AcademicsAdminPage
-  /admin/milestones - JourneyMilestonesAdminPage
+#### Auth Store (`store/authStore.ts`)
+```typescript
+interface AuthStore {
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (token: string) => void;
+  logout: () => void;
+}
 ```
 
-### Hybrid Routing
+#### Filter Store (`store/filters.ts`)
+```typescript
+interface FilterStore {
+  techStacks: string[];
+  year: number | null;
+  sort: string;
+  setTechStacks: (stacks: string[]) => void;
+  setYear: (year: number | null) => void;
+  setSort: (sort: string) => void;
+  reset: () => void;
+}
+```
 
-- `/projects/:id` renders as modal overlay
-- Direct URL access supported
-- SEO-friendly URLs
-- Scroll position preservation
+#### Theme Store (`store/theme.ts`)
+```typescript
+interface ThemeStore {
+  isDark: boolean;
+  toggleTheme: () => void;
+}
+```
 
----
+### URL State Sync
 
-## Styling
+- Filters synced with URL query parameters
+- Debounced updates (150ms)
+- Browser back/forward support
 
-### Design System
+## Types
 
-- **Spacing**: 4-point grid system
-- **Colors**: Theme-based with dark/light mode
-- **Typography**: Consistent font hierarchy
-- **Components**: Styled Components with theme
+### Core Types (`types/domain.ts`)
 
-### Responsive Breakpoints
+```typescript
+interface ProjectSummary {
+  id: string;              // MongoDB ObjectId
+  title: string;
+  summary: string;
+  startDate: string;      // ISO-8601 date
+  endDate: string;         // ISO-8601 date
+  techStacks: string[];
+  imageUrl?: string;
+  featured?: boolean;
+}
 
-- Mobile: < 768px
-- Tablet: 768px - 1023px
-- Desktop: ??1024px
+interface ProjectDetail extends ProjectSummary {
+  description: string;     // Markdown
+  githubUrl?: string;
+  demoUrl?: string;
+  relatedAcademics?: string[];
+  challenge?: string;
+  solution?: string[];
+  keyOutcomes?: string[];
+}
 
----
+interface Academic {
+  id: string;              // MongoDB ObjectId
+  name: string;
+  semester: string;
+  grade?: string;
+  description?: string;
+  creditPoints?: number;
+  marks?: number;
+  status: 'completed' | 'enrolled' | 'exemption';
+}
 
-## Accessibility
+interface TechStack {
+  id: string;             // MongoDB ObjectId
+  name: string;
+  type: 'FRONTEND' | 'BACKEND' | 'DATABASE' | 'DEVOPS' | 'MOBILE' | 'TESTING' | 'OTHER';
+}
+```
 
-### WCAG Compliance
+### API Types (`types/api.ts`)
 
-- **Level**: AA
-- **Keyboard Navigation**: Full support
-- **Screen Readers**: ARIA labels
+```typescript
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  error: string | null;
+}
+
+interface Page<T> {
+  page: number;
+  size: number;
+  total: number;
+  items: T[];
+}
+```
+
+## UI/UX Features
+
+### Accessibility
+
+- **Keyboard Navigation**: Full keyboard support
+- **ARIA Labels**: All interactive elements labeled
 - **Focus Management**: Visible focus indicators
-- **Color Contrast**: Meets WCAG AA standards
+- **Skip Links**: Skip to main content
+- **Screen Reader**: Semantic HTML
 
-### A11y Features
+### Performance
 
-- Skip to content link
-- Focus trap in modals
-- Esc key support
-- ARIA labels and roles
-- Semantic HTML
+- **Code Splitting**: Route-based (future)
+- **Image Lazy Loading**: Native `loading="lazy"`
+- **Skeleton Loading**: Loading states
+- **Debouncing**: Filter updates debounced
 
----
+### Animations
 
-## Performance
+- **Framer Motion**: Smooth page transitions
+- **Scroll Reveal**: Intersection Observer for scroll animations
+- **Hover Effects**: Card hover scale + shadow
+- **Reduced Motion**: Respects `prefers-reduced-motion`
 
-### Code Splitting
+## Build & Development
 
-- Route-based lazy loading
-- Component-level code splitting
-- Vendor chunk separation
+### Scripts
 
-### Optimization
+```json
+{
+  "dev": "vite",                    // Development server
+  "build": "tsc -b && vite build",  // Production build
+  "preview": "vite preview"        // Preview production build
+}
+```
 
-- Image lazy loading
-- Intersection Observer for animations
-- Memoization for expensive computations
-- Debounced search/filter inputs
+### Environment Variables
 
----
+```env
+# API Configuration
+VITE_API_BASE_URL=http://localhost:8080/api/v1
+VITE_USE_MOCK=false
+
+# Authentication
+VITE_AUTH_MODE=jwt  # or 'demo'
+
+# Google OAuth
+VITE_GOOGLE_CLIENT_ID=your-client-id
+
+# EmailJS (Contact Form)
+VITE_EMAILJS_SERVICE_ID=your-service-id
+VITE_EMAILJS_TEMPLATE_ID=your-template-id
+VITE_EMAILJS_PUBLIC_KEY=your-public-key
+```
+
+### Development Server
+
+- **Port**: 5173 (default)
+- **Hot Module Replacement**: Enabled
+- **Proxy**: `/api` → `http://localhost:8080/api/v1`
 
 ## Testing
 
-### Component Testing
+### Test Files
 
-- React Testing Library
-- Jest for unit tests
-- Component snapshot tests
+- **Location**: `src/test/frontend-test-cases.yaml`
+- **Format**: YAML test cases
+- **Coverage**: Component, integration, E2E scenarios
 
-### E2E Testing
+### Acceptance Criteria
 
-- Playwright/Cypress
-- Critical user flows
-- Cross-browser testing
+- **Lighthouse** (Mobile):
+  - Performance: ≥ 85
+  - Accessibility: ≥ 95
+  - SEO: ≥ 90
+- **Keyboard Navigation**: Complete, no focus traps
+- **Responsive**: All breakpoints tested
+- **Cross-Browser**: Chrome, Firefox, Safari, Edge
+
+## Deployment
+
+### Build Output
+
+- **Directory**: `dist/`
+- **Static Files**: HTML, CSS, JS, assets
+- **SPA Routing**: `_redirects` file for Netlify/Vercel
+
+### Deployment Platforms
+
+- **Vercel**: Automatic deployments
+- **Netlify**: Static site hosting
+- **Azure Static Web Apps**: Azure integration
+
+### Environment Configuration
+
+- **Production API**: Set `VITE_API_BASE_URL` to production URL
+- **CDN**: Assets served via CDN
+- **Caching**: Static assets cached, API calls not cached
+
+## Future Improvements
+
+1. **Code Splitting**: Route-based lazy loading
+2. **Service Worker**: PWA support
+3. **Offline Mode**: Cache API responses
+4. **Error Boundary**: React Error Boundaries
+5. **Performance Monitoring**: Web Vitals tracking
+6. **A/B Testing**: Feature flags
+7. **Analytics**: Enhanced tracking
 
 ---
 
-## Browser Support
-
-- Chrome/Edge (latest 2 versions)
-- Firefox (latest 2 versions)
-- Safari (latest 2 versions)
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
----
-
-## Related Documentation
-
-- [UI/UX Specification](./UI-UX-Specification.md)
-- [Frontend Architecture](../Architecture/Frontend-Architecture.md)
-- [API Specification](./API-Specification.md)
-- [Best Practices](../Best-Practices/Component-Guidelines.md)
-
----
-
-**Last Updated**: 2025-11-17  
+**Document Version**: 2.0.0  
+**Last Updated**: 2025-11-15  
 **Maintained By**: Development Team
-
-

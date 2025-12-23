@@ -5,11 +5,10 @@ import { authService } from '../services/authService'
 interface User {
   id: number
   email: string
-  name: string
-  pictureUrl?: string
-  roles: string[]
-  isAdmin: boolean
-  createdAt: string
+  displayName: string
+  profileImageUrl?: string
+  role: string
+  twoFactorEnabled: boolean
 }
 
 interface SecurityContext {
@@ -26,7 +25,7 @@ interface AuthState {
   error: string | null
   twoFactorRequired: boolean
   securityContext: SecurityContext | null
-  
+
   // Actions
   setUser: (user: User) => void
   setTokens: (accessToken: string, refreshToken: string) => void
@@ -45,7 +44,7 @@ function generateDeviceFingerprint(): string {
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
   ctx?.fillText('fingerprint', 2, 2)
-  
+
   const fingerprint = [
     navigator.userAgent,
     navigator.language,
@@ -53,7 +52,7 @@ function generateDeviceFingerprint(): string {
     new Date().getTimezoneOffset(),
     canvas.toDataURL()
   ].join('|')
-  
+
   return btoa(fingerprint).slice(0, 32)
 }
 
@@ -85,8 +84,8 @@ export const useAuthStore = create<AuthState>()(
       twoFactorRequired: false,
       securityContext: null,
 
-      setUser: (user) => set({ 
-        user, 
+      setUser: (user) => set({
+        user,
         isAuthenticated: true,
         error: null,
         securityContext: {
@@ -99,16 +98,16 @@ export const useAuthStore = create<AuthState>()(
       setTokens: (accessToken, refreshToken) => {
         // Store refresh token in httpOnly cookie via API call
         authService.storeRefreshToken(refreshToken).catch(console.error)
-        set({ 
+        set({
           accessToken,
-          isAuthenticated: true 
+          isAuthenticated: true
         })
       },
 
       clearAuth: () => {
         // Clear refresh token from server
         authService.clearRefreshToken().catch(console.error)
-        set({ 
+        set({
           user: null,
           accessToken: null,
           isAuthenticated: false,
@@ -119,19 +118,19 @@ export const useAuthStore = create<AuthState>()(
       },
 
       setLoading: (isLoading) => set({ isLoading }),
-      
+
       setError: (error) => set({ error }),
-      
+
       clearError: () => set({ error: null }),
-      
+
       setTwoFactorRequired: (twoFactorRequired) => set({ twoFactorRequired }),
-      
+
       verifyTwoFactor: async (token) => {
         set({ isLoading: true, error: null })
         try {
           const response = await authService.verifyTwoFactor(token)
           const { user, accessToken, refreshToken } = response
-          
+
           get().setUser(user)
           get().setTokens(accessToken, refreshToken)
           set({ twoFactorRequired: false })
@@ -159,14 +158,14 @@ export const useAuthStore = create<AuthState>()(
       checkSessionValidity: () => {
         const state = get()
         if (!state.securityContext) return false
-        
+
         const SESSION_TIMEOUT = 30 * 60 * 1000 // 30 minutes
         const isValid = Date.now() - state.securityContext.lastActivity < SESSION_TIMEOUT
-        
+
         if (!isValid) {
           get().clearAuth()
         }
-        
+
         return isValid
       }
     }),

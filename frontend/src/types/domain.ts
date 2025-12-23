@@ -9,7 +9,7 @@ export interface ProjectSummary {
   endDate: string   // YYYY-MM-DD (LocalDate)
   techStacks: string[]
   imageUrl?: string
-  featured?: boolean
+  isFeatured?: boolean
 }
 
 export interface ProjectDetail extends ProjectSummary {
@@ -142,6 +142,6 @@ export interface ContactRequest {
   email: string
   subject?: string
   message: string
-  phone?: string
+  phoneNumber?: string
   company?: string
 }

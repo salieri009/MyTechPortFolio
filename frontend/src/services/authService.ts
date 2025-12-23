@@ -25,22 +25,17 @@ export interface AuthResponse {
   refreshToken: string
   tokenType: string
   expiresIn: number
-  userInfo: {
+  requiresTwoFactor?: boolean
+  sessionId?: string
+  userInfo?: {
     id: number
     email: string
-    name: string
-    pictureUrl?: string
-    roles: string[]
-    isAdmin: boolean
-    createdAt: string
+    displayName: string
+    profileImageUrl?: string
+    role: string
+    twoFactorEnabled: boolean
   }
-  requiresTwoFactor: boolean
-  twoFactorEnabled: boolean
   message?: string
-  twoFactorSetup?: {
-    secret: string
-    qrCodeDataUri: string
-  }
 }
 
 export interface ApiResponse<T> {

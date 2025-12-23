@@ -212,7 +212,9 @@ export function GitHubLoginButton({ onSuccess, onError }: GitHubLoginProps) {
                     }
 
                     // Success - store user data and tokens
-                    setUser(authResponse.userInfo)
+                    if (authResponse.userInfo) {
+                        setUser(authResponse.userInfo)
+                    }
                     setTokens(authResponse.accessToken, authResponse.refreshToken)
                     onSuccess?.()
                 } catch (err) {
@@ -257,7 +259,9 @@ export function GitHubLoginButton({ onSuccess, onError }: GitHubLoginProps) {
         try {
             const authResponse = await authService.loginWithGitHub(pendingAccessToken, twoFactorCode)
 
-            setUser(authResponse.userInfo)
+            if (authResponse.userInfo) {
+                setUser(authResponse.userInfo)
+            }
             setTokens(authResponse.accessToken, authResponse.refreshToken)
             setRequiresTwoFactor(false)
             setPendingAccessToken(null)

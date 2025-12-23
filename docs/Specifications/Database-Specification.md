@@ -1,549 +1,446 @@
----
-title: "Database Specification"
-version: "1.0.0"
-last_updated: "2025-11-17"
-status: "active"
-category: "Specification"
-audience: ["Developers", "Database Administrators"]
-prerequisites: ["Getting-Started.md"]
-related_docs: ["API-Specification.md", "Architecture/README.md"]
-maintainer: "Development Team"
----
+# Database Specification (MongoDB)
 
-# Database Specification
-
-> **Version**: 1.0.0  
-> **Last Updated**: 2025-11-17  
-> **Status**: Active
+> **Version**: 2.0.0  
+> **Last Updated**: 2025-11-15  
+> **Database**: MongoDB (NoSQL)  
+> **ODM**: Spring Data MongoDB
 
 ## Overview
 
-MyTechPortfolio uses **MongoDB 7.0** as the primary datastore. This specification enumerates every collection, schema, relationship, and operational guideline required to keep the platform consistent across development, staging, and production.
+This project uses MongoDB as the primary database, leveraging Spring Data MongoDB for object-document mapping. The database stores portfolio data including projects, academic records, tech stacks, user information, contact submissions, resumes, and engagement analytics.
 
-**Database**: MongoDB  
-**Version**: 7.0+ (locally tested on 6.x)  
-**Connection**: Spring Boot autoconfiguration via `spring.data.mongodb.uri`
+## Database Configuration
 
----
+- **Database Name**: `portfolio` (configurable via `MONGODB_URI`)
+- **Connection**: MongoDB URI format: `mongodb://localhost:27017/portfolio_dev`
+- **ODM Framework**: Spring Data MongoDB
+- **Indexing**: Automatic index creation via `@Indexed` annotations
 
-## Environment & Connection Settings
+## Collections (Documents)
 
-| Setting / Variable | Default | Purpose |
-| ------------------ | ------- | ------- |
-| `MONGODB_URI` | `mongodb://localhost:27017/portfolio` | Primary connection string referenced by Spring |
-| `MONGODB_URI_TEST` | `mongodb://localhost:27018/portfolio_test` | Optional URI for integration tests |
-| `spring.data.mongodb.auto-index-creation` | `true` | Auto-creates indexes defined with `@Indexed` during dev/test |
-| `spring.data.mongodb.connection-pool.max-size` | `100` | Pool tuning (override per env) |
-| `spring.data.mongodb.connection-pool.min-size` | `5` | Baseline warm pool |
+### 1. projects
 
-> **Tip**  
-> `MongoConfig` only enables repository scanning. As long as `spring.data.mongodb.uri` is set (through `application.properties` or environment variable), no extra configuration is required.
+Project portfolio items with relationships to tech stacks and academics.
 
----
-
-## Collection Summary
-
-| Collection | Purpose | Primary Consumer | Notable Fields |
-| ---------- | ------- | ---------------- | -------------- |
-| `projects` | Portfolio case studies (public + admin) | Home, Projects, Admin CRUD | `isFeatured`, `techStackIds`, `relatedAcademicIds` |
-| `academics` | Transcript entries powering GPA/WAM cards | Academics page, Admin | `subjectCode`, `semester`, `grade` |
-| `journey_milestones` | Timeline storytelling data | Home “My Journey” | `year`, `status`, `codeMetrics`, `techStack` |
-| `tech_stacks` | Canonical stack taxonomy | Project filters, admin forms | `name` (unique), `category` |
-| `testimonials` | Social proof quotes | Testimonials section, Admin moderation | `type`, `isApproved`, `isFeatured` |
-| `admin_users` | CMS/admin credentials | Admin authentication | `username`, `roles`, `isActive` |
-| additional | Contacts, media, analytics, resumes | Contact form, analytics, downloads | Collection-specific |
-
-Each collection below details schema, example documents, indexes, and CRUD entry points.
-
----
-
-## Collections
-
-### Projects Collection
-
-**Collection Name**: `projects`
-
-**Purpose**  
-Holds long-form portfolio entries with metadata for filtering, feature placement, and cross-linking to academics.
-
-**CRUD Entry Points**
-- API: `GET/POST /api/v1/projects`, `GET/PUT/DELETE /api/v1/projects/{id}`
-- Repository: `ProjectRepository extends MongoRepository<Project, String>`
-
-**Schema**
+**Document Structure**:
 ```json
 {
   "_id": "ObjectId",
-  "title": "string (required)",
-  "summary": "string (required)",
-  "description": "string (markdown, required)",
-  "startDate": "ISODate",
-  "endDate": "ISODate",
-  "githubUrl": "string (optional)",
-  "demoUrl": "string (optional)",
+  "title": "string (required, 3-255 chars)",
+  "summary": "string (required, 10-500 chars)",
+  "description": "string (required, 20-10000 chars, markdown)",
+  "startDate": "ISODate (LocalDate)",
+  "endDate": "ISODate (LocalDate)",
+  "githubUrl": "string (optional, valid URL)",
+  "demoUrl": "string (optional, valid URL)",
   "repositoryName": "string (optional)",
   "isFeatured": "boolean (default: false)",
-  "status": "enum: PLANNING, IN_PROGRESS, COMPLETED, ARCHIVED",
+  "status": "enum (PLANNING | IN_PROGRESS | COMPLETED | ARCHIVED, default: COMPLETED)",
   "viewCount": "long (default: 0)",
-  "techStackIds": ["string"],
-  "relatedAcademicIds": ["string"],
-  "createdAt": "ISODate",
-  "updatedAt": "ISODate"
+  "techStackIds": ["ObjectId string[]"],
+  "relatedAcademicIds": ["ObjectId string[]"],
+  "createdAt": "ISODate (auto-generated)",
+  "updatedAt": "ISODate (auto-updated)"
 }
 ```
 
-**Sample Document**
-```json
-{
-  "_id": "675aa6818b8e5d32789d5894",
-  "title": "MyPortfolio Platform",
-  "summary": "Full-stack portfolio with 3D hero scenes",
-  "description": "### Overview\nBuilt with React + Vite + Spring Boot...",
-  "startDate": "2024-01-01T00:00:00.000Z",
-  "endDate": "2024-08-15T00:00:00.000Z",
-  "githubUrl": "https://github.com/salieri009/myportfolio",
-  "demoUrl": "https://salieri009.com",
-  "repositoryName": "myportfolio",
-  "isFeatured": true,
-  "status": "COMPLETED",
-  "viewCount": 1520,
-  "techStackIds": ["675aa6818b8e5d32789d5801", "675aa6818b8e5d32789d5802"],
-  "relatedAcademicIds": ["675aa6818b8e5d32789d5701"],
-  "createdAt": "2024-08-01T10:33:00.000Z",
-  "updatedAt": "2024-11-17T12:02:00.000Z"
-}
-```
+**Indexes**:
+- `endDate` (DESC) - For sorting by end date
+- `isFeatured` - For featured projects query
+- `status` - For filtering by status
 
-**Indexes & Access Patterns**
+**Relationships**:
+- Many-to-Many with `tech_stacks` via `techStackIds` array
+- Many-to-Many with `academics` via `relatedAcademicIds` array
 
-| Field | Reason |
-| ----- | ------ |
-| `_id` | Default lookup |
-| `status` | Admin filter tabs |
-| `isFeatured` | Home hero selection |
-| `endDate` | Sort newest/oldest |
-| `techStackIds` | Multikey filter |
+**Validation**:
+- `endDate` must be after `startDate` (application-level validation)
+- URLs validated via `@ValidUrl` annotation
 
-> Consider compound `(isFeatured, endDate)` if the featured set grows.
+### 2. academics
 
----
+Academic course records with grades and semester information.
 
-### Academics Collection
-
-**Collection Name**: `academics`
-
-**Purpose**  
-Stores subject-level academic performance for GPA/WAM cards and transcript tables.
-
-**CRUD Entry Points**
-- API: `GET/POST /api/v1/academics`, `GET/PUT/DELETE /api/v1/academics/{id}`
-- Repository: `AcademicRecordRepository`
-
-**Schema**
+**Document Structure**:
 ```json
 {
   "_id": "ObjectId",
-  "subjectCode": "string (indexed)",
-  "name": "string (required)",
-  "semester": "string (indexed)",
-  "grade": "enum: HIGH_DISTINCTION, DISTINCTION, CREDIT, PASS",
-  "creditPoints": "integer",
-  "marks": "integer",
-  "description": "string",
-  "status": "enum: COMPLETED, ENROLLED, EXEMPTION",
-  "year": "integer",
-  "semesterType": "enum: SPRING, AUTUMN",
-  "createdAt": "ISODate",
-  "updatedAt": "ISODate"
+  "subjectCode": "string (indexed, e.g., '31264', '41025')",
+  "name": "string (e.g., 'Computer Graphics')",
+  "semester": "string (e.g., '2025 AUT')",
+  "grade": "enum (HIGH_DISTINCTION | DISTINCTION | CREDIT | PASS)",
+  "creditPoints": "integer (e.g., 6)",
+  "marks": "integer (e.g., 92)",
+  "description": "string (optional)",
+  "status": "enum (COMPLETED | ENROLLED | EXEMPTION)",
+  "year": "integer (e.g., 2024, 2025)",
+  "semesterType": "enum (SPRING | AUTUMN)",
+  "createdAt": "ISODate (auto-generated)",
+  "updatedAt": "ISODate (auto-updated)"
 }
 ```
 
-**Sample Document**
-```json
-{
-  "_id": "675aa6818b8e5d32789d5901",
-  "subjectCode": "31257",
-  "name": "Information Systems Development",
-  "semester": "2024 Autumn",
-  "grade": "DISTINCTION",
-  "creditPoints": 6,
-  "marks": 85,
-  "description": "Team-based enterprise delivery focusing on Agile.",
-  "status": "COMPLETED",
-  "year": 2024,
-  "semesterType": "AUTUMN",
-  "createdAt": "2024-03-10T00:00:00.000Z",
-  "updatedAt": "2024-06-30T00:00:00.000Z"
-}
-```
+**Indexes**:
+- `subjectCode` (indexed) - For quick lookup
+- `semester` - For filtering by semester
+- `year` + `semesterType` - For chronological queries
 
-**Indexes**
-- `_id` – default.
-- `subjectCode` – prevents duplicates & speeds lookups.
-- `semester` – supports filter dropdowns and charts.
+**Relationships**:
+- Many-to-Many with `projects` via reverse reference in `projects.relatedAcademicIds`
 
----
+**Enums**:
+- `AcademicGrade`: HIGH_DISTINCTION (HD), DISTINCTION (D), CREDIT (C), PASS (P)
+- `AcademicStatus`: COMPLETED, ENROLLED, EXEMPTION
+- `Semester`: SPRING (SPR), AUTUMN (AUT)
 
-### Journey Milestones Collection
+### 3. tech_stacks
 
-**Collection Name**: `journey_milestones`
+Technology stack definitions with categorization and proficiency levels.
 
-**Purpose**  
-Feeds the “My Journey” timeline with narrative plus measurable indicators (tech stack, LOC, commits, skill progression).
-
-**CRUD Entry Points**
-- API: `GET /api/v1/journey-milestones`, `POST/PUT/DELETE /api/v1/journey-milestones/{id}`
-- Repository: `JourneyMilestoneRepository`
-
-**Schema**
+**Document Structure**:
 ```json
 {
   "_id": "ObjectId",
-  "year": "string (indexed)",
-  "title": "string (indexed, required)",
-  "description": "string (required)",
-  "icon": "string (optional)",
-  "techStack": ["string"],
-  "status": "enum: COMPLETED, CURRENT, PLANNED",
-  "technicalComplexity": "integer (1-5)",
-  "projectCount": "integer (default: 0)",
-  "codeMetrics": {
-    "linesOfCode": "long",
-    "commits": "integer",
-    "repositories": "integer"
-  },
-  "keyAchievements": [
-    {
-      "title": "string",
-      "description": "string",
-      "impact": "string"
-    }
-  ],
-  "skillProgression": [
-    {
-      "name": "string",
-      "level": "integer (1-5)",
-      "category": "enum: FRONTEND, BACKEND, DATABASE, DEVOPS, OTHER"
-    }
-  ],
-  "createdAt": "ISODate",
-  "updatedAt": "ISODate"
+  "name": "string (unique, indexed, e.g., 'React', 'Spring Boot')",
+  "type": "enum (FRONTEND | BACKEND | DATABASE | DEVOPS | MOBILE | TESTING | OTHER)",
+  "logoUrl": "string (optional, image URL)",
+  "officialUrl": "string (optional, official website)",
+  "description": "string (optional)",
+  "proficiencyLevel": "enum (BEGINNER | INTERMEDIATE | ADVANCED | EXPERT, default: INTERMEDIATE)",
+  "usageCount": "long (default: 0, tracks project usage)",
+  "isPrimary": "boolean (default: false, primary tech stack)",
+  "createdAt": "ISODate (auto-generated)",
+  "updatedAt": "ISODate (auto-updated)"
 }
 ```
 
-**Sample Document**
-```json
-{
-  "_id": "675aa6818b8e5d32789d5a01",
-  "year": "2023",
-  "title": "Transitioned to Full-Stack Engineer",
-  "description": "Led migration from monolith to micro frontends...",
-  "icon": "laptop",
-  "techStack": ["React", "TypeScript", "Spring Boot", "MongoDB"],
-  "status": "COMPLETED",
-  "technicalComplexity": 5,
-  "projectCount": 4,
-  "codeMetrics": {
-    "linesOfCode": 45000,
-    "commits": 620,
-    "repositories": 9
-  },
-  "keyAchievements": [
-    {
-      "title": "Deployed admin CRUD suite",
-      "description": "Enabled non-technical staff to manage content.",
-      "impact": "Cut content turnaround time by 60%"
-    }
-  ],
-  "skillProgression": [
-    { "name": "React", "level": 5, "category": "FRONTEND" },
-    { "name": "DevOps", "level": 4, "category": "DEVOPS" }
-  ],
-  "createdAt": "2023-04-12T00:00:00.000Z",
-  "updatedAt": "2024-01-05T00:00:00.000Z"
-}
-```
+**Indexes**:
+- `name` (unique, indexed) - Ensures uniqueness and fast lookup
+- `type` - For filtering by technology type
+- `isPrimary` - For primary tech stack queries
 
-**Indexes**
+**Relationships**:
+- Many-to-Many with `projects` via reverse reference in `projects.techStackIds`
 
-| Field | Reason |
-| ----- | ------ |
-| `_id` | Default |
-| `year` | Supports `findAllByOrderByYearAsc()` |
-| `status` | Admin filters & segmentation |
-| `title` | Prevent duplicates, enable search |
+**Enums**:
+- `TechType`: FRONTEND, BACKEND, DATABASE, DEVOPS, MOBILE, TESTING, OTHER
+- `ProficiencyLevel`: BEGINNER (Lv.1), INTERMEDIATE (Lv.2), ADVANCED (Lv.3), EXPERT (Lv.4)
 
-> Store `year` as string to support ranges (e.g., `"2018-2020"`). Prefix with the starting year to maintain lexical sort order.
+**Caching**: This collection is cached for performance (1 hour TTL).
 
----
+### 4. users
 
-### Tech Stacks Collection
+User accounts for authentication and authorization.
 
-**Collection Name**: `tech_stacks`
-
-**Purpose**  
-Normalized list of technologies used across projects. Enables consistent labeling and filtering.
-
-**Schema**
+**Document Structure**:
 ```json
 {
   "_id": "ObjectId",
-  "name": "string (required, unique)",
-  "category": "enum: FRONTEND, BACKEND, DATABASE, DEVOPS, TOOL, LANGUAGE",
-  "icon": "string (optional)",
-  "description": "string",
-  "createdAt": "ISODate",
-  "updatedAt": "ISODate"
-}
-```
-
-**Sample Document**
-```json
-{
-  "_id": "675aa6818b8e5d32789d5801",
-  "name": "React",
-  "category": "FRONTEND",
-  "icon": "react",
-  "description": "Component-based UI library",
-  "createdAt": "2023-10-01T00:00:00.000Z",
-  "updatedAt": "2024-05-20T00:00:00.000Z"
-}
-```
-
-**Indexes**
-- Unique index on `name`.
-- Optional index on `category` for grouped filters.
-
----
-
-### Testimonials Collection
-
-**Collection Name**: `testimonials`
-
-**Purpose**  
-Stores social proof quotes. `isApproved` gates public visibility; `isFeatured` surfaces quotes on hero carousels.
-
-**Schema**
-```json
-{
-  "_id": "ObjectId",
-  "authorName": "string (required)",
-  "authorRole": "string",
-  "authorCompany": "string",
-  "content": "string (required)",
-  "rating": "integer (1-5)",
-  "type": "enum: CLIENT, COLLEAGUE, MENTOR, PROFESSOR, OTHER",
-  "isFeatured": "boolean (default: false)",
-  "isApproved": "boolean (default: false)",
-  "createdAt": "ISODate",
-  "updatedAt": "ISODate"
-}
-```
-
-**Sample Document**
-```json
-{
-  "_id": "675aa6818b8e5d32789d5b01",
-  "authorName": "Professor Lee",
-  "authorRole": "Course Director",
-  "authorCompany": "UTS FEIT",
-  "content": "Jungwook consistently delivers production-grade work under pressure.",
-  "rating": 5,
-  "type": "PROFESSOR",
-  "isFeatured": true,
-  "isApproved": true,
-  "createdAt": "2024-07-01T00:00:00.000Z",
-  "updatedAt": "2024-07-05T00:00:00.000Z"
-}
-```
-
-**Indexes**
-- `isApproved` – fetch only approved testimonials.
-- `isFeatured` – highlight subset quickly.
-- `type` – segment by source.
-
----
-
-### Admin Users Collection
-
-**Collection Name**: `admin_users`
-
-**Purpose**  
-Stores admin credentials and role assignments. Passwords are hashed (BCrypt). 2FA can be layered with a separate collection or field.
-
-**Schema**
-```json
-{
-  "_id": "ObjectId",
-  "username": "string (required, unique)",
-  "email": "string (required, unique)",
-  "password": "string (hashed)",
-  "roles": ["string"],
-  "isActive": "boolean (default: true)",
+  "email": "string (unique, indexed, required)",
+  "password": "string (hashed, optional for OAuth users)",
+  "displayName": "string",
+  "name": "string (compatibility field)",
+  "profileImageUrl": "string (optional)",
+  "profilePictureUrl": "string (compatibility field)",
+  "role": "enum (USER | ADMIN, default: USER)",
+  "enabled": "boolean (default: true)",
+  "isEmailVerified": "boolean (default: false)",
+  "oauthProvider": "string (e.g., 'google', 'github')",
+  "oauthId": "string (OAuth provider user ID)",
+  "twoFactorEnabled": "boolean (default: false)",
+  "twoFactorSecret": "string (encrypted)",
   "lastLogin": "ISODate",
-  "createdAt": "ISODate",
-  "updatedAt": "ISODate"
+  "sessionId": "string",
+  "lastActivity": "ISODate",
+  "deviceFingerprint": "string",
+  "roles": ["string[] (multi-role support)"],
+  "registrationSource": "string (e.g., 'google', 'email', 'github')",
+  "referrer": "string",
+  "userAgent": "string",
+  "ipAddress": "string",
+  "createdAt": "ISODate (auto-generated)",
+  "updatedAt": "ISODate (auto-updated)"
 }
 ```
 
-**Sample Document**
+**Indexes**:
+- `email` (unique, indexed) - Primary lookup key
+
+**Security**:
+- Password hashed using BCrypt
+- JWT tokens for authentication
+- 2FA support via TOTP
+
+### 5. contacts
+
+Contact form submissions for lead generation.
+
+**Document Structure**:
 ```json
 {
-  "_id": "675aa6818b8e5d32789d5c01",
-  "username": "admin",
-  "email": "admin@salieri009.studio",
-  "password": "$2a$10$kuzY....",
-  "roles": ["ADMIN", "CONTENT_EDITOR"],
-  "isActive": true,
-  "lastLogin": "2025-01-15T05:40:00.000Z",
-  "createdAt": "2024-04-01T00:00:00.000Z",
-  "updatedAt": "2025-01-15T05:40:00.000Z"
+  "_id": "ObjectId",
+  "email": "string (indexed, required)",
+  "name": "string (required, 2-100 chars)",
+  "company": "string (optional, max 100 chars)",
+  "subject": "string (optional, max 100 chars)",
+  "message": "string (required, 10-2000 chars)",
+  "phoneNumber": "string (optional)",
+  "linkedInUrl": "string (optional)",
+  "jobTitle": "string (optional)",
+  "referrer": "string (optional, tracking)",
+  "source": "string (optional, 'portfolio', 'project', 'resume')",
+  "projectId": "string (optional, if related to specific project)",
+  "ipAddress": "string (hashed for privacy)",
+  "userAgent": "string",
+  "status": "enum (NEW | READ | REPLIED | ARCHIVED | SPAM, default: NEW)",
+  "isSpam": "boolean (default: false)",
+  "isRead": "boolean (default: false)",
+  "isReplied": "boolean (default: false)",
+  "internalNotes": "string (optional)",
+  "createdAt": "ISODate (auto-generated)",
+  "readAt": "ISODate",
+  "repliedAt": "ISODate"
 }
 ```
 
-**Indexes**
-- Unique indexes on `username` and `email`.
-- Optional TTL index on `lastLogin` for stale-session cleanup (future enhancement).
+**Indexes**:
+- `email` (indexed) - For duplicate detection and rate limiting
+- `createdAt` - For chronological queries
+- `status` - For filtering by status
 
----
+**Security**:
+- Honeypot field validation
+- Rate limiting per IP address
+- Input sanitization
+- IP address hashing for privacy
 
-### Additional Collections
+### 6. resumes
 
-- `contacts`: Contact form submissions (`name`, `email`, `message`, timestamps).
-- `project_media`: Image metadata/CDN URLs keyed by `projectId`.
-- `project_engagement`: Aggregated analytics (views, dwell time).
-- `resumes`: Versioned resume/CV records.
-- `users`: Placeholder for future public accounts.
+Resume/CV management with multiple versions.
 
----
+**Document Structure**:
+```json
+{
+  "_id": "ObjectId",
+  "version": "string (indexed, e.g., 'full', 'software-engineer', 'frontend')",
+  "title": "string (e.g., 'Full Stack Developer Resume')",
+  "description": "string (optional, purpose of this version)",
+  "fileName": "string (original filename)",
+  "fileUrl": "string (Azure Blob Storage URL)",
+  "fileType": "string ('pdf', 'docx')",
+  "fileSize": "long (bytes, optional)",
+  "isActive": "boolean (default: true, primary resume)",
+  "isPublic": "boolean (default: true, downloadable by visitors)",
+  "downloadCount": "long (default: 0)",
+  "metaDescription": "string (optional, SEO)",
+  "keywords": "string (optional, comma-separated)",
+  "previousVersionId": "string (optional, version control)",
+  "createdAt": "ISODate (auto-generated)",
+  "updatedAt": "ISODate (auto-updated)",
+  "lastDownloadedAt": "ISODate"
+}
+```
 
-## Data Relationships
+**Indexes**:
+- `version` (indexed) - For version lookup
+- `isActive` - For primary resume query
+- `isPublic` - For public resume queries
 
-- **Projects ↔ Tech Stacks**: Many-to-Many via `techStackIds`. Service layer validates references before save.
-- **Projects ↔ Academics**: Many-to-Many via `relatedAcademicIds`. Highlights coursework supporting each project.
-- **Projects ↔ Project Media**: One-to-Many; media documents contain `projectId`.
-- **Journey Milestones ↔ Projects**: Implicit (front-end matches tags). Future enhancement could add `relatedProjectIds`.
+**File Storage**:
+- Development: Local file system
+- Production: Azure Blob Storage (planned)
 
----
+### 7. project_engagement
 
-## Indexing Strategy
+Analytics for project visitor engagement tracking.
 
-- Declare indexes via `@Indexed` annotations or migration scripts.
-- Favor compound indexes when queries combine fields (e.g., `status + isFeatured`).
-- Monitor index stats (`db.collection.stats()`, Atlas UI) and prune unused ones to keep writes fast.
+**Document Structure**:
+```json
+{
+  "_id": "ObjectId",
+  "projectId": "string (ObjectId, required)",
+  "sessionId": "string (browser session ID)",
+  "visitorId": "string (optional, anonymous or authenticated user)",
+  "viewDuration": "long (seconds, optional)",
+  "scrollDepth": "integer (0-100, percentage, optional)",
+  "githubLinkClicked": "boolean (optional)",
+  "demoLinkClicked": "boolean (optional)",
+  "timesViewed": "integer (views in this session, optional)",
+  "referrer": "string (optional, referrer URL)",
+  "source": "string (optional, 'direct', 'search', 'social', 'referral')",
+  "userAgent": "string",
+  "deviceType": "string (optional, 'mobile', 'tablet', 'desktop')",
+  "browser": "string (optional)",
+  "country": "string (optional)",
+  "city": "string (optional)",
+  "ipAddress": "string (hashed for privacy)",
+  "viewedAt": "ISODate (auto-generated)",
+  "lastInteractionAt": "ISODate"
+}
+```
 
----
+**Indexes**:
+- `projectId` - For project-specific analytics
+- `viewedAt` - For time-based queries
+- `sessionId` - For session tracking
 
-## Data Validation
+**Analytics**:
+- Engagement score calculation (0-100)
+- High-value engagement detection (score >= 50)
+- Aggregation queries for statistics
 
-### Application Layer
-- Bean Validation (`@NotBlank`, `@Positive`, `@ValidMongoId`).
-- Enum parsing with graceful error messages.
-- Custom Mongo ID validators prevent invalid ObjectId strings before repository operations.
+## Relationships
 
-### Database Layer
-- MongoDB remains schemaless; optionally add JSON schema validation when schemas stabilize.
-- Use transactions (requires replica set) if multi-document operations become necessary.
+### Many-to-Many: Projects ↔ Tech Stacks
 
----
+- **Storage**: Array of ObjectId strings in `projects.techStackIds`
+- **Query**: Use `$in` operator to find projects by tech stack
+- **Reverse Query**: Find tech stacks used in projects via aggregation
 
-## Data Seeding & Fixtures
+### Many-to-Many: Projects ↔ Academics
 
-1. **Local Development**
-   - Start MongoDB (`mongod --dbpath C:\data\db` or Docker).
-   - Import sample docs via Compass or `mongoimport`.
-2. **Idempotent Seeds**
-   - Upsert using natural keys (e.g., `year + title` for milestones).
-   - Guard Spring seeders with profiles to avoid reseeding production.
-3. **Frontend Fallbacks**
-   - `JourneyMilestoneSection` contains fallback fixtures used when API fails; keep aligned with actual data.
-4. **Testing**
-   - `@DataMongoTest` + embedded Mongo/Testcontainers with minimal fixtures.
+- **Storage**: Array of ObjectId strings in `projects.relatedAcademicIds`
+- **Query**: Use `$in` operator to find projects by academic
+- **Reverse Query**: Find academics related to projects via aggregation
 
----
+## Indexes Summary
 
-## Operational Runbook
+| Collection | Index | Type | Purpose |
+|------------|-------|------|---------|
+| `projects` | `endDate` | DESC | Sorting by date |
+| `projects` | `isFeatured` | ASC | Featured projects |
+| `projects` | `status` | ASC | Status filtering |
+| `academics` | `subjectCode` | ASC | Quick lookup |
+| `academics` | `semester` | ASC | Semester filtering |
+| `tech_stacks` | `name` | UNIQUE | Uniqueness & lookup |
+| `tech_stacks` | `type` | ASC | Type filtering |
+| `users` | `email` | UNIQUE | Authentication |
+| `contacts` | `email` | ASC | Duplicate detection |
+| `contacts` | `createdAt` | DESC | Chronological queries |
+| `resumes` | `version` | ASC | Version lookup |
+| `resumes` | `isActive` | ASC | Primary resume |
+| `project_engagement` | `projectId` | ASC | Project analytics |
+| `project_engagement` | `viewedAt` | DESC | Time-based queries |
 
-### Local Workflow
-1. `mongod --dbpath C:\data\db` (or `docker run -p 27017:27017 mongo:7`).
-2. `cd backend && ./gradlew.bat bootRun`.
-3. `cd frontend && npm run dev` (Vite proxy `/api` → `http://localhost:8080/api/v1`).
+## Data Access Patterns
 
-### Staging / Production
-1. Use managed MongoDB (Atlas) with TLS enabled.
-2. Configure network isolation (VNet peering or Atlas IP allow-list).
-3. Rotate credentials via secret manager.
-4. Enable replica set for HA; consider sharding once data grows beyond tens of GB.
+### Spring Data MongoDB
 
-### Monitoring
-- Track slow queries via `app.performance.slow-query-threshold-ms`.
-- Observe connection pool metrics via Spring Actuator and Atlas dashboards.
-- Alert on replication lag, disk growth, auth failures.
+- **Repositories**: Extend `MongoRepository<T, ID>`
+- **Query Methods**: Method name-based queries (e.g., `findByEmail`, `findByStatus`)
+- **Custom Queries**: `@Query` annotation with MongoDB query syntax
+- **Aggregation**: `Aggregation` pipeline for complex queries
 
----
+### Example Repository
 
-## Backup and Recovery
+```java
+@Repository
+public interface ProjectRepository extends MongoRepository<Project, String> {
+    Page<Project> findByStatusOrderByEndDateDesc(ProjectStatus status, Pageable pageable);
+    List<Project> findByTechStackIdsContaining(String techStackId);
+    List<Project> findByIsFeaturedTrue();
+}
+```
 
-- Daily automated backups (`mongodump` or Atlas snapshot).
-- Perform manual backups before major schema/data migrations.
-- Store backups encrypted with ≥30-day retention.
-- Run quarterly restore drills (restore into staging and execute smoke tests).
+## Validation Rules
 
----
+### Application-Level Validation
+
+- **Date Range**: `endDate` must be after `startDate` (via `@ValidDateRange`)
+- **URL Format**: GitHub and demo URLs validated via `@ValidUrl`
+- **MongoDB ObjectId**: Validated via `@ValidMongoId` and `@ValidMongoIdList`
+- **String Length**: Jakarta Bean Validation (`@Size`, `@NotBlank`, etc.)
+
+### Database-Level Constraints
+
+- **Unique Indexes**: `tech_stacks.name`, `users.email`
+- **Required Fields**: Enforced at application level (Spring Data MongoDB)
 
 ## Migration Strategy
 
-### Schema Changes
-- Document change in ADR or migration ticket.
-- Introduce new fields with backward-compatible defaults.
-- Use migration scripts or Spring tasks to backfill existing docs.
+### Initial Setup
 
-### Data Migrations
-- Use scripted approaches (Java command, Mongo shell).
-- Keep migrations idempotent and reversible (checkpoint documents if needed).
-- Validate post-migration counts and spot-check sample documents.
+1. **Connection**: Configure `MONGODB_URI` in `application.properties`
+2. **Indexes**: Created automatically via `@Indexed` annotations on first run
+3. **Seed Data**: Optional data initialization via `@PostConstruct` or migration scripts
 
----
+### Data Migration
+
+- **From MySQL**: Use migration scripts to convert relational data to documents
+- **Version Control**: Use MongoDB change streams or application-level versioning
+- **Backup**: Regular MongoDB backups via `mongodump`
 
 ## Performance Considerations
 
-- Paginate (`limit`, `skip`) to avoid large cursor loads.
-- Use projections to omit heavy fields (e.g., skip `description` for list views).
-- Keep documents under MongoDB’s 16 MB limit; offload assets to `project_media` or external storage.
-- Cache read-heavy endpoints if latency becomes an issue.
+### Caching
 
----
+- **Tech Stacks**: Cached for 1 hour (frequently accessed, rarely updated)
+- **Cache Implementation**: Spring Cache with Caffeine
+
+### Query Optimization
+
+- **Pagination**: Always use `Pageable` for list queries
+- **Projection**: Use DTOs to limit returned fields
+- **Aggregation**: Use aggregation pipeline for complex statistics
+
+### Index Usage
+
+- All frequently queried fields are indexed
+- Compound indexes considered for multi-field queries
+- Index monitoring via MongoDB Compass or `db.collection.getIndexes()`
+
+## Backup & Recovery
+
+### Backup Strategy
+
+- **Frequency**: Daily automated backups
+- **Method**: `mongodump` or MongoDB Atlas automated backups
+- **Retention**: 30 days of backups
+
+### Recovery
+
+- **Point-in-Time Recovery**: MongoDB Atlas or oplog-based recovery
+- **Document-Level**: Application-level soft deletes for critical data
 
 ## Security
 
-- Enable MongoDB authentication outside local dev.
-- Use least-privilege roles (read/write app user, read-only analytics user).
-- Encrypt in transit (TLS) and store connection strings in environment variables or secret manager.
-- Hash credentials with BCrypt (already handled in `admin_users` service).
+### Data Protection
 
----
+- **Sensitive Data**: Passwords hashed (BCrypt), IP addresses hashed
+- **Input Sanitization**: All user inputs sanitized via `InputSanitizer`
+- **Access Control**: Role-based access control (RBAC) at application level
+
+### Connection Security
+
+- **Authentication**: MongoDB authentication enabled
+- **TLS/SSL**: Encrypted connections in production
+- **Network**: Firewall rules to restrict access
 
 ## Monitoring
 
-Track the following metrics via Atlas/CloudWatch/Grafana:
-- Query latency distribution.
-- Index hit/miss ratio.
-- Connection pool utilization.
-- Disk/storage growth.
-- Replication health (if replica set).
+### Metrics to Track
+
+- **Query Performance**: Slow query log analysis
+- **Index Usage**: Index hit ratio
+- **Collection Sizes**: Document count and storage size
+- **Connection Pool**: Active connections and pool usage
+
+### Tools
+
+- **MongoDB Compass**: GUI for database management
+- **MongoDB Atlas**: Cloud monitoring (if using Atlas)
+- **Application Logs**: Structured logging for database operations
+
+## Future Improvements
+
+1. **Sharding**: For horizontal scaling (if needed)
+2. **Replica Set**: For high availability
+3. **Change Streams**: For real-time data synchronization
+4. **Full-Text Search**: MongoDB Atlas Search for advanced search
+5. **Time-Series Collections**: For engagement analytics (MongoDB 5.0+)
 
 ---
 
-## Related Documentation
-
-- [API Specification](./API-Specification.md)
-- [Architecture Overview](../Architecture/README.md)
-- [Getting Started Guide](../Getting-Started.md)
-- [Repository Patterns](../PATTERNS/Repository-Patterns.md)
-- [Database Migration Guide](../GUIDES/Database-Migrations.md)
-
----
-
-**Last Updated**: 2025-11-17  
+**Document Version**: 2.0.0  
+**Last Updated**: 2025-11-15  
 **Maintained By**: Development Team
-

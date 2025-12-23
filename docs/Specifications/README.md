@@ -12,10 +12,10 @@ This directory contains detailed technical specifications for API, database, fro
 
 | Specification | Description | Status | Last Updated |
 |---------------|-------------|--------|--------------|
-| [API Spec](./api-spec.md) | REST API endpoints, contracts, data models, and error handling | ✅ Complete | 2025-11-15 |
-| [DB Spec](./db-spec.md) | MongoDB schema, collections, relationships, indexes, and data access patterns | ✅ Complete | 2025-11-15 |
-| [Frontend Spec](./frontend-spec.md) | React component architecture, routing, state management, and build configuration | ✅ Complete | 2025-11-15 |
-| [UI/UX Spec](./ui-ux-spec.md) | Design system, accessibility, responsive rules, and user experience patterns | ✅ Complete | 2025-11-15 |
+| [API Specification](./API-Specification.md) | REST API endpoints, contracts, data models, and error handling | ✅ Complete | 2025-11-15 |
+| [Database Specification](./Database-Specification.md) | MongoDB schema, collections, relationships, indexes, and data access patterns | ✅ Complete | 2025-11-15 |
+| [Frontend Specification](./Frontend-Specification.md) | React component architecture, routing, state management, and build configuration | ✅ Complete | 2025-11-15 |
+| [UI/UX Specification](./UI-UX-Specification.md) | Design system, accessibility, responsive rules, and user experience patterns | ✅ Complete | 2025-11-15 |
 
 ---
 
@@ -29,7 +29,7 @@ This directory contains detailed technical specifications for API, database, fro
 - **Format**: RESTful JSON API with standardized `ApiResponse<T>` envelope
 - **Documentation**: Swagger UI at `/swagger-ui.html`
 - **Endpoints**: Projects, Academics, Tech Stacks, Auth, Contact, Resumes, Engagement
-- **Details**: See [API Spec](./api-spec.md)
+- **Details**: See [API Specification](./API-Specification.md)
 
 ### Database Specifications
 
@@ -45,7 +45,7 @@ This directory contains detailed technical specifications for API, database, fro
   - `project_engagement` - Analytics and engagement tracking
 - **Relationships**: Many-to-Many via embedded arrays (ObjectId references)
 - **Indexing**: Automatic via `@Indexed` annotations
-- **Details**: See [DB Spec](./db-spec.md)
+- **Details**: See [Database Specification](./Database-Specification.md)
 
 ### Frontend Specifications
 
@@ -57,7 +57,7 @@ This directory contains detailed technical specifications for API, database, fro
 - **i18n**: React i18next 15.6.1 (Korean, English, Japanese)
 - **Architecture**: Atomic Design Pattern (Atoms, Molecules, Organisms)
 - **API Integration**: Axios with standardized response handling
-- **Details**: See [Frontend Spec](./frontend-spec.md)
+- **Details**: See [Frontend Specification](./Frontend-Specification.md)
 
 ### UI/UX Specifications
 
@@ -66,7 +66,7 @@ This directory contains detailed technical specifications for API, database, fro
 - **Accessibility**: WCAG AA compliance, keyboard navigation, ARIA labels
 - **Animation**: Framer Motion for smooth transitions
 - **Components**: Reusable UI components following Nielsen's Heuristics
-- **Details**: See [UI/UX Spec](./ui-ux-spec.md)
+- **Details**: See [UI/UX Specification](./UI-UX-Specification.md)
 
 ---
 
@@ -74,7 +74,7 @@ This directory contains detailed technical specifications for API, database, fro
 
 ### For API Integration
 
-1. **Read API Spec**: Review [API Spec](./api-spec.md) for endpoint details
+1. **Read API Specification**: Review [API Specification](./API-Specification.md) for endpoint details
 2. **Check Request/Response Formats**: Understand `ApiResponse<T>` envelope structure
 3. **Review Authentication**: JWT token handling and Google OAuth flow
 4. **Test Endpoints**: Use Swagger UI at `http://localhost:8080/swagger-ui.html`
@@ -82,7 +82,7 @@ This directory contains detailed technical specifications for API, database, fro
 
 ### For Database Operations
 
-1. **Review Schema**: Check [DB Spec](./db-spec.md) for collection structures
+1. **Review Schema**: Check [Database Specification](./Database-Specification.md) for collection structures
 2. **Understand Relationships**: Many-to-Many via embedded arrays
 3. **Check Validation Rules**: Application-level and database-level constraints
 4. **Review Indexes**: Optimize queries using existing indexes
@@ -91,8 +91,8 @@ This directory contains detailed technical specifications for API, database, fro
 ### For Frontend Development
 
 1. **Component Architecture**: Follow Atomic Design Pattern
-2. **Read Frontend Spec**: Review [Frontend Spec](./frontend-spec.md) for component contracts
-3. **Follow UI/UX Guidelines**: Implement according to [UI/UX Spec](./ui-ux-spec.md)
+2. **Read Frontend Specification**: Review [Frontend Specification](./Frontend-Specification.md) for component contracts
+3. **Follow UI/UX Guidelines**: Implement according to [UI/UX Specification](./UI-UX-Specification.md)
 4. **State Management**: Use Zustand stores for global state
 5. **API Integration**: Use standardized `apiClient` and service modules
 6. **Testing**: Follow acceptance criteria and test cases

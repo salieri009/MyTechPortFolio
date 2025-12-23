@@ -251,7 +251,9 @@ export function GoogleLoginButton({ onSuccess, onError }: GoogleLoginProps) {
       }
 
       // Success - store user data and tokens
-      setUser(authResponse.userInfo)
+      if (authResponse.userInfo) {
+        setUser(authResponse.userInfo)
+      }
       setTokens(authResponse.accessToken, authResponse.refreshToken)
       setRequiresTwoFactor(false)
       setPendingCredential(null)
@@ -282,7 +284,9 @@ export function GoogleLoginButton({ onSuccess, onError }: GoogleLoginProps) {
     try {
       const authResponse = await authService.loginWithGoogle(pendingCredential, twoFactorCode)
 
-      setUser(authResponse.userInfo)
+      if (authResponse.userInfo) {
+        setUser(authResponse.userInfo)
+      }
       setTokens(authResponse.accessToken, authResponse.refreshToken)
       setRequiresTwoFactor(false)
       setPendingCredential(null)
@@ -342,10 +346,10 @@ export function GoogleLoginButton({ onSuccess, onError }: GoogleLoginProps) {
   if (isAuthenticated && user) {
     return (
       <UserProfile>
-        <Avatar src={user.pictureUrl || '/default-avatar.png'} alt={user.name} />
+        <Avatar src={user.profileImageUrl || '/default-avatar.png'} alt={user.displayName} />
         <UserInfo>
-          <UserName>{user.name}</UserName>
-          {user.isAdmin && <AdminBadge>Admin</AdminBadge>}
+          <UserName>{user.displayName}</UserName>
+          {user.role === 'ADMIN' && <AdminBadge>Admin</AdminBadge>}
         </UserInfo>
         <DropdownButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
           ▼
@@ -354,7 +358,7 @@ export function GoogleLoginButton({ onSuccess, onError }: GoogleLoginProps) {
           <DropdownItem onClick={() => setIsDropdownOpen(false)}>
             Profile
           </DropdownItem>
-          {user.isAdmin && (
+          {user.role === 'ADMIN' && (
             <DropdownItem onClick={() => setIsDropdownOpen(false)}>
               Admin Panel
             </DropdownItem>
