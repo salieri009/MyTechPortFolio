@@ -1,6 +1,15 @@
 import axios, { AxiosError, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
 import { API_CONFIG, calculateRetryDelay } from '../config/api.config'
 
+declare module 'axios' {
+  export interface InternalAxiosRequestConfig {
+    metadata?: {
+      startTime: number
+      requestId?: string
+    }
+  }
+}
+
 /**
  * API Client Configuration
  * Handles authentication, error handling, retries, and timeout management.

@@ -29,12 +29,15 @@ describe('Projects Service', () => {
     const mockResponse = {
       success: true,
       data: {
-        content: [],
-        totalElements: 0,
+        items: [],
+        total: 0,
         totalPages: 0,
         page: 1,
-        size: 10
-      }
+        size: 10,
+        hasNext: false,
+        hasPrevious: false
+      },
+      error: null
     }
 
     vi.mocked(apiClient.api.get).mockResolvedValue({ data: mockResponse })
@@ -54,12 +57,15 @@ describe('Projects Service', () => {
     const mockData = {
       success: true,
       data: {
-        content: [],
-        totalElements: 0,
+        items: [],
+        total: 0,
         totalPages: 0,
         page: 1,
-        size: 10
-      }
+        size: 10,
+        hasNext: false,
+        hasPrevious: false
+      },
+      error: null
     }
 
     vi.mocked(dataService.getProjects).mockResolvedValue(mockData)

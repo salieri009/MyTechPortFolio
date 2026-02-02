@@ -53,6 +53,7 @@ export async function getTestimonials(): Promise<ApiResponse<TestimonialResponse
     success: true,
     data: converted,
     message: 'Testimonials retrieved successfully',
+    error: null,
     metadata: {
       timestamp: new Date().toISOString(),
       version: 'v1',
@@ -101,6 +102,7 @@ export async function getTestimonial(id: string): Promise<ApiResponse<Testimonia
     success: true,
     data: converted,
     message: 'Testimonial retrieved successfully',
+    error: null,
     metadata: {
       timestamp: new Date().toISOString(),
       version: 'v1',

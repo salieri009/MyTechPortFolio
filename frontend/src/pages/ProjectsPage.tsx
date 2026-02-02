@@ -40,7 +40,7 @@ const CATEGORY_TECH_MAP: Record<string, string[]> = {
 }
 
 // Styled Components with proper theme properties
-const FilterBar = styled(Card)<{ $isVisible: boolean }>`
+const FilterBar = styled(Card) <{ $isVisible: boolean }>`
   display: flex;
   gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   margin-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
@@ -136,7 +136,7 @@ const PageTitle = styled.h1<{ $isVisible: boolean }>`
 
 const ProjectGrid = styled.div<{ $isVisible: boolean }>`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(${props => props.theme.spacing[80]}, 1fr)); /* 4-point system: 320px */
+  grid-template-columns: repeat(auto-fill, minmax(${props => props.theme.spacing[80 as any]}, 1fr)); /* 4-point system: 320px */
   gap: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   margin-bottom: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
   opacity: ${props => props.$isVisible ? 1 : 0};
@@ -244,7 +244,7 @@ const ClearFiltersButton = styled.button`
 
 const EmptyState = styled.div`
   text-align: center;
-  padding: ${props => props.theme.spacing[15]} ${props => props.theme.spacing[5]}; /* 4-point system: 60px 20px → 60px 24px */
+  padding: 60px 20px; /* 60px 20px */
   color: ${props => props.theme.colors.textSecondary};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   
@@ -272,8 +272,8 @@ const ProjectModalOverlay = styled.div`
   bottom: 0;
   background: ${props => {
     // Use theme-aware background color with 0.9 opacity
-    const overlayColor = props.theme.mode === 'dark' 
-      ? props.theme.colors.neutral[950] 
+    const overlayColor = props.theme.mode === 'dark'
+      ? props.theme.colors.neutral[950]
       : props.theme.colors.neutral[900]
     const hex = overlayColor.replace('#', '')
     const r = parseInt(hex.substring(0, 2), 16)
@@ -306,7 +306,7 @@ const ProjectModalContent = styled.div`
   background: ${props => props.theme.colors.surface || props.theme.colors.background};
   border-radius: ${props => props.theme.radius['2xl']};
   padding: ${props => props.theme.spacing[12]};
-  max-width: ${props => props.theme.spacing[150] || '37.5rem'}; /* 600px */
+  max-width: ${props => '600px' || '37.5rem'}; /* 600px */
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -350,9 +350,9 @@ const ProjectModalCloseButton = styled.button`
   color: ${props => props.theme.colors.text};
   
   &:hover {
-    background: ${props => props.theme.mode === 'dark' 
-      ? props.theme.colors.neutral[800] 
-      : props.theme.colors.neutral[100]};
+    background: ${props => props.theme.mode === 'dark'
+    ? props.theme.colors.neutral[800]
+    : props.theme.colors.neutral[100]};
   }
   
   &:focus-visible {
@@ -370,7 +370,7 @@ const CloseIcon = styled.svg`
 
 const ProjectModalImage = styled.img`
   width: 100%;
-  max-height: ${props => props.theme.spacing[100]}; /* 400px */
+  max-height: 400px; /* 400px */
   object-fit: cover;
   border-radius: ${props => props.theme.radius.xl};
   margin-bottom: ${props => props.theme.spacing[8]};
@@ -523,18 +523,18 @@ const ProjectsPage: React.FC = () => {
   const [isTitleVisible, setIsTitleVisible] = useState(false)
   const [isFilterBarVisible, setIsFilterBarVisible] = useState(true) // Start visible
   const [isGridVisible, setIsGridVisible] = useState(false)
-  
+
   // Project card refs for focus return
-  const projectCardRefs = useRef<{ [key: number]: HTMLDivElement | null }>({})
-  
+  const projectCardRefs = useRef<{ [key: string | number]: HTMLDivElement | null }>({})
+
   // Scroll direction tracking for FilterBar
   const lastScrollYRef = useRef<number>(0)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  
+
   const titleRef = useRef<HTMLHeadingElement>(null)
   const filterBarRef = useRef<HTMLDivElement>(null)
   const gridRef = useRef<HTMLDivElement>(null)
-  
+
   const {
     techStacks,
     year,
@@ -557,7 +557,7 @@ const ProjectsPage: React.FC = () => {
     setFilterCounts,
     resetFilters
   } = useFilters()
-  
+
   // Debounce filters for server-side filtering
   // Memoize the filter object to prevent unnecessary re-renders
   const filters = useMemo(() => ({ techStacks, year, sort }), [techStacks, year, sort])
@@ -605,7 +605,7 @@ const ProjectsPage: React.FC = () => {
       if (gridRef.current) observer.unobserve(gridRef.current)
     }
   }, [isFiltering])
-  
+
   // Reset grid visibility when projects change (but not when filtering)
   // Use a ref to track previous projects length to prevent unnecessary updates
   const prevProjectsLengthRef = useRef<number>(0)
@@ -621,16 +621,16 @@ const ProjectsPage: React.FC = () => {
   const prevFiltersRef = useRef<string>('')
   const prevPageRef = useRef<number>(1)
   const isLoadingRef = useRef<boolean>(false)
-  
+
   // Memoize filter values to prevent unnecessary re-renders
   const techStacksKey = useMemo(() => [...debouncedFilters.techStacks].sort().join(','), [debouncedFilters.techStacks])
   const yearValue = debouncedFilters.year
   const sortValue = debouncedFilters.sort
-  
+
   useEffect(() => {
     // Prevent concurrent requests
     if (isLoadingRef.current) return
-    
+
     // Create a stable key for comparison
     const filterKey = JSON.stringify({
       techStacks: techStacksKey,
@@ -638,16 +638,16 @@ const ProjectsPage: React.FC = () => {
       sort: sortValue,
       page: currentPage
     })
-    
+
     // Skip if filters and page haven't actually changed
     if (filterKey === prevFiltersRef.current && currentPage === prevPageRef.current) {
       return
     }
-    
+
     prevFiltersRef.current = filterKey
     prevPageRef.current = currentPage
     isLoadingRef.current = true
-    
+
     const loadProjects = async () => {
       try {
         if (isInitialLoad) {
@@ -655,25 +655,26 @@ const ProjectsPage: React.FC = () => {
         } else {
           setFiltering(true)
         }
-        
+
         const response = await getProjects({
           page: currentPage - 1, // Backend uses 0-based indexing
           size: pageSize,
           sort: sortValue,
           techStacks: debouncedFilters.techStacks,
-          year: yearValue
+          year: yearValue || undefined
         })
-        
+
         if (response.success && response.data) {
           setProjects(response.data.items)
-          
-          // Update pagination metadata
-          if (response.data.pagination) {
+
+
+          // Update pagination metadata - Page<T> is flat
+          if (response.data) {
             setPagination({
-              totalItems: response.data.pagination.total || 0,
-              totalPages: response.data.pagination.totalPages || 0,
-              hasNext: response.data.pagination.hasNext || false,
-              hasPrevious: response.data.pagination.hasPrevious || false
+              totalItems: response.data.total || 0,
+              totalPages: response.data.totalPages || 0,
+              hasNext: response.data.hasNext || false,
+              hasPrevious: response.data.hasPrevious || false
             })
           }
         } else {
@@ -694,7 +695,7 @@ const ProjectsPage: React.FC = () => {
     loadProjects()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [techStacksKey, yearValue, sortValue, currentPage, pageSize, isInitialLoad])
-  
+
   // Load filter counts (optional, for UX improvement) - only once on mount
   const hasLoadedCountsRef = useRef(false)
   useEffect(() => {
@@ -704,12 +705,12 @@ const ProjectsPage: React.FC = () => {
       hasLoadedCountsRef.current = true
       return
     }
-    
+
     let isMounted = true
-    
+
     const loadFilterCounts = async () => {
       hasLoadedCountsRef.current = true
-      
+
       try {
         // Get all projects to calculate counts
         const response = await getProjects({
@@ -717,27 +718,27 @@ const ProjectsPage: React.FC = () => {
           size: 1000, // Get all for counting
           sort: 'endDate,desc'
         })
-        
+
         if (isMounted && response.success && response.data) {
           const allProjects = response.data.items
           const counts: Record<string, number> = {}
-          
+
           // Count projects by tech stack
           allProjects.forEach(project => {
             project.techStacks.forEach(tech => {
               counts[tech] = (counts[tech] || 0) + 1
             })
           })
-          
+
           setFilterCounts(counts)
         }
       } catch (error) {
         console.error('Failed to load filter counts:', error)
       }
     }
-    
+
     loadFilterCounts()
-    
+
     return () => {
       isMounted = false
     }
@@ -756,10 +757,10 @@ const ProjectsPage: React.FC = () => {
     projects.forEach(p => p.techStacks.forEach(tech => techSet.add(tech)))
     return Array.from(techSet).sort()
   }, [filterCountsKeys, projects])
-  
+
   // Get unique years for filter options (memoized to prevent flickering)
   // Only recalculate when projects array reference changes (not on every render)
-  const projectsYears = useMemo(() => 
+  const projectsYears = useMemo(() =>
     projects.map(p => new Date(p.endDate).getFullYear()),
     [projects]
   )
@@ -786,10 +787,10 @@ const ProjectsPage: React.FC = () => {
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current)
       }
-      
+
       const currentScrollY = window.scrollY
       const scrollDifference = currentScrollY - lastScrollYRef.current
-      
+
       // Only hide/show if scrolled more than 50px
       if (Math.abs(scrollDifference) > 50) {
         if (scrollDifference > 0) {
@@ -801,7 +802,7 @@ const ProjectsPage: React.FC = () => {
         }
         lastScrollYRef.current = currentScrollY
       }
-      
+
       // Reset visibility after scroll stops (optional)
       scrollTimeoutRef.current = setTimeout(() => {
         // Keep FilterBar visible when at top
@@ -810,7 +811,7 @@ const ProjectsPage: React.FC = () => {
         }
       }, 150)
     }
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', handleScroll)
@@ -912,11 +913,11 @@ const ProjectsPage: React.FC = () => {
       </FilterBar>
 
       {/* Status announcer for screen readers */}
-      <div 
-        role="status" 
-        aria-live="polite" 
+      <div
+        role="status"
+        aria-live="polite"
         aria-atomic="true"
-        style={{ 
+        style={{
           position: 'absolute',
           left: '-10000px',
           width: '1px',
@@ -952,7 +953,7 @@ const ProjectsPage: React.FC = () => {
             <>
               <h3>{t('projects.empty.filtered.title', 'No projects match your filters')}</h3>
               <p>
-                {t('projects.empty.filtered.description', 
+                {t('projects.empty.filtered.description',
                   `No projects found with ${techStacks.length > 0 ? techStacks.join(', ') : ''} ${year ? `in ${year}` : ''}. Try adjusting your filters.`)}
               </p>
               <ClearFiltersButton onClick={resetFilters}>
@@ -969,15 +970,15 @@ const ProjectsPage: React.FC = () => {
       ) : (
         <ProjectGrid ref={gridRef} $isVisible={isGridVisible} role="list" aria-label={t('projects.list', 'Projects list')}>
           {projects.map((project, index) => (
-            <AnimatedProjectCard 
-              key={project.id} 
-              $index={index} 
+            <AnimatedProjectCard
+              key={project.id}
+              $index={index}
               $isVisible={isGridVisible}
               role="listitem"
               ref={(el) => { projectCardRefs.current[project.id] = el }}
               tabIndex={0}
             >
-              <ProjectCard 
+              <ProjectCard
                 id={project.id}
                 title={project.title}
                 summary={project.summary}

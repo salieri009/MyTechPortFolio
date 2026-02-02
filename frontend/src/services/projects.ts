@@ -40,7 +40,7 @@ export async function getProject(id: number | string): Promise<ApiResponse<Proje
     return res.data
   }
   // 기본적으로 실제 프로젝트 데이터 사용
-  return dataService.getProject(id)
+  return dataService.getProject(Number(id))
 }
 
 /**

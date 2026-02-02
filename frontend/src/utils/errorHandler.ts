@@ -3,7 +3,7 @@
  * Provides consistent error handling across the application.
  */
 
-import { AxiosError } from 'axios'
+import axios, { AxiosError } from 'axios'
 import { getApiErrorMessage, isNetworkError, isTimeoutError } from '@services/apiClient'
 
 export interface ErrorInfo {
@@ -28,7 +28,7 @@ export function analyzeError(error: unknown): ErrorInfo {
       retryable: true,
     }
   }
-  
+
   // Timeout errors
   if (isTimeoutError(error)) {
     return {
@@ -37,13 +37,13 @@ export function analyzeError(error: unknown): ErrorInfo {
       retryable: true,
     }
   }
-  
+
   // Axios errors
-  if (AxiosError.isAxiosError(error)) {
+  if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError<{ error?: string; message?: string; errorCode?: string }>
     const status = axiosError.response?.status
     const responseData = axiosError.response?.data
-    
+
     // Authentication errors
     if (status === 401) {
       return {
@@ -53,7 +53,7 @@ export function analyzeError(error: unknown): ErrorInfo {
         retryable: false,
       }
     }
-    
+
     // Authorization errors
     if (status === 403) {
       return {
@@ -63,7 +63,7 @@ export function analyzeError(error: unknown): ErrorInfo {
         retryable: false,
       }
     }
-    
+
     // Validation errors
     if (status === 400 || status === 422) {
       const message = responseData?.error || responseData?.message || 'Invalid request. Please check your input.'
@@ -74,7 +74,7 @@ export function analyzeError(error: unknown): ErrorInfo {
         retryable: false,
       }
     }
-    
+
     // Not found
     if (status === 404) {
       return {
@@ -84,7 +84,7 @@ export function analyzeError(error: unknown): ErrorInfo {
         retryable: false,
       }
     }
-    
+
     // Rate limiting
     if (status === 429) {
       return {
@@ -94,7 +94,7 @@ export function analyzeError(error: unknown): ErrorInfo {
         retryable: true,
       }
     }
-    
+
     // Server errors
     if (status && status >= 500) {
       return {
@@ -104,16 +104,16 @@ export function analyzeError(error: unknown): ErrorInfo {
         retryable: true,
       }
     }
-    
+
     // Other HTTP errors
     return {
       message: getApiErrorMessage(error),
       type: 'unknown',
       statusCode: status,
-      retryable: status && status >= 500,
+      retryable: (status && status >= 500) || false,
     }
   }
-  
+
   // Generic errors
   if (error instanceof Error) {
     return {
@@ -122,7 +122,7 @@ export function analyzeError(error: unknown): ErrorInfo {
       retryable: false,
     }
   }
-  
+
   // Unknown error type
   return {
     message: 'An unexpected error occurred. Please try again.',
