@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,19 @@ public class AuthService {
     private final GoogleOAuthService googleOAuthService;
     private final GitHubOAuthService gitHubOAuthService;
     private final JwtUtil jwtUtil;
+
+    /**
+     * In-memory token blacklist for logout.
+     * In production, use Redis or a distributed cache instead.
+     */
+    private final Set<String> tokenBlacklist = ConcurrentHashMap.newKeySet();
+
+    /**
+     * Check if a token has been blacklisted (logged out).
+     */
+    public boolean isTokenBlacklisted(String token) {
+        return tokenBlacklist.contains(token);
+    }
 
     public LoginResponse login(LoginRequest request) {
         log.info("Login attempt for email: {}", request.getEmail());
@@ -37,7 +53,6 @@ public class AuthService {
             // Create new user for demo purposes
             user = User.builder()
                     .email(request.getEmail())
-                    .name("Demo User")
                     .displayName("Demo User")
                     .profileImageUrl("")
                     .isEmailVerified(true)
@@ -112,17 +127,33 @@ public class AuthService {
     }
 
     public LoginResponse refreshToken(String refreshToken) {
-        // For demo purposes, generate new tokens
-        return LoginResponse.builder()
-                .accessToken(generateAccessTokenForEmail(extractEmailFromRefreshToken(refreshToken)))
-                .refreshToken(refreshToken)
-                .expiresIn(3600L)
-                .build();
+        if (!jwtUtil.isTokenValid(refreshToken)) {
+            throw new RuntimeException("Invalid or expired refresh token");
+        }
+        if (isTokenBlacklisted(refreshToken)) {
+            throw new RuntimeException("Refresh token has been revoked");
+        }
+
+        String email = extractEmailFromRefreshToken(refreshToken);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!user.isEnabled()) {
+            throw new RuntimeException("User account is disabled");
+        }
+
+        // Blacklist old refresh token (rotation)
+        tokenBlacklist.add(refreshToken);
+
+        return buildLoginResponse(user);
     }
 
     public void logout(String token) {
-        log.info("User logout with token: {}", token.substring(0, Math.min(10, token.length())));
-        // In a real implementation, you would invalidate tokens here
+        log.info("User logout requested");
+        if (token != null && !token.isBlank()) {
+            tokenBlacklist.add(token);
+            log.info("Token added to blacklist");
+        }
     }
 
     public Object getUserProfile(String token) {
@@ -143,7 +174,6 @@ public class AuthService {
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             // Update user info from Google
-            user.setName(googleUserInfo.getName());
             user.setDisplayName(googleUserInfo.getName());
             user.setProfileImageUrl(googleUserInfo.getPictureUrl());
             user.setLastLoginAt(LocalDateTime.now());
@@ -153,7 +183,6 @@ public class AuthService {
         // Create new user from Google info
         User newUser = User.builder()
                 .email(googleUserInfo.getEmail())
-                .name(googleUserInfo.getName())
                 .displayName(googleUserInfo.getName())
                 .profileImageUrl(googleUserInfo.getPictureUrl())
                 .isEmailVerified(true)
@@ -174,7 +203,6 @@ public class AuthService {
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             // Update user info from GitHub
-            user.setName(gitHubUserInfo.getName());
             user.setDisplayName(gitHubUserInfo.getName());
             user.setProfileImageUrl(gitHubUserInfo.getAvatarUrl());
             user.setOauthProvider("github");
@@ -186,7 +214,6 @@ public class AuthService {
         // Create new user from GitHub info
         User newUser = User.builder()
                 .email(gitHubUserInfo.getEmail())
-                .name(gitHubUserInfo.getName())
                 .displayName(gitHubUserInfo.getName())
                 .profileImageUrl(gitHubUserInfo.getAvatarUrl())
                 .oauthProvider("github")
@@ -204,11 +231,11 @@ public class AuthService {
         return LoginResponse.builder()
                 .accessToken(generateAccessTokenFor(user))
                 .refreshToken(generateRefreshTokenFor(user))
-                .expiresIn(3600L)
+                .expiresIn(86400L)
                 .userInfo(LoginResponse.UserInfo.builder()
-                        .id(null)
+                        .id(user.getId())
                         .email(user.getEmail())
-                        .displayName(user.getDisplayName() != null ? user.getDisplayName() : user.getName())
+                        .displayName(user.getDisplayName())
                         .profileImageUrl(user.getProfileImageUrl())
                         .role(user.getRole() != null ? user.getRole().name() : "USER")
                         .twoFactorEnabled(Boolean.TRUE.equals(user.isTwoFactorEnabled()))
@@ -244,7 +271,10 @@ public class AuthService {
     }
 
     public Optional<User> getCurrentUser(String token) {
-        // In a real implementation, you would validate the token and return the user
-        return Optional.empty();
+        if (token == null || !jwtUtil.isTokenValid(token)) {
+            return Optional.empty();
+        }
+        var claims = jwtUtil.parseClaims(token);
+        return userRepository.findByEmail(claims.getSubject());
     }
 }

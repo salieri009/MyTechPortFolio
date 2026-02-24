@@ -27,7 +27,7 @@ public class LoginResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserInfo {
-        private Long id;
+        private String id;
         private String email;
         private String displayName;
         private String profileImageUrl;

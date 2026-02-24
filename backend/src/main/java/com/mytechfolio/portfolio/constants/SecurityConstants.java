@@ -33,23 +33,36 @@ public final class SecurityConstants {
     public static final String SECURITY_HEADER_XSS_PROTECTION = "1; mode=block";
     public static final String SECURITY_HEADER_STRICT_TRANSPORT = "max-age=31536000; includeSubDomains";
     
-    // Public Endpoints (no authentication required)
-    public static final String[] PUBLIC_ENDPOINTS = {
+    // Infrastructure Endpoints (no authentication required, any method)
+    public static final String[] INFRASTRUCTURE_ENDPOINTS = {
         "/api/v1/auth/**",
-        "/api/v1/projects/**",
-        "/api/v1/academics/**",
-        "/api/v1/techstacks/**",
-        "/api/v1/journey-milestones/**",
-        "/api/v1/seo/**",
-        "/api/v1/testimonials/**",
         "/uploads/**",
         "/swagger-ui/**",
         "/v3/api-docs/**",
         "/actuator/health",
         "/actuator/info"
     };
-    
-    // Admin Endpoints (require admin role)
+
+    // Public Read-Only Endpoints (GET only, no authentication required)
+    public static final String[] PUBLIC_GET_ENDPOINTS = {
+        "/api/v1/projects/**",
+        "/api/v1/academics/**",
+        "/api/v1/techstacks/**",
+        "/api/v1/journey-milestones/**",
+        "/api/v1/seo/**",
+        "/api/v1/testimonials/**",
+        "/api/v1/resumes/**",
+        "/api/v1/engagement/**",
+        "/api/v1/projects/*/media/**"
+    };
+
+    // Public Write Endpoints (POST allowed without admin, e.g., contact form, engagement tracking)
+    public static final String[] PUBLIC_POST_ENDPOINTS = {
+        "/api/v1/contact",
+        "/api/v1/engagement"
+    };
+
+    // Admin Endpoints (require ADMIN role)
     public static final String[] ADMIN_ENDPOINTS = {
         "/api/v1/admin/**"
     };

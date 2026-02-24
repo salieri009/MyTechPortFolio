@@ -11,7 +11,9 @@ import com.mytechfolio.portfolio.repository.TechStackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -60,14 +62,51 @@ public class ProjectMapper
                 .endDate(project.getEndDate())
                 .githubUrl(project.getGithubUrl())
                 .demoUrl(project.getDemoUrl())
+                .repositoryName(project.getRepositoryName())
+                .isFeatured(project.getIsFeatured())
+                .status(project.getStatus() != null ? project.getStatus().name() : null)
+                .viewCount(project.getViewCount())
                 .techStacks(techStackNames)
                 .relatedAcademics(academicNames)
                 .build();
     }
 
     /**
+     * Converts Project to ProjectSummaryResponse using pre-fetched TechStack map.
+     * Avoids N+1 queries when converting lists of projects.
+     *
+     * @param project   Project entity
+     * @param techStackMap Pre-fetched map of TechStack ID -> TechStack name
+     * @return ProjectSummaryResponse
+     */
+    public ProjectSummaryResponse toSummaryResponse(Project project, Map<String, String> techStackMap) {
+        if (project == null) {
+            return null;
+        }
+
+        List<String> techStackNames = project.getTechStackIds() != null
+                ? project.getTechStackIds().stream()
+                    .map(id -> techStackMap.getOrDefault(id, "Unknown"))
+                    .collect(Collectors.toList())
+                : Collections.emptyList();
+
+        return ProjectSummaryResponse.builder()
+                .id(project.getId())
+                .title(project.getTitle())
+                .summary(project.getSummary())
+                .startDate(project.getStartDate())
+                .endDate(project.getEndDate())
+                .techStacks(techStackNames)
+                .imageUrl(null)
+                .isFeatured(project.getIsFeatured())
+                .status(project.getStatus() != null ? project.getStatus().name() : null)
+                .build();
+    }
+
+    /**
      * Converts Project to ProjectSummaryResponse.
-     * 
+     * Note: For list operations, prefer the overload with pre-fetched techStackMap.
+     *
      * @param project Project entity
      * @return ProjectSummaryResponse
      */
@@ -91,8 +130,9 @@ public class ProjectMapper
                 .startDate(project.getStartDate())
                 .endDate(project.getEndDate())
                 .techStacks(techStackNames)
-                .imageUrl(null) // TODO: Add imageUrl field to Project entity if needed
+                .imageUrl(null)
                 .isFeatured(project.getIsFeatured())
+                .status(project.getStatus() != null ? project.getStatus().name() : null)
                 .build();
     }
 

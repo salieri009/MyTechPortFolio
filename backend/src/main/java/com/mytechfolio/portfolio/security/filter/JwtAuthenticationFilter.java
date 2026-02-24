@@ -1,6 +1,7 @@
 package com.mytechfolio.portfolio.security.filter;
 
 import com.mytechfolio.portfolio.security.util.JwtUtil;
+import com.mytechfolio.portfolio.service.AuthService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +27,7 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtUtil jwtUtil;
+	private final AuthService authService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -33,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
 			String token = authHeader.substring(7);
 			try {
-				if (jwtUtil.isTokenValid(token)) {
+				if (jwtUtil.isTokenValid(token) && !authService.isTokenBlacklisted(token)) {
 					Claims claims = jwtUtil.parseClaims(token);
 					String subject = claims.getSubject();
 					Collection<SimpleGrantedAuthority> authorities = extractAuthorities(claims);
@@ -54,13 +56,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		if (rolesObj instanceof List<?> roles) {
 			for (Object r : roles) {
 				if (r != null) {
-					result.add(new SimpleGrantedAuthority(r.toString()));
+					String roleName = r.toString();
+					result.add(new SimpleGrantedAuthority(roleName.startsWith("ROLE_") ? roleName : "ROLE_" + roleName));
 				}
 			}
 		}
 		Object role = claims.get("role");
 		if (role != null) {
-			result.add(new SimpleGrantedAuthority(role.toString()));
+			String roleName = role.toString();
+			result.add(new SimpleGrantedAuthority(roleName.startsWith("ROLE_") ? roleName : "ROLE_" + roleName));
 		}
 		return result;
 	}

@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,7 +85,6 @@ public abstract class BaseServiceImpl<T, ID, R, C, U> implements BaseService<T, 
     }
     
     @Override
-    @Transactional
     public R create(C createRequest) {
         T entity = toEntity(createRequest);
         T savedEntity = repository.save(entity);
@@ -94,7 +92,6 @@ public abstract class BaseServiceImpl<T, ID, R, C, U> implements BaseService<T, 
     }
     
     @Override
-    @Transactional
     public R update(ID id, U updateRequest) {
         T entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(getResourceName(), String.valueOf(id)));
@@ -104,7 +101,6 @@ public abstract class BaseServiceImpl<T, ID, R, C, U> implements BaseService<T, 
     }
     
     @Override
-    @Transactional
     public void deleteById(ID id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException(getResourceName(), String.valueOf(id));

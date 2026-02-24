@@ -4,6 +4,7 @@ import com.mytechfolio.portfolio.constants.SecurityConstants;
 import com.mytechfolio.portfolio.security.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -49,8 +50,15 @@ public class SecurityConfig {
 			
 			// Configure authorization rules
 			.authorizeHttpRequests(authz -> authz
-				.requestMatchers(SecurityConstants.PUBLIC_ENDPOINTS).permitAll()
+				// Infrastructure endpoints: any method allowed
+				.requestMatchers(SecurityConstants.INFRASTRUCTURE_ENDPOINTS).permitAll()
+				// Domain endpoints: GET only for public access
+				.requestMatchers(HttpMethod.GET, SecurityConstants.PUBLIC_GET_ENDPOINTS).permitAll()
+				// Specific POST endpoints: contact form, engagement tracking
+				.requestMatchers(HttpMethod.POST, SecurityConstants.PUBLIC_POST_ENDPOINTS).permitAll()
+				// Admin endpoints: require ADMIN role
 				.requestMatchers(SecurityConstants.ADMIN_ENDPOINTS).hasRole("ADMIN")
+				// All other requests: require authentication
 				.anyRequest().authenticated()
 			)
 			

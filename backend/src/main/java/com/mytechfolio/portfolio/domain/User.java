@@ -30,12 +30,8 @@ public class User {
     private String password;
 
     private String displayName;
-    
-    private String name; // Added for compatibility
 
     private String profileImageUrl;
-    
-    private String profilePictureUrl; // Compatibility field
 
     @Builder.Default
     private Role role = Role.USER;
@@ -57,7 +53,6 @@ public class User {
     private String twoFactorSecret;
 
     // 세션 관리
-    private LocalDateTime lastLogin;
     private String sessionId;
     private LocalDateTime lastActivity;
     private String deviceFingerprint;
@@ -107,7 +102,7 @@ public class User {
     }
 
     public void updateLastLogin() {
-        this.lastLogin = LocalDateTime.now();
+        this.lastLoginAt = LocalDateTime.now();
         this.lastActivity = LocalDateTime.now();
     }
 
@@ -169,10 +164,5 @@ public class User {
         this.userAgent = userAgent;
         this.ipAddress = ipAddress;
         this.referrer = referrer;
-    }
-    
-    // Compatibility methods
-    public void setLastLoginAt(java.time.LocalDateTime lastLoginAt) {
-        this.lastLoginAt = lastLoginAt;
     }
 }

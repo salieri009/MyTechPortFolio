@@ -6,11 +6,11 @@ import java.util.regex.Pattern;
 
 /**
  * Input sanitization utility for security.
- * Prevents XSS, SQL injection, and other injection attacks.
+ * Prevents XSS and NoSQL injection attacks.
  */
 @Component
 public class InputSanitizer {
-    
+
     // Patterns for dangerous content
     private static final Pattern SCRIPT_PATTERN = Pattern.compile(
         "(?i)<script[^>]*>.*?</script>", Pattern.DOTALL
@@ -20,9 +20,6 @@ public class InputSanitizer {
     );
     private static final Pattern ON_EVENT_PATTERN = Pattern.compile(
         "(?i)on\\w+\\s*=", Pattern.CASE_INSENSITIVE
-    );
-    private static final Pattern SQL_INJECTION_PATTERN = Pattern.compile(
-        "(?i)(union|select|insert|update|delete|drop|create|alter|exec|execute|script)"
     );
     
     /**
@@ -90,17 +87,6 @@ public class InputSanitizer {
         sanitized = sanitized.replaceAll("[<>\"'`]", "");
         
         return sanitized;
-    }
-    
-    /**
-     * Checks if input contains potentially dangerous SQL patterns.
-     */
-    public boolean containsSqlInjection(String input) {
-        if (input == null || input.trim().isEmpty()) {
-            return false;
-        }
-        
-        return SQL_INJECTION_PATTERN.matcher(input).find();
     }
     
     /**

@@ -83,25 +83,12 @@ public class AdminUser {
         this.email = email;
         this.fullName = fullName;
     }
-    
-    public void updateUserInfo(String fullName, String email) {
-        this.fullName = fullName;
-        this.email = email;
-    }
 
     public void deactivate() {
         this.enabled = false;
     }
-    
-    public void disable() {
-        this.enabled = false;
-    }
 
     public void activate() {
-        this.enabled = true;
-    }
-    
-    public void enable() {
         this.enabled = true;
     }
     

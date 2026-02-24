@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -145,7 +146,8 @@ public class TestimonialController {
      * @return Created testimonial
      */
     @PostMapping
-    @Operation(summary = "Create testimonial", 
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Create testimonial",
                description = "Creates a new testimonial")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Created"),
@@ -165,7 +167,8 @@ public class TestimonialController {
      * @return Updated testimonial
      */
     @PutMapping("/{id}")
-    @Operation(summary = "Update testimonial", 
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Update testimonial",
                description = "Updates an existing testimonial")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success"),
@@ -186,7 +189,8 @@ public class TestimonialController {
      * @return No content
      */
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete testimonial", 
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Delete testimonial",
                description = "Deletes a testimonial")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Deleted"),

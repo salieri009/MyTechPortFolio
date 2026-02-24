@@ -2,6 +2,7 @@ package com.mytechfolio.portfolio.service;
 
 import com.mytechfolio.portfolio.constants.ApiConstants;
 import com.mytechfolio.portfolio.domain.Project;
+import com.mytechfolio.portfolio.domain.TechStack;
 import com.mytechfolio.portfolio.dto.request.ProjectCreateRequest;
 import com.mytechfolio.portfolio.dto.request.ProjectUpdateRequest;
 import com.mytechfolio.portfolio.dto.response.PageResponse;
@@ -10,6 +11,7 @@ import com.mytechfolio.portfolio.dto.response.ProjectSummaryResponse;
 import com.mytechfolio.portfolio.exception.ResourceNotFoundException;
 import com.mytechfolio.portfolio.mapper.ProjectMapper;
 import com.mytechfolio.portfolio.repository.ProjectRepository;
+import com.mytechfolio.portfolio.repository.TechStackRepository;
 import com.mytechfolio.portfolio.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +43,7 @@ import java.util.stream.Collectors;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final TechStackRepository techStackRepository;
     private final ProjectMapper projectMapper;
 
     /**
@@ -67,8 +73,20 @@ public class ProjectService {
         Pageable pageable = PaginationUtil.createPageable(page, size, sortBy);
         Page<Project> projectPage = projectRepository.findProjectsWithFilters(techStackList, year, pageable);
 
-        // Use mapper for conversion
-        return PaginationUtil.toPageResponse(projectPage, projectMapper::toSummaryResponse, page);
+        // Batch fetch all tech stacks referenced by projects on this page (avoids N+1)
+        Set<String> allTechStackIds = new HashSet<>();
+        for (Project p : projectPage.getContent()) {
+            if (p.getTechStackIds() != null) {
+                allTechStackIds.addAll(p.getTechStackIds());
+            }
+        }
+        Map<String, String> techStackMap = allTechStackIds.isEmpty()
+                ? Map.of()
+                : techStackRepository.findAllById(allTechStackIds).stream()
+                    .collect(Collectors.toMap(TechStack::getId, TechStack::getName));
+
+        // Use mapper with pre-fetched map for conversion (3 queries total instead of 1 + 10*N)
+        return PaginationUtil.toPageResponse(projectPage, p -> projectMapper.toSummaryResponse(p, techStackMap), page);
     }
 
     /**

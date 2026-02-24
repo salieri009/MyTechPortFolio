@@ -44,7 +44,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     @Query(value = "{ 'createdAt': { $gte: ?0 } }", count = true)
     long countNewUsersAfter(LocalDateTime since);
     
-    @Query(value = "{ 'lastLogin': { $gte: ?0 } }", count = true)
+    @Query(value = "{ 'lastLoginAt': { $gte: ?0 } }", count = true)
     long countActiveUsersAfter(LocalDateTime since);
     
     // 분석용 쿼리
