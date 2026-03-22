@@ -12,7 +12,7 @@
 | ODM | Spring Data MongoDB | 3.3.x |
 | Security | Spring Security | 6.x |
 | Authentication | JWT (jjwt) | 0.12.3 |
-| OAuth | Google OAuth 2.0 + GitHub OAuth | - |
+| OAuth | Google OAuth 2.0 + GitHub OAuth (Authorization Code Exchange) | - |
 | Build | Gradle | 8.10.2 |
 | Documentation | Swagger/OpenAPI | 3.0 |
 | Caching | Caffeine | - |
