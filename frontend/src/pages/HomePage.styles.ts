@@ -18,7 +18,7 @@ export const Hero = styled.section<{ $isDark: boolean }>`
   min-height: 90vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.primary[600]} 100%);
+  background: ${props => props.theme.colors.gradient.hero};
   color: ${props => props.theme.colors.hero.text};
   transition: background 0.3s ease;
   margin-top: 0; /* 4-point system: 0px (헤더와의 gap 제거, 4px 규칙 준수) */
@@ -118,6 +118,48 @@ export const Subtitle = styled.p`
   @media (max-width: 768px) {
     font-size: ${props => props.theme.typography.fontSize.lg};
     padding: 0;
+  }
+`
+
+export const PhilosophyLine = styled.p`
+  font-size: ${props => props.theme.typography.fontSize.base};
+  margin: 0;
+  color: ${props => props.theme.colors.hero.textSecondary};
+  max-width: 640px;
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  font-family: ${props => props.theme.typography.fontFamily.display};
+
+  @media (max-width: 768px) {
+    font-size: ${props => props.theme.typography.fontSize.sm};
+  }
+`
+
+export const CliTerminal = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[2]};
+  width: fit-content;
+  min-height: ${props => props.theme.spacing[10]};
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]};
+  border-radius: ${props => props.theme.radius.lg};
+  border: 1px solid ${props => props.theme.colors.hero.border};
+  background: rgba(2, 6, 23, 0.45);
+`
+
+export const CliPrompt = styled.span`
+  font-family: ${props => props.theme.typography.fontFamily.mono};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  color: ${props => props.theme.colors.hero.text};
+`
+
+export const CliText = styled.span`
+  font-family: ${props => props.theme.typography.fontFamily.mono};
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  color: ${props => props.theme.colors.hero.textSecondary};
+  letter-spacing: 0.02em;
+
+  @media (max-width: 640px) {
+    font-size: ${props => props.theme.typography.fontSize.xs};
   }
 `
 
