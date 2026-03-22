@@ -82,7 +82,7 @@ export function HomePage() {
       try {
         const projectsResponse = await getProjects({ size: 10 })
         if (projectsResponse.success && projectsResponse.data.items) {
-          const featured = projectsResponse.data.items.filter(project => project.featured)
+          const featured = projectsResponse.data.items.filter(project => project.isFeatured)
           setFeaturedProjects(featured)
         }
 
@@ -313,7 +313,7 @@ export function HomePage() {
                         $gridColumnMobile={gridLayout.mobile}
                       >
                         <HeroProjectCard
-                          id={project.id}
+                          id={Number(project.id)}
                           title={project.title}
                           summary={project.summary}
                           startDate={project.startDate}
@@ -333,7 +333,7 @@ export function HomePage() {
                         $gridColumnMobile={gridLayout.mobile}
                       >
                         <FeaturedProjectCard
-                          id={project.id}
+                          id={Number(project.id)}
                           title={project.title}
                           summary={project.summary}
                           startDate={project.startDate}

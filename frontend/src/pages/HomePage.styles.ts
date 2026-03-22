@@ -40,7 +40,7 @@ export const Hero = styled.section<{ $isDark: boolean }>`
   /* InteractiveBackground는 z-index: 0으로 배경에 위치 */
   /* Container와 HeroContent는 z-index: 2로 콘텐츠 위에 위치 */
   ${Container} {
-    max-width: ${props => props.theme.spacing[300]}; /* 4-point system: 1200px */
+    max-width: 1200px;
     width: 100%;
     position: relative;
     z-index: 2;
@@ -277,7 +277,7 @@ export const PrimaryCTA = styled(Link)`
   
   @media (max-width: 640px) {
     width: 100%;
-    max-width: ${props => props.theme.spacing[75]};
+    max-width: 300px;
     padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[8]};
     font-size: ${props => props.theme.typography.fontSize.base};
   }
@@ -298,7 +298,7 @@ export const SecondaryCTA = styled(Link)`
   border: 2px solid ${props => props.theme.colors.hero.textSecondary};
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
   cursor: pointer;
-  min-width: ${props => props.theme.spacing[50]}; /* 4-point system: 200px */
+  min-width: 200px;
   white-space: nowrap;
 
   /* H1: Visibility of System Status - Hover feedback */
@@ -321,7 +321,7 @@ export const SecondaryCTA = styled(Link)`
   
   @media (max-width: 640px) {
     width: 100%;
-    max-width: ${props => props.theme.spacing[75]}; /* 4-point system: 300px */
+    max-width: 300px;
     padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[8]};
     font-size: ${props => props.theme.typography.fontSize.base};
   }
@@ -414,7 +414,7 @@ export const SectionTitle = styled.h2<{ $isVisible?: boolean }>`
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
+  transform: translateY(${props => (props.$isVisible ? '0' : props.theme.spacing[8])});
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
@@ -437,7 +437,7 @@ export const SectionSubtitle = styled.p<{ $isVisible?: boolean }>`
   text-align: left;
   max-width: 704px; /* 4-point system: 700px → 704px (4의 배수) */
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
+  transform: translateY(${props => (props.$isVisible ? '0' : props.theme.spacing[8])});
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
   
@@ -472,7 +472,7 @@ export const FeaturedGrid = styled.div<{ $isVisible?: boolean }>`
   gap: ${props => props.theme.spacing[8]};
   margin-bottom: ${props => props.theme.spacing[8]};
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
+  transform: translateY(${props => (props.$isVisible ? '0' : props.theme.spacing[8])});
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
 
@@ -554,7 +554,7 @@ export const TestimonialGrid = styled.div<{ $isVisible?: boolean }>`
   grid-template-columns: repeat(auto-fit, minmax(${props => props.theme.spacing[80]}, 1fr)); /* 4-point system: 320px = spacing[80] */
   gap: ${props => props.theme.spacing[8]};
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
+  transform: translateY(${props => (props.$isVisible ? '0' : props.theme.spacing[8])});
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
 
