@@ -87,7 +87,8 @@ const baseTheme = {
       secondary: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
       accent: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
       dark: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
-      neon: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
+      neon: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+      hero: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
     },
 
     // 글래스모피즘
@@ -164,6 +165,11 @@ const baseTheme = {
       wide: '0.025em',
       wider: '0.05em',
       widest: '0.1em'
+    },
+
+    role: {
+      tech: 'primary',
+      essay: 'display'
     }
   },
 
@@ -345,7 +351,11 @@ export const darkTheme = {
     divider: '#1e293b',              // Slate 800 - Dividers
 
     // Background alias
-    bg: '#0f172a'                    // Slate 900
+    bg: '#0f172a',                   // Slate 900
+    gradient: {
+      ...baseTheme.colors.gradient,
+      hero: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
+    }
   },
 
   // 다크 테마용 그림자
@@ -360,8 +370,51 @@ export const darkTheme = {
   }
 };
 
+// EVA Theme (Semantic alternative mode)
+export const evaTheme = {
+  ...darkTheme,
+  mode: 'eva' as const,
+
+  colors: {
+    ...darkTheme.colors,
+    primary: {
+      ...darkTheme.colors.primary,
+      400: '#a78bfa',
+      500: '#8b5cf6',
+      600: '#7c3aed'
+    },
+    background: '#120f1d',
+    surface: '#1b1530',
+    text: '#f5f3ff',
+    textSecondary: '#c4b5fd',
+    border: '#4c1d95',
+    info: '#a78bfa',
+    gradient: {
+      ...darkTheme.colors.gradient,
+      primary: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+      hero: 'linear-gradient(135deg, #312e81 0%, #581c87 100%)'
+    },
+    hero: {
+      ...darkTheme.colors.hero,
+      text: 'rgba(245, 243, 255, 0.98)',
+      textSecondary: 'rgba(221, 214, 254, 0.95)',
+      textMuted: 'rgba(196, 181, 253, 0.86)'
+    }
+  },
+
+  typography: {
+    ...darkTheme.typography,
+    role: {
+      tech: 'mono',
+      essay: 'display'
+    }
+  }
+};
+
+export const themeByMode = (mode: 'dark' | 'eva') => (mode === 'eva' ? evaTheme : darkTheme)
+
 // 타입 정의
-export type Theme = typeof lightTheme;
+export type Theme = typeof lightTheme | typeof darkTheme | typeof evaTheme;
 export type ThemeColors = typeof lightTheme.colors;
 export type ThemeSpacing = typeof lightTheme.spacing;
 
