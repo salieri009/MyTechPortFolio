@@ -30,9 +30,6 @@ jobs:
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
-    outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -56,7 +53,9 @@ jobs:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
 
     - name: Start MongoDB for tests
       run: |
@@ -83,19 +82,12 @@ jobs:
       env:
         SPRING_PROFILES_ACTIVE: test
         MONGODB_URI: mongodb://localhost:27017/portfolio_test
-      continue-on-error: true
 
     - name: Run Frontend Tests
       working-directory: ./frontend
       run: |
         npm ci
         npm run test:ci
-      continue-on-error: true
-
-    - name: Generate Image Metadata
-      id: meta
-      run: |
-        echo "tags=${{ github.sha }}" >> $GITHUB_OUTPUT
 
   # ===== Build and Push Docker Images =====
   build-push-images:
@@ -135,6 +127,9 @@ jobs:
           -t ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-frontend:latest \
           --build-arg VITE_API_BASE_URL=/api \
           --build-arg VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+          --build-arg VITE_GITHUB_CLIENT_ID=${{ secrets.GITHUB_CLIENT_ID }} \
+          --build-arg VITE_GA_MEASUREMENT_ID=${{ secrets.GA_MEASUREMENT_ID }} \
+          --build-arg VITE_USE_BACKEND_API=true \
           ./frontend
         docker push ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-frontend:${{ github.sha }}
         docker push ${{ env.AZURE_CONTAINER_REGISTRY }}/portfolio-frontend:latest
