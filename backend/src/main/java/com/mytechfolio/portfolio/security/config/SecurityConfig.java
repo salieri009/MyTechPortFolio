@@ -52,10 +52,16 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authz -> authz
 				// Infrastructure endpoints: any method allowed
 				.requestMatchers(SecurityConstants.INFRASTRUCTURE_ENDPOINTS).permitAll()
+				// Public auth endpoints
+				.requestMatchers(HttpMethod.POST, SecurityConstants.PUBLIC_AUTH_POST_ENDPOINTS).permitAll()
+				// Auth endpoints that require an authenticated user
+				.requestMatchers(SecurityConstants.AUTH_REQUIRED_AUTH_ENDPOINTS).authenticated()
 				// Domain endpoints: GET only for public access
 				.requestMatchers(HttpMethod.GET, SecurityConstants.PUBLIC_GET_ENDPOINTS).permitAll()
 				// Specific POST endpoints: contact form, engagement tracking
 				.requestMatchers(HttpMethod.POST, SecurityConstants.PUBLIC_POST_ENDPOINTS).permitAll()
+				// Specific PATCH endpoints: engagement tracking updates
+				.requestMatchers(HttpMethod.PATCH, SecurityConstants.PUBLIC_PATCH_ENDPOINTS).permitAll()
 				// Admin endpoints: require ADMIN role
 				.requestMatchers(SecurityConstants.ADMIN_ENDPOINTS).hasRole("ADMIN")
 				// All other requests: require authentication

@@ -299,6 +299,18 @@ const baseTheme = {
     '2xl': '1536px' // 🖥️ 와이드 모니터
   },
 
+  // Depth 토큰 시스템 — 다크/EVA 모드에서 borders-only depth
+  depth: {
+    cardBorder: 'rgba(255, 255, 255, 0.06)',
+    cardBorderHover: 'rgba(255, 255, 255, 0.14)',
+    cardBorderFocus: 'rgba(59, 130, 246, 0.5)',
+    dividerBorder: 'rgba(255, 255, 255, 0.04)',
+    emphasisBorder: 'rgba(255, 255, 255, 0.10)',
+    modalShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
+    floatBorder: 'rgba(255, 255, 255, 0.12)',
+    cardBackground: 'rgba(255, 255, 255, 0.02)',
+  },
+
   // 애니메이션 효과
   hoverTransition: (property = 'all', duration = '0.2s') => ({
     transition: `${property} ${duration} cubic-bezier(0.4, 0, 0.2, 1)`
@@ -309,6 +321,16 @@ const baseTheme = {
 export const lightTheme = {
   ...baseTheme,
   mode: 'light' as const,
+  depth: {
+    cardBorder: 'rgba(0, 0, 0, 0.08)',
+    cardBorderHover: 'rgba(0, 0, 0, 0.16)',
+    cardBorderFocus: 'rgba(59, 130, 246, 0.4)',
+    dividerBorder: 'rgba(0, 0, 0, 0.06)',
+    emphasisBorder: 'rgba(0, 0, 0, 0.12)',
+    modalShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    floatBorder: 'rgba(0, 0, 0, 0.10)',
+    cardBackground: 'rgba(255, 255, 255, 0.8)',
+  },
 
   // 반지름 별칭
   radius: baseTheme.borderRadius,
@@ -361,6 +383,13 @@ export const darkTheme = {
   // 다크 테마용 그림자
   shadows: {
     ...baseTheme.shadows,
+    sm: 'none',
+    base: 'none',
+    md: 'none',
+    lg: 'none',
+    xl: 'none',
+    '2xl': 'none',
+    inner: 'none',
     sm: '0 1px 2px 0 rgba(0, 0, 0, 0.3)',
     base: '0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4)',
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4)',
@@ -374,6 +403,16 @@ export const darkTheme = {
 export const evaTheme = {
   ...darkTheme,
   mode: 'eva' as const,
+  depth: {
+    cardBorder: 'rgba(139, 92, 246, 0.12)',
+    cardBorderHover: 'rgba(139, 92, 246, 0.25)',
+    cardBorderFocus: 'rgba(139, 92, 246, 0.5)',
+    dividerBorder: 'rgba(139, 92, 246, 0.06)',
+    emphasisBorder: 'rgba(139, 92, 246, 0.18)',
+    modalShadow: '0 25px 50px -12px rgba(88, 28, 135, 0.6)',
+    floatBorder: 'rgba(139, 92, 246, 0.20)',
+    cardBackground: 'rgba(139, 92, 246, 0.03)',
+  },
 
   colors: {
     ...darkTheme.colors,

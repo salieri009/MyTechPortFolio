@@ -14,6 +14,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
@@ -115,6 +116,7 @@ public class ResumeController {
      * @return Download statistics by version
      */
     @GetMapping("/statistics")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get download statistics", description = "Retrieves download statistics for all resumes")
     public ResponseEntity<ApiResponse<Map<String, Long>>> getDownloadStatistics() {
         Map<String, Long> statistics = resumeService.getDownloadStatistics();

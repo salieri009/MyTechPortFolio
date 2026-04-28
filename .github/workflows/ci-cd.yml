@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: read
+  security-events: write
+
 env:
   AZURE_CONTAINER_REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
   AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
@@ -77,11 +81,29 @@ jobs:
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
+    - name: Start MongoDB for tests
+      run: |
+        docker run -d --name mongo-test -p 27017:27017 --health-cmd="mongosh --eval 'db.adminCommand({ ping: 1 })' --quiet" --health-interval=5s --health-timeout=5s --health-retries=20 mongo:7
+        for i in {1..30}; do
+          STATUS=$(docker inspect --format='{{.State.Health.Status}}' mongo-test)
+          if [ "$STATUS" = "healthy" ]; then
+            echo "MongoDB is healthy"
+            break
+          fi
+          if [ "$i" -eq 30 ]; then
+            echo "MongoDB did not become healthy in time"
+            docker logs mongo-test
+            exit 1
+          fi
+          sleep 2
+        done
     
     - name: Run tests
       run: ./gradlew test
       env:
         SPRING_PROFILES_ACTIVE: test
+        MONGODB_URI: mongodb://localhost:27017/portfolio_test
     
     - name: Build backend
       run: ./gradlew bootJar
@@ -166,5 +188,6 @@ jobs:
     
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v3
+      if: github.event_name != 'pull_request' || !github.event.pull_request.head.repo.fork
       with:
         sarif_file: 'trivy-results.sarif'

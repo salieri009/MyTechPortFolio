@@ -1,0 +1,75 @@
+---
+description: Borders-only depth strategy for dark/EVA mode. Enforce when editing styled-components in dark or EVA theme contexts.
+globs: ["frontend/src/**/*.tsx", "frontend/src/**/*.ts", "frontend/src/styles/**"]
+alwaysApply: false
+---
+
+# Design Depth: Borders-Only Strategy
+
+## Core Rule
+In dark mode and EVA mode, **depth is communicated exclusively through borders** — not shadows, not blur, not glow.
+
+## What Is FORBIDDEN in dark/EVA mode
+
+```ts
+// ❌ NEVER: glassmorphism
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+
+// ❌ NEVER: neumorphism
+box-shadow: inset 4px 4px 10px rgba(0,0,0,0.3), -4px -4px 10px rgba(255,255,255,0.05);
+
+// ❌ NEVER: glow shadows on cards
+box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+
+// ❌ NEVER: hardcoded rgba borders without depth token
+border: 1px solid rgba(255, 255, 255, 0.1);  // use depth token instead
+```
+
+## What Is REQUIRED in dark/EVA mode
+
+```ts
+// ✅ ALWAYS: use depth tokens for borders
+border: 1px solid ${props => props.theme.depth?.cardBorder ?? props.theme.colors.border};
+
+// ✅ ALWAYS: use depth token for hover border
+&:hover {
+  border-color: ${props => props.theme.depth?.cardBorderHover ?? props.theme.colors.primary[500]};
+}
+
+// ✅ ALWAYS: subtle background if needed
+background: ${props => props.theme.depth?.cardBackground ?? 'transparent'};
+```
+
+## Depth Token Reference
+
+| Token | Dark value | EVA value | Use case |
+|-------|-----------|-----------|----------|
+| `depth.cardBorder` | `rgba(255,255,255,0.06)` | `rgba(139,92,246,0.12)` | Card resting border |
+| `depth.cardBorderHover` | `rgba(255,255,255,0.14)` | `rgba(139,92,246,0.25)` | Card hover border |
+| `depth.cardBorderFocus` | `rgba(59,130,246,0.5)` | `rgba(139,92,246,0.5)` | Focused element border |
+| `depth.dividerBorder` | `rgba(255,255,255,0.04)` | `rgba(139,92,246,0.06)` | Section dividers |
+| `depth.emphasisBorder` | `rgba(255,255,255,0.10)` | `rgba(139,92,246,0.18)` | Important elements |
+| `depth.modalShadow` | `0 25px 50px -12px rgba(0,0,0,0.7)` | `0 25px 50px -12px rgba(88,28,135,0.6)` | Modals/overlays only |
+| `depth.floatBorder` | `rgba(255,255,255,0.12)` | `rgba(139,92,246,0.20)` | Floating elements |
+| `depth.cardBackground` | `rgba(255,255,255,0.02)` | `rgba(139,92,246,0.03)` | Subtle card fill |
+
+## Exceptions (Allowed blur)
+
+These UI patterns are semantically overlay elements — blur is appropriate:
+- `Modal` / `Dialog` overlays
+- `Tooltip` popups
+- `LoadingSpinner` backdrop
+- `ConfirmationDialog`
+
+## Elevation Through Borders (The Rule)
+
+```
+Level 0 (page bg)    → no border
+Level 1 (card)       → depth.cardBorder (0.06 opacity)
+Level 2 (hover card) → depth.cardBorderHover (0.14 opacity)
+Level 3 (focus)      → depth.cardBorderFocus (0.5 opacity, colored)
+Level 4 (modal)      → depth.modalShadow (shadow allowed for true overlays)
+```
+
+Higher opacity = higher elevation. Simple. Consistent. Terminal aesthetic.

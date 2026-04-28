@@ -8,8 +8,8 @@ import { SectionPurpose } from '@components/sections/SectionPurpose'
 import { TechStackModal } from '@components/modals/TechStackModal'
 import { InnovationIcon, CollaborationIcon, GrowthIcon } from '@components/icons/ValueIcons'
 import { GraduationCapIcon, BriefcaseIcon, SettingsIcon } from '@components/icons/BackgroundIcons'
-import { useThemeStore } from '../stores/themeStore'
-import { useFeedbackModalStore } from '../stores/feedbackModalStore'
+import { useThemeStore } from '../store/themeStore'
+import { useFeedbackModalStore } from '../store/feedbackModalStore'
 import { CONTACT_INFO } from '../constants/contact'
 import * as S from './AboutPage.styles'
 import * as HomePageStyles from './HomePage.styles'
@@ -66,7 +66,7 @@ export function AboutPage() {
   }
   
   // Handle value card click - open modal
-  const handleValueCardClick = (valueId: string, e: React.MouseEvent) => {
+  const handleValueCardClick = (valueId: string, e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault()
     scrollPositionRef.current = window.scrollY
     setSelectedValue(valueId)
@@ -182,6 +182,7 @@ export function AboutPage() {
               <S.AboutHeroCTAButtons>
                 <S.AboutHeroPrimaryCTA to="/projects">{t('about.hero.cta.primary', 'View Projects')}</S.AboutHeroPrimaryCTA>
                 <S.AboutHeroSecondaryCTA 
+                  to="/contact"
                   as="button"
                   onClick={(e) => {
                     e.preventDefault()

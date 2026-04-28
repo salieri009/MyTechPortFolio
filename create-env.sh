@@ -10,9 +10,9 @@ cat > .env << EOF
 # Database Configuration
 MONGO_ROOT_PASSWORD=mongo123
 
-# Google OAuth Configuration
-GOOGLE_CLIENT_ID=1098017074065-i5kgtgj5upsvh06vtmhfi2ba78hh25sc.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=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
+# Google OAuth Configuration (use Google Cloud Console — never commit real values)
+GOOGLE_CLIENT_ID=your-google-oauth-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
 
 # JWT Configuration
 JWT_SECRET=demo-jwt-secret-1234567890123456789012345678901234567890
@@ -22,7 +22,7 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,https://*.azure
 
 # Frontend Configuration
 VITE_API_BASE_URL=http://localhost:8080/api
-VITE_GOOGLE_CLIENT_ID=1098017074065-i5kgtgj5upsvh06vtmhfi2ba78hh25sc.apps.googleusercontent.com
+VITE_GOOGLE_CLIENT_ID=your-google-oauth-client-id.apps.googleusercontent.com
 VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 VITE_USE_BACKEND_API=true
 

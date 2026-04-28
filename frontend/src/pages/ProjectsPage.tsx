@@ -6,7 +6,7 @@ import { Container, Card, Tag } from '../components/common'
 import { ProjectCard } from '../components/project/ProjectCard'
 import { ProjectCardSkeleton } from '../components/project/ProjectCardSkeleton'
 import { CustomSelect } from '../components/ui/CustomSelect'
-import { useFilters } from '../stores/filters'
+import { useFilters } from '../store/filters'
 import { getProjects } from '../services/projects'
 import { useDebounce } from '../utils/useDebounce'
 import type { ProjectSummary } from '../types/domain'
@@ -136,7 +136,7 @@ const PageTitle = styled.h1<{ $isVisible: boolean }>`
 
 const ProjectGrid = styled.div<{ $isVisible: boolean }>`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(${props => props.theme.spacing[80 as any]}, 1fr)); /* 4-point system: 320px */
+  grid-template-columns: repeat(auto-fill, minmax(${props => props.theme.spacing[80]}, 1fr)); /* 4-point system: 320px */
   gap: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
   margin-bottom: ${props => props.theme.spacing[10]}; /* 4-point system: 40px */
   opacity: ${props => props.$isVisible ? 1 : 0};
@@ -150,7 +150,7 @@ const ProjectGrid = styled.div<{ $isVisible: boolean }>`
 
 const AnimatedProjectCard = styled.div<{ $index: number; $isVisible: boolean }>`
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props.theme.spacing[8]})`};
   animation: ${props => props.$isVisible ? fadeInUp : 'none'} 0.6s ease-out forwards;
   animation-delay: ${props => props.$index * 0.05}s;
   
@@ -306,7 +306,7 @@ const ProjectModalContent = styled.div`
   background: ${props => props.theme.colors.surface || props.theme.colors.background};
   border-radius: ${props => props.theme.radius['2xl']};
   padding: ${props => props.theme.spacing[12]};
-  max-width: ${props => '600px' || '37.5rem'}; /* 600px */
+  max-width: 37.5rem; /* 600px */
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;

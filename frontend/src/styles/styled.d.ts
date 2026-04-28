@@ -14,5 +14,6 @@ declare module 'styled-components' {
     breakpoints: typeof lightTheme.breakpoints;
     hoverTransition: typeof lightTheme.hoverTransition;
     borderRadius: typeof lightTheme.radius;
+    depth?: typeof lightTheme.depth;
   }
 }

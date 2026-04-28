@@ -12,9 +12,6 @@ declare global {
   }
 }
 
-const GOOGLE_CLIENT_ID = import.meta.env?.VITE_GOOGLE_CLIENT_ID || '1098017074065-i5kgtgj5upsvh06vtmhfi2ba78hh25sc.apps.googleusercontent.com'
-const API_BASE_URL = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:8080/api'
-
 export interface LoginRequest {
   googleIdToken: string
   twoFactorCode?: string
@@ -136,24 +133,20 @@ class AuthService {
   }
 
   /**
-   * Authenticate with GitHub using authorization code
-   * The backend will exchange the code for access token and verify with GitHub
+   * Authenticate with GitHub using authorization code.
+   * Backend exchanges code to access token and verifies with GitHub.
    */
-  async loginWithGitHub(accessToken: string, twoFactorCode?: string): Promise<AuthResponse> {
+  async loginWithGitHub(code: string, twoFactorCode?: string): Promise<AuthResponse> {
     return this.request<AuthResponse>('/auth/github', {
       method: 'POST',
-      body: JSON.stringify({ accessToken, twoFactorCode })
+      body: JSON.stringify({ code, twoFactorCode })
     })
   }
 
-  async verifyTwoFactor(token: string): Promise<{
-    user: any
-    accessToken: string
-    refreshToken: string
-  }> {
+  async verifyTwoFactor(code: string, sessionId?: string): Promise<AuthResponse> {
     return this.request('/auth/2fa/verify', {
       method: 'POST',
-      body: JSON.stringify({ token })
+      body: JSON.stringify({ code, sessionId })
     })
   }
 
@@ -168,31 +161,26 @@ class AuthService {
     })
   }
 
-  async refreshToken(): Promise<{ accessToken: string }> {
-    return this.request('/auth/refresh', { method: 'POST' })
-  }
-
-  async storeRefreshToken(refreshToken: string): Promise<void> {
-    try {
-      await this.request('/auth/set-refresh-token', {
-        method: 'POST',
-        body: JSON.stringify({ token: refreshToken })
-      })
-    } catch {
-      console.warn('Failed to store refresh token securely')
-    }
-  }
-
-  async clearRefreshToken(): Promise<void> {
-    await this.requestSilent('/auth/clear-refresh-token', { method: 'POST' })
+  async refreshToken(refreshToken: string): Promise<AuthResponse> {
+    return this.request('/auth/refresh', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${refreshToken}`
+      }
+    })
   }
 
   async logout(): Promise<void> {
     await this.requestSilent('/auth/logout', { method: 'POST' })
   }
 
-  async getCurrentUser(): Promise<any> {
-    return this.request('/auth/me', { method: 'GET' })
+  async getCurrentUser(accessToken: string): Promise<any> {
+    return this.request('/auth/profile', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
   }
 }
 

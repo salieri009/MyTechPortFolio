@@ -97,14 +97,14 @@ const ColumnCard = styled.div<{ $isHovered: boolean; $animationType: 'right' | '
               width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: ${props => props.theme.shadows.lg};
-  border: 1px solid ${props => props.theme.colors.border};
-  backdrop-filter: blur(10px);
+  border: 1px solid ${props => props.theme.depth?.cardBorder ?? props.theme.colors.border};
+  /* backdrop-filter removed: borders-only depth strategy */
   left: ${props => props.$isHovered ? '-10%' : '0'};
 
   &:hover {
     transform: translateY(-8px) translateZ(0);
     box-shadow: ${props => props.theme.shadows['2xl']};
-    border-color: ${props => props.theme.colors.primary[400]};
+    border-color: ${props => props.theme.depth?.cardBorderHover ?? props.theme.colors.primary[400]};
   }
 
   /* Background Pattern */

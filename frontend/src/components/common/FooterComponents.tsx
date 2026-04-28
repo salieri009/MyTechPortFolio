@@ -189,7 +189,7 @@ export const FooterButton = styled.button`
     background: linear-gradient(
       90deg,
       transparent,
-      ${props => props.theme.colors.glass.medium},
+      ${props => props.theme.depth?.cardBorderHover ?? 'rgba(255, 255, 255, 0.14)'},
       transparent
     );
     transition: left 0.5s ease;

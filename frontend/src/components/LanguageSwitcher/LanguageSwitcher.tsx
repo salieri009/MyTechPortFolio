@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, type Variants } from 'framer-motion'
 import { CheckMarkIcon } from '@components/icons/CheckMarkIcon'
 
 /**
@@ -133,7 +133,7 @@ const LanguageOptionFlag = styled.span`
   flex-shrink: 0;
 `
 
-const LanguageOptionName = styled.span`
+const LanguageOptionName = styled.span<{ $isActive: boolean }>`
   flex: 1;
   font-weight: ${props => props.$isActive ? 600 : 400};
   color: ${props => props.$isActive 
@@ -234,7 +234,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className })
     setIsOpen(prev => !prev)
   }
 
-  const dropdownVariants = {
+  const dropdownVariants: Variants = {
     hidden: {
       opacity: 0,
       y: -10,
@@ -249,7 +249,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className })
       scale: 1,
       transition: {
         duration: 0.15,
-        ease: [0.25, 0.25, 0, 1]
+        ease: [0.25, 0.25, 0, 1] as [number, number, number, number]
       }
     }
   }

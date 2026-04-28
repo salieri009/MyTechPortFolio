@@ -18,8 +18,8 @@ export interface Page<T> {
   page: number
   size: number
   total: number
-  totalPages: number
-  hasNext: boolean
-  hasPrevious: boolean
+  totalPages?: number
+  hasNext?: boolean
+  hasPrevious?: boolean
   items: T[]
 }

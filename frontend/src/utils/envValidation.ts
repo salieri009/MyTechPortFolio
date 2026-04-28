@@ -19,6 +19,7 @@ const ENV_CONFIG: EnvConfig = {
     'VITE_USE_BACKEND_API',
     'VITE_AUTH_MODE',
     'VITE_GOOGLE_CLIENT_ID',
+    'VITE_GITHUB_CLIENT_ID',
   ]
 }
 

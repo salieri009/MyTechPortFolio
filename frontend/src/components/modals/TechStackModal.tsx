@@ -38,7 +38,7 @@ const ModalContent = styled.div`
   background: ${props => props.theme.colors.surface};
   border-radius: ${props => props.theme.radius.xl};
   box-shadow: ${props => props.theme.shadows['2xl']};
-  max-width: ${props => props.theme.spacing[300]}; /* 1200px */
+  max-width: 75rem; /* 1200px */
   max-height: 90vh;
   width: 100%;
   display: flex;
@@ -168,7 +168,7 @@ export function TechStackModal({ techStack, onClose }: TechStackModalProps) {
       try {
         setIsLoading(true)
         const response = await getProjects({
-          techStacks: techStack,
+          techStacks: [techStack],
           page: 0,
           size: 6,
           sort: 'endDate,desc'
@@ -266,7 +266,7 @@ export function TechStackModal({ techStack, onClose }: TechStackModalProps) {
               {projects.map((project) => (
                 <div key={project.id} role="listitem">
                   <ProjectCard
-                    id={project.id}
+                    id={Number(project.id)}
                     title={project.title}
                     summary={project.summary}
                     startDate={project.startDate}

@@ -28,10 +28,10 @@ const CardContainer = styled.div<{ $isVisible: boolean; $index: number }>`
   gap: ${props => props.theme.spacing[8]};
   padding: ${props => props.theme.spacing[8]};
   background: ${props => props.theme.colors.surface || props.theme.colors.background};
-  border: 1px solid ${props => props.theme.colors.border};
+  border: 1px solid ${props => props.theme.depth?.cardBorder ?? props.theme.colors.border};
   border-radius: ${props => props.theme.radius.xl};
   box-shadow: ${props => props.theme.shadows.lg};
-  transition: border-color 0.3s ease, box-shadow 0.3s ease,
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
               opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   height: 100%;
@@ -64,7 +64,7 @@ const CardContainer = styled.div<{ $isVisible: boolean; $index: number }>`
 
   &:hover {
     transform: translateY(-4px);
-    border-color: ${props => props.theme.colors.primary[500]};
+    border-color: ${props => props.theme.depth?.cardBorderHover ?? props.theme.colors.primary[500]};
     box-shadow: ${props => props.theme.shadows['2xl']};
   }
 

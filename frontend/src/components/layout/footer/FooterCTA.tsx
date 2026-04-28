@@ -7,7 +7,7 @@ import {
   FooterSection,
   FooterSectionTitle
 } from '@components/common/FooterComponents'
-import { useFeedbackModalStore } from '../../../stores/feedbackModalStore'
+import { useFeedbackModalStore } from '../../../store/feedbackModalStore'
 
 /**
  * Footer CTA Component (Molecule)

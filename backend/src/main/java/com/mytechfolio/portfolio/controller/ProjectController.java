@@ -83,7 +83,7 @@ public class ProjectController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+        @PreAuthorize("hasRole('CONTENT_MANAGER') or hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "프로젝트 생성", description = "새로운 프로젝트를 생성합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "생성됨"),
@@ -97,7 +97,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+        @PreAuthorize("hasRole('CONTENT_MANAGER') or hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "프로젝트 수정", description = "기존 프로젝트를 수정합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
@@ -116,7 +116,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+        @PreAuthorize("hasRole('CONTENT_MANAGER') or hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "프로젝트 삭제", description = "프로젝트를 삭제합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "삭제됨"),

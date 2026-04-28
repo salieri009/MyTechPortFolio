@@ -35,12 +35,27 @@ public final class SecurityConstants {
     
     // Infrastructure Endpoints (no authentication required, any method)
     public static final String[] INFRASTRUCTURE_ENDPOINTS = {
-        "/api/v1/auth/**",
         "/uploads/**",
         "/swagger-ui/**",
         "/v3/api-docs/**",
         "/actuator/health",
         "/actuator/info"
+    };
+
+    // Public Auth Endpoints (no authentication required)
+    public static final String[] PUBLIC_AUTH_POST_ENDPOINTS = {
+        "/api/v1/auth/google",
+        "/api/v1/auth/github",
+        "/api/v1/auth/refresh",
+        "/api/v1/auth/2fa/verify"
+    };
+
+    // Authenticated Auth Endpoints
+    public static final String[] AUTH_REQUIRED_AUTH_ENDPOINTS = {
+        "/api/v1/auth/logout",
+        "/api/v1/auth/profile",
+        "/api/v1/auth/2fa/setup",
+        "/api/v1/auth/2fa/confirm"
     };
 
     // Public Read-Only Endpoints (GET only, no authentication required)
@@ -59,7 +74,12 @@ public final class SecurityConstants {
     // Public Write Endpoints (POST allowed without admin, e.g., contact form, engagement tracking)
     public static final String[] PUBLIC_POST_ENDPOINTS = {
         "/api/v1/contact",
-        "/api/v1/engagement"
+        "/api/v1/engagement/**"
+    };
+
+    // Public patch endpoints (used by client-side engagement updates)
+    public static final String[] PUBLIC_PATCH_ENDPOINTS = {
+        "/api/v1/engagement/**"
     };
 
     // Admin Endpoints (require ADMIN role)

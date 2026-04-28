@@ -58,11 +58,31 @@ jobs:
           ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
 
+    - name: Start MongoDB for tests
+      run: |
+        docker run -d --name mongo-test -p 27017:27017 --health-cmd="mongosh --eval 'db.adminCommand({ ping: 1 })' --quiet" --health-interval=5s --health-timeout=5s --health-retries=20 mongo:7
+        for i in {1..30}; do
+          STATUS=$(docker inspect --format='{{.State.Health.Status}}' mongo-test)
+          if [ "$STATUS" = "healthy" ]; then
+            echo "MongoDB is healthy"
+            break
+          fi
+          if [ "$i" -eq 30 ]; then
+            echo "MongoDB did not become healthy in time"
+            docker logs mongo-test
+            exit 1
+          fi
+          sleep 2
+        done
+
     - name: Run Backend Tests
       working-directory: ./backend
       run: |
         chmod +x gradlew
         ./gradlew test --no-daemon
+      env:
+        SPRING_PROFILES_ACTIVE: test
+        MONGODB_URI: mongodb://localhost:27017/portfolio_test
       continue-on-error: true
 
     - name: Run Frontend Tests

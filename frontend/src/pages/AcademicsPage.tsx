@@ -75,7 +75,7 @@ const AcademicCard = styled(Card).withConfig({
   }};
   transition: all 0.3s ease;
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props.theme.spacing[8]})`};
   animation: ${props => props.$isVisible ? fadeInUp : 'none'} 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   animation-delay: ${props => props.$isVisible && props.$index !== undefined ? `${props.$index * 0.1}s` : '0s'};
   cursor: pointer;
@@ -243,7 +243,7 @@ const StatCard = styled(Card).withConfig({
   font-family: ${props => props.theme.typography.fontFamily.primary};
   transition: all 0.3s ease;
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props.theme.spacing[8]})`};
   animation: ${props => props.$isVisible ? fadeInUp : 'none'} 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   position: relative;
   
@@ -373,7 +373,7 @@ const SemesterTitle = styled.h2<{ $isVisible?: boolean }>`
   z-index: 1;
   background: ${props => props.theme.colors.background};
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props.theme.spacing[8]})`};
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   
@@ -407,7 +407,7 @@ const SummaryStats = styled.div<{ $isVisible?: boolean }>`
   gap: ${props => props.theme.spacing[4]}; /* 4-point system: 16px */
   margin-bottom: ${props => props.theme.spacing[8]}; /* 4-point system: 32px */
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props.theme.spacing[8]})`};
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   
@@ -999,7 +999,7 @@ export function AcademicsPage() {
               key={semester}
               $isActive={activeSemester === semester}
               onClick={() => handleSemesterClick(semester)}
-              aria-label={t('academics.navigation.semester', { semester }, `Navigate to ${semester}`)}
+              aria-label={t('academics.navigation.semester', `Navigate to ${semester}`, { semester })}
             >
               {semester === 'exemption' ? t('academics.exemptions', 'Exemptions') : semester}
             </QuickNavButton>
@@ -1017,23 +1017,26 @@ export function AcademicsPage() {
               <SemesterTitle $isVisible={isTimelineVisible}>
                 {semester === 'exemption' ? t('academics.exemptions', 'Exemptions') : semester}
               </SemesterTitle>
-              {academicGroup.map((academic, index) => (
+              {academicGroup.map((academic, index) => {
+                const academicStatus = academic.status ?? 'completed'
+
+                return (
                 <AcademicCard
                   key={academic.id}
-                  status={academic.status}
-                  $isVisible={visibleCards.has(academic.id)}
+                  status={academicStatus}
+                  $isVisible={visibleCards.has(Number(academic.id))}
                   $index={index}
-                  $isExpanded={expandedCards.has(academic.id)}
+                  $isExpanded={expandedCards.has(Number(academic.id))}
                   data-card-id={academic.id}
                   tabIndex={0}
                   role="article"
                   aria-labelledby={`academic-${academic.id}-title`}
-                  aria-expanded={expandedCards.has(academic.id)}
-                  onClick={() => handleCardClick(academic.id)}
+                  aria-expanded={expandedCards.has(Number(academic.id))}
+                  onClick={() => handleCardClick(Number(academic.id))}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault()
-                      handleCardClick(academic.id)
+                      handleCardClick(Number(academic.id))
                     }
                   }}
                 >
@@ -1041,32 +1044,32 @@ export function AcademicsPage() {
                     <span>{academic.name}</span>
                     <GradeContainer>
                       {academic.grade && (
-                        <GradeBadge grade={academic.grade} aria-label={t('academics.grade', { grade: academic.grade }, 'Grade: {{grade}}')}>
+                        <GradeBadge grade={academic.grade} aria-label={t('academics.grade', 'Grade: {{grade}}', { grade: academic.grade })}>
                           {academic.grade}
                         </GradeBadge>
                       )}
-                      <StatusBadge status={academic.status} aria-label={t('academics.status', { status: academic.status }, 'Status: {{status}}')}>
-                        {t(`academics.status.${academic.status}`, academic.status.toUpperCase())}
+                      <StatusBadge status={academicStatus} aria-label={t('academics.status', 'Status: {{status}}', { status: academicStatus })}>
+                        {t(`academics.status.${academicStatus}`, academicStatus.toUpperCase())}
                       </StatusBadge>
                     </GradeContainer>
                   </AcademicTitle>
                   <AcademicMeta>
-                    <span>{t('academics.semester', { semester: academic.semester }, academic.semester)}</span>
+                    <span>{t('academics.semester', academic.semester, { semester: academic.semester })}</span>
                     {academic.marks && (
                       <span>
-                        {t('academics.mark', { mark: academic.marks }, 'Mark: {{mark}}')}
+                        {t('academics.mark', 'Mark: {{mark}}', { mark: academic.marks })}
                       </span>
                     )}
                     {academic.creditPoints && (
                       <span>
-                        {t('academics.creditPoints', { points: academic.creditPoints }, '{{points}} Credit Points')}
+                        {t('academics.creditPoints', '{{points}} Credit Points', { points: academic.creditPoints })}
                       </span>
                     )}
                   </AcademicMeta>
                   {academic.description && (
                     <AcademicDescription>{academic.description}</AcademicDescription>
                   )}
-                  <ExpandedContent $isExpanded={expandedCards.has(academic.id)}>
+                  <ExpandedContent $isExpanded={expandedCards.has(Number(academic.id))}>
                     <DetailRow>
                       <strong>{t('academics.details.subjectCode', 'Subject Code')}:</strong>
                       <span>{t('academics.details.subjectCodeValue', 'N/A')}</span>
@@ -1083,7 +1086,8 @@ export function AcademicsPage() {
                     )}
                   </ExpandedContent>
                 </AcademicCard>
-              ))}
+                )
+              })}
             </div>
           ))}
         </TimelineContainer>

@@ -189,7 +189,7 @@ interface MainHeaderProps {
 export function MainHeader({ pathname = '' }: MainHeaderProps) {
   const { t } = useTranslation()
   const location = useLocation()
-  const { isAuthenticated, user, logout } = useAuthStore()
+  const { isAuthenticated, user, clearAuth } = useAuthStore()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState<string>('')
 
@@ -267,7 +267,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
 
   const handleLogout = async () => {
     await authService.logout()
-    logout()
+    clearAuth()
     setMobileMenuOpen(false)
   }
 
@@ -359,7 +359,7 @@ export function MainHeader({ pathname = '' }: MainHeaderProps) {
               {isAuthenticated && user ? (
                 <>
                   <UserInfo>
-                    {user.name}
+                    {user.displayName}
                   </UserInfo>
                   <LogoutButton onClick={handleLogout}>
                     {t('navigation.logout') || 'Logout'}

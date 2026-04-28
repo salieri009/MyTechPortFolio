@@ -188,9 +188,8 @@ const HoverTechStacks = styled.div`
 `
 
 const HoverTechTag = styled.span`
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: ${props => props.theme.depth?.cardBackground ?? 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${props => props.theme.depth?.cardBorder ?? 'rgba(255, 255, 255, 0.06)'};
   border-radius: ${props => props.theme.radius.md};
   padding: ${props => props.theme.spacing[0.5]} ${props => props.theme.spacing[2]};
   font-size: ${props => props.theme.typography.fontSize.xs};

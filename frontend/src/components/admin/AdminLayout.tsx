@@ -71,7 +71,7 @@ const NavItem = styled(Link)<{ $isActive: boolean; $isCollapsed: boolean }>`
   &:hover {
     background: ${props => props.$isActive 
       ? props.theme.colors.primary?.[50] || 'rgba(59, 130, 246, 0.1)' 
-      : props.theme.colors.backgroundSecondary || '#f9fafb'};
+      : (props.theme.mode === 'dark' ? props.theme.colors.neutral[800] : props.theme.colors.neutral[100])};
     color: ${props => props.theme.colors.primary?.[600] || props.theme.colors.primary};
   }
 
@@ -130,7 +130,7 @@ const LogoutButton = styled.button`
   transition: background 0.2s ease;
 
   &:hover {
-    background: ${props => props.theme.colors.errorDark || '#dc2626'};
+    background: #dc2626;
   }
 `
 

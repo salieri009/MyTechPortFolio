@@ -7,13 +7,20 @@ import com.mytechfolio.portfolio.dto.auth.LoginResponse;
 import com.mytechfolio.portfolio.security.service.GoogleOAuthService;
 import com.mytechfolio.portfolio.security.service.GitHubOAuthService;
 import com.mytechfolio.portfolio.security.util.JwtUtil;
+import dev.samstevens.totp.code.CodeVerifier;
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.code.DefaultCodeVerifier;
+import dev.samstevens.totp.code.HashingAlgorithm;
+import dev.samstevens.totp.qr.QrData;
+import dev.samstevens.totp.secret.DefaultSecretGenerator;
+import dev.samstevens.totp.secret.SecretGenerator;
+import dev.samstevens.totp.time.SystemTimeProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -28,6 +35,11 @@ public class AuthService {
     private final GoogleOAuthService googleOAuthService;
     private final GitHubOAuthService gitHubOAuthService;
     private final JwtUtil jwtUtil;
+    private final SecretGenerator secretGenerator = new DefaultSecretGenerator();
+    private final CodeVerifier codeVerifier = new DefaultCodeVerifier(
+            new DefaultCodeGenerator(HashingAlgorithm.SHA1, 6),
+            new SystemTimeProvider()
+    );
 
     /**
      * In-memory token blacklist for logout.
@@ -71,7 +83,7 @@ public class AuthService {
         return buildLoginResponse(user);
     }
 
-    public LoginResponse authenticateWithGoogle(String googleToken) {
+    public LoginResponse authenticateWithGoogle(String googleToken, String twoFactorCode) {
         log.info("Google OAuth authentication attempt");
 
         if (googleToken == null || googleToken.trim().isEmpty()) {
@@ -93,19 +105,26 @@ public class AuthService {
         user.updateLastLogin();
         user = userRepository.save(user);
 
+        LoginResponse twoFactorChallenge = challengeIfTwoFactorRequired(user, twoFactorCode);
+        if (twoFactorChallenge != null) {
+            return twoFactorChallenge;
+        }
+
         log.info("Google OAuth authentication successful for user: {}", user.getEmail());
         return buildLoginResponse(user);
     }
 
     /**
-     * Authenticate user with GitHub OAuth access token.
+     * Authenticate user with GitHub OAuth authorization code.
      */
-    public LoginResponse authenticateWithGitHub(String accessToken) {
+    public LoginResponse authenticateWithGitHub(String authorizationCode, String twoFactorCode) {
         log.info("GitHub OAuth authentication attempt");
 
-        if (accessToken == null || accessToken.trim().isEmpty()) {
-            throw new RuntimeException("GitHub access token is required");
+        if (authorizationCode == null || authorizationCode.trim().isEmpty()) {
+            throw new RuntimeException("GitHub authorization code is required");
         }
+
+        String accessToken = gitHubOAuthService.exchangeAuthorizationCodeForAccessToken(authorizationCode);
 
         // Verify GitHub token
         GitHubOAuthService.GitHubUserInfo gitHubUserInfo = gitHubOAuthService.verifyGitHubToken(accessToken);
@@ -122,8 +141,76 @@ public class AuthService {
         user.updateLastLogin();
         user = userRepository.save(user);
 
+        LoginResponse twoFactorChallenge = challengeIfTwoFactorRequired(user, twoFactorCode);
+        if (twoFactorChallenge != null) {
+            return twoFactorChallenge;
+        }
+
         log.info("GitHub OAuth authentication successful for user: {}", user.getEmail());
         return buildLoginResponse(user);
+    }
+
+    public LoginResponse verifyTwoFactorLogin(String sessionId, String code) {
+        if (sessionId == null || sessionId.isBlank()) {
+            throw new RuntimeException("Session ID is required for 2FA verification");
+        }
+        if (code == null || code.isBlank()) {
+            throw new RuntimeException("2FA code is required");
+        }
+
+        User user = userRepository.findBySessionId(sessionId)
+                .orElseThrow(() -> new RuntimeException("Invalid 2FA session"));
+
+        if (!Boolean.TRUE.equals(user.isTwoFactorEnabled())) {
+            throw new RuntimeException("Two-factor authentication is not enabled for this user");
+        }
+
+        if (!isValidTwoFactorCode(user.getTwoFactorSecret(), code)) {
+            throw new RuntimeException("Invalid 2FA code");
+        }
+
+        user.setSessionId(null);
+        user.setLastActivity(LocalDateTime.now());
+        user = userRepository.save(user);
+
+        return buildLoginResponse(user);
+    }
+
+    public java.util.Map<String, String> setupTwoFactor(String accessToken) {
+        User user = getUserFromAccessToken(accessToken);
+
+        String secret = secretGenerator.generate();
+        user.setTwoFactorSecret(secret);
+        user = userRepository.save(user);
+
+        QrData data = new QrData.Builder()
+                .label(user.getEmail())
+                .secret(secret)
+                .issuer("MyPortfolio")
+                .algorithm(HashingAlgorithm.SHA1)
+                .digits(6)
+                .period(30)
+                .build();
+
+        return java.util.Map.of(
+                "secret", secret,
+                "qrCodeUrl", data.getUri()
+        );
+    }
+
+    public java.util.Map<String, Boolean> confirmTwoFactorSetup(String accessToken, String code) {
+        User user = getUserFromAccessToken(accessToken);
+
+        if (user.getTwoFactorSecret() == null || user.getTwoFactorSecret().isBlank()) {
+            throw new RuntimeException("2FA setup has not been initialized");
+        }
+        if (!isValidTwoFactorCode(user.getTwoFactorSecret(), code)) {
+            throw new RuntimeException("Invalid 2FA code");
+        }
+
+        user.enableTwoFactor(user.getTwoFactorSecret());
+        userRepository.save(user);
+        return java.util.Map.of("twoFactorEnabled", true);
     }
 
     public LoginResponse refreshToken(String refreshToken) {
@@ -232,6 +319,8 @@ public class AuthService {
                 .accessToken(generateAccessTokenFor(user))
                 .refreshToken(generateRefreshTokenFor(user))
                 .expiresIn(86400L)
+            .requiresTwoFactor(false)
+            .sessionId(null)
                 .userInfo(LoginResponse.UserInfo.builder()
                         .id(user.getId())
                         .email(user.getEmail())
@@ -243,6 +332,59 @@ public class AuthService {
                 .build();
     }
 
+    private LoginResponse challengeIfTwoFactorRequired(User user, String twoFactorCode) {
+        if (!Boolean.TRUE.equals(user.isTwoFactorEnabled())) {
+            return null;
+        }
+
+        if (twoFactorCode == null || twoFactorCode.isBlank()) {
+            String sessionId = UUID.randomUUID().toString();
+            user.updateSession(sessionId, "oauth-login");
+            userRepository.save(user);
+
+            return LoginResponse.builder()
+                    .requiresTwoFactor(true)
+                    .sessionId(sessionId)
+                    .expiresIn(0L)
+                    .tokenType("Bearer")
+                    .userInfo(LoginResponse.UserInfo.builder()
+                            .id(user.getId())
+                            .email(user.getEmail())
+                            .displayName(user.getDisplayName())
+                            .profileImageUrl(user.getProfileImageUrl())
+                            .role(user.getRole() != null ? user.getRole().name() : "USER")
+                            .twoFactorEnabled(true)
+                            .build())
+                    .build();
+        }
+
+        if (!isValidTwoFactorCode(user.getTwoFactorSecret(), twoFactorCode)) {
+            throw new RuntimeException("Invalid 2FA code");
+        }
+
+        return null;
+    }
+
+    private boolean isValidTwoFactorCode(String secret, String code) {
+        if (secret == null || secret.isBlank() || code == null || code.isBlank()) {
+            return false;
+        }
+        return codeVerifier.isValidCode(secret, code);
+    }
+
+    private User getUserFromAccessToken(String accessToken) {
+        if (accessToken == null || accessToken.isBlank()) {
+            throw new RuntimeException("Access token is required");
+        }
+        if (!jwtUtil.isTokenValid(accessToken)) {
+            throw new RuntimeException("Invalid access token");
+        }
+
+        String email = jwtUtil.parseClaims(accessToken).getSubject();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
     private String generateAccessTokenFor(User user) {
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("role", user.getRole() != null ? user.getRole().name() : "USER");
@@ -252,13 +394,6 @@ public class AuthService {
 
     private String generateRefreshTokenFor(User user) {
         return jwtUtil.generateRefreshToken(user.getEmail());
-    }
-
-    private String generateAccessTokenForEmail(String email) {
-        HashMap<String, Object> claims = new HashMap<>();
-        claims.put("role", "USER");
-        claims.put("roles", java.util.List.of());
-        return jwtUtil.generateAccessToken(email, claims);
     }
 
     private String extractEmailFromRefreshToken(String refreshToken) {

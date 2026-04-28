@@ -11,7 +11,7 @@ import {
   FooterIcon,
   FooterButton
 } from '@components/common/FooterComponents'
-import { useFeedbackModalStore } from '../../../stores/feedbackModalStore'
+import { useFeedbackModalStore } from '../../../store/feedbackModalStore'
 
 const FeedbackButton = styled.button`
   display: inline-block;
@@ -47,7 +47,14 @@ export function FooterContact() {
   const { t } = useTranslation()
 
   // Utility links - contact information
-  const contactItems = [
+  const contactItems: Array<{
+    icon: string
+    label: string
+    href?: string
+    value: string
+    ariaLabel: string
+    external?: boolean
+  }> = [
     {
       icon: '📧',
       label: t('footer.contact.email', 'Email'),

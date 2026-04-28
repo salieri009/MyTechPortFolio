@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { Button, Card } from '@components/common'
+import { Card } from '@components/common'
+import { Button } from '@components/ui/Button'
 import { analytics } from '@services/analytics'
 import { sendFeedbackEmail, initEmailService } from '@services/email'
-import { useFeedbackModalStore } from '../../stores/feedbackModalStore'
+import { useFeedbackModalStore } from '../../store/feedbackModalStore'
 import { CheckMarkIcon } from '@components/icons/CheckMarkIcon'
 
 const fadeIn = keyframes`
@@ -61,7 +62,7 @@ const FeedbackModalContent = styled.div`
   background: ${props => props.theme.colors.surface || props.theme.colors.background};
   border-radius: ${props => props.theme.radius['2xl']};
   padding: ${props => props.theme.spacing[12]};
-  max-width: ${props => props.theme.spacing[150] || '37.5rem'}; /* 600px */
+  max-width: 37.5rem; /* 600px */
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -132,13 +133,13 @@ const Subtitle = styled.p`
   font-size: ${props => props.theme.typography.fontSize.lg};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   color: ${props => props.theme.colors.textSecondary};
-  max-width: ${props => props.theme.spacing[150]};
+  max-width: 37.5rem;
   margin: 0 auto;
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
 `
 
 const FeedbackForm = styled.form`
-  max-width: ${props => props.theme.spacing[150]};
+  max-width: 37.5rem;
   margin: 0 auto;
 `
 
@@ -168,13 +169,13 @@ const Input = styled.input`
   &:focus {
     outline: none;
     border-color: ${props => props.theme.colors.primary[500]};
-    box-shadow: 0 0 0 ${props => props.theme.spacing[0.75]} ${props => props.theme.colors.primary[100]};
+    box-shadow: 0 0 0 ${props => props.theme.spacing[1]} ${props => props.theme.colors.primary[100]};
   }
 `
 
 const TextArea = styled.textarea`
   width: 100%;
-  min-height: ${props => props.theme.spacing[30]};
+  min-height: 7.5rem;
   padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[4]};
   border: 2px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
@@ -188,7 +189,7 @@ const TextArea = styled.textarea`
   &:focus {
     outline: none;
     border-color: ${props => props.theme.colors.primary[500]};
-    box-shadow: 0 0 0 ${props => props.theme.spacing[0.75]} ${props => props.theme.colors.primary[100]};
+    box-shadow: 0 0 0 ${props => props.theme.spacing[1]} ${props => props.theme.colors.primary[100]};
   }
 `
 
@@ -206,7 +207,7 @@ const Select = styled.select`
   &:focus {
     outline: none;
     border-color: ${props => props.theme.colors.primary[500]};
-    box-shadow: 0 0 0 ${props => props.theme.spacing[0.75]} ${props => props.theme.colors.primary[100]};
+    box-shadow: 0 0 0 ${props => props.theme.spacing[1]} ${props => props.theme.colors.primary[100]};
   }
 `
 
@@ -237,7 +238,7 @@ const SubmitButton = styled(Button)`
 `
 
 const SuccessCard = styled(Card)`
-  max-width: ${props => props.theme.spacing[125]};
+  max-width: 31.25rem;
   margin: 0 auto;
   text-align: center;
   padding: ${props => props.theme.spacing[12]};

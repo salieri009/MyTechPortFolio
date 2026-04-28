@@ -92,13 +92,9 @@ export function ConfirmationDialog({
   onCancel
 }: ConfirmationDialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
-  const cancelButtonRef = useRef<HTMLButtonElement>(null)
   
   useEffect(() => {
     if (isOpen) {
-      // Focus cancel button when dialog opens
-      cancelButtonRef.current?.focus()
-      
       // Handle Escape key
       const handleEscape = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
@@ -134,7 +130,7 @@ export function ConfirmationDialog({
         <DialogMessage id="dialog-message">{message}</DialogMessage>
         <DialogActions>
           <Button
-            ref={cancelButtonRef}
+            autoFocus
             variant="secondary"
             onClick={onCancel}
             type="button"

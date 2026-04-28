@@ -267,7 +267,9 @@ export function CustomSelect({
             id={`option-${option.value}`}
           >
             {option.value === value && (
-              <CheckMarkIcon size={16} style={{ marginRight: '8px', flexShrink: 0 }} />
+              <span style={{ marginRight: '8px', flexShrink: 0, display: 'inline-flex' }}>
+                <CheckMarkIcon size={16} />
+              </span>
             )}
             {option.label}
           </SelectOption>
