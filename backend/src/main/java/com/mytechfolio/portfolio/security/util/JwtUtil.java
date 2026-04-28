@@ -3,6 +3,7 @@ package com.mytechfolio.portfolio.security.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,17 @@ public class JwtUtil {
 
 	@Value("${app.jwt.refresh-token-validity-in-ms:604800000}")
 	private long refreshTokenValidityMs;
+
+	@PostConstruct
+	void validateJwtSecret() {
+		if (secret == null || secret.isBlank()) {
+			throw new IllegalStateException("app.jwt.secret must be configured");
+		}
+		if (secret.getBytes(StandardCharsets.UTF_8).length < 32) {
+			throw new IllegalStateException(
+					"app.jwt.secret must be at least 32 bytes (256 bits) for HS256 signing");
+		}
+	}
 
 	private SecretKey getSigningKey() {
 		return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
