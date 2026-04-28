@@ -1,0 +1,150 @@
+---
+description: Component design patterns and Nielsen Heuristics enforcement. Apply when creating new UI components or reviewing existing ones.
+globs: ["frontend/src/components/**/*.tsx"]
+alwaysApply: false
+---
+
+# Component Design Patterns
+
+## Nielsen Heuristics Checklist (attach relevant ones as JSDoc)
+
+Every component must address relevant heuristics:
+
+```ts
+/**
+ * MyComponent (Molecule)
+ * H1: Visibility of System Status — hover states, loading indicators
+ * H3: User Control & Freedom — focus states, keyboard navigation
+ * H4: Consistency & Standards — uniform spacing and color usage
+ * H6: Recognition Rather Than Recall — visual affordances
+ * H8: Aesthetic & Minimalist Design — no decorative excess
+ */
+```
+
+## Accessibility Requirements
+
+Every interactive component needs:
+
+```tsx
+// Keyboard navigation
+onKeyDown={(e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault()
+    handleAction()
+  }
+}}
+
+// Focus visible (not just focus)
+&:focus-visible {
+  outline: 2px solid ${props => props.theme.colors.primary[500]};
+  outline-offset: ${props => props.theme.spacing[1]};
+  border-radius: ${props => props.theme.radius.sm};
+}
+
+// ARIA labels
+aria-label="Descriptive action label"
+role="button"  // when non-button element is interactive
+tabIndex={0}
+```
+
+## Motion: Respect `prefers-reduced-motion`
+
+```ts
+// Every animated component must include this block
+@media (prefers-reduced-motion: reduce) {
+  transition: none;
+  animation: none;
+  &:hover {
+    transform: none;
+  }
+}
+```
+
+## Hover State Pattern
+
+```ts
+// Standard card hover (dark mode compatible)
+transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+&:hover {
+  transform: translateY(-4px);
+  border-color: ${props => props.theme.depth?.cardBorderHover ?? props.theme.colors.primary[500]};
+  // NO box-shadow in dark mode — border handles elevation
+}
+
+// GPU acceleration for animated elements
+will-change: transform;
+transform: translateZ(0);
+```
+
+## Component Size Hierarchy
+
+```
+Atom:     Button, Tag, Icon, Input — single responsibility
+Molecule: StatCard, ContactButton, SearchBar — 2-3 atoms combined
+Organism: ProjectCard, HeroSection — molecules + logic
+Template: PageLayout — organisms arranged in grid
+Page:     Route-level component — data fetching + template
+```
+
+## Styled Component Naming Convention
+
+```ts
+// Wrapper (outermost container)
+const ComponentWrapper = styled.div``
+const ComponentContainer = styled.section``
+
+// Sub-elements: ComponentNoun
+const ComponentTitle = styled.h2``
+const ComponentContent = styled.div``
+const ComponentMeta = styled.span``
+
+// Variants via transient props ($-prefix)
+const ComponentItem = styled.li<{ $isActive: boolean; $variant?: 'default' | 'glass' }>`
+  // Use $-prefix to prevent prop forwarding to DOM
+`
+```
+
+## Glass Variant Pattern (for hero/dark overlay contexts only)
+
+```ts
+${props => props.$variant === 'glass' && `
+  background: ${props.theme.depth?.cardBackground ?? 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${props.theme.depth?.cardBorder ?? 'rgba(255, 255, 255, 0.06)'};
+  color: ${props.theme.colors.hero?.text ?? 'white'};
+
+  &:hover {
+    border-color: ${props.theme.depth?.cardBorderHover ?? 'rgba(255, 255, 255, 0.14)'};
+    transform: translateY(-2px);
+  }
+`}
+```
+
+## Image Overlay Pattern
+
+```ts
+// Hover overlay on card images — opacity transition, no blur
+const ImageOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  ${ParentCard}:hover & {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.2s ease;
+  }
+`
+```
+
+## Don'ts
+
+- ❌ Don't use `backdrop-filter: blur()` on cards (modals/overlays only)
+- ❌ Don't use inline styles except for dynamic values (tilt transforms, etc.)
+- ❌ Don't use `!important`
+- ❌ Don't nest more than 3 levels in styled-components
+- ❌ Don't use `color: white` — use `theme.colors.hero.text`
+- ❌ Don't create one-off color values — add to theme or use neutral scale

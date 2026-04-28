@@ -16,15 +16,13 @@ const ContactButtonContainer = styled(Button)<{ $variant?: 'default' | 'glass' |
   text-decoration: none;
   
   ${props => props.$variant === 'glass' && `
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    
+    background: ${props.theme.depth?.cardBackground ?? 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props.theme.depth?.cardBorder ?? 'rgba(255, 255, 255, 0.06)'};
+    color: ${props.theme.colors.hero?.text ?? 'white'};
+
     &:hover {
-      background: rgba(255, 255, 255, 0.3);
+      border-color: ${props.theme.depth?.cardBorderHover ?? 'rgba(255, 255, 255, 0.14)'};
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     }
   `}
   

@@ -122,7 +122,7 @@ React + Spring Boot + MongoDB 기반의 풀스택 웹 애플리케이션으로, 
 ### 3.2 인증 시스템
 
 - **Google OAuth 2.0:** ID 토큰 기반 로그인
-- **GitHub OAuth:** Access Token 교환 기반 로그인
+- **GitHub OAuth:** Authorization Code를 백엔드에서 Access Token으로 교환하는 로그인 플로우
 - **JWT 세션:** Access Token (24시간) + Refresh Token (7일)
 - **2FA 지원:** TOTP 기반 이중 인증
 - **RBAC:** USER, ADMIN, RECRUITER, GUEST 역할 기반 접근 제어

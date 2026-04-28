@@ -18,7 +18,7 @@ export const Hero = styled.section<{ $isDark: boolean }>`
   min-height: 90vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, ${props => props.theme.colors.primary[500]} 0%, ${props => props.theme.colors.primary[600]} 100%);
+  background: ${props => props.theme.colors.gradient.hero};
   color: ${props => props.theme.colors.hero.text};
   transition: background 0.3s ease;
   margin-top: 0; /* 4-point system: 0px (헤더와의 gap 제거, 4px 규칙 준수) */
@@ -40,7 +40,7 @@ export const Hero = styled.section<{ $isDark: boolean }>`
   /* InteractiveBackground는 z-index: 0으로 배경에 위치 */
   /* Container와 HeroContent는 z-index: 2로 콘텐츠 위에 위치 */
   ${Container} {
-    max-width: ${props => props.theme.spacing[300]}; /* 4-point system: 1200px */
+    max-width: 1200px;
     width: 100%;
     position: relative;
     z-index: 2;
@@ -118,6 +118,48 @@ export const Subtitle = styled.p`
   @media (max-width: 768px) {
     font-size: ${props => props.theme.typography.fontSize.lg};
     padding: 0;
+  }
+`
+
+export const PhilosophyLine = styled.p`
+  font-size: ${props => props.theme.typography.fontSize.base};
+  margin: 0;
+  color: ${props => props.theme.colors.hero.textSecondary};
+  max-width: 640px;
+  line-height: ${props => props.theme.typography.lineHeight.relaxed};
+  font-family: ${props => props.theme.typography.fontFamily.display};
+
+  @media (max-width: 768px) {
+    font-size: ${props => props.theme.typography.fontSize.sm};
+  }
+`
+
+export const CliTerminal = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[2]};
+  width: fit-content;
+  min-height: ${props => props.theme.spacing[10]};
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]};
+  border-radius: ${props => props.theme.radius.lg};
+  border: 1px solid ${props => props.theme.colors.hero.border};
+  background: rgba(2, 6, 23, 0.45);
+`
+
+export const CliPrompt = styled.span`
+  font-family: ${props => props.theme.typography.fontFamily.mono};
+  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  color: ${props => props.theme.colors.hero.text};
+`
+
+export const CliText = styled.span`
+  font-family: ${props => props.theme.typography.fontFamily.mono};
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  color: ${props => props.theme.colors.hero.textSecondary};
+  letter-spacing: 0.02em;
+
+  @media (max-width: 640px) {
+    font-size: ${props => props.theme.typography.fontSize.xs};
   }
 `
 
@@ -235,7 +277,7 @@ export const PrimaryCTA = styled(Link)`
   
   @media (max-width: 640px) {
     width: 100%;
-    max-width: ${props => props.theme.spacing[75]};
+    max-width: 300px;
     padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[8]};
     font-size: ${props => props.theme.typography.fontSize.base};
   }
@@ -256,7 +298,7 @@ export const SecondaryCTA = styled(Link)`
   border: 2px solid ${props => props.theme.colors.hero.textSecondary};
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
   cursor: pointer;
-  min-width: ${props => props.theme.spacing[50]}; /* 4-point system: 200px */
+  min-width: 200px;
   white-space: nowrap;
 
   /* H1: Visibility of System Status - Hover feedback */
@@ -279,7 +321,7 @@ export const SecondaryCTA = styled(Link)`
   
   @media (max-width: 640px) {
     width: 100%;
-    max-width: ${props => props.theme.spacing[75]}; /* 4-point system: 300px */
+    max-width: 300px;
     padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[8]};
     font-size: ${props => props.theme.typography.fontSize.base};
   }
@@ -372,7 +414,7 @@ export const SectionTitle = styled.h2<{ $isVisible?: boolean }>`
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
+  transform: translateY(${props => (props.$isVisible ? '0' : props.theme.spacing[8])});
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
@@ -395,7 +437,7 @@ export const SectionSubtitle = styled.p<{ $isVisible?: boolean }>`
   text-align: left;
   max-width: 704px; /* 4-point system: 700px → 704px (4의 배수) */
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
+  transform: translateY(${props => (props.$isVisible ? '0' : props.theme.spacing[8])});
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
   
@@ -430,7 +472,7 @@ export const FeaturedGrid = styled.div<{ $isVisible?: boolean }>`
   gap: ${props => props.theme.spacing[8]};
   margin-bottom: ${props => props.theme.spacing[8]};
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
+  transform: translateY(${props => (props.$isVisible ? '0' : props.theme.spacing[8])});
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
 
@@ -512,7 +554,7 @@ export const TestimonialGrid = styled.div<{ $isVisible?: boolean }>`
   grid-template-columns: repeat(auto-fit, minmax(${props => props.theme.spacing[80]}, 1fr)); /* 4-point system: 320px = spacing[80] */
   gap: ${props => props.theme.spacing[8]};
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`}; /* 4-point system: 32px */
+  transform: translateY(${props => (props.$isVisible ? '0' : props.theme.spacing[8])});
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
 

@@ -10,7 +10,7 @@ import { InteractiveBackground } from '@components/organisms/InteractiveBackgrou
 import { getProjects } from '../services/projects'
 import { getTestimonials } from '../mocks/testimonials'
 import { CONTACT_INFO } from '../constants/contact'
-import { useThemeStore } from '../stores/themeStore'
+import { useThemeStore } from '../store/themeStore'
 import { SkeletonProjectCard, SkeletonTestimonialCard } from '@components/common/Skeleton'
 import { StoryProgressBar } from '@components/common/StoryProgressBar'
 import { SectionBridge } from '@components/sections/SectionBridge'
@@ -63,11 +63,13 @@ const getGridLayout = (index: number, total: number) => {
 }
 
 export function HomePage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { isDark } = useThemeStore()
   const [featuredProjects, setFeaturedProjects] = useState<ProjectSummary[]>([])
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [loading, setLoading] = useState(true)
+  const [typedCli, setTypedCli] = useState('')
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const [isHeroVisible, setIsHeroVisible] = useState(true)
   const heroRef = React.useRef<HTMLElement>(null)
   const [isFeaturedVisible, setIsFeaturedVisible] = useState(false)
@@ -80,7 +82,7 @@ export function HomePage() {
       try {
         const projectsResponse = await getProjects({ size: 10 })
         if (projectsResponse.success && projectsResponse.data.items) {
-          const featured = projectsResponse.data.items.filter(project => project.featured)
+          const featured = projectsResponse.data.items.filter(project => project.isFeatured)
           setFeaturedProjects(featured)
         }
 
@@ -95,6 +97,37 @@ export function HomePage() {
 
     loadData()
   }, [])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches)
+
+    handleChange()
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
+
+  useEffect(() => {
+    const cliText = t('hero.cliPrompt', '> init profile --lang={{lang}}', { lang: i18n.language })
+
+    if (prefersReducedMotion) {
+      setTypedCli(cliText)
+      return
+    }
+
+    setTypedCli('')
+    let index = 0
+    const timer = window.setInterval(() => {
+      index += 1
+      setTypedCli(cliText.slice(0, index))
+
+      if (index >= cliText.length) {
+        window.clearInterval(timer)
+      }
+    }, 22)
+
+    return () => window.clearInterval(timer)
+  }, [i18n.language, prefersReducedMotion, t])
 
   // Hero 섹션 가시성 감지 (스크롤 유도 힌트 표시용)
   useEffect(() => {
@@ -175,14 +208,21 @@ export function HomePage() {
           <S.HeroContent>
             {/* 그룹 A: Primary Value Block (Z1 + Z2) - 좌측 정렬 통일 */}
             <S.HeroGroupA>
+              <S.CliTerminal aria-label={t('hero.cliAria', 'Profile initialization command line')}>
+                <S.CliPrompt>$</S.CliPrompt>
+                <S.CliText>{typedCli}</S.CliText>
+              </S.CliTerminal>
               {/* Z1: Impact Statement */}
               <S.Headline>
-                {t('hero.headline', 'Building Scalable Web Solutions That Drive Business Value')}
+                {t('hero.headline', 'Backend and Cloud Engineer, shaping reliable systems with human intent.')}
               </S.Headline>
               {/* Z2: Authority Subtitle - Z1 바로 아래, 여백 최소화 */}
               <S.Subtitle>
-                {t('hero.subtitle', 'I solve complex technical challenges by architecting robust full-stack applications. Specialized in React, TypeScript, and Spring Boot to deliver high-performance, maintainable systems.')}
+                {t('hero.subtitle', 'Infra, Data, and AI are my engineering axis. I build maintainable architecture that stays readable under pressure.')}
               </S.Subtitle>
+              <S.PhilosophyLine>
+                {t('hero.philosophy', 'I treat code as structure, and language as care for people moving through that structure.')}
+              </S.PhilosophyLine>
             </S.HeroGroupA>
             
             {/* 그룹 B: Action Validation Block (Z3 + Z4) - 좌측 정렬 통일 */}
@@ -273,7 +313,7 @@ export function HomePage() {
                         $gridColumnMobile={gridLayout.mobile}
                       >
                         <HeroProjectCard
-                          id={project.id}
+                          id={Number(project.id)}
                           title={project.title}
                           summary={project.summary}
                           startDate={project.startDate}
@@ -293,7 +333,7 @@ export function HomePage() {
                         $gridColumnMobile={gridLayout.mobile}
                       >
                         <FeaturedProjectCard
-                          id={project.id}
+                          id={Number(project.id)}
                           title={project.title}
                           summary={project.summary}
                           startDate={project.startDate}

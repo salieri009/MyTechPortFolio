@@ -16,15 +16,19 @@ FRONTEND_APP_NAME="portfolio-frontend"
 # Load environment variables
 if [ -f .env ]; then
     echo "📄 Loading environment variables from .env file..."
-    export $(cat .env | grep -v '^#' | xargs)
+    set -a
+    # shellcheck disable=SC1091
+    . ./.env
+    set +a
 else
-    echo "⚠️  .env file not found. Using default values..."
-    # Set default values
-    export MONGO_ROOT_PASSWORD="mongo123"
-    export GOOGLE_CLIENT_ID="1098017074065-i5kgtgj5upsvh06vtmhfi2ba78hh25sc.apps.googleusercontent.com"
-    export GOOGLE_CLIENT_SECRET="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"
-    export JWT_SECRET="demo-jwt-secret-1234567890123456789012345678901234567890"
-    export GA_MEASUREMENT_ID="G-XXXXXXXXXX"
+    echo "⚠️  .env file not found."
+    echo "    Copy environment.template to .env and set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET, etc."
+    echo "    Do not commit real credentials; this script has no secret defaults."
+    export MONGO_ROOT_PASSWORD="${MONGO_ROOT_PASSWORD:-mongo123}"
+    export GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID:-}"
+    export GOOGLE_CLIENT_SECRET="${GOOGLE_CLIENT_SECRET:-}"
+    export JWT_SECRET="${JWT_SECRET:-}"
+    export GA_MEASUREMENT_ID="${GA_MEASUREMENT_ID:-G-XXXXXXXXXX}"
 fi
 
 echo "🚀 Starting Azure deployment for $ENVIRONMENT environment"

@@ -1,8 +1,22 @@
-export type TechType = 'BACKEND' | 'FRONTEND' | 'DATABASE' | 'DEVOPS' | 'MOBILE' | 'AI_ML' | 'CLOUD' | 'TESTING' | 'OTHER'
+export type TechType =
+  | 'BACKEND'
+  | 'FRONTEND'
+  | 'DATABASE'
+  | 'DEVOPS'
+  | 'MOBILE'
+  | 'AI_ML'
+  | 'CLOUD'
+  | 'TESTING'
+  | 'OTHER'
+  | 'Backend'
+  | 'Frontend'
+  | 'DB'
+  | 'DevOps'
+  | 'Other'
 export type ProficiencyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT'
 
 export interface ProjectSummary {
-  id: string  // MongoDB ObjectId
+  id: string | number  // Supports MongoDB ObjectId and numeric mock ids
   title: string
   summary: string
   startDate: string // YYYY-MM-DD (LocalDate)
@@ -10,6 +24,7 @@ export interface ProjectSummary {
   techStacks: string[]
   imageUrl?: string
   isFeatured?: boolean
+  featured?: boolean
 }
 
 export interface ProjectDetail extends ProjectSummary {
@@ -17,11 +32,13 @@ export interface ProjectDetail extends ProjectSummary {
   githubUrl?: string
   demoUrl?: string
   relatedAcademics?: string[]
-  // Note: challenge, solution, keyOutcomes not in backend - use for future expansion
+  challenge?: string
+  solution?: string[]
+  keyOutcomes?: string[]
 }
 
 export interface Academic {
-  id: string  // MongoDB ObjectId
+  id: string | number  // Supports MongoDB ObjectId and numeric mock ids
   name: string
   semester: string
   grade?: string
@@ -34,12 +51,12 @@ export interface Academic {
 }
 
 export interface RelatedProject {
-  id: string
+  id: string | number
   title: string
 }
 
 export interface TechStack {
-  id: string  // MongoDB ObjectId
+  id: string | number  // Supports MongoDB ObjectId and numeric mock ids
   name: string
   type: TechType
   proficiencyLevel?: ProficiencyLevel

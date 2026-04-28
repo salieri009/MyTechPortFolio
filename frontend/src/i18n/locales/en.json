@@ -28,8 +28,11 @@
     "closeMenu": "Close menu"
   },
   "hero": {
-    "headline": "Engineering Scalable Cloud-Native Solutions",
-    "subtitle": "Full-Stack Developer & DevOps Engineer specializing in Azure AKS, React, TypeScript, and Spring Boot. Building high-performance, maintainable systems with CI/CD automation and cloud-native architecture.",
+    "headline": "Backend and Cloud Engineer, shaping reliable systems with human intent.",
+    "subtitle": "Infra, Data, and AI are my engineering axis. I build maintainable architecture that stays readable under pressure.",
+    "philosophy": "I treat code as structure, and language as care for people moving through that structure.",
+    "cliPrompt": "init profile --lang={{lang}} --mode=pragmatic-cyber-philosopher",
+    "cliAria": "Profile initialization command line",
     "greeting": "Hello, I'm",
     "name": "Jungwook Van",
     "scrollIndicator": "Explore My Journey",

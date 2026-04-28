@@ -213,29 +213,11 @@ then
     die "xargs is not available"
 fi
 
-# Use "xargs" to parse quoted args.
-#
-# With -n1 it outputs one arg per line, with the quotes and backslashes removed.
-#
-# In Bash we could simply go:
-#
-#   readarray ARGS < <( xargs -n1 <<<"$var" ) &&
-#   set -- "${ARGS[@]}" "$@"
-#
-# but POSIX shell has neither arrays nor command substitution, so instead we
-# post-process each arg (as a line of input to sed) to backslash-escape any
-# character that might be a shell metacharacter, then use eval to parse
-# them.
-
-cat <<'EOF' |
-"$@"
-EOF
-sed 's/^/set -- /' |
-while IFS= read -r line
-do
-    # Escape shell metacharacters, for xargs.
-    line=$( printf '%s\n' "$line" | sed 's/[[\\.^$()+*?{|]/\\&/g' )
-    # This will 'eval' the line as a command.
-    printf '%s\n' "$line"
-done |
-xargs "$@"
+# Parse JVM options from DEFAULT_JVM_OPTS, JAVA_OPTS and GRADLE_OPTS.
+# Keep Gradle/user args in "$@" unchanged; never pass them as xargs options.
+eval "set -- $(
+        printf '%s\n' "$DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS" |
+        xargs -n1 |
+        sed ' s~[^-[:alnum:]+,./:=@_]~\\&~g; ' |
+        tr '\n' ' '
+    )" '"$@"'

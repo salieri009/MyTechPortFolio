@@ -15,25 +15,12 @@ import { TechStackBadge } from '@components/molecules/TechStackBadge'
  */
 
 const DashboardContainer = styled.div<{ $isDark: boolean }>`
-  background: ${({ $isDark }) => 
-    $isDark 
-      ? 'rgba(26, 32, 44, 0.8)'
-      : 'rgba(255, 255, 255, 0.9)'
-  };
-  backdrop-filter: blur(20px);
-  border: 1px solid ${({ $isDark }) => 
-    $isDark 
-      ? 'rgba(255, 255, 255, 0.1)'
-      : 'rgba(0, 0, 0, 0.1)'
-  };
+  background: ${props => props.theme.colors.surface || props.theme.colors.background};
+  border: 1px solid ${props => props.theme.depth?.cardBorder ?? props.theme.colors.border};
   border-radius: ${props => props.theme.radius['2xl']};
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: ${({ $isDark }) => 
-    $isDark 
-      ? '0 8px 32px rgba(0, 0, 0, 0.3)'
-      : '0 8px 32px rgba(0, 0, 0, 0.1)'
-  };
+  box-shadow: ${props => props.theme.shadows.md};
 `
 
 const Header = styled.div`

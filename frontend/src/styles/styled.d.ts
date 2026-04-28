@@ -1,9 +1,9 @@
 import 'styled-components'
-import type { lightTheme, darkTheme } from './theme'
+import type { lightTheme } from './theme'
 
 declare module 'styled-components' {
   export interface DefaultTheme {
-    mode: 'light' | 'dark';
+    mode: 'light' | 'dark' | 'eva';
     colors: typeof lightTheme.colors;
     radius: typeof lightTheme.radius;
     spacing: typeof lightTheme.spacing;
@@ -14,5 +14,6 @@ declare module 'styled-components' {
     breakpoints: typeof lightTheme.breakpoints;
     hoverTransition: typeof lightTheme.hoverTransition;
     borderRadius: typeof lightTheme.radius;
+    depth?: typeof lightTheme.depth;
   }
 }

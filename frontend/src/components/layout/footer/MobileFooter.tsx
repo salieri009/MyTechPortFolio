@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { CONTACT_INFO } from '../../../constants/contact'
 import { SocialIcon } from '@components/common/FooterComponents'
-import { useFeedbackModalStore } from '../../../stores/feedbackModalStore'
+import { useFeedbackModalStore } from '../../../store/feedbackModalStore'
 import { EmailIcon, GithubIcon } from '@components/icons/SocialIcons'
 
 const MobileFooterWrapper = styled.footer`

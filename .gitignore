@@ -2,21 +2,36 @@
 .DS_Store
 Thumbs.db
 Desktop.ini
+$RECYCLE.BIN/
+ehthumbs.db
 
 # ===== IDEs & Editors =====
 .vscode/
 .idea/
-.cursor/
 *.swp
 *.swo
+*.sublime-*
 *.iml
 *.ipr
 *.iws
+
+# Cursor — share `.cursor/rules/`; ignore local state & secrets
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
 
 # ===== Environment & Secrets =====
 .env
 .env.*
 !.env.example
+!.env.*.example
+.envrc
+.direnv/
+*.pem
+*.key
+*.p12
+*.jks
+credentials.json
 
 # ===== Logs =====
 logs/
@@ -28,24 +43,43 @@ replay_pid*.log
 tmpclaude-*
 nul
 
-# ===== Build outputs =====
+# ===== Build outputs (root + common tools) =====
 dist/
 build/
+out/
+target/
 *.tsbuildinfo
+.turbo/
+.eslintcache
+**/.vite/
+.parcel-cache/
+.stylelintcache
 
 # ===== Dependencies =====
 node_modules/
+.pnpm-store/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# ===== Temporary files =====
+# ===== Java / Gradle (invoked from repo root) =====
+.gradle/
+*.class
+
+# ===== Temporary & caches =====
 tmp/
 temp/
 .cache/
+*.tmp
+*.temp
+*.bak
+*.orig
+*~
 
 # ===== Docker =====
 docker-compose.override.yml
+.docker/
 
 # ===== Coverage & Testing =====
 coverage/
@@ -53,10 +87,6 @@ coverage/
 .coverage
 htmlcov/
 test-case-results/
-
-# ===== Credentials =====
-*.pem
-*.key
-*.p12
-*.jks
-credentials.json
+junit/
+*.gcov
+*.profraw

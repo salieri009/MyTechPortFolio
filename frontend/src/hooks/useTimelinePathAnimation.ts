@@ -44,7 +44,8 @@ export function useTimelinePathAnimation({
       const viewportTop = window.scrollY
       const viewportHeight = window.innerHeight
 
-      let closestMilestone: { id: string; element: HTMLElement } | null = null
+      let closestMilestoneId: string | null = null
+      let closestMilestoneElement: HTMLElement | null = null
       let closestDistance = Infinity
 
       milestones.forEach(({ id, element }) => {
@@ -55,16 +56,17 @@ export function useTimelinePathAnimation({
 
         if (distance < closestDistance && milestoneTop <= viewportTop + viewportHeight * 0.5) {
           closestDistance = distance
-          closestMilestone = { id, element }
+          closestMilestoneId = id
+          closestMilestoneElement = element
         }
       })
 
-      if (closestMilestone) {
-        const milestoneRect = closestMilestone.element.getBoundingClientRect()
+      if (closestMilestoneElement && closestMilestoneId) {
+        const milestoneRect = (closestMilestoneElement as HTMLElement).getBoundingClientRect()
         const milestoneTop = milestoneRect.top + window.scrollY
         const progress = Math.max(0, Math.min(1, ((milestoneTop - containerTop) / containerHeight)))
         setDashOffset(pathLengthValue * (1 - progress))
-        setActiveMilestone(closestMilestone.id)
+        setActiveMilestone(closestMilestoneId)
       } else {
         const scrollProgress = Math.max(0, Math.min(1, ((viewportTop - containerTop + viewportHeight * 0.3) / containerHeight)))
         setDashOffset(pathLengthValue * (1 - scrollProgress))

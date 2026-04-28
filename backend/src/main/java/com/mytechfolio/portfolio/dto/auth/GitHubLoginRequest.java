@@ -1,5 +1,6 @@
 package com.mytechfolio.portfolio.dto.auth;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -12,9 +13,10 @@ import lombok.Data;
 @Data
 public class GitHubLoginRequest {
 
-    @NotBlank(message = "GitHub access token is required")
-    @Size(min = 10, max = 500, message = "Invalid GitHub access token format")
-    private String accessToken;
+    @JsonAlias("accessToken")
+    @NotBlank(message = "GitHub authorization code is required")
+    @Size(min = 10, max = 500, message = "Invalid GitHub authorization code format")
+    private String code;
 
     @Size(min = 6, max = 6, message = "2FA code must be exactly 6 digits")
     @Pattern(regexp = "^[0-9]{6}$", message = "2FA code must be 6 digits")

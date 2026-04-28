@@ -30,7 +30,7 @@ export function useApiError() {
         errorMessage = 'The requested resource was not found.'
       } else if (status === 429) {
         errorMessage = 'Too many requests. Please wait a moment and try again.'
-      } else if (status >= 500) {
+      } else if (status !== undefined && status >= 500) {
         errorMessage = 'Server error. Please try again later.'
       }
     }

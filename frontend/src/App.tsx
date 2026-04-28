@@ -3,8 +3,8 @@ import { Routes, Route, Outlet } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { Layout } from '@components/layout/Layout'
 import { LoadingSpinner } from '@components/ui/LoadingSpinner'
-import { lightTheme, darkTheme } from '@styles/theme'
-import { useThemeStore } from './stores/themeStore'
+import { themeByMode } from '@styles/theme'
+import { useThemeStore } from './store/themeStore'
 import { analytics } from './services/analytics'
 import { useAnalytics } from './hooks/useAnalytics'
 import { FeedbackOverlay } from '@components/feedback/FeedbackOverlay'
@@ -45,8 +45,8 @@ function TestimonialFormWrapper({ mode }: { mode: 'create' | 'edit' }) {
 }
 
 function App() {
-  const { isDark } = useThemeStore()
-  const currentTheme = isDark ? darkTheme : lightTheme
+  const { mode } = useThemeStore()
+  const currentTheme = themeByMode(mode)
 
   // Analytics 초기화
   useEffect(() => {

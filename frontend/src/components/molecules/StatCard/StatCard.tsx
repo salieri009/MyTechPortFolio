@@ -15,9 +15,8 @@ const StatCardContainer = styled(Card)<{ $variant?: 'default' | 'glass' | 'solid
   transition: all 0.3s ease;
   
   ${props => props.$variant === 'glass' && `
-    background: ${props.theme.colors.glass.light};
-    backdrop-filter: blur(10px);
-    border: 1px solid ${props.theme.colors.glass.medium};
+    background: ${props.theme.depth?.cardBackground ?? 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props.theme.depth?.cardBorder ?? 'rgba(255, 255, 255, 0.06)'};
     color: ${props.theme.colors.hero.text};
   `}
   
@@ -27,7 +26,8 @@ const StatCardContainer = styled(Card)<{ $variant?: 'default' | 'glass' | 'solid
   `}
   
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
+    border-color: ${props => props.theme.depth?.cardBorderHover ?? props.theme.colors.border};
     box-shadow: ${props => props.theme.shadows.lg};
   }
 `

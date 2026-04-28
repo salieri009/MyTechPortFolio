@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { PERSONAL_INFO, CAREER_SUMMARY } from '../../constants/contact'
-import { useThemeStore } from '../../stores/themeStore'
-import { StatCard } from '@components/molecules/StatCard'
+import { useThemeStore } from '../../store/themeStore'
+import { StatCard as RecruiterStatCard } from '@components/molecules/StatCard'
 import { ContactButton } from '@components/molecules/ContactButton'
 import { EmailIcon, LinkedInIcon, GithubIcon } from '@components/icons/SocialIcons'
 
@@ -120,36 +120,6 @@ const StatsSection = styled.div`
   }
 `
 
-const StatCard = styled.div<{ $isDark: boolean }>`
-  background: ${({ $isDark }) => 
-    $isDark 
-      ? 'rgba(255, 255, 255, 0.1)'
-      : 'rgba(255, 255, 255, 0.2)'
-  };
-  backdrop-filter: blur(10px);
-  border: 1px solid ${({ $isDark }) => 
-    $isDark 
-      ? 'rgba(255, 255, 255, 0.1)'
-      : 'rgba(255, 255, 255, 0.3)'
-  };
-  border-radius: ${props => props.theme.radius.xl};
-  padding: 1rem;
-  text-align: center;
-  color: white;
-`
-
-const StatNumber = styled.div`
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-`
-
-const StatLabel = styled.div`
-  font-size: 0.8rem;
-  opacity: 0.9;
-  font-weight: 500;
-`
-
 const ContactSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -169,24 +139,15 @@ const ContactItem = styled.a<{ $isDark: boolean }>`
   font-size: 0.9rem;
   padding: 0.5rem 1rem;
   border-radius: ${props => props.theme.radius.lg};
-  background: ${({ $isDark }) => 
-    $isDark 
-      ? 'rgba(255, 255, 255, 0.1)'
-      : 'rgba(255, 255, 255, 0.2)'
-  };
-  backdrop-filter: blur(10px);
-  border: 1px solid ${({ $isDark }) => 
-    $isDark 
-      ? 'rgba(255, 255, 255, 0.1)'
-      : 'rgba(255, 255, 255, 0.3)'
-  };
-  transition: all 0.2s ease;
-  
+  background: ${props => props.theme.depth?.cardBackground ?? 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${props => props.theme.depth?.cardBorder ?? 'rgba(255, 255, 255, 0.06)'};
+  transition: border-color 0.2s ease;
+
   &:hover {
-    background: ${({ $isDark }) => 
-      $isDark 
-        ? 'rgba(255, 255, 255, 0.2)'
-        : 'rgba(255, 255, 255, 0.3)'
+    background: ${({ $isDark }) =>
+      $isDark
+        ? 'rgba(255, 255, 255, 0.05)'
+        : 'rgba(255, 255, 255, 0.15)'
     };
     transform: translateY(-1px) translateZ(0);
   }
@@ -227,19 +188,19 @@ export const PersonalInfoHeader: React.FC = () => {
         </ProfileSection>
         
         <StatsSection role="region" aria-label="Career statistics">
-          <StatCard
+          <RecruiterStatCard
             value={CAREER_SUMMARY.totalProjects}
             label={t('recruiter.personalInfo.stats.projects', 'Projects')}
             variant={isDark ? 'glass' : 'solid'}
             aria-label={`${CAREER_SUMMARY.totalProjects} projects completed`}
           />
-          <StatCard
+          <RecruiterStatCard
             value={CAREER_SUMMARY.totalExperience}
             label={t('recruiter.personalInfo.stats.experience', 'Years Experience')}
             variant={isDark ? 'glass' : 'solid'}
             aria-label={`${CAREER_SUMMARY.totalExperience} years of experience`}
           />
-          <StatCard
+          <RecruiterStatCard
             value={CAREER_SUMMARY.achievements.length}
             label={t('recruiter.personalInfo.stats.achievements', 'Achievements')}
             variant={isDark ? 'glass' : 'solid'}

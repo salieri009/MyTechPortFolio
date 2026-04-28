@@ -20,6 +20,7 @@ interface SecurityContext {
 interface AuthState {
   user: User | null
   accessToken: string | null
+  refreshToken: string | null
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
@@ -78,6 +79,7 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       accessToken: null,
+      refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -96,20 +98,18 @@ export const useAuthStore = create<AuthState>()(
       }),
 
       setTokens: (accessToken, refreshToken) => {
-        // Store refresh token in httpOnly cookie via API call
-        authService.storeRefreshToken(refreshToken).catch(console.error)
         set({
           accessToken,
+          refreshToken,
           isAuthenticated: true
         })
       },
 
       clearAuth: () => {
-        // Clear refresh token from server
-        authService.clearRefreshToken().catch(console.error)
         set({
           user: null,
           accessToken: null,
+          refreshToken: null,
           isAuthenticated: false,
           error: null,
           twoFactorRequired: false,
@@ -129,7 +129,12 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null })
         try {
           const response = await authService.verifyTwoFactor(token)
-          const { user, accessToken, refreshToken } = response
+          const user = response.userInfo
+          const { accessToken, refreshToken } = response
+
+          if (!user || !accessToken || !refreshToken) {
+            throw new Error('Invalid 2FA verification response')
+          }
 
           get().setUser(user)
           get().setTokens(accessToken, refreshToken)

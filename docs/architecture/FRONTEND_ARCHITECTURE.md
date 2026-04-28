@@ -150,11 +150,12 @@ frontend/src/
 │   └── email/                        # EmailJS 통합
 │       └── emailService.ts
 │
-├── stores/                           # Zustand 전역 상태
+├── store/                            # Zustand 전역 상태
 │   ├── themeStore.ts                 # 테마 상태 (persist → localStorage)
 │   ├── feedbackModalStore.ts         # 피드백 모달 상태
 │   ├── projectModalStore.ts          # 프로젝트 모달 상태
-│   └── filters.ts                    # 프로젝트 필터/페이지네이션 상태
+│   ├── filters.ts                    # 프로젝트 필터/페이지네이션 상태
+│   └── authStore.ts                  # 인증 상태 (access/refresh token + user)
 │
 ├── styles/                           # 스타일 시스템
 │   ├── theme.ts                      # 디자인 토큰 (컬러, 타이포, 간격 등)

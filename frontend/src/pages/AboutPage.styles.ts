@@ -166,7 +166,7 @@ export const SectionTitle = styled.h2<{ $isVisible?: boolean }>`
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props.theme.spacing[8]})`};
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
@@ -188,9 +188,9 @@ export const SectionSubtitle = styled.p<{ $isVisible?: boolean }>`
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
-  max-width: ${props => props.theme.spacing[176] || '44rem'}; /* 704px (4-point system: 176 * 4px) */
+  max-width: ${props => props.theme.spacing[176]}; /* 704px (4-point system: 176 * 4px) */
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props => props.theme.spacing[8]})`};
+  transform: ${props => props.$isVisible ? 'translateY(0)' : `translateY(${props.theme.spacing[8]})`};
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s,
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
   
@@ -600,7 +600,7 @@ export const ValueModalContent = styled.div`
   background: ${props => props.theme.colors.surface || props.theme.colors.background};
   border-radius: ${props => props.theme.radius['2xl']};
   padding: ${props => props.theme.spacing[16]};
-  max-width: ${props => props.theme.spacing[200] || '50rem'}; /* 800px - wider for immersive reading */
+  max-width: ${props => props.theme.spacing[200]}; /* 800px - wider for immersive reading */
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -1012,7 +1012,7 @@ export const AboutHeroSubtitle = styled.p`
   margin-bottom: ${props => props.theme.spacing[8]};
   color: ${props => props.theme.colors.textSecondary};
   line-height: ${props => props.theme.typography.lineHeight.relaxed};
-  max-width: ${props => props.theme.spacing[150] || '37.5rem'}; /* 600px (4-point system: 150 * 4px) */
+  max-width: ${props => props.theme.spacing[150]}; /* 600px (4-point system: 150 * 4px) */
   font-weight: ${props => props.theme.typography.fontWeight.normal};
   font-family: ${props => props.theme.typography.fontFamily.primary};
   text-align: left;
