@@ -15,8 +15,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.mytechfolio.portfolio.constants.ApiConstants;
+import com.mytechfolio.portfolio.constants.ErrorCode;
+import com.mytechfolio.portfolio.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 
 /**
  * REST controller for authentication operations.
@@ -84,16 +87,21 @@ public class AuthController {
     @PostMapping("/refresh")
     @Operation(summary = "토큰 갱신", description = "리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급합니다.")
     public ResponseEntity<ApiResponse<LoginResponse>> refreshToken(
-            @RequestHeader("Authorization") String refreshToken) {
+            @RequestHeader(value = "Authorization", required = false) String refreshTokenHeader) {
+        log.info("Token refresh attempt");
+        if (refreshTokenHeader == null || !refreshTokenHeader.startsWith(ApiConstants.BEARER_PREFIX)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseUtil.enrichWithMetadata(ApiResponse.error(ErrorCode.AUTHENTICATION_FAILED)));
+        }
+        String token = refreshTokenHeader.substring(ApiConstants.BEARER_PREFIX.length());
         try {
-            log.info("Token refresh attempt");
-            String token = refreshToken.replace(ApiConstants.BEARER_PREFIX, "");
             LoginResponse response = authService.refreshToken(token);
             log.info("Token refresh successful");
             return ResponseEntity.ok(ApiResponse.success(response, "토큰 갱신 성공"));
-        } catch (Exception e) {
-            log.error("Token refresh failed", e);
-            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        } catch (RuntimeException ex) {
+            log.warn("Token refresh failed: {}", ex.getClass().getSimpleName());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseUtil.enrichWithMetadata(ApiResponse.error(ErrorCode.AUTHENTICATION_FAILED)));
         }
     }
 

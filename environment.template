@@ -12,7 +12,7 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 GITHUB_CLIENT_ID=your_github_client_id
 GITHUB_CLIENT_SECRET=your_github_client_secret
 
-# JWT Configuration
+# JWT Configuration (HS256: use at least 32 bytes / 256 bits — longer is fine)
 JWT_SECRET=your_very_long_and_secure_jwt_secret_key_here_at_least_64_characters
 
 # CORS Configuration

@@ -100,7 +100,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccessDenied(AccessDeniedException ex) {
-        log.warn("Access denied: {}", ex.getMessage());
+        log.warn("Access denied");
         ApiResponse<Void> errorResponse = ApiResponse.error(ErrorCode.FORBIDDEN);
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ResponseUtil.enrichWithMetadata(errorResponse));
