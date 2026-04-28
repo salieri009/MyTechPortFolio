@@ -33,6 +33,8 @@ AZURE_SUBSCRIPTION_ID=your_azure_subscription_id
 AZURE_RESOURCE_GROUP=your_resource_group
 AZURE_CONTAINER_REGISTRY=your_container_registry.azurecr.io
 AZURE_CONTAINER_APP_NAME=portfolio-app
+# Optional (GitHub Actions): separate Container App for the frontend image
+# AZURE_CONTAINER_APP_NAME_FRONTEND=portfolio-frontend-app
 
 # Production URLs
 PRODUCTION_DOMAIN=your-domain.com

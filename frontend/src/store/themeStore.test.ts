@@ -4,44 +4,47 @@ import { useThemeStore } from './themeStore'
 
 describe('Theme Store', () => {
   beforeEach(() => {
-    useThemeStore.setState({ isDark: false })
+    useThemeStore.setState({ mode: 'dark', isDark: true })
   })
 
-  it('TC-FU-018: should initialize with light theme', () => {
+  it('TC-FU-018: should initialize with dark mode', () => {
     const { result } = renderHook(() => useThemeStore())
 
-    expect(result.current.isDark).toBe(false)
+    expect(result.current.mode).toBe('dark')
+    expect(result.current.isDark).toBe(true)
   })
 
-  it('TC-FU-019: should toggle theme correctly', () => {
+  it('TC-FU-019: should toggle between dark and eva modes', () => {
     const { result } = renderHook(() => useThemeStore())
 
-    expect(result.current.isDark).toBe(false)
+    expect(result.current.mode).toBe('dark')
 
     act(() => {
       result.current.toggleTheme()
     })
 
+    expect(result.current.mode).toBe('eva')
     expect(result.current.isDark).toBe(true)
 
     act(() => {
       result.current.toggleTheme()
     })
 
-    expect(result.current.isDark).toBe(false)
+    expect(result.current.mode).toBe('dark')
+    expect(result.current.isDark).toBe(true)
   })
 
-  it('TC-FU-020: should persist theme preference', () => {
+  it('TC-FU-020: should allow setMode', () => {
     const { result } = renderHook(() => useThemeStore())
 
     act(() => {
-      result.current.toggleTheme()
+      result.current.setMode('eva')
     })
 
+    expect(result.current.mode).toBe('eva')
     expect(result.current.isDark).toBe(true)
 
-    const { result: newResult } = renderHook(() => useThemeStore())
-
-    expect(newResult.current.isDark).toBeDefined()
+    const { result: second } = renderHook(() => useThemeStore())
+    expect(second.current.mode).toBe('eva')
   })
 })
