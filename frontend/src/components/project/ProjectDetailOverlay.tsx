@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Tag } from '@components/common'
 import { getProject, getProjects } from '@services/projects'
 import type { ProjectDetail, ProjectSummary } from '@model/domain'
+import { useProjectEngagement } from '../../hooks/useProjectEngagement'
 
 const fadeIn = keyframes`
   from {
@@ -117,13 +118,14 @@ const ProjectModalImage = styled.img`
   object-fit: cover;
   border-radius: ${props => props.theme.radius.xl};
   margin-bottom: ${props => props.theme.spacing[8]};
-  box-shadow: ${props => props.theme.shadows.xl};
-  border: ${props => props.theme.spacing[1]} solid ${props => props.theme.colors.border};
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: none;
+  border: 1px solid ${props => props.theme.depth?.cardBorder ?? props.theme.colors.border};
+  transition: transform 0.3s ease, border-color 0.2s ease;
   
   &:hover {
     transform: scale(1.02);
-    box-shadow: ${props => props.theme.shadows['2xl']};
+    border-color: ${props => props.theme.depth?.cardBorderHover ?? props.theme.colors.primary[500]};
+    box-shadow: none;
   }
   
   @media (prefers-reduced-motion: reduce) {
@@ -378,8 +380,21 @@ export function ProjectDetailOverlay() {
   const [isLoadingProject, setIsLoadingProject] = useState(false)
   const [relatedProjects, setRelatedProjects] = useState<ProjectSummary[]>([])
   const [isLoadingRelated, setIsLoadingRelated] = useState(false)
-  const modalContentRef = useRef<HTMLDivElement>(null)
+  const modalContentRef = useRef<HTMLDivElement | null>(null)
+  const engagementScrollRef = useRef<HTMLDivElement | null>(null)
+  const [engagementScrollGen, setEngagementScrollGen] = useState(0)
   const scrollPositionRef = useRef<number>(0)
+
+  const { markGithubClicked, markDemoClicked } = useProjectEngagement(projectId, {
+    scrollContainerRef: engagementScrollRef,
+    scrollMountVersion: engagementScrollGen,
+  })
+
+  const setModalContentNode = useCallback((node: HTMLDivElement | null) => {
+    modalContentRef.current = node
+    engagementScrollRef.current = node
+    if (node) setEngagementScrollGen((g) => g + 1)
+  }, [])
 
   // Save scroll position when modal opens
   useEffect(() => {
@@ -493,7 +508,7 @@ export function ProjectDetailOverlay() {
       aria-labelledby={`project-modal-title-${projectId}`}
     >
       <ProjectModalContent
-        ref={modalContentRef}
+        ref={setModalContentNode}
         onClick={(e) => e.stopPropagation()}
         role="document"
       >
@@ -549,6 +564,7 @@ export function ProjectDetailOverlay() {
                     target="_blank" 
                     rel="noopener noreferrer"
                     aria-label={`${t(selectedProject.title)} GitHub repository`}
+                    onClick={markGithubClicked}
                   >
                     GitHub →
                   </ProjectModalLink>
@@ -559,6 +575,7 @@ export function ProjectDetailOverlay() {
                     target="_blank" 
                     rel="noopener noreferrer"
                     aria-label={`${t(selectedProject.title)} demo`}
+                    onClick={markDemoClicked}
                   >
                     Demo →
                   </ProjectModalLink>

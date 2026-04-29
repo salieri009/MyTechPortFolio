@@ -6,6 +6,7 @@ import { Container, Tag, Button } from '@components/common'
 import { getProject } from '@services/projects'
 import type { ProjectDetail } from '@model/domain'
 import { CheckMarkIcon } from '@components/icons/CheckMarkIcon'
+import { useProjectEngagement } from '../hooks/useProjectEngagement'
 
 const BackLink = styled(Link)`
   color: ${props => props.theme.colors.primary[500]};
@@ -183,7 +184,7 @@ const OutcomeList = styled.ul`
 `
 
 const SideCard = styled.div`
-  background: ${props => props.theme.colors.card || props.theme.colors.surface || props.theme.colors.neutral[0]};
+  background: ${props => props.theme.colors.surface || props.theme.colors.neutral[0]};
   border: ${props => props.theme.spacing[0.25]} solid ${props => props.theme.colors.border || props.theme.colors.neutral[200]};
   border-radius: ${props => props.theme.radius.xl}; /* 4-point system: 12px */
   padding: ${props => props.theme.spacing[6]}; /* 4-point system: 24px */
@@ -242,6 +243,7 @@ export function ProjectDetailPage() {
   const [project, setProject] = useState<ProjectDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { markGithubClicked, markDemoClicked } = useProjectEngagement(project?.id ?? null)
 
   useEffect(() => {
     async function fetchProject() {
@@ -302,12 +304,25 @@ export function ProjectDetailPage() {
         </ProjectMeta>
         <ProjectLinks>
           {project.githubUrl && (
-            <Button as="a" href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+            <Button
+              as="a"
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={markGithubClicked}
+            >
               GitHub
             </Button>
           )}
           {project.demoUrl && (
-            <Button as="a" href={project.demoUrl} target="_blank" rel="noopener noreferrer" variant="ghost">
+            <Button
+              as="a"
+              href={project.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="ghost"
+              onClick={markDemoClicked}
+            >
               Live Demo
             </Button>
           )}
