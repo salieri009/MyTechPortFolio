@@ -2,7 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Card, Tag } from '../common'
+import { Card } from '../common'
+import { Tag } from '../ui/Tag'
 import { useProjectAnalytics } from '../../hooks/useAnalytics'
 
 /**
@@ -32,19 +33,20 @@ const ProjectCardWrapper = styled(Card)`
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  /* Performance optimization */
+  border: 1px solid ${props => props.theme.depth?.cardBorder ?? props.theme.colors.border};
+  background: ${props => props.theme.depth?.cardBackground ?? props.theme.colors.surface};
+  transition: transform 0.3s ease, border-color 0.2s ease;
   will-change: transform;
-  transform: translateZ(0); /* Force GPU acceleration */
+  transform: translateZ(0);
 
-  /* H1: Visibility of System Status - Hover feedback */
   ${ProjectCardLink}:hover & {
-    transform: translateY(-${props => props.theme.spacing[1]}) translateZ(0); /* 4-point system: 4px */
-    box-shadow: ${props => props.theme.shadows.xl};
+    transform: translateY(-${props => props.theme.spacing[1]}) translateZ(0);
+    border-color: ${props => props.theme.depth?.cardBorderHover ?? props.theme.colors.primary[500]};
+    box-shadow: none;
   }
-  
+
   @media (prefers-reduced-motion: reduce) {
-    transition: box-shadow 0.2s ease;
+    transition: border-color 0.2s ease;
     ${ProjectCardLink}:hover & {
       transform: none;
     }
@@ -312,7 +314,6 @@ export function ProjectCard({
       aria-label={`View project: ${t(title)}`}
     >
     <ProjectCardWrapper 
-      isHover 
       role="article" 
       aria-labelledby={`project-title-${id}`}
     >

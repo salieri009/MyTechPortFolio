@@ -85,7 +85,7 @@ export function ContactButton({
   }
 
   return (
-    <ContactButtonContainer {...buttonProps}>
+    <ContactButtonContainer {...(buttonProps as unknown as React.ComponentProps<typeof ContactButtonContainer>)}>
       {icon && <IconWrapper>{icon}</IconWrapper>}
       {label}
     </ContactButtonContainer>

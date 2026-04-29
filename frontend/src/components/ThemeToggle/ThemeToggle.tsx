@@ -8,23 +8,28 @@ const ThemeToggleButton = styled.button`
   justify-content: center;
   width: 64px;
   height: 44px;
-  border: none;
   border-radius: ${props => props.theme.radius.full};
-  background: ${props => props.theme.colors.surface};
+  background: ${props => props.theme.depth?.cardBackground ?? props.theme.colors.surface};
   color: ${props => props.theme.colors.text};
-  border: 1px solid ${props => props.theme.colors.border};
+  border: 1px solid ${props => props.theme.depth?.cardBorder ?? props.theme.colors.border};
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: ${props => props.theme.shadows.sm};
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  box-shadow: none;
   
   &:hover {
     transform: translateY(-1px);
-    box-shadow: ${props => props.theme.shadows.md};
-    border-color: ${props => props.theme.colors.primary[500]};
+    border-color: ${props => props.theme.depth?.cardBorderHover ?? props.theme.colors.primary[500]};
   }
   
   &:active {
     transform: scale(0.95);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: border-color 0.2s ease;
+    &:hover {
+      transform: none;
+    }
   }
 `
 

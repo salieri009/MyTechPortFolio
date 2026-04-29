@@ -209,7 +209,20 @@ const baseTheme = {
     64: '16rem',      // 256px
     72: '18rem',      // 288px
     80: '20rem',      // 320px
-    96: '24rem'       // 384px
+    96: '24rem',     // 384px
+    // Extended 4px grid (index × 4px at 16px root)
+    0.25: '0.0625rem', // 1px
+    0.75: '0.1875rem', // 3px — focus ring offset
+    25: '6.25rem',     // 100px
+    30: '7.5rem',      // 120px
+    105: '26.25rem',   // 420px
+    125: '31.25rem',   // 500px
+    50: '12.5rem',     // 200px
+    100: '25rem',      // 400px
+    150: '37.5rem',    // 600px
+    176: '44rem',      // 704px
+    200: '50rem',      // 800px
+    300: '75rem'       // 1200px
   },
 
   // 반지름 시스템
@@ -380,7 +393,7 @@ export const darkTheme = {
     }
   },
 
-  // 다크 테마용 그림자
+  // 다크 테마: depth 전략과 맞춰 카드 그림자 비활성 (오버레이 전용은 theme.depth.modalShadow)
   shadows: {
     ...baseTheme.shadows,
     sm: 'none',
@@ -389,13 +402,7 @@ export const darkTheme = {
     lg: 'none',
     xl: 'none',
     '2xl': 'none',
-    inner: 'none',
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.3)',
-    base: '0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4)',
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4)',
-    '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
+    inner: 'none'
   }
 };
 

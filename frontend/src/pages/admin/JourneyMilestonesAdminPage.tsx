@@ -70,7 +70,7 @@ const StatusBadge = styled.span<{ $status: string }>`
       case 'COMPLETED': return props.theme.colors.success?.[100] || '#d1fae5'
       case 'CURRENT': return props.theme.colors.warning?.[100] || '#fef3c7'
       case 'PLANNED': return props.theme.colors.info?.[100] || '#dbeafe'
-      default: return props.theme.colors.gray?.[100] || '#f3f4f6'
+      default: return props.theme.colors.neutral[100]
     }
   }};
   color: ${props => {
@@ -78,7 +78,7 @@ const StatusBadge = styled.span<{ $status: string }>`
       case 'COMPLETED': return props.theme.colors.success?.[700] || '#065f46'
       case 'CURRENT': return props.theme.colors.warning?.[700] || '#92400e'
       case 'PLANNED': return props.theme.colors.info?.[700] || '#1e40af'
-      default: return props.theme.colors.gray?.[700] || '#374151'
+      default: return props.theme.colors.neutral[700]
     }
   }};
 `

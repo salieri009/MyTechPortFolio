@@ -83,7 +83,7 @@ const TableRow = styled.tr`
   border-bottom: 1px solid ${props => props.theme.colors.border || '#e5e7eb'};
   
   &:hover {
-    background: ${props => props.theme.colors.backgroundSecondary || '#f9fafb'};
+    background: ${props => props.theme.colors.neutral[50]};
   }
   
   &:last-child {

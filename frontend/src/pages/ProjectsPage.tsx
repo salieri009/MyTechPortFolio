@@ -979,7 +979,7 @@ const ProjectsPage: React.FC = () => {
               tabIndex={0}
             >
               <ProjectCard
-                id={project.id}
+                id={Number(project.id)}
                 title={project.title}
                 summary={project.summary}
                 startDate={project.startDate}

@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { CAREER_SUMMARY } from '../../constants/contact'
-import { useThemeStore } from '../../stores/themeStore'
+import { useThemeStore } from '../../store/themeStore'
 import { StatCard } from '@components/molecules/StatCard'
 import { TechStackBadge } from '@components/molecules/TechStackBadge'
 

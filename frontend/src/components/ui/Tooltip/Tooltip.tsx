@@ -16,7 +16,7 @@ const TooltipContent = styled.div<{ $position: 'top' | 'bottom' | 'left' | 'righ
   position: absolute;
   z-index: 1000;
   padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]};
-  background: ${props => props.theme.colors.gray[900]};
+  background: ${props => props.theme.colors.neutral[900]};
   color: white;
   border-radius: ${props => props.theme.radius.md};
   font-size: ${props => props.theme.typography.fontSize.sm};
@@ -72,28 +72,28 @@ const TooltipContent = styled.div<{ $position: 'top' | 'bottom' | 'left' | 'righ
             top: 100%;
             left: 50%;
             transform: translateX(-50%);
-            border-top-color: ${props.theme.colors.gray[900]};
+            border-top-color: ${props.theme.colors.neutral[900]};
           `
         case 'bottom':
           return `
             bottom: 100%;
             left: 50%;
             transform: translateX(-50%);
-            border-bottom-color: ${props.theme.colors.gray[900]};
+            border-bottom-color: ${props.theme.colors.neutral[900]};
           `
         case 'left':
           return `
             left: 100%;
             top: 50%;
             transform: translateY(-50%);
-            border-left-color: ${props.theme.colors.gray[900]};
+            border-left-color: ${props.theme.colors.neutral[900]};
           `
         case 'right':
           return `
             right: 100%;
             top: 50%;
             transform: translateY(-50%);
-            border-right-color: ${props.theme.colors.gray[900]};
+            border-right-color: ${props.theme.colors.neutral[900]};
           `
       }
     }}

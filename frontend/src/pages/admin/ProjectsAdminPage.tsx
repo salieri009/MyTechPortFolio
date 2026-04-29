@@ -21,28 +21,29 @@ const PageHeader = styled.div`
 const PageTitle = styled.h1`
   font-size: ${props => props.theme.typography.fontSize['2xl']};
   font-weight: ${props => props.theme.typography.fontWeight.bold};
-  color: #111827; /* neutral-900 - H4: Consistency */
+  color: ${props => props.theme.colors.text};
   margin: 0;
 `
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  background: #FFFFFF; /* neutral-0 - H4: Consistency */
+  background: ${props => props.theme.colors.surface};
   border-radius: ${props => props.theme.borderRadius.lg || '12px'};
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid ${props => props.theme.depth?.cardBorder ?? props.theme.colors.border};
+  box-shadow: none;
 `
 
 const TableHeader = styled.thead`
-  background: #EFF6FF; /* primary-50 - H4: Consistency */
+  background: ${props => props.theme.colors.primary[50]};
 `
 
 const TableRow = styled.tr`
   border-bottom: 1px solid ${props => props.theme.colors.border || '#e5e7eb'};
   
   &:hover {
-    background: ${props => props.theme.colors.backgroundSecondary || '#f9fafb'};
+    background: ${props => props.theme.colors.neutral[50]};
   }
   
   &:last-child {
@@ -54,13 +55,13 @@ const TableHeaderCell = styled.th`
   padding: ${props => props.theme.spacing[4]};
   text-align: left;
   font-weight: ${props => props.theme.typography.fontWeight.semibold || '600'};
-  color: #6B7280; /* neutral-500 - H4: Consistency */
+  color: ${props => props.theme.colors.textSecondary};
   font-size: ${props => props.theme.typography.fontSize.sm};
 `
 
 const TableCell = styled.td`
   padding: ${props => props.theme.spacing[4]};
-  color: #111827; /* neutral-900 */
+  color: ${props => props.theme.colors.text};
   font-size: ${props => props.theme.typography.fontSize.base};
 `
 
@@ -99,10 +100,21 @@ const StatusBadge = styled.span<{ $status: string }>`
 const EmptyState = styled.div`
   text-align: center;
   padding: ${props => props.theme.spacing[12]};
-  color: #6B7280; /* neutral-500 */
-  background: #FFFFFF; /* neutral-0 */
+  color: ${props => props.theme.colors.textSecondary};
+  background: ${props => props.theme.colors.surface};
   border-radius: ${props => props.theme.borderRadius.lg || '12px'};
-  border: 1px solid #E5E7EB; /* neutral-200 */
+  border: 1px solid ${props => props.theme.depth?.cardBorder ?? props.theme.colors.border};
+`
+
+const EmptyTitle = styled.p`
+  font-size: ${props => props.theme.typography.fontSize.lg};
+  margin-bottom: ${props => props.theme.spacing[2]};
+  color: ${props => props.theme.colors.text};
+`
+
+const EmptySubtitle = styled.p`
+  margin-bottom: ${props => props.theme.spacing[6]};
+  color: ${props => props.theme.colors.textSecondary};
 `
 
 export function ProjectsAdminPage() {
@@ -206,12 +218,10 @@ export function ProjectsAdminPage() {
       {/* H9: Help Users Recognize, Diagnose, and Recover from Errors - Empty state with recovery action */}
       {projects.length === 0 ? (
         <EmptyState>
-          <p style={{ fontSize: '1.125rem', marginBottom: '0.5rem', color: '#111827' }}>
-            No projects found.
-          </p>
-          <p style={{ marginBottom: '1.5rem', color: '#6B7280' }}>
+          <EmptyTitle>No projects found.</EmptyTitle>
+          <EmptySubtitle>
             Create your first project to get started!
-          </p>
+          </EmptySubtitle>
           <Link to="/admin/projects/new">
             <Button variant="primary" style={{ marginTop: '1rem' }}>
               Create Your First Project
