@@ -52,7 +52,12 @@ public class ProjectEngagement {
     // Geographic information
     private String country;
     private String city;
-    private String ipAddress; // Hashed for privacy
+    private String ipAddress; // Hashed for privacy (HMAC)
+
+    /**
+     * Opaque secret returned on {@code POST /engagement/track}; required on {@code PATCH} to prevent IDOR.
+     */
+    private String updateSecret;
     
     // Timestamp
     @CreatedDate

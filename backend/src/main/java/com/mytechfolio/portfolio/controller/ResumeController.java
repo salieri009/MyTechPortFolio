@@ -7,8 +7,10 @@ import com.mytechfolio.portfolio.service.ResumeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.mytechfolio.portfolio.util.PathSecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -38,6 +40,7 @@ import java.util.Map;
 public class ResumeController {
     
     private final ResumeService resumeService;
+    private final Environment environment;
     
     /**
      * Gets all available resumes.
@@ -87,27 +90,48 @@ public class ResumeController {
         Resume resume = resumeService.recordDownload(id);
         
         try {
-            // In production, this would fetch from Azure Blob Storage
-            // For now, assuming fileUrl is a valid file path or URL
-            Path filePath = Paths.get(resume.getFileUrl());
-            Resource resource = new UrlResource(filePath.toUri());
-            
+            Resource resource = resolveResumeResource(resume);
             if (!resource.exists() || !resource.isReadable()) {
                 log.error("Resume file not found or not readable: {}", resume.getFileUrl());
                 return ResponseEntity.notFound().build();
             }
-            
             String contentType = determineContentType(resume.getFileType());
-            
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, 
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"" + resume.getFileName() + "\"")
                     .body(resource);
-        } catch (MalformedURLException e) {
-            log.error("Invalid resume file URL: {}", resume.getFileUrl(), e);
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid resume file reference: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.error("Resume download failed: {}", resume.getFileUrl(), e);
+            return ResponseEntity.internalServerError().build();
         }
+    }
+
+    private Resource resolveResumeResource(Resume resume) throws Exception {
+        String fileUrl = resume.getFileUrl();
+        if (fileUrl == null || fileUrl.isBlank()) {
+            throw new IllegalArgumentException("Missing file URL");
+        }
+        String trimmed = fileUrl.trim();
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+            return new UrlResource(URI.create(trimmed));
+        }
+        String basePath = environment.getProperty("app.storage.local.base-path", "./uploads");
+        Path base = Paths.get(basePath).toAbsolutePath().normalize();
+        Path candidate = Paths.get(trimmed);
+        if (candidate.isAbsolute()) {
+            Path normalized = candidate.normalize();
+            if (!normalized.startsWith(base)) {
+                throw new IllegalArgumentException("Resume path outside storage root");
+            }
+            return new UrlResource(normalized.toUri());
+        }
+        String relative = PathSecurityUtil.normalizeRelativeStoragePath(trimmed.replace("\\", "/"));
+        Path file = PathSecurityUtil.resolveUnderBase(base, relative);
+        return new UrlResource(file.toUri());
     }
     
     /**

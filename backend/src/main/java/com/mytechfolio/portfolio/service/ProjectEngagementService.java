@@ -1,6 +1,7 @@
 package com.mytechfolio.portfolio.service;
 
 import com.mytechfolio.portfolio.domain.ProjectEngagement;
+import com.mytechfolio.portfolio.exception.ResourceNotFoundException;
 import com.mytechfolio.portfolio.repository.ProjectEngagementRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * Service for tracking project engagement metrics.
@@ -38,6 +42,9 @@ public class ProjectEngagementService {
         log.debug("Recording engagement for project: {}", engagement.getProjectId());
         engagement.setViewedAt(LocalDateTime.now());
         engagement.setLastInteractionAt(LocalDateTime.now());
+        if (engagement.getUpdateSecret() == null || engagement.getUpdateSecret().isBlank()) {
+            engagement.setUpdateSecret(UUID.randomUUID().toString());
+        }
         return engagementRepository.save(engagement);
     }
     
@@ -50,25 +57,32 @@ public class ProjectEngagementService {
      * @param githubLinkClicked Whether GitHub link was clicked
      * @param demoLinkClicked Whether demo link was clicked
      */
-    public void updateEngagement(String engagementId, Long viewDuration, Integer scrollDepth, 
+    public void updateEngagement(String engagementId, String updateSecret, Long viewDuration, Integer scrollDepth,
                                 Boolean githubLinkClicked, Boolean demoLinkClicked) {
-        engagementRepository.findById(engagementId).ifPresent(engagement -> {
-            if (viewDuration != null) {
-                engagement.setViewDuration(viewDuration);
-            }
-            if (scrollDepth != null) {
-                engagement.setScrollDepth(scrollDepth);
-            }
-            if (githubLinkClicked != null) {
-                engagement.setGithubLinkClicked(githubLinkClicked);
-            }
-            if (demoLinkClicked != null) {
-                engagement.setDemoLinkClicked(demoLinkClicked);
-            }
-            engagement.setLastInteractionAt(LocalDateTime.now());
-            engagementRepository.save(engagement);
-            log.debug("Updated engagement: {}", engagementId);
-        });
+        ProjectEngagement engagement = engagementRepository.findById(engagementId)
+                .orElseThrow(() -> new ResourceNotFoundException("ProjectEngagement", engagementId));
+        if (engagement.getUpdateSecret() == null || engagement.getUpdateSecret().isBlank()) {
+            throw new AccessDeniedException("Engagement cannot be updated (missing secret); create a new track event");
+        }
+        if (updateSecret == null || updateSecret.isBlank()
+                || !engagement.getUpdateSecret().equals(updateSecret)) {
+            throw new AccessDeniedException("Invalid engagement update secret");
+        }
+        if (viewDuration != null) {
+            engagement.setViewDuration(viewDuration);
+        }
+        if (scrollDepth != null) {
+            engagement.setScrollDepth(scrollDepth);
+        }
+        if (githubLinkClicked != null) {
+            engagement.setGithubLinkClicked(githubLinkClicked);
+        }
+        if (demoLinkClicked != null) {
+            engagement.setDemoLinkClicked(demoLinkClicked);
+        }
+        engagement.setLastInteractionAt(LocalDateTime.now());
+        engagementRepository.save(engagement);
+        log.debug("Updated engagement: {}", engagementId);
     }
     
     /**

@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.mytechfolio.portfolio.util.IpPrivacyUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +34,11 @@ import java.util.Map;
 @Tag(name = "Project Engagement", description = "Project engagement tracking API")
 @RequiredArgsConstructor
 public class ProjectEngagementController {
-    
+
+    public static final String ENGAGEMENT_UPDATE_SECRET_HEADER = "X-Engagement-Update-Secret";
+
     private final ProjectEngagementService engagementService;
+    private final Environment environment;
     
     /**
      * Records a project view engagement.
@@ -80,12 +85,13 @@ public class ProjectEngagementController {
     public ResponseEntity<ApiResponse<Void>> updateEngagement(
             @Parameter(description = "Engagement ID", required = true)
             @PathVariable String engagementId,
+            @RequestHeader(ENGAGEMENT_UPDATE_SECRET_HEADER) String updateSecret,
             @RequestParam(required = false) Long viewDuration,
             @RequestParam(required = false) Integer scrollDepth,
             @RequestParam(required = false) Boolean githubLinkClicked,
             @RequestParam(required = false) Boolean demoLinkClicked) {
         
-        engagementService.updateEngagement(engagementId, viewDuration, scrollDepth, 
+        engagementService.updateEngagement(engagementId, updateSecret, viewDuration, scrollDepth,
                                          githubLinkClicked, demoLinkClicked);
         
         return ResponseEntity.ok(ApiResponse.success(null));
@@ -140,11 +146,12 @@ public class ProjectEngagementController {
         return ip;
     }
     
-    /**
-     * Hashes IP address for privacy.
-     */
     private String hashIpAddress(String ipAddress) {
-        return String.valueOf(ipAddress.hashCode());
+        String keyMaterial = environment.getProperty("app.analytics.ip-hmac-secret", "");
+        if (keyMaterial.isBlank()) {
+            keyMaterial = environment.getProperty("app.jwt.secret", "");
+        }
+        return IpPrivacyUtil.hmacSha256Hex(ipAddress, keyMaterial.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 }
 
