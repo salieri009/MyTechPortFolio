@@ -1,5 +1,6 @@
 package com.mytechfolio.portfolio.service.storage;
 
+import com.mytechfolio.portfolio.util.PathSecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,15 +35,18 @@ public class LocalStorageService implements StorageService {
     @Override
     public String uploadFile(MultipartFile file, String path) throws StorageException {
         try {
-            Path targetPath = Paths.get(basePath, path);
-            Files.createDirectories(targetPath.getParent());
-            
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path filePath = targetPath.resolve(fileName);
+            String safeRelative = PathSecurityUtil.normalizeRelativeStoragePath(path);
+            Path base = Paths.get(basePath).toAbsolutePath().normalize();
+            Path targetDir = PathSecurityUtil.resolveUnderBase(base, safeRelative);
+            Files.createDirectories(targetDir);
+
+            String safeOrig = PathSecurityUtil.sanitizePathSegment(file.getOriginalFilename());
+            String fileName = UUID.randomUUID().toString() + "_" + safeOrig;
+            Path filePath = targetDir.resolve(fileName);
             
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
             
-            String relativePath = path + "/" + fileName;
+            String relativePath = safeRelative + "/" + fileName;
             return baseUrl + "/" + relativePath;
         } catch (IOException e) {
             log.error("Failed to upload file: {}", path, e);
@@ -53,15 +57,18 @@ public class LocalStorageService implements StorageService {
     @Override
     public String uploadFile(InputStream inputStream, String fileName, String contentType, String path) throws StorageException {
         try {
-            Path targetPath = Paths.get(basePath, path);
-            Files.createDirectories(targetPath.getParent());
-            
-            String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
-            Path filePath = targetPath.resolve(uniqueFileName);
+            String safeRelative = PathSecurityUtil.normalizeRelativeStoragePath(path);
+            Path base = Paths.get(basePath).toAbsolutePath().normalize();
+            Path targetDir = PathSecurityUtil.resolveUnderBase(base, safeRelative);
+            Files.createDirectories(targetDir);
+
+            String safeOrig = PathSecurityUtil.sanitizePathSegment(fileName);
+            String uniqueFileName = UUID.randomUUID().toString() + "_" + safeOrig;
+            Path filePath = targetDir.resolve(uniqueFileName);
             
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
             
-            String relativePath = path + "/" + uniqueFileName;
+            String relativePath = safeRelative + "/" + uniqueFileName;
             return baseUrl + "/" + relativePath;
         } catch (IOException e) {
             log.error("Failed to upload file: {}", path, e);
@@ -72,7 +79,9 @@ public class LocalStorageService implements StorageService {
     @Override
     public void deleteFile(String path) throws StorageException {
         try {
-            Path filePath = Paths.get(basePath, path);
+            String safeRelative = PathSecurityUtil.normalizeRelativeStoragePath(path);
+            Path base = Paths.get(basePath).toAbsolutePath().normalize();
+            Path filePath = PathSecurityUtil.resolveUnderBase(base, safeRelative);
             if (Files.exists(filePath)) {
                 Files.delete(filePath);
             }
@@ -84,16 +93,20 @@ public class LocalStorageService implements StorageService {
     
     @Override
     public Optional<String> getFileUrl(String path) {
-        Path filePath = Paths.get(basePath, path);
+        String safeRelative = PathSecurityUtil.normalizeRelativeStoragePath(path);
+        Path base = Paths.get(basePath).toAbsolutePath().normalize();
+        Path filePath = PathSecurityUtil.resolveUnderBase(base, safeRelative);
         if (Files.exists(filePath)) {
-            return Optional.of(baseUrl + "/" + path);
+            return Optional.of(baseUrl + "/" + safeRelative);
         }
         return Optional.empty();
     }
     
     @Override
     public boolean fileExists(String path) {
-        Path filePath = Paths.get(basePath, path);
+        String safeRelative = PathSecurityUtil.normalizeRelativeStoragePath(path);
+        Path base = Paths.get(basePath).toAbsolutePath().normalize();
+        Path filePath = PathSecurityUtil.resolveUnderBase(base, safeRelative);
         return Files.exists(filePath);
     }
     

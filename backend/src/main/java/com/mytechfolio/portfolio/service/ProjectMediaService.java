@@ -9,6 +9,7 @@ import com.mytechfolio.portfolio.mapper.ProjectMediaMapper;
 import com.mytechfolio.portfolio.repository.ProjectMediaRepository;
 import com.mytechfolio.portfolio.repository.ProjectRepository;
 import com.mytechfolio.portfolio.service.storage.StorageService;
+import com.mytechfolio.portfolio.util.PathSecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,8 +54,9 @@ public class ProjectMediaService {
             throw new IllegalArgumentException("File cannot be empty");
         }
         
-        // Determine storage path
-        String storagePath = String.format("projects/%s/%s", request.getProjectId(), file.getOriginalFilename());
+        String relativeDir = PathSecurityUtil.normalizeRelativeStoragePath(
+                "projects/" + request.getProjectId());
+        String storagePath = relativeDir;
         
         try {
             // Upload file
