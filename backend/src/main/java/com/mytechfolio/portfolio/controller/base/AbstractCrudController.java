@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -82,6 +83,7 @@ public abstract class AbstractCrudController<T, ID, R, C, U> implements BaseCont
     }
     
     @PostMapping
+    @PreAuthorize("hasRole('CONTENT_MANAGER') or hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "생성", description = "새로운 리소스를 생성합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "생성됨"),
@@ -94,6 +96,7 @@ public abstract class AbstractCrudController<T, ID, R, C, U> implements BaseCont
     }
     
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('CONTENT_MANAGER') or hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "수정", description = "기존 리소스를 수정합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
@@ -113,6 +116,7 @@ public abstract class AbstractCrudController<T, ID, R, C, U> implements BaseCont
     }
     
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('CONTENT_MANAGER') or hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "삭제", description = "리소스를 삭제합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "삭제됨"),
