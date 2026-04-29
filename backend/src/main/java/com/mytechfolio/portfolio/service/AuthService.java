@@ -1,8 +1,9 @@
 package com.mytechfolio.portfolio.service;
 
+import com.mytechfolio.portfolio.domain.RevokedJwtToken;
 import com.mytechfolio.portfolio.domain.User;
+import com.mytechfolio.portfolio.repository.RevokedJwtTokenRepository;
 import com.mytechfolio.portfolio.repository.UserRepository;
-import com.mytechfolio.portfolio.dto.auth.LoginRequest;
 import com.mytechfolio.portfolio.dto.auth.LoginResponse;
 import com.mytechfolio.portfolio.security.service.GoogleOAuthService;
 import com.mytechfolio.portfolio.security.service.GitHubOAuthService;
@@ -19,12 +20,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HexFormat;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final RevokedJwtTokenRepository revokedJwtTokenRepository;
     private final GoogleOAuthService googleOAuthService;
     private final GitHubOAuthService gitHubOAuthService;
     private final JwtUtil jwtUtil;
@@ -41,46 +45,11 @@ public class AuthService {
             new SystemTimeProvider()
     );
 
-    /**
-     * In-memory token blacklist for logout.
-     * In production, use Redis or a distributed cache instead.
-     */
-    private final Set<String> tokenBlacklist = ConcurrentHashMap.newKeySet();
-
-    /**
-     * Check if a token has been blacklisted (logged out).
-     */
     public boolean isTokenBlacklisted(String token) {
-        return tokenBlacklist.contains(token);
-    }
-
-    public LoginResponse login(LoginRequest request) {
-        log.info("Login attempt for email: {}", request.getEmail());
-
-        // For now, create a simple response for regular login
-        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
-
-        User user;
-        if (userOpt.isEmpty()) {
-            // Create new user for demo purposes
-            user = User.builder()
-                    .email(request.getEmail())
-                    .displayName("Demo User")
-                    .profileImageUrl("")
-                    .isEmailVerified(true)
-                    .registrationSource("manual")
-                    .lastLoginAt(LocalDateTime.now())
-                    .build();
-            user = userRepository.save(user);
-            log.info("Created new user: {}", user.getEmail());
-        } else {
-            user = userOpt.get();
-            user.setLastLoginAt(LocalDateTime.now());
-            user = userRepository.save(user);
-            log.info("User logged in: {}", user.getEmail());
+        if (token == null || token.isBlank()) {
+            return false;
         }
-
-        return buildLoginResponse(user);
+        return revokedJwtTokenRepository.existsById(sha256Hex(token));
     }
 
     public LoginResponse authenticateWithGoogle(String googleToken, String twoFactorCode) {
@@ -229,8 +198,7 @@ public class AuthService {
             throw new RuntimeException("User account is disabled");
         }
 
-        // Blacklist old refresh token (rotation)
-        tokenBlacklist.add(refreshToken);
+        revokeToken(refreshToken);
 
         return buildLoginResponse(user);
     }
@@ -238,8 +206,36 @@ public class AuthService {
     public void logout(String token) {
         log.info("User logout requested");
         if (token != null && !token.isBlank()) {
-            tokenBlacklist.add(token);
-            log.info("Token added to blacklist");
+            revokeToken(token);
+            log.info("Token revoked (Mongo blacklist)");
+        }
+    }
+
+    private void revokeToken(String token) {
+        try {
+            Date exp = jwtUtil.parseClaims(token).getExpiration();
+            if (exp == null) {
+                return;
+            }
+            String id = sha256Hex(token);
+            if (!revokedJwtTokenRepository.existsById(id)) {
+                revokedJwtTokenRepository.save(RevokedJwtToken.builder()
+                        .id(id)
+                        .expiresAt(exp.toInstant())
+                        .build());
+            }
+        } catch (Exception e) {
+            log.debug("Skip revoke for invalid token: {}", e.getMessage());
+        }
+    }
+
+    private static String sha256Hex(String token) {
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                    .digest(token.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(digest);
+        } catch (Exception e) {
+            throw new IllegalStateException("SHA-256 not available", e);
         }
     }
 
